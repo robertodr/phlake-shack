@@ -14,6 +14,9 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # due to this: https://nixos.wiki/wiki/ZFS#Known_issues
+  boot.kernelParams = [ "nohibernate" ];
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.devNodes = "/dev/";
 

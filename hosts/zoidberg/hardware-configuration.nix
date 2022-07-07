@@ -14,6 +14,7 @@
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
+  # TODO these should be split out in a different module: a new hardware scan will overwrite them!
   fileSystems."/" =
     {
       device = "rpool/nixos";
@@ -58,7 +59,8 @@
 
   swapDevices =
     [{
-      device = "/dev/disk/by-uuid/e1455eb8-e33c-428c-a943-58617a2a12db";
+      device = "/dev/disk/by-id/nvme-SAMSUNG_MZVLB512HAJQ-000L7_S3TNNE0JB06744-part2";
+      # the manual warns against random key encryption and hibernation
       randomEncryption = true;
     }];
 
