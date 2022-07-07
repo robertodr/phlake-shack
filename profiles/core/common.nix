@@ -73,24 +73,32 @@ in
   fonts.fonts = with pkgs; [ powerline-fonts dejavu_fonts ];
 
   nix = {
+    settings = {
+      # automate `nix-store --optimise`
+      auto-optimise-store = true;
 
-    # Improve nix store disk usage
-    gc.automatic = true;
+      cores = 2;
 
-    # Prevents impurities in builds
-    useSandbox = true;
+      # prevents impurities in builds
+      sandbox = true;
 
-    # Give root user and wheel group special Nix privileges.
-    trustedUsers = [ "root" "@wheel" ];
+      # Give root user and wheel group special Nix privileges.
+      trusted-users = [ "root" "@wheel" ];
+    };
 
-    # Generally useful nix option defaults
+    # improve nix store disk usage
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+
+    # generally useful nix option defaults
     extraOptions = ''
       min-free = 536870912
       keep-outputs = true
       keep-derivations = true
       fallback = true
     '';
-
   };
-
 }
