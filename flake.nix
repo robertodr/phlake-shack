@@ -11,38 +11,62 @@
       nixos.url = "github:nixos/nixpkgs/nixos-22.05";
       latest.url = "github:nixos/nixpkgs/nixos-unstable";
 
-      home.url = "github:nix-community/home-manager/release-22.05";
-      home.inputs.nixpkgs.follows = "nixos";
+      home = {
+        url = "github:nix-community/home-manager/release-22.05";
+        inputs.nixpkgs.follows = "nixos";
+      };
 
       nixos-hardware.url = "github:nixos/nixos-hardware";
 
       nixos-generators.url = "github:nix-community/nixos-generators";
 
-      digga.url = "github:divnix/digga";
-      digga.inputs.nixpkgs.follows = "nixos";
-      digga.inputs.nixlib.follows = "nixos";
-      digga.inputs.home-manager.follows = "home";
-      digga.inputs.deploy.follows = "deploy";
+      digga = {
+        url = "github:divnix/digga";
+        inputs = {
+          nixpkgs.follows = "nixos";
+          nixlib.follows = "nixos";
+          home-manager.follows = "home";
+          deploy.follows = "deploy";
+        };
+      };
 
-      bud.url = "github:divnix/bud";
-      bud.inputs.nixpkgs.follows = "nixos";
-      bud.inputs.devshell.follows = "digga/devshell";
+      bud = {
+        url = "github:divnix/bud";
+        inputs = {
+          nixpkgs.follows = "nixos";
+          devshell.follows = "digga/devshell";
+        };
+      };
+
+      # bleeding edge emacs overlay
+      emacs-overlay = {
+        url = "github:nix-community/emacs-overlay/e47ffb5d60d8e8271d412945c685dbeac2fca7a4";
+        inputs.nixpkgs.follows = "nixos";
+      };
 
       # a simple multi-profile Nix-flake deploy tool.
-      deploy.url = "github:serokell/deploy-rs";
-      deploy.inputs.nixpkgs.follows = "nixos";
+      deploy = {
+        url = "github:serokell/deploy-rs";
+        inputs.nixpkgs.follows = "nixos";
+      };
 
       # age-encrypted secrets for NixOS
-      agenix.url = "github:ryantm/agenix";
-      agenix.inputs.nixpkgs.follows = "nixos";
+      agenix = {
+        url = "github:ryantm/agenix";
+        inputs.nixpkgs.follows = "nixos";
+      };
 
       # generate nix sources expr for the latest version of packages
-      nvfetcher.url = "github:berberman/nvfetcher";
-      nvfetcher.inputs.nixpkgs.follows = "nixos";
+      nvfetcher = {
+        url = "github:berberman/nvfetcher";
+        inputs.nixpkgs.follows = "nixos";
+      };
 
       # build rust crates in Nix. No configuration, no code generation, no IFD. Sandbox friendly.
-      naersk.url = "github:nmattia/naersk";
-      naersk.inputs.nixpkgs.follows = "nixos";
+      naersk = {
+        url = "github:nmattia/naersk";
+        inputs.nixpkgs.follows = "nixos";
+      };
     };
 
   outputs =
@@ -58,7 +82,15 @@
     , deploy
     , nixpkgs
     , ...
-    } @ inputs:
+    } @ inputs':
+    let
+      # TODO https://github.com/divnix/digga/issues/464
+      inputs = inputs' // {
+        emacs-overlay = inputs'.emacs-overlay // {
+          overlay = self.lib.overlayNullProtector inputs'.emacs-overlay.overlay;
+        };
+      };
+    in
     digga.lib.mkFlake
       {
         inherit self inputs;
@@ -68,7 +100,9 @@
         channels = {
           nixos = {
             imports = [ (digga.lib.importOverlays ./overlays) ];
-            overlays = [ ];
+            overlays = [
+              inputs.emacs-overlay.overlay
+            ];
           };
           latest = {
             overlays = [ ];
@@ -119,7 +153,7 @@
               users = digga.lib.rakeLeaves ./users;
             };
             suites = with profiles; rec {
-              base = [ core.nixos users.nixos users.root ];
+              base = [ core.nixos users.root ];
             };
           };
         };
