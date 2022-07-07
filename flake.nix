@@ -115,10 +115,12 @@
             ];
           };
 
-          imports = [ (digga.lib.importHosts ./hosts/nixos) ];
+          imports = [ (digga.lib.importHosts ./hosts) ];
           hosts = {
-            /* set host-specific properties here */
-            NixOS = { };
+            zoidberg = {
+              channelName = "latest";
+              modules = [ nixos-hardware.nixosModules.lenovo-thinkpad-x1 ];
+            };
           };
           importables = rec {
             profiles = digga.lib.rakeLeaves ./profiles // {
