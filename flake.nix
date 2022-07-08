@@ -61,12 +61,6 @@
         url = "github:berberman/nvfetcher";
         inputs.nixpkgs.follows = "nixos";
       };
-
-      # build rust crates in Nix. No configuration, no code generation, no IFD. Sandbox friendly.
-      naersk = {
-        url = "github:nmattia/naersk";
-        inputs.nixpkgs.follows = "nixos";
-      };
     };
 
   outputs =
@@ -94,6 +88,11 @@
     digga.lib.mkFlake
       {
         inherit self inputs;
+
+        supportedSystems = [
+          "x86_64-linux"
+          # "aarch64-linux"
+        ];
 
         channelsConfig = { allowUnfree = true; };
 
@@ -143,7 +142,9 @@
 
           imports = [ (digga.lib.importHosts ./hosts) ];
           hosts = {
+            # set host-specific properties here
             zoidberg = {
+              system = "x86_64-linux";
               channelName = "latest";
               modules = [ nixos-hardware.nixosModules.lenovo-thinkpad-x1 ];
             };
@@ -152,9 +153,21 @@
             profiles = digga.lib.rakeLeaves ./profiles // {
               users = digga.lib.rakeLeaves ./users;
             };
-            suites = with profiles; rec {
-              base = [ core.nixos users.root ];
-            };
+            suites = nixos.lib.fix (suites: {
+              nixSettings = with profiles.nix; [ gc settings cachix ];
+
+              core = suites.nixSettings ++ (with profiles; [ programs.tools ]);
+
+              base = suites.core ++
+                (with profiles; [
+                  services.earlyoom
+                  users.root
+                ]);
+
+              # TODO add borgbackup service
+              backup = with profiles; [
+              ];
+            });
           };
         };
 
