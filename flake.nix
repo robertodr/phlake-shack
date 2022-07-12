@@ -61,6 +61,12 @@
         url = "github:berberman/nvfetcher";
         inputs.nixpkgs.follows = "nixos";
       };
+
+      # my NUR packages
+      robertodr = {
+        url = "github:robertodr/nur-packages";
+        inputs.nixpkgs.follows = "nixos";
+      };
     };
 
   outputs =
@@ -153,10 +159,11 @@
             profiles = digga.lib.rakeLeaves ./profiles // {
               users = digga.lib.rakeLeaves ./users;
             };
+            # suites provide a mechanism for users to easily combine and name collections of profiles
             suites = nixos.lib.fix (suites: {
-              nixSettings = with profiles.nix; [ gc settings cachix ];
+              nixSettings = with profiles.nix; [ cachix gc settings ];
 
-              core = suites.nixSettings ++ (with profiles; [ programs.tools ]);
+              core = suites.nixSettings ++ (with profiles; [ programs.core ]);
 
               base = suites.core ++
                 (with profiles; [
@@ -167,18 +174,38 @@
               # TODO add borgbackup service
               backup = with profiles; [
               ];
+
+              network = with profiles; [
+              ];
+
+              multimedia = with profiles; [
+              ];
+
+              development = with profiles; [
+              ];
+
+              virtualization = with profiles; [
+              ];
             });
           };
         };
 
         home = {
           imports = [ (digga.lib.importExportableModules ./users/modules) ];
-          modules = [ ];
+          modules = [
+            # TODO nix flake show broken due to IFD
+            # see https://github.com/nix-community/home-manager/issues/1262
+            { manual.manpages.enable = false; }
+          ];
           importables = rec {
             profiles = digga.lib.rakeLeaves ./users/profiles;
-            suites = with profiles; rec {
-              base = [ direnv git ];
-            };
+            # suites provide a mechanism for users to easily combine and name collections of profiles
+            suites = nixos.lib.fix (suites: {
+              base = with profiles; [ ];
+              multimedia = with profiles; [ ];
+              development = with profiles; [ ];
+              synchronize = with profiles; [ ];
+            });
           };
           users = {
             roberto = { suites, ... }: { imports = suites.base; };
