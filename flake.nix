@@ -161,12 +161,11 @@
             };
             # suites provide a mechanism for users to easily combine and name collections of profiles
             suites = nixos.lib.fix (suites: {
-              nixSettings = with profiles.nix; [ cachix gc settings ];
+              nix-settings = with profiles.nix; [ cachix gc settings ];
 
-              core = suites.nixSettings ++ (with profiles; [ programs.core ]);
-
-              base = suites.core ++
+              base = suites.nix-settings ++
                 (with profiles; [
+                  core
                   services.earlyoom
                   users.root
                 ]);
@@ -182,9 +181,11 @@
               ];
 
               development = with profiles; [
+                programs._1password
               ];
 
               virtualization = with profiles; [
+                programs.singularity
               ];
             });
           };
@@ -201,14 +202,14 @@
             profiles = digga.lib.rakeLeaves ./users/profiles;
             # suites provide a mechanism for users to easily combine and name collections of profiles
             suites = nixos.lib.fix (suites: {
-              base = with profiles; [ ];
+              base = with profiles; [ desktop-applications ];
               multimedia = with profiles; [ ];
               development = with profiles; [ ];
               synchronize = with profiles; [ ];
             });
           };
           users = {
-            roberto = { suites, ... }: { imports = suites.base; };
+            roberto = { suites, ... }: { imports = with suites; base; };
           }; # digga.lib.importers.rakeLeaves ./users/hm;
         };
 

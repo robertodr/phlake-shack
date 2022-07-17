@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ self, pkgs, ... }:
 
 {
   environment = {
@@ -23,6 +23,7 @@
       file # a program that shows the type of files
       findutils # GNU Find Utilities, the basic directory searching utilities of the GNU operating system
       fzf
+      git
       gptfdisk
       jq
       libseccomp # High level library for the Linux Kernel seccomp filter
