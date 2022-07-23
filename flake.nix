@@ -30,14 +30,6 @@
         };
       };
 
-      bud = {
-        url = "github:divnix/bud";
-        inputs = {
-          nixpkgs.follows = "nixos";
-          devshell.follows = "digga/devshell";
-        };
-      };
-
       # bleeding edge emacs overlay
       emacs-overlay = {
         url = "github:nix-community/emacs-overlay/e47ffb5d60d8e8271d412945c685dbeac2fca7a4";
@@ -72,7 +64,6 @@
   outputs =
     { self
     , digga
-    , bud
     , nixos
     , home
     , nixos-hardware
@@ -142,7 +133,6 @@
               digga.nixosModules.nixConfig
               home.nixosModules.home-manager
               agenix.nixosModules.age
-              bud.nixosModules.bud
             ];
           };
 

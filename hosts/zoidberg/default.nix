@@ -10,7 +10,4 @@
     roberto
   ])
   ;
-
-  bud.enable = true;
-  bud.localFlakeClone = "/home/roberto/cfgnix";
 }
