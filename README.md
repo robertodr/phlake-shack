@@ -8,3 +8,13 @@ Nix allows for easy to manage, collaborative, reproducible deployments. This mea
 This flake is configured with the use of [digga][digga].
 
 [digga]: https://github.com/divnix/digga
+
+## How to use
+
+You can rebuild the NixOS configuration with:
+
+```
+$ sudo nixos-rebuild --flake .#<hostname> ...
+```
+
+Here `...` is any of the commands accepted by `nixos-rebuild`.
