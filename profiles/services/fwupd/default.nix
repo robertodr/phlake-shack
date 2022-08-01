@@ -1,0 +1,5 @@
+{ }:
+
+{
+    fwupd.enable = true;
+}
