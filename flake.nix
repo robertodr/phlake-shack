@@ -157,6 +157,7 @@
                 (with profiles; [
                   core
                   services.earlyoom
+		  services.openssh
                   users.root
                 ]);
 
