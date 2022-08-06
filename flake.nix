@@ -32,7 +32,7 @@
 
       # bleeding edge emacs overlay
       emacs-overlay = {
-        url = "github:nix-community/emacs-overlay/e47ffb5d60d8e8271d412945c685dbeac2fca7a4";
+        url = "github:nix-community/emacs-overlay";
         inputs.nixpkgs.follows = "nixos";
       };
 
@@ -72,16 +72,9 @@
     , nvfetcher
     , deploy
     , nixpkgs
+    , emacs-overlay
     , ...
-    } @ inputs':
-    let
-      # TODO https://github.com/divnix/digga/issues/464
-      inputs = inputs' // {
-        emacs-overlay = inputs'.emacs-overlay // {
-          overlay = self.lib.overlayNullProtector inputs'.emacs-overlay.overlay;
-        };
-      };
-    in
+    } @ inputs:
     digga.lib.mkFlake
       {
         inherit self inputs;
@@ -117,6 +110,7 @@
 
           nur.overlay
           agenix.overlay
+          emacs-overlay.overlay
           nvfetcher.overlay
 
           (import ./pkgs)
