@@ -189,7 +189,7 @@
             suites = nixos.lib.fix (suites: {
               base = with profiles; [ desktop-applications ];
               multimedia = with profiles; [ ];
-              development = with profiles; [ ];
+              development = with profiles; [ direnv ];
               synchronize = with profiles; [ ];
             });
           };
