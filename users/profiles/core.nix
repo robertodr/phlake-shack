@@ -16,8 +16,7 @@ let
 in
 {
   lib.phlake-shack = rec {
-    # TODO the example I followed uses ${configHome} instead of /home/${username}
-    fsPath = "/home/${username}/phlake-shack";
+    fsPath = "${configHome}/phlake-shack";
     userConfigPath = "${fsPath}/users/${username}/config";
 
     whoami = {

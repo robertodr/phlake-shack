@@ -9,6 +9,8 @@ This flake is configured with the use of [digga][digga].
 
 [digga]: https://github.com/divnix/digga
 
+Clone this into `~/.config`
+
 ## How to use
 
 You can rebuild the NixOS configuration with:
