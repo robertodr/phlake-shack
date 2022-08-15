@@ -6,7 +6,8 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
-(setq user-full-name "Roberto Di Remigio Eikås"
+(setq
+  user-full-name "Roberto Di Remigio Eikås"
   user-mail-address "roberto@totaltrash.xyz")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
@@ -21,14 +22,16 @@
 ;; font string. You generally only need these two:
 ;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
-;;(setq doom-font (font-spec :family "Fira Code Retina" :size 18 :weight 'normal :width 'normal)
-;;      doom-variable-pitch-font (font-spec :family "Fira Code Retina")
-;;      doom-big-font (font-spec :family "Fira Code Retina" :size 22))
+(setq
+  doom-font (font-spec :family "Fira Code Retina" :size 18 :weight 'normal :width 'normal)
+  doom-variable-pitch-font (font-spec :family "Fira Code Retina")
+  doom-big-font (font-spec :family "Fira Code Retina" :size 22))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+(setq
+  doom-themes-enable-bold t    ; if nil, bold is universally disabled
   doom-themes-enable-italic t) ; if nil, italics is universally disabled
 (setq doom-theme 'doom-peacock)
 (setq doom-themes-treemacs-theme "doom-colors")
