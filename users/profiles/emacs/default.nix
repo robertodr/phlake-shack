@@ -8,7 +8,7 @@ let
   inherit (config.xdg) configHome;
   inherit (config.lib.dag) entryAfter;
   inherit (config.lib.file) mkOutOfStoreSymlink;
-  inherit (config.lib.dotfield.emacs) profilesBase profilesPath;
+  inherit (config.lib.phlake-shack.emacs) profilesBase profilesPath;
 
   doomRepoUrl = "https://github.com/doomemacs/doomemacs";
   emacsDir = "${configHome}/emacs";
@@ -76,8 +76,7 @@ in
   };
 
   services.emacs = {
-    # Doom will take care of running the server.
-    enable = lib.mkDefault false;
+    enable = lib.mkDefault true;
     defaultEditor = lib.mkForce true;
     socketActivation.enable = true;
   };

@@ -187,14 +187,14 @@
             profiles = digga.lib.rakeLeaves ./users/profiles;
             # suites provide a mechanism for users to easily combine and name collections of profiles
             suites = nixos.lib.fix (suites: {
-              base = with profiles; [ desktop-applications ];
+              base = with profiles; [ core desktop-applications ];
               multimedia = with profiles; [ ];
-              development = with profiles; [ direnv ];
+              development = with profiles; [ direnv emacs ];
               synchronize = with profiles; [ ];
             });
           };
           users = {
-            roberto = { suites, ... }: { imports = with suites; base; };
+            roberto = { suites, ... }: { imports = with suites; base ++ development; };
           }; # digga.lib.importers.rakeLeaves ./users/hm;
         };
 

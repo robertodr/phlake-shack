@@ -16,7 +16,8 @@ let
 in
 {
   lib.phlake-shack = rec {
-    fsPath = "${configHome}/phlake-shack";
+    # TODO the example I followed uses ${configHome} instead of /home/${username}
+    fsPath = "/home/${username}/phlake-shack";
     userConfigPath = "${fsPath}/users/${username}/config";
 
     whoami = {
@@ -68,7 +69,8 @@ in
   #];
 
   #programs.bash.enable = true;
-  #programs.fish.enable = true;
+  programs.fish.enable = true;
+  programs.neovim.enable = true;
   #programs.zsh.enable = true;
 
   #programs.bat = {
@@ -101,6 +103,8 @@ in
   #programs.zoxide.enable = true;
 
   #home.extraOutputsToInstall = ["/share/zsh"];
+
+  fonts.fontconfig.enable = true;
 
   home.sessionVariables = {
     PHLAKE_SHACK_DIR = config.lib.phlake-shack.fsPath;
