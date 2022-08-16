@@ -150,6 +150,7 @@
               base = suites.nix-settings ++
                 (with profiles; [
                   core
+                  fonts.common
                   services.earlyoom
                   services.openssh
                   users.root

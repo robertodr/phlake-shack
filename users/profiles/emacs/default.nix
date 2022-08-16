@@ -76,7 +76,8 @@ in
   };
 
   services.emacs = {
-    enable = lib.mkDefault true;
+    # Doom will start the daemon
+    enable = lib.mkDefault false;
     defaultEditor = lib.mkForce true;
     socketActivation.enable = true;
   };
@@ -96,10 +97,6 @@ in
     # them... so we let these packages compile the binary...
     gcc
     sqlite
-
-    fira
-    fira-code
-    fira-code-symbols
 
     editorconfig-core-c
 
