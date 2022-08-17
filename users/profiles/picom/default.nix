@@ -1,5 +1,5 @@
 {
-  bat = {
+  services.picom = {
     enable = true;
   };
 }

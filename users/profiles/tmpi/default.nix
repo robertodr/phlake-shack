@@ -8,7 +8,8 @@ let
   inherit (config.lib.dag) entryAfter;
 
   localBin = "$HOME/.local/bin";
-in {
+in
+{
   home.sessionPath = [ "${localBin}" ];
 
   home.activation.installTmpi =

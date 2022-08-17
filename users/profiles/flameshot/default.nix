@@ -1,5 +1,5 @@
 {
-  bat = {
+  services.flameshot = {
     enable = true;
   };
 }
