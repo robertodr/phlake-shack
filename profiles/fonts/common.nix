@@ -3,10 +3,6 @@
 }:
 
 {
-  environment.systemPackages = with pkgs; [
-    font-manager
-  ];
-
   fonts = {
     fontDir.enable = true;
     fonts = with pkgs;

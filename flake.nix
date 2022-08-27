@@ -152,26 +152,39 @@
                   core
                   fonts.common
                   services.earlyoom
+                  services.fwupd
                   services.openssh
+                  services.thermald
+                  services.tlp
                   users.root
+                  systemd
                 ]);
 
               # TODO add borgbackup service
               backup = with profiles; [
+                services.borgbackup
               ];
 
-              network = with profiles; [
+              # thinkpad specifics
+              thinkpad = with profiles; [
+                services.thinkfan
+              ];
+
+              networking = with profiles; [
               ];
 
               multimedia = with profiles; [
+                services.printing
               ];
 
               development = with profiles; [
                 programs._1password
               ];
 
-              virtualization = with profiles; [
+              virtualisation = with profiles; [
                 programs.singularity
+                virtualisation.docker
+                virtualisation.virtualbox
               ];
             });
           };

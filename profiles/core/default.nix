@@ -1,7 +1,25 @@
 { self, pkgs, ... }:
 
 {
+  # Select internationalisation properties.
+  console = {
+    keyMap = "us";
+  };
+
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+  };
+
+  # Set your time zone.
+  # Home: "Europe/Stockholm";
+  time.timeZone = "Europe/Stockholm";
+  # Virginia
+  #time.timeZone = "America/New_York";
+  # Colorado
+  #time.timeZone = "America/Denver";
+
   environment = {
+    # TODO review which packages should be here and which in user profiles
     systemPackages = with pkgs; [
       acpi # show battery status and other ACPI information
       atool # archive command line helper
@@ -56,6 +74,7 @@
       tealdeer
     ];
 
+    # TODO review these aliases
     shellAliases =
       {
         # quick cd
@@ -87,10 +106,5 @@
         top = "btm";
         htop = "btm";
       };
-  };
-
-  programs = {
-    # a CLI utility for displaying current network utilization
-    bandwhich.enable = true;
   };
 }

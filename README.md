@@ -20,3 +20,19 @@ $ sudo nixos-rebuild --flake .#<hostname> ...
 ```
 
 Here `...` is any of the commands accepted by `nixos-rebuild`.
+
+### Reading material
+
+- ZFS on NixOS: https://openzfs.github.io/openzfs-docs/Getting%20Started/NixOS/index.html#
+- Old wiki page for ZFS on NixOS: https://nixos.wiki/index.php?title=ZFS&oldid=7622
+
+### Styling
+
+- https://github.com/SenchoPens/base16.nix
+- https://github.com/danth/stylix
+
+### Repos I've looked at for inspiration
+
+- https://github.com/montchr/dotfield
+- https://github.com/GTrunSec/nixos-flk
+
