@@ -211,14 +211,64 @@
             profiles = digga.lib.rakeLeaves ./users/profiles;
             # suites provide a mechanism for users to easily combine and name collections of profiles
             suites = nixos.lib.fix (suites: {
-              base = with profiles; [ core desktop-applications ];
-              multimedia = with profiles; [ ];
-              development = with profiles; [ direnv emacs ];
+              base = with profiles; [
+                autorandr
+                bat
+                bottom
+                core
+                exa
+                fish
+                fzf
+                git
+                gnome-keyring
+                gpg-agent
+                jq
+                kitty
+                man
+                neovim
+                screen-locker
+                starship
+                tealdeer
+                tmux
+                udiskie
+                zellij
+                zoxide
+              ];
+              development = with profiles; [
+                direnv
+                emacs
+                nix-index
+                tmpi
+                vscode
+              ];
+              multimedia = with profiles; [
+                brave
+                flameshot
+                mpris-proxy
+              ];
+              office = with profiles; [
+                newsboat
+                pandoc
+                texlive
+              ];
+              wm = with profiles; [
+                betterlockscreen
+                dunst
+                feh
+                gtk
+                network-manager-applet
+                pasystray
+                picom
+                polybar
+                redshift
+                rofi
+                xsession
+              ];
               synchronize = with profiles; [ ];
             });
           };
           users = {
-            roberto = { suites, ... }: { imports = with suites; base ++ development; };
+            roberto = { suites, ... }: { imports = with suites; base ++ development ++ multimedia ++ office ++ wm; };
           }; # digga.lib.importers.rakeLeaves ./users/hm;
         };
 
