@@ -158,7 +158,18 @@
                   services.tlp
                   users.root
                   systemd
+                  hardware.bluetooth
+                  services.hardware.bolt
+                  programs._1password
                 ]);
+
+              i3 = with profiles; [
+                programs.dconf
+                services.xserver
+                services.blueman
+                services.dbus
+                services.upower
+              ];
 
               # TODO add borgbackup service
               backup = with profiles; [
@@ -178,7 +189,6 @@
               ];
 
               development = with profiles; [
-                programs._1password
               ];
 
               virtualisation = with profiles; [

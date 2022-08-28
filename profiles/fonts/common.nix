@@ -3,6 +3,7 @@
 }:
 
 {
+  # TODO most of these fonts should be installed in a user profile
   fonts = {
     fontDir.enable = true;
     fonts = with pkgs;
@@ -30,7 +31,6 @@
         tex-gyre-math.pagella
         tex-gyre-math.schola
         tex-gyre-math.termes
-        ubuntu_font_family
         ubuntu_font_family
         unifont
         xits-math
