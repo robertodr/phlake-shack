@@ -25,6 +25,8 @@ Here `...` is any of the commands accepted by `nixos-rebuild`.
 
 - ZFS on NixOS: https://openzfs.github.io/openzfs-docs/Getting%20Started/NixOS/index.html#
 - Old wiki page for ZFS on NixOS: https://nixos.wiki/index.php?title=ZFS&oldid=7622
+- BorgBackup configuration: https://nixos.wiki/wiki/Borg_backup
+- ZFS snapshot to borgbackup: https://github.com/scotte/borgsnap
 
 ### Styling
 
@@ -35,4 +37,5 @@ Here `...` is any of the commands accepted by `nixos-rebuild`.
 
 - https://github.com/montchr/dotfield
 - https://github.com/GTrunSec/nixos-flk
+- https://github.com/linyinfeng/dotfiles
 
