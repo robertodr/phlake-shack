@@ -181,14 +181,8 @@
                 services.thinkfan
               ];
 
-              networking = with profiles; [
-              ];
-
               multimedia = with profiles; [
                 services.printing
-              ];
-
-              development = with profiles; [
               ];
 
               virtualisation = with profiles; [
