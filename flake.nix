@@ -221,6 +221,7 @@
                 man
                 neovim
                 screen-locker
+                ssh
                 starship
                 tealdeer
                 tmux
