@@ -1,5 +1,5 @@
-{}:
+{ ... }:
 
 {
-  thinkfan.enable = true;
+  services.thinkfan.enable = true;
 }

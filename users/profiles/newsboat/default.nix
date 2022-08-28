@@ -1,5 +1,5 @@
 {
-  programse.newsboat = {
+  programs.newsboat = {
     enable = true;
     urls = [
       { url = "https://arxiv.org/rss/physics.chem-ph"; tags = [ ]; }

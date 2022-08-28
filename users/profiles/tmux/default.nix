@@ -1,4 +1,4 @@
 {
   # TODO Custom tmux.conf and tmux plugins
-  tmux = { enable = true; };
+  programs.tmux = { enable = true; };
 }

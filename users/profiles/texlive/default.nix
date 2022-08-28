@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  programs.textlive = {
+  programs.texlive = {
     enable = true;
     packageSet = with pkgs;
       (

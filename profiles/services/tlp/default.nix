@@ -1,7 +1,7 @@
-{}:
+{ ... }:
 
 {
-  tlp = {
+  services.tlp = {
     enable = false;
     #extraConfig = ''
     #  START_CHARGE_THRESH_BAT0=75

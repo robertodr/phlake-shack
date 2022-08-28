@@ -7,8 +7,7 @@
     ./hardware-configuration.nix
   ]
   ++ suites.base
-  ++ suites.development
-  ++ suites.virtualization
+  ++ suites.virtualisation
   ++ suites.thinkpad
   ++ suites.i3
   ++ (with profiles.users; [

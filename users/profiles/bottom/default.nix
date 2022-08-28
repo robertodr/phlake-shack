@@ -1,5 +1,5 @@
 {
-  bottom = {
+  programs.bottom = {
     enable = true;
     settings = {
       flags = {

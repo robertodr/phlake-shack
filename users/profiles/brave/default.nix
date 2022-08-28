@@ -1,5 +1,5 @@
 {
-  brave = {
+  programs.brave = {
     enable = true;
     extensions = [
       # 1password

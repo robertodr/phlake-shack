@@ -1,7 +1,7 @@
 {
   programs.pandoc = {
     enable = true;
-    default = {
+    defaults = {
       metadata = {
         # FIXME get it from the configuration
         author = "Roberto Di Remigio Eikås";
