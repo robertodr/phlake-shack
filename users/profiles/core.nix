@@ -34,6 +34,7 @@ in
       profilesPath = "${userConfigPath}/${emacs.profilesBase}";
     };
   };
+
   fonts.fontconfig.enable = true;
 
   home = {
@@ -70,19 +71,16 @@ in
       tealdeer #  <- A very fast implementation of tldr in Rust.
 
       arandr
-      editorconfig-core-c
       freerdp
-      graphviz
       hyperfine
       iputils
       openconnect
-      openconnect-sso
+      #openconnect-sso # <- FIXME needs an overlay or something
       openvpn
       pulseaudio # to get pactl
       rclone
       remmina
       rofi-power-menu
-      sqlite
       sshuttle
       tokei
 
@@ -97,25 +95,17 @@ in
       delta # TODO <- this or difftastic?
       dive
       flamegraph
-      gcc # TODO <- needed here?
-      git-along
+      nur.repos.robertodr.git-along
       git-extras
       gitAndTools.git-annex
       gitAndTools.git-annex-remote-rclone
       gitAndTools.git-annex-utils
       global
       gnumake
-      html-tidy
       linuxPackages.perf
       meld
-      nodePackages.js-beautify
       perf-tools
       pijul
-      pyright
-      python3.pkgs.black
-      python3.pkgs.isort
-      shellcheck
-      terraform
       unifdef
       universal-ctags
 
@@ -134,18 +124,12 @@ in
 
       julia-bin
 
-      haskellPackages.pandoc-crossref
-
       asciinema
-      aspellWithDicts
-      (ps: with ps; [ en it nb ])
       drawio
       evince
       ferdium
       gimp
-      ispell
       joplin-desktop
-      languagetool
       libreoffice
       pdf2svg
       pdftk

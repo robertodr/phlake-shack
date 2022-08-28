@@ -8,7 +8,7 @@
     serverAliveCountMax = 2;
     controlMaster = "auto";
     controlPath = "~/.ssh/sockets/%r@%h-%p";
-    controlPersist = 600;
-    extraConfig = lib.fileContents ("./ssh_config");
+    controlPersist = "600s";
+    extraConfig = lib.fileContents ./ssh_config;
   };
 }

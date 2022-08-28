@@ -1,3 +1,3 @@
 {
-  programs.exa = { enable = true; enableAliases = true; };
+  programs.exa.enable = true;
 }

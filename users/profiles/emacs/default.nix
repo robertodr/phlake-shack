@@ -85,9 +85,7 @@ in
 
   home.packages = with pkgs; [
     gnutls
-    ripgrep
 
-    fd # faster projectile indexing
     imagemagick # for image-dired
     zstd # for undo-fu-session/undo-tree compression
 
@@ -108,7 +106,12 @@ in
         en
         en-computers
         en-science
+        it
+        #nb
+        nn
+        sv
       ]))
+    enchant
     languagetool
 
     ##: === lang/lsp ===
@@ -121,5 +124,12 @@ in
     rnix-lsp
     #: sh
     nodePackages.bash-language-server
+
+      html-tidy
+      nodePackages.js-beautify
+      pyright
+      python3.pkgs.black
+      python3.pkgs.isort
+      shellcheck
   ];
 }

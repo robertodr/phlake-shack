@@ -1,3 +1,5 @@
+{pkgs, ...}:
+
 {
   programs.pandoc = {
     enable = true;
@@ -10,4 +12,8 @@
       citeproc = true;
     };
   };
+
+  home.packages = [
+    pkgs.haskellPackages.pandoc-crossref
+  ];
 }

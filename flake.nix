@@ -161,6 +161,7 @@
                   hardware.bluetooth
                   services.hardware.bolt
                   programs._1password
+                  networking
                 ]);
 
               i3 = with profiles; [

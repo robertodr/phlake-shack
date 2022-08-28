@@ -3,10 +3,10 @@
 {
   programs.texlive = {
     enable = true;
-    packageSet = with pkgs;
-      (
-        texlive.combine {
-          inherit (texlive)
+    packageSet = pkgs.texlive;
+    extraPackages = tpkgs: {
+    pkgFilter = pkg: (lib.elem pkg.tlType ["run" "bin"]) || pkg.pname = "core";
+    inherit (tpkgs)
             collection-basic
             collection-bibtexextra
             collection-binextra
@@ -32,8 +32,6 @@
             collection-publishers
             collection-xetex
             ;
-        }
-      )
-    ;
+    };
   };
 }
