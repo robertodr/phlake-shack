@@ -25,12 +25,11 @@
       atool # archive command line helper
       bc
       binutils # tools for manipulating binaries (linker, assembler, etc.)
-      # TODO this should go into a user profile
+      # TODO borgbackup should go into a user profile
       borgbackup # deduplicating archiver with compression and encryption
       bottom
       cacert # a bundle of X.509 certificates of public Certificate Authorities (CA)
       coreutils # the basic file, shell and text manipulation utilities of the GNU operating system
-      cryptsetup # LUKS for dm-crypt
       curl # a command line tool for transferring files with URL syntax
       dmidecode # a tool that reads information about your system's hardware from the BIOS according to the SMBIOS/DMI standard
       dosfstools
@@ -57,7 +56,6 @@
       psmisc # a set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
       ripgrep
       rsync # a fast incremental file transfer utility
-      squashfsTools # tool for creating and unpacking squashfs filesystems
       tree # command to produce a depth indented directory listing
       unrar # utility for RAR archives
       unzip # an extraction utility for archives compressed in .zip format
@@ -65,11 +63,15 @@
       util-linux
       wget # tool for retrieving files using HTTP, HTTPS, and FTP
       which # shows the full path of (shell) commands
+
+      # --- These are only useful with xsession enabled
       xbindkeys # launch shell commands with your keyboard or your mouse under X Window
       xclip # tool to access the X clipboard from a console application
       xdg-utils # a set of command line tools that assist applications with a variety of desktop integration tasks
       xorg.lndir # create a shadow directory of symbolic links to another directory tree
       xsel # command-line program for getting and setting the contents of the X selection
+      # ---
+
       zip # compressor/archiver for creating and modifying zipfiles
       tealdeer
     ];

@@ -1,5 +1,5 @@
-{  }:
+{}:
 
 {
-    thermald.enable = true;
+  thermald.enable = true;
 }

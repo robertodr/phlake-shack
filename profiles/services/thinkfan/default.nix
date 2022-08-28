@@ -1,5 +1,5 @@
-{  }:
+{}:
 
 {
-    thinkfan.enable = true;
+  thinkfan.enable = true;
 }
