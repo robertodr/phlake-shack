@@ -14,55 +14,56 @@
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
-  # TODO these should be split out in a different module: a new hardware scan will overwrite them!
   fileSystems."/" =
     {
-      device = "rpool/nixos";
+      device = "rpool/nixos/root";
       fsType = "zfs";
-      options = [ "zfsutil" ];
-    };
-
-  fileSystems."/nix" =
-    {
-      device = "rpool/nixos/nix";
-      fsType = "zfs";
-      options = [ "zfsutil" ];
+      options = [ "zfsutil" "X-mount.mkdir" ];
     };
 
   fileSystems."/home" =
     {
-      device = "rpool/userdata/home";
+      device = "rpool/nixos/home";
       fsType = "zfs";
-      options = [ "zfsutil" ];
+      options = [ "zfsutil" "X-mount.mkdir" ];
     };
 
-  fileSystems."/root" =
+  fileSystems."/var/lib" =
     {
-      device = "rpool/userdata/home/root";
+      device = "rpool/nixos/var/lib";
       fsType = "zfs";
-      options = [ "zfsutil" ];
+      options = [ "zfsutil" "X-mount.mkdir" ];
     };
 
-  fileSystems."/home/roberto" =
+  fileSystems."/var/log" =
     {
-      device = "rpool/userdata/home/roberto";
+      device = "rpool/nixos/var/log";
       fsType = "zfs";
-      options = [ "zfsutil" ];
+      options = [ "zfsutil" "X-mount.mkdir" ];
     };
 
   fileSystems."/boot" =
     {
-      device = "/dev/disk/by-uuid/599C-2831";
+      device = "bpool/nixos/root";
+      fsType = "zfs";
+      options = [ "zfsutil" "X-mount.mkdir" ];
+    };
+
+  fileSystems."/boot/efis/nvme-SAMSUNG_MZVLB512HAJQ-000L7_S3TNNE0JB06744-part1" =
+    {
+      device = "/dev/disk/by-uuid/0539-990A";
       fsType = "vfat";
-      options = [ "X-mount.mkdir" ];
+    };
+
+  fileSystems."/boot/efi" =
+    {
+      device = "/boot/efis/nvme-SAMSUNG_MZVLB512HAJQ-000L7_S3TNNE0JB06744-part1";
+      fsType = "none";
+      options = [ "bind" ];
     };
 
   swapDevices =
-    [{
-      device = "/dev/disk/by-id/nvme-SAMSUNG_MZVLB512HAJQ-000L7_S3TNNE0JB06744-part2";
-      # the manual warns against random key encryption and hibernation
-      randomEncryption = true;
-    }];
+    [{ device = "/dev/disk/by-uuid/d010e2d1-f230-4271-8121-858cd9d6a060"; }];
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

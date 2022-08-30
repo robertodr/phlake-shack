@@ -7,11 +7,8 @@
     isNormalUser = true;
     home = "/home/roberto";
     createHome = true;
-    hashedPassword = "$6$VPXpiL6LFfpJ03pb$6M6ecxz66NRsmJpLReD7.uAaJ.Osb1yiOfSm2avN8mQ7.bJXB5YMnxMNvQK6soethO3ojFo93E30rkBr.AqEH1";
+    hashedPassword = "$6$YoVa.tQqReqjgAav$KJ3u/TyGtsAiIpAqXbFqtRKjltfKsx5A5GSJLzP0zxMH1h6SeW.9aYEHB0gzjbgNkK.sIJDxaXdy/BYdLAVZu/";
     extraGroups = [ "wheel" ];
     shell = pkgs.fish;
-    packages = with pkgs; [
-      neovim
-    ];
   };
 }

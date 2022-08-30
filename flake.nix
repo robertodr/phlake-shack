@@ -151,25 +151,25 @@
                 (with profiles; [
                   core
                   fonts.common
+                  hardware.bluetooth
+                  networking
+                  programs._1password
                   services.earlyoom
                   services.fwupd
+                  services.hardware.bolt
                   services.openssh
                   services.thermald
                   services.tlp
-                  users.root
                   systemd
-                  hardware.bluetooth
-                  services.hardware.bolt
-                  programs._1password
-                  networking
+                  users.root
                 ]);
 
               i3 = with profiles; [
                 programs.dconf
-                services.xserver
                 services.blueman
                 services.dbus
                 services.upower
+                services.xserver
               ];
 
               # TODO add borgbackup service

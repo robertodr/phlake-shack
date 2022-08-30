@@ -3,8 +3,10 @@
 {
   imports = [
     # Include the results of the hardware scan.
-    # also includes additional ZFS stuff, maybe move it?
+    # and ZFS partitions configuration
     ./hardware-configuration.nix
+    # configuration of kernel and boot due to ZFS
+    ./zfs.nix
   ]
   ++ suites.base
   ++ suites.virtualisation
@@ -21,30 +23,10 @@
         "kernel.perf_event_paranoid" = 0;
       };
     };
-
-    loader = {
-      # Use the systemd-boot EFI boot loader.
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
-
-    # parameter added because of this: https://nixos.wiki/wiki/ZFS#Known_issues
-    kernelParams = [ "nohibernate" ];
-    supportedFilesystems = [ "zfs" ];
-    zfs.devNodes = "/dev/";
-  };
-
-  # ZFS maintenance settings.
-  services.zfs = {
-    trim.enable = true;
-    autoScrub = {
-      enable = true;
-      pools = [ "rpool" ];
-    };
   };
 
   networking = {
-    hostId = "f3780fae";
+    hostId = "e930e188";
     # hostname is defined by digga
     interfaces = {
       enp0s31f6.useDHCP = lib.mkDefault true;

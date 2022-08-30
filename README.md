@@ -24,6 +24,9 @@ Here `...` is any of the commands accepted by `nixos-rebuild`.
 ### Reading material
 
 - ZFS on NixOS: https://openzfs.github.io/openzfs-docs/Getting%20Started/NixOS/index.html#
+  Note that you need to run commands to actually *make* the swap:
+  * `mkswap -L swap ${DISK}-part4`
+  * `swapon /dev/nvme...p4`
 - Old wiki page for ZFS on NixOS: https://nixos.wiki/index.php?title=ZFS&oldid=7622
 - BorgBackup configuration: https://nixos.wiki/wiki/Borg_backup
 - ZFS snapshot to borgbackup: https://github.com/scotte/borgsnap
