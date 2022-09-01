@@ -88,6 +88,7 @@ in
       ansible-lint
       autoconf
       automake
+      awscli2
       bear
       cachix
       clang-tools # TODO <- needed here?

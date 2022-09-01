@@ -224,6 +224,7 @@
                 screen-locker
                 ssh
                 starship
+                syncthing
                 tealdeer
                 tmux
                 udiskie
