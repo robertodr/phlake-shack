@@ -8,6 +8,7 @@ let
   mod = "Mod4"; # this is the "Windows" key
 
   alwaysRun = [
+    # FIXME application of background
     "feh --bg-fill ~/.background-image"
     "blueman-applet"
     "systemctl --user restart polybar"
@@ -60,7 +61,7 @@ in
               "${sup}+j" = "move workspace to output left";
               "${sup}+l" = "move workspace to output right";
               "${sup}+a" = "${exec} autorandr --change";
-              # weylus
+              # FIXME weylus
               "${sup}+Control+w" = "${exec} weylus";
             };
           fonts =
