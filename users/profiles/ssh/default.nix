@@ -1,5 +1,11 @@
-{ lib, ... }:
+moduleArgs @ { config
+, lib
+, ...
+}:
 
+let
+  inherit (config.lib.dag) entryAfter;
+in
 {
   programs.ssh = {
     enable = true;
@@ -11,4 +17,12 @@
     controlPersist = "600s";
     extraConfig = lib.fileContents ./ssh_config;
   };
+
+  # create ~/.ssh/sockets if it doesn't already exist
+  home.activation.createSshSocketsDir =
+    entryAfter [ "writeBoundary" ] ''
+      if [[ ! -d "$HOME/.ssh/sockets" ]]; then
+        mkdir $HOME/.ssh/sockets
+      fi
+    '';
 }
