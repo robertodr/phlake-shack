@@ -81,6 +81,13 @@ in
     enable = lib.mkDefault false;
     defaultEditor = lib.mkForce true;
     socketActivation.enable = true;
+    client = {
+      arguments = [
+        "-c"
+        "-a ''"
+        "-n"
+      ];
+    };
   };
 
   home.packages = with pkgs; [
@@ -125,11 +132,11 @@ in
     #: sh
     nodePackages.bash-language-server
 
-      html-tidy
-      nodePackages.js-beautify
-      pyright
-      python3.pkgs.black
-      python3.pkgs.isort
-      shellcheck
+    html-tidy
+    nodePackages.js-beautify
+    pyright
+    python3.pkgs.black
+    python3.pkgs.isort
+    shellcheck
   ];
 }
