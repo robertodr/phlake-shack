@@ -1,11 +1,3 @@
-Host gitlab.com
-  Hostname gitlab.com
-  IdentityFile ~/.ssh/pulsedemon_ed25519
-
-Host github.com
-  Hostname github.com
-  IdentityFile ~/.ssh/pulsedemon_ed25519
-
 Host yoshimi
   User roberto
   Hostname yoshimi.totaltrash.xyz
