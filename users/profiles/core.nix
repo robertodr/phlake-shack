@@ -5,6 +5,7 @@
 }:
 let
   inherit (config.home) username;
+  inherit (config.lib.file) mkOutOfStoreSymlink;
   inherit
     (config.xdg)
     configHome
@@ -60,6 +61,12 @@ in
       "devdoc"
       "info"
     ];
+
+    # FIXME: use doom profile loader once issues are fixed upstream
+    file = {
+      ".authinfo".source =
+        mkOutOfStoreSymlink "${userConfigPath}/authinfo.gpg";
+    };
 
     packages = with pkgs; [
       ## === Sysadmin ===

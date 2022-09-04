@@ -42,3 +42,10 @@ Here `...` is any of the commands accepted by `nixos-rebuild`.
 - https://github.com/GTrunSec/nixos-flk
 - https://github.com/linyinfeng/dotfiles
 
+### Odds and ends
+
+Use `syncthing` to transfer data
+
+#### Backing up GPG
+
+Follow this guide: https://serverfault.com/a/1040984
