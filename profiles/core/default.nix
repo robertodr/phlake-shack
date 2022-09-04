@@ -42,6 +42,7 @@
       fzf
       git
       gptfdisk
+      gnupg
       jq
       libseccomp # High level library for the Linux Kernel seccomp filter
       lm_sensors
