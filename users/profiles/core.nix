@@ -64,8 +64,8 @@ in
 
     # FIXME: use doom profile loader once issues are fixed upstream
     file = {
-      ".authinfo".source =
-        mkOutOfStoreSymlink "${userConfigPath}/authinfo.gpg";
+      ".authinfo.gpg".source =
+        mkOutOfStoreSymlink "${config.lib.phlake-shack.userConfigPath}/authinfo.gpg";
     };
 
     packages = with pkgs; [
