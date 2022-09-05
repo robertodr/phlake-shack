@@ -183,6 +183,7 @@
               ];
 
               multimedia = with profiles; [
+                services.pipewire
                 services.printing
               ];
 
