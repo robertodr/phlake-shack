@@ -12,6 +12,7 @@
   ++ suites.virtualisation
   ++ suites.thinkpad
   ++ suites.i3
+  ++ suites.multimedia
   ++ (with profiles.users; [
     roberto
   ])
