@@ -25,6 +25,7 @@
         material-design-icons
         material-icons
         nerdfonts
+        nur.repos.robertodr.mplus-fonts
         open-sans
         terminus_font
         tex-gyre-math.bonum

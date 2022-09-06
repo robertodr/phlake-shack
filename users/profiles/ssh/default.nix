@@ -25,4 +25,13 @@ in
         mkdir $HOME/.ssh/sockets
       fi
     '';
+
+  #home.file = {
+  #  # FIXME what should this be if using Wayland?
+  #  # also: is this at all needed? I'm using the Fish plugin...
+  #  ".xprofile".text = ''
+  #    eval $(/run/wrappers/bin/gnome-keyring-daemon --start --daemonize)
+  #    export SSH_AUTH_SOCK
+  #  '';
+  #};
 }
