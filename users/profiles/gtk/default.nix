@@ -5,7 +5,7 @@
     enable = true;
     font = {
       name = "M PLUS 2 Regular";
-      size = 10;
+      size = 14;
     };
     iconTheme = {
       name = "ePapirus";
