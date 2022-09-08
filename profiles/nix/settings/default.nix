@@ -21,7 +21,6 @@
       keep-outputs = true;
       keep-derivations = true;
       fallback = true;
-      substituters = [ "https://cache.nixos.org/" ];
     };
   };
 }
