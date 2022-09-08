@@ -29,12 +29,6 @@
         };
       };
 
-      # bleeding edge emacs overlay
-      emacs-overlay = {
-        url = "github:nix-community/emacs-overlay";
-        inputs.nixpkgs.follows = "nixos";
-      };
-
       # age-encrypted secrets for NixOS
       agenix = {
         url = "github:ryantm/agenix";
@@ -57,7 +51,6 @@
     , nur
     , agenix
     , nixpkgs
-    , emacs-overlay
     , ...
     } @ inputs:
     digga.lib.mkFlake
@@ -75,7 +68,6 @@
           nixos = {
             imports = [ (digga.lib.importOverlays ./overlays) ];
             overlays = [
-              inputs.emacs-overlay.overlay
             ];
           };
           latest = {
@@ -95,7 +87,6 @@
 
           nur.overlay
           agenix.overlay
-          emacs-overlay.overlay
 
           (import ./pkgs)
         ];

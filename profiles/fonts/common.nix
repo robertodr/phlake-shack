@@ -25,7 +25,9 @@
         material-design-icons
         material-icons
         nerdfonts
-        nur.repos.robertodr.mplus-fonts
+        # FIXME why does this give a hash mismatch?
+        #nur.repos.robertodr.mplus-fonts
+        mplus-outline-fonts.githubRelease
         open-sans
         terminus_font
         tex-gyre-math.bonum

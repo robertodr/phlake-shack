@@ -66,13 +66,18 @@ in
 
   programs.emacs = {
     enable = true;
-    package = pkgs.emacsPgtkNativeComp.overrideAttrs (attrs: {
-      # I don't want emacs.desktop file because I only use
-      # emacsclient.
-      postInstall = (attrs.postInstall or "") + ''
-        rm $out/share/applications/emacs.desktop
-      '';
-    });
+    package =
+      (pkgs.emacs.override {
+        withSQLite3 = true;
+        withPgtk = true;
+        nativeComp = true;
+      }).overrideAttrs (attrs: {
+        # I don't want emacs.desktop file because I only use
+        # emacsclient.
+        postInstall = (attrs.postInstall or "") + ''
+          rm $out/share/applications/emacs.desktop
+        '';
+      });
     extraPackages = epkgs: with epkgs; [ vterm ];
   };
 
