@@ -84,7 +84,6 @@ in
     client = {
       arguments = [
         "-c"
-        "-a ''"
         "-n"
       ];
     };
