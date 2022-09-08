@@ -9,7 +9,12 @@ This flake is configured with the use of [digga][digga].
 
 [digga]: https://github.com/divnix/digga
 
-Clone this into `~/.config`
+Clone this into `~/.config`, then:
+
+* `direnv allow
+* `sudo cachix use nrdxp`
+* `sudo cachix use nix-community`
+* `sudo cachix use robertodr`
 
 ## How to use
 
