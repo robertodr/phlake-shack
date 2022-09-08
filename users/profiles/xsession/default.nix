@@ -52,7 +52,7 @@ in
               "XF86MonBrightnessUp" = "${exec} light -A 5%";
               "Print" = "${exec} flameshot gui";
               "${mod}+l" = "${exec} betterlockscreen -l pixel --off 5";
-              "${mod}+Shift+e" = "${exec} emacsclient -c -a '' -n";
+              "${mod}+Shift+e" = "${exec} emacsclient -c -n";
               # rofi-related keybindings
               "${sup}+p" = "${exec} rofi -show power-menu -modi power-menu:rofi-power-menu";
               "${sup}+s" = "${exec} rofi -show ssh";
