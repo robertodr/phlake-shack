@@ -26,7 +26,6 @@
           nixpkgs.follows = "nixos";
           nixlib.follows = "nixos";
           home-manager.follows = "home";
-          deploy.follows = "deploy";
         };
       };
 
@@ -36,21 +35,9 @@
         inputs.nixpkgs.follows = "nixos";
       };
 
-      # a simple multi-profile Nix-flake deploy tool.
-      deploy = {
-        url = "github:serokell/deploy-rs";
-        inputs.nixpkgs.follows = "nixos";
-      };
-
       # age-encrypted secrets for NixOS
       agenix = {
         url = "github:ryantm/agenix";
-        inputs.nixpkgs.follows = "nixos";
-      };
-
-      # generate nix sources expr for the latest version of packages
-      nvfetcher = {
-        url = "github:berberman/nvfetcher";
         inputs.nixpkgs.follows = "nixos";
       };
 
@@ -69,8 +56,6 @@
     , nixos-hardware
     , nur
     , agenix
-    , nvfetcher
-    , deploy
     , nixpkgs
     , emacs-overlay
     , ...
@@ -111,7 +96,6 @@
           nur.overlay
           agenix.overlay
           emacs-overlay.overlay
-          nvfetcher.overlay
 
           (import ./pkgs)
         ];
@@ -275,9 +259,6 @@
         homeConfigurations = digga.lib.mergeAny
           (digga.lib.mkHomeConfigurations self.nixosConfigurations)
         ;
-
-        deploy.nodes = digga.lib.mkDeployNodes self.nixosConfigurations { };
-
       }
   ;
 }

@@ -8,7 +8,6 @@ let
     mdbook
     nixUnstable
     nixpkgs-fmt
-    nvfetcher-bin
     ;
 
   hooks = import ./hooks;
@@ -43,14 +42,6 @@ in
   commands = [
     (devos nixUnstable)
     (devos agenix)
-    (devos inputs.deploy.packages.${pkgs.system}.deploy-rs)
-
-    {
-      category = "devos";
-      name = nvfetcher-bin.pname;
-      help = nvfetcher-bin.meta.description;
-      command = "cd $PRJ_ROOT/pkgs; ${nvfetcher-bin}/bin/nvfetcher -c ./sources.toml $@";
-    }
 
     (linter nixpkgs-fmt)
     (linter editorconfig-checker)

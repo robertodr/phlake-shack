@@ -13,7 +13,6 @@ channels: final: prev: {
     qutebrowser
     signal-desktop
     starship
-    deploy-rs
     ;
 
   haskellPackages = prev.haskellPackages.override
