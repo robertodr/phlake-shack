@@ -89,6 +89,7 @@ in
     client = {
       arguments = [
         "-c"
+        "-a \'\'"
         "-n"
       ];
     };
@@ -103,8 +104,7 @@ in
     #: org
     graphviz
 
-    # FIXME: sqlite binary unusable in org-roam and forge even after supplying
-    # them... so we let these packages compile the binary...
+    # FIXME: do I need these two here?
     gcc
     sqlite
 
@@ -118,6 +118,12 @@ in
         en-computers
         en-science
         it
+        # FIXME this gives the following error:
+        # > unpacking sources
+        # > unpacking source archive /nix/store/i6c535ji47xxak70bf94ql13ws6apxjf-aspell-nb-0.50.1-0.tar.bz2
+        # > tar: aspell-nb-0.50.1-0/bokm\345l.alias: Cannot open: Invalid or incomplete multibyte or wide character
+        # > tar: Exiting with failure status due to previous errors
+        # > do not know how to unpack source archive /nix/store/i6c535ji47xxak70bf94ql13ws6apxjf-aspell-nb-0.50.1-0.tar.bz2
         #nb
         nn
         sv
