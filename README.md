@@ -11,7 +11,7 @@ This flake is configured with the use of [digga][digga].
 
 Clone this into `~/.config`, then:
 
-* `direnv allow
+* `direnv allow`
 * `sudo cachix use nrdxp`
 * `sudo cachix use nix-community`
 * `sudo cachix use robertodr`
