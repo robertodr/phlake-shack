@@ -8,6 +8,8 @@
     fontDir.enable = true;
     fonts = with pkgs;
       [
+        # FIXME why does this give a hash mismatch?
+        #nur.repos.robertodr.mplus-fonts
         bakoma_ttf
         comfortaa
         corefonts
@@ -20,14 +22,12 @@
         gentium
         gyre-fonts
         inconsolata
-        latinmodern-math
         liberation_ttf
+        lmmath
         material-design-icons
         material-icons
-        nerdfonts
-        # FIXME why does this give a hash mismatch?
-        #nur.repos.robertodr.mplus-fonts
         mplus-outline-fonts.githubRelease
+        nerdfonts
         open-sans
         terminus_font
         tex-gyre-math.bonum
