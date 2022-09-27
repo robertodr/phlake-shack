@@ -22,7 +22,7 @@ in
   home.activation.createSshSocketsDir =
     entryAfter [ "writeBoundary" ] ''
       if [[ ! -d "$HOME/.ssh/sockets" ]]; then
-        mkdir $HOME/.ssh/sockets
+        mkdir -p $HOME/.ssh/sockets
       fi
     '';
 }
