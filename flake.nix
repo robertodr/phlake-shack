@@ -113,6 +113,12 @@
               channelName = "latest";
               modules = [ nixos-hardware.nixosModules.lenovo-thinkpad-x1 ];
             };
+
+            emperor-tomato-ketchup = {
+              system = "x86_64-linux";
+              channelName = "latest";
+              modules = [ nixos-hardware.nixosModules.framework-12th-gen-intel ];
+            };
           };
           importables = rec {
             profiles = digga.lib.rakeLeaves ./profiles // {
