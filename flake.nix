@@ -119,7 +119,7 @@
               modules = [ nixos-hardware.nixosModules.lenovo-thinkpad-x1 ];
             };
 
-            emperor-tomato-ketchup = {
+            captain-easychord = {
               system = "x86_64-linux";
               channelName = "latest";
               modules = [ nixos-hardware.nixosModules.framework-12th-gen-intel ];
