@@ -137,6 +137,7 @@ in
       evince
       ferdium
       gimp
+      gnome.nautilus
       joplin-desktop
       libreoffice
       pdf2svg
