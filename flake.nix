@@ -10,6 +10,8 @@
       # Track channels with commits tested and built by hydra
       nixos.url = "github:nixos/nixpkgs/nixos-22.05";
       latest.url = "github:nixos/nixpkgs/nixos-unstable";
+      # known-to-work commit with ZFS and recent enough Linux kernel
+      nixos-zoidberg.url = "github:nixos/nixpkgs?rev=2da64a81275b68fdad38af669afeda43d401e94b";
 
       home = {
         url = "github:nix-community/home-manager/release-22.05";
@@ -73,6 +75,9 @@
           latest = {
             overlays = [ ];
           };
+          nixos-zoidberg = {
+            overlays = [ ];
+          };
         };
 
         lib = import ./lib { lib = digga.lib // nixos.lib; };
@@ -110,7 +115,7 @@
             # set host-specific properties here
             zoidberg = {
               system = "x86_64-linux";
-              channelName = "latest";
+              channelName = "nixos-zoidberg";
               modules = [ nixos-hardware.nixosModules.lenovo-thinkpad-x1 ];
             };
 

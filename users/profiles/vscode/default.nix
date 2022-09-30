@@ -11,6 +11,14 @@
       ms-vscode.cpptools
       ms-vsliveshare.vsliveshare
       vscodevim.vim
+    ]
+    ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+      {
+        name = "language-julia";
+        publisher = "julialang";
+        version = "1.7.12";
+        sha256 = "sha256-g6os6ktSWzUSCnLzMkGRoOhCEvU3gXcGGj2cq1NKkaE=";
+      }
     ];
   };
 }
