@@ -84,7 +84,8 @@ in
       openconnect
       #openconnect-sso # <- FIXME needs an overlay or something
       openvpn
-      pulseaudio # to get pactl
+      # TODO double check if this is actually needed
+      #pulseaudio # to get pactl
       rclone
       remmina
       rofi-power-menu

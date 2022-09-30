@@ -111,26 +111,27 @@ in
       };
     };
 
-    hooks = {
-      postswitch = {
-        "notify-i3" = "${pkgs.i3-gaps}/bin/i3-msg restart";
-        "change-dpi" = ''
-          # FIXME do I need this part?
-          #case "$AUTORANDR_CURRENT_PROFILE" in
-          #  default)
-          #    DPI=220
-          #    ;;
-          #  travel)
-          #    DPI=220
-          #    ;;
-          #  *)
-          #    echo "Unknown profle: $AUTORANDR_CURRENT_PROFILE"
-          #    exit 1
-          #esac
+    # TODO double-check: not sure this does anything!
+    #hooks = {
+    #  postswitch = {
+    #    "notify-i3" = "${pkgs.i3-gaps}/bin/i3-msg restart";
+    #    "change-dpi" = ''
+    #      # FIXME do I need this part?
+    #      #case "$AUTORANDR_CURRENT_PROFILE" in
+    #      #  default)
+    #      #    DPI=220
+    #      #    ;;
+    #      #  travel)
+    #      #    DPI=220
+    #      #    ;;
+    #      #  *)
+    #      #    echo "Unknown profle: $AUTORANDR_CURRENT_PROFILE"
+    #      #    exit 1
+    #      #esac
 
-          echo "Xft.dpi: 192" | ${pkgs.xorg.xrdb}/bin/xrdb -merge
-        '';
-      };
-    };
+    #      echo "Xft.dpi: 192" | ${pkgs.xorg.xrdb}/bin/xrdb -merge
+    #    '';
+    #  };
+    #};
   };
 }
