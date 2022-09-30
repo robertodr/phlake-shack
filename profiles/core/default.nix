@@ -8,15 +8,23 @@
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
+    # TODO review these settings
+    extraLocaleSettings = {
+      LC_ADDRESS = "sv_SE.utf8";
+      LC_IDENTIFICATION = "sv_SE.utf8";
+      LC_MEASUREMENT = "sv_SE.utf8";
+      LC_MONETARY = "sv_SE.utf8";
+      LC_NAME = "sv_SE.utf8";
+      LC_NUMERIC = "sv_SE.utf8";
+      LC_PAPER = "sv_SE.utf8";
+      LC_TELEPHONE = "sv_SE.utf8";
+      LC_TIME = "sv_SE.utf8";
+    };
   };
 
   # Set your time zone.
   # Home: "Europe/Stockholm";
   time.timeZone = "Europe/Stockholm";
-  # Virginia
-  #time.timeZone = "America/New_York";
-  # Colorado
-  #time.timeZone = "America/Denver";
 
   environment = {
     # TODO review which packages should be here and which in user profiles
