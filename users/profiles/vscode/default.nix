@@ -19,6 +19,13 @@
         version = "1.7.12";
         sha256 = "sha256-g6os6ktSWzUSCnLzMkGRoOhCEvU3gXcGGj2cq1NKkaE=";
       }
+
+      {
+        name = "quarto";
+        publisher = "quarto";
+        version = "1.43.0";
+        sha256 = "sha256-4F25n0NZ+GhnzkwFvjnHFK7PX2z5Tlmp90snC2IRvkM=";
+      }
     ];
   };
 }

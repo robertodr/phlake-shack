@@ -12,6 +12,7 @@
 (package! floobits)
 (package! magit-todos)
 (package! smudge)
+(package! quarto-mode)
 ;(package! counsel-spotify)
 ;(package! magit-delta)
 
