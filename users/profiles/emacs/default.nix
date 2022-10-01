@@ -55,12 +55,7 @@ in
     in
     entryAfter [ "writeBoundary" ] ''
       if [[ ! -f "${emacsDir}/README.md" ]]; then
-        mkdir -p ${emacsDir}
-        cd ${emacsDir}
-        ${git} init --initial-branch master
-        ${git} remote add origin ${doomRepoUrl}
-        ${git} fetch --depth=1 origin master
-        ${git} reset --hard origin/master
+        ${git} clone --depth 1 ${doomRepoUrl} ${emacsDir}
       fi
     '';
 
