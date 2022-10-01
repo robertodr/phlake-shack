@@ -3,8 +3,10 @@
 {
   virtualisation = {
     virtualbox = {
-      host.enable = true;
-      guest.enable = true;
+      host = {
+        enable = true;
+        enableExtensionPack = true;
+      };
     };
   };
 }
