@@ -9,6 +9,7 @@
   ++ suites.i3
   ++ suites.multimedia
   ++ suites.virtualisation
+  ++ (with profiles.services; [ tlp ])
   ++ (with profiles.users; [
     roberto
   ])
