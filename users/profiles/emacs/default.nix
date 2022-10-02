@@ -104,6 +104,7 @@ in
     sqlite
 
     editorconfig-core-c
+    emacs-all-the-icons-fonts
 
     ##: === writing ===
 

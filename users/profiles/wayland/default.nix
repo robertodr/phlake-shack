@@ -36,7 +36,7 @@ in
         config = {
           input = {
             "type:keyboard" = {
-              xkb_layout = "it(us),no,sv";
+              xkb_layout = "it(us),no,se";
               xkb_model = "pc105";
               xkb_options = "grp:alt_shift_toggle";
               #xkb_variant = "colemak,,";
@@ -96,18 +96,21 @@ in
               size = 14.0;
             };
 
+          # TODO figure out how to switch based on hostname
+          # see: https://git.sr.ht/~jshholland/nixos-configs/tree/master/item/home/sway.nix
+          output = {
+            "eDP-1" = {
+              mode = "2256x1504";
+              scale = "1";
+            };
+          };
+
           defaultWorkspace = "workspace number 1";
 
           # notifications from Zoom are allowed to float
           floating.criteria = [{ title = "^zoom$"; }];
 
           bars = [ ];
-
-          gaps = {
-            top = 60;
-            inner = 5;
-            outer = 3;
-          };
 
           menu = "${pkgs.rofi}/bin/rofi -show drun -show-icons";
 

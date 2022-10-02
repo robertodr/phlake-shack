@@ -14,7 +14,6 @@
         comfortaa
         corefonts
         dejavu_fonts
-        emacs-all-the-icons-fonts
         fira
         fira-code
         fira-code-symbols
