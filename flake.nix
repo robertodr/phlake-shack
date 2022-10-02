@@ -145,12 +145,12 @@
                   services.hardware.bolt
                   services.openssh
                   services.thermald
-                  services.tlp
+                  powertop
                   systemd
                   users.root
                 ]);
 
-              i3 = with profiles; [
+              i3wm = with profiles; [
                 programs.dconf
                 services.blueman
                 services.dbus
@@ -158,14 +158,18 @@
                 services.xserver
               ];
 
+              swaywm = with profiles; [
+                programs.dconf
+                services.blueman
+                services.dbus
+                services.greetd
+                services.upower
+                services.xdg
+              ];
+
               # TODO add borgbackup service
               backup = with profiles; [
                 services.borgbackup
-              ];
-
-              # thinkpad specifics
-              thinkpad = with profiles; [
-                services.thinkfan
               ];
 
               multimedia = with profiles; [
@@ -194,7 +198,6 @@
             # suites provide a mechanism for users to easily combine and name collections of profiles
             suites = nixos.lib.fix (suites: {
               base = with profiles; [
-                autorandr
                 bat
                 bottom
                 core
@@ -208,16 +211,16 @@
                 kitty
                 man
                 neovim
-                screen-locker
+                network-manager-applet
                 ssh
                 starship
-                syncthing
                 tealdeer
                 tmux
                 udiskie
                 zellij
                 zoxide
               ];
+
               development = with profiles; [
                 direnv
                 emacs
@@ -225,34 +228,49 @@
                 tmpi
                 vscode
               ];
+
               multimedia = with profiles; [
                 brave
                 flameshot
                 mpris-proxy
+                pasystray
               ];
+
               office = with profiles; [
                 newsboat
                 pandoc
                 texlive
               ];
-              wm = with profiles; [
+
+              i3wm = with profiles; [
+                autorandr
                 betterlockscreen
                 dunst
                 feh
                 gtk
-                network-manager-applet
-                pasystray
                 picom
                 polybar
                 redshift
                 rofi
+                screen-locker
                 xsession
               ];
-              synchronize = with profiles; [ ];
+
+              swaywm = with profiles; [
+                gammastep
+                gtk
+                rofi
+                waybar
+                wayland
+              ];
+
+              synchronize = with profiles; [
+                syncthing
+              ];
             });
           };
           users = {
-            roberto = { suites, ... }: { imports = with suites; base ++ development ++ multimedia ++ office ++ wm; };
+            roberto = { suites, ... }: { imports = with suites; base ++ development ++ multimedia ++ office ++ swaywm ++ synchronize; };
           }; # digga.lib.importers.rakeLeaves ./users/hm;
         };
 
