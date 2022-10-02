@@ -54,8 +54,6 @@
   # NOTE fprintd is enabled by default on the Framework!
   services.fprintd.enable = false;
 
-  powerManagement.powertop.enable = true;
-
   services.tlp = {
     enable = true;
     settings = {

@@ -10,7 +10,7 @@
   ]
   ++ suites.base
   ++ suites.virtualisation
-  ++ suites.thinkpad
+  ++ (with profiles.services; [ thinkpad ])
   ++ suites.i3
   ++ suites.multimedia
   ++ (with profiles.users; [
