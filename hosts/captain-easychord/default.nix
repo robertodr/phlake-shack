@@ -6,7 +6,7 @@
     ./hardware-configuration.nix
   ]
   ++ suites.base
-  ++ suites.i3
+  ++ suites.swaywm
   ++ suites.multimedia
   ++ suites.virtualisation
   ++ (with profiles.users; [
