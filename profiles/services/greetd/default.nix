@@ -15,8 +15,9 @@
   environment.etc = {
     "greetd/environments".text = ''
       sway
-      bash
+      fish
     '';
+
     "greetd/sway-config".text = ''
       # `-l` activates layer-shell mode. Notice that `swaymsg exit` will run after gtkgreet.
       exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l; swaymsg exit"
