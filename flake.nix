@@ -159,12 +159,12 @@
               ];
 
               swaywm = with profiles; [
+                programs.sway
                 programs.dconf
                 services.blueman
                 services.dbus
                 services.greetd
                 services.upower
-                services.xdg
               ];
 
               # TODO add borgbackup service
