@@ -14,7 +14,7 @@ let
   # TODO probably add 1password GUI as well?
   run = [
     "kitty"
-    "brave"
+    "brave --enable-features=UseOzonePlatform --ozone-platform=wayland"
     "ferdium"
     "joplin-desktop"
     "thunderbird"
@@ -101,7 +101,7 @@ in
           output = {
             "eDP-1" = {
               mode = "2256x1504";
-              scale = "1";
+              scale = "1.5";
             };
           };
 

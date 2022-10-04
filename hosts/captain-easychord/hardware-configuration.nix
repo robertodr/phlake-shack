@@ -36,7 +36,4 @@
 
   # high-resolution display
   hardware.video.hidpi.enable = lib.mkDefault true;
-
-  # fix font sizes in X
-  # services.xserver.dpi = 200;
 }

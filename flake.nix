@@ -257,6 +257,8 @@
               ];
 
               swaywm = with profiles; [
+                kanshi
+                swayidle
                 gammastep
                 gtk
                 rofi
