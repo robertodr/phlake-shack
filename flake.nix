@@ -139,13 +139,14 @@
                   fonts.common
                   hardware.bluetooth
                   networking
+                  powertop
                   programs._1password
                   services.earlyoom
                   services.fwupd
                   services.hardware.bolt
                   services.openssh
                   services.thermald
-                  powertop
+                  services.udisks2
                   systemd
                   users.root
                 ]);
