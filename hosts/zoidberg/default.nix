@@ -10,8 +10,7 @@
   ]
   ++ suites.base
   ++ suites.virtualisation
-  ++ (with profiles.services; [ thinkpad ])
-  ++ suites.i3
+  ++ suites.i3wm
   ++ suites.multimedia
   ++ (with profiles.users; [
     roberto
