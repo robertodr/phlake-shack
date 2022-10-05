@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   programs.rofi = {
     enable = true;
-    package = pkgs.rofi-wayland;
+    package = pkgs.rofi;
     terminal = "kitty";
     font = "M PLUS 2 Regular 14";
     theme = "arthur";

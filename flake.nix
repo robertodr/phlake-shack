@@ -283,7 +283,6 @@
               swayidle
               gammastep
               gtk
-              rofi
               waybar
               wayland
             ];

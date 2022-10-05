@@ -46,14 +46,6 @@ in {
 
     stateVersion = lib.mkForce "22.05";
 
-    keyboard = {
-      layout = "it(us),no";
-      model = "pc105";
-      options = [
-        "grp:alt_shift_toggle"
-      ];
-    };
-
     extraOutputsToInstall = [
       "doc"
       "man"
@@ -76,19 +68,15 @@ in {
       pastel #    <- A command-line tool to generate, analyze, convert and manipulate colors
       tealdeer #  <- A very fast implementation of tldr in Rust.
 
-      arandr
       freerdp
       hyperfine
       iputils
       openconnect
-      openconnect-sso
+      # FIXME there is a bug in the official derivation...
+      #openconnect-sso
       openvpn
-      # TODO double check if this is actually needed
-      #pulseaudio # to get pactl
       rclone
       remmina
-      rofi-power-menu
-      sshuttle
       tokei
 
       ansible
@@ -129,9 +117,7 @@ in {
       nixpkgs-fmt
       nixpkgs-lint
 
-      python3Full
-
-      julia-bin
+      python3
 
       asciinema
       drawio
@@ -141,13 +127,12 @@ in {
       gnome.nautilus
       joplin-desktop
       libreoffice
+      onlyoffice-bin
       pdf2svg
       pdftk
       playerctl
-      screenkey
       spotify
       vlc
-      thunderbird
       wordnet
       write_stylus
       xournalpp

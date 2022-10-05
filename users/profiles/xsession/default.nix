@@ -26,6 +26,12 @@
     "thunderbird"
   ];
 in {
+  home.packages = with pkgs; [
+    arandr
+    rofi-power-menu
+    thunderbird
+  ];
+
   xsession = {
     enable = true;
     initExtra = ''
@@ -45,10 +51,10 @@ in {
           modifier = "${mod}";
           workspaceAutoBackAndForth = true;
           keybindings = lib.mkOptionDefault {
-            "XF86AudioRaiseVolume" = "${exec} pactl set-sink-volume @DEFAULT_SINK@ +2%";
-            "XF86AudioLowerVolume" = "${exec} pactl set-sink-volume @DEFAULT_SINK@ -2%";
-            "XF86AudioMute" = "${exec} pactl set-sink-mute @DEFAULT_SINK@ toggle";
-            "XF86AudioMicMute" = "${exec} pactl set-source-mute @DEFAULT_SINK@ toggle";
+            "XF86AudioRaiseVolume" = "exec ${pkgs.pamixer}/bin/pamixer -i 5";
+            "XF86AudioLowerVolume" = "exec ${pkgs.pamixer}/bin/pamixer -d 5";
+            "XF86AudioMute" = "exec ${pkgs.pamixer}/bin/pamixer -t";
+            "XF86AudioMicMute" = "exec ${pkgs.pamixer}/bin/pamixer --default-source -t";
             "XF86MonBrightnessDown" = "${exec} light -U 5%";
             "XF86MonBrightnessUp" = "${exec} light -A 5%";
             "Print" = "${exec} flameshot gui";

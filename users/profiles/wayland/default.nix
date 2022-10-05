@@ -17,12 +17,17 @@
   # TODO probably add 1password GUI as well?
   run = [
     "kitty"
-    "brave --enable-features=UseOzonePlatform --ozone-platform=wayland"
-    "ferdium"
-    "joplin-desktop"
+    "brave --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland"
+    "ferdium --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland"
     "thunderbird"
+    # FIXME Joplin looks crappy with Wayland, but the electron flags do not work...
+    "joplin-desktop"
   ];
 in {
+  home.packages = with pkgs; [
+    thunderbird-wayland
+  ];
+
   wayland = {
     windowManager = {
       sway = {
@@ -66,22 +71,16 @@ in {
           workspaceAutoBackAndForth = true;
 
           keybindings = lib.mkOptionDefault {
-            # FIXME audio buttons
-            "XF86AudioRaiseVolume" = "exec pactl set-sink-volume @DEFAULT_SINK@ +2%";
-            "XF86AudioLowerVolume" = "exec pactl set-sink-volume @DEFAULT_SINK@ -2%";
-            "XF86AudioMute" = "exec pactl set-sink-mute @DEFAULT_SINK@ toggle";
-            "XF86AudioMicMute" = "exec pactl set-source-mute @DEFAULT_SINK@ toggle";
+            "XF86AudioRaiseVolume" = "exec ${pkgs.pamixer}/bin/pamixer -i 5";
+            "XF86AudioLowerVolume" = "exec ${pkgs.pamixer}/bin/pamixer -d 5";
+            "XF86AudioMute" = "exec ${pkgs.pamixer}/bin/pamixer -t";
+            "XF86AudioMicMute" = "exec ${pkgs.pamixer}/bin/pamixer --default-source -t";
             "XF86MonBrightnessDown" = "exec ${pkgs.light}/bin/light -U 5%";
             "XF86MonBrightnessUp" = "exec ${pkgs.light}/bin/light -A 5%";
             "Print" = "exec flameshot gui";
-            # FIXME we're using swaylock!
-            #"${mod}+l" = "exec betterlockscreen -l pixel --off 5";
+            "${mod}+l" = "exec swaylock -k -l";
             "${mod}+Shift+e" = "exec emacsclient -c -n -a \'\'";
-            # rofi-related keybindings
-            "${sup}+p" = "exec rofi -show power-menu -modi power-menu:rofi-power-menu";
-            "${sup}+s" = "exec rofi -show ssh";
-            "${sup}+w" = "exec \"rofi -combi-modi window,windowcd -show combi -show-icons\"";
-            "${sup}+b" = "exec rofi -show filebrowser -show-icons";
+            "${sup}+p" = "exec ${pkgs.wlogout}/bin/wlogout";
             "${sup}+j" = "move workspace to output left";
             "${sup}+l" = "move workspace to output right";
             # FIXME we're using kanshi!
@@ -112,7 +111,7 @@ in {
 
           bars = [];
 
-          menu = "${pkgs.rofi}/bin/rofi -show drun -show-icons";
+          menu = "${pkgs.fuzzel}/bin/fuzzel";
 
           assigns = {
             "2" = [

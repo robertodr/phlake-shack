@@ -6,10 +6,14 @@ channels: final: prev: {
     alejandra
     cachix
     dhall
-    rage
     nix-index
     nixpkgs-fmt
+    onlyoffice-bin
+    rage
     starship
+    thunderbird
+    thunderbird-wayland
     treefmt
+    zoom-us
     ;
 }

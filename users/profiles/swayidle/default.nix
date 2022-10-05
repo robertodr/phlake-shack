@@ -12,8 +12,4 @@ moduleArgs @ {pkgs, ...}: {
       }
     ];
   };
-
-  home.packages = with pkgs; [
-    swaylock
-  ];
 }
