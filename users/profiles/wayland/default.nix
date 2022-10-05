@@ -25,6 +25,7 @@
   ];
 in {
   home.packages = with pkgs; [
+    cliphist
     thunderbird-wayland
   ];
 
@@ -145,8 +146,4 @@ in {
       };
     };
   };
-
-  home.packages = with pkgs; [
-    cliphist
-  ];
 }
