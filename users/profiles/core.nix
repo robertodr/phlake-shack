@@ -1,9 +1,9 @@
-{ config
-, lib
-, pkgs
-, ...
-}:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (config.home) username;
   inherit (config.lib.file) mkOutOfStoreSymlink;
   inherit
@@ -14,8 +14,7 @@ let
     ;
 
   hmLib = config.lib;
-in
-{
+in {
   lib.phlake-shack = rec {
     fsPath = "${configHome}/phlake-shack";
     userConfigPath = "${fsPath}/users/${username}/config";

@@ -3,15 +3,15 @@
     enable = true;
     extensions = [
       # 1password
-      { id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa"; }
+      {id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";}
       # C/C++ Search Extension
-      { id = "ifpcmhciihicaljnhgobnhoehoabidhd"; }
+      {id = "ifpcmhciihicaljnhgobnhoehoabidhd";}
       # joplin web clipper
-      { id = "alofnhikmmkdbbbgpnglcpdollgjjfek"; }
+      {id = "alofnhikmmkdbbbgpnglcpdollgjjfek";}
       # paperpile
-      { id = "bomfdkbfpdhijjbeoicnfhjbdhncfhig"; }
+      {id = "bomfdkbfpdhijjbeoicnfhjbdhncfhig";}
       # unpaywall
-      { id = "iplffkdpngmdjhlpjmppncnlhomiipha"; }
+      {id = "iplffkdpngmdjhlpjmppncnlhomiipha";}
     ];
   };
 }

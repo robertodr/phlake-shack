@@ -1,10 +1,10 @@
-{ pkgs
-, extraModulesPath
-, inputs
-, lib
-, ...
-}:
-let
+{
+  pkgs,
+  extraModulesPath,
+  inputs,
+  lib,
+  ...
+}: let
   inherit
     (pkgs)
     agenix
@@ -20,16 +20,15 @@ let
 
   hooks = import ./hooks;
 
-  pkgWithCategory = category: package: { inherit package category; };
+  pkgWithCategory = category: package: {inherit package category;};
   devos = pkgWithCategory "devos";
   linter = pkgWithCategory "linter";
   docs = pkgWithCategory "docs";
-in
-{
+in {
   _file = toString ./.;
 
-  imports = [ "${extraModulesPath}/git/hooks.nix" ];
-  git = { inherit hooks; };
+  imports = ["${extraModulesPath}/git/hooks.nix"];
+  git = {inherit hooks;};
 
   # tempfix: remove when merged https://github.com/numtide/devshell/pull/123
   devshell.startup.load_profiles = pkgs.lib.mkForce (pkgs.lib.noDepEntry ''
@@ -66,7 +65,7 @@ in
       (docs mdbook)
     ]
     ++ lib.optional (!pkgs.stdenv.buildPlatform.isi686)
-      (devos cachix)
+    (devos cachix)
     ++ lib.optional (pkgs.stdenv.hostPlatform.isLinux && !pkgs.stdenv.buildPlatform.isDarwin)
-      (devos inputs.nixos-generators.defaultPackage.${pkgs.system});
+    (devos inputs.nixos-generators.defaultPackage.${pkgs.system});
 }

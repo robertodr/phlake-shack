@@ -1,9 +1,10 @@
-{ config
-, lib
-, pkgs
-, suites
-, profiles
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  suites,
+  profiles,
+  ...
 }: {
   imports =
     [

@@ -1,9 +1,10 @@
-{ config
-, pkgs
-, ...
+{
+  config,
+  pkgs,
+  ...
 }: {
   boot = {
-    supportedFilesystems = [ "zfs" ];
+    supportedFilesystems = ["zfs"];
 
     kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 

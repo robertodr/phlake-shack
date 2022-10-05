@@ -1,6 +1,7 @@
-{ self
-, pkgs
-, ...
+{
+  self,
+  pkgs,
+  ...
 }: {
   # Select internationalisation properties.
   console = {

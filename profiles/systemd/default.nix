@@ -1,5 +1,5 @@
-{ ... }: {
+{...}: {
   systemd = {
-    tmpfiles.rules = [ "d /tmp 1777 root root 10d" ];
+    tmpfiles.rules = ["d /tmp 1777 root root 10d"];
   };
 }

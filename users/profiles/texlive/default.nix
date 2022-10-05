@@ -1,12 +1,13 @@
-{ pkgs
-, lib
-, ...
+{
+  pkgs,
+  lib,
+  ...
 }: {
   programs.texlive = {
     enable = true;
     packageSet = pkgs.texlive;
     extraPackages = tpkgs: {
-      pkgFilter = pkg: (lib.elem pkg.tlType [ "run" "bin" ]) || (pkg.pname == "core");
+      pkgFilter = pkg: (lib.elem pkg.tlType ["run" "bin"]) || (pkg.pname == "core");
       inherit
         (tpkgs)
         collection-basic

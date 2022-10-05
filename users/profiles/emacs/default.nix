@@ -1,10 +1,10 @@
-moduleArgs @ { config
-, lib
-, pkgs
-, self
-, ...
-}:
-let
+moduleArgs @ {
+  config,
+  lib,
+  pkgs,
+  self,
+  ...
+}: let
   inherit (config.xdg) configHome;
   inherit (config.lib.dag) entryAfter;
   inherit (config.lib.file) mkOutOfStoreSymlink;
@@ -12,8 +12,7 @@ let
 
   doomRepoUrl = "https://github.com/doomemacs/doomemacs";
   emacsDir = "${configHome}/emacs";
-in
-{
+in {
   home.sessionVariables = {
     EMACSDIR = emacsDir;
 
@@ -32,7 +31,7 @@ in
     LSP_USE_PLISTS = "true";
   };
 
-  home.sessionPath = [ "${configHome}/emacs/bin" "$PATH" ];
+  home.sessionPath = ["${configHome}/emacs/bin" "$PATH"];
 
   ## Doom Bootloader.
   #: <https://github.com/doomemacs/doomemacs/commit/5b6b204bcbcf69d541c49ca55a2d5c3604f04dad>
@@ -49,11 +48,10 @@ in
   # Install Doom imperatively to make use of its CLI.
   # While <github:nix-community/nix-doom-emacs> exists, it is not recommended
   # due to the number of oddities it introduces.
-  home.activation.installDoomEmacs =
-    let
-      git = "$DRY_RUN_CMD ${pkgs.git}/bin/git";
-    in
-    entryAfter [ "writeBoundary" ] ''
+  home.activation.installDoomEmacs = let
+    git = "$DRY_RUN_CMD ${pkgs.git}/bin/git";
+  in
+    entryAfter ["writeBoundary"] ''
       if [[ ! -f "${emacsDir}/README.md" ]]; then
         ${git} clone --depth 1 ${doomRepoUrl} ${emacsDir}
       fi
@@ -66,7 +64,8 @@ in
         withSQLite3 = true;
         withPgtk = true;
         nativeComp = true;
-      }).overrideAttrs (attrs: {
+      })
+      .overrideAttrs (attrs: {
         # I don't want emacs.desktop file because I only use
         # emacsclient.
         postInstall =
@@ -75,7 +74,7 @@ in
             rm $out/share/applications/emacs.desktop
           '';
       });
-    extraPackages = epkgs: with epkgs; [ vterm ];
+    extraPackages = epkgs: with epkgs; [vterm];
   };
 
   services.emacs = {

@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   # TODO most of these fonts should be installed in a user profile
   fonts = {
     fontDir.enable = true;

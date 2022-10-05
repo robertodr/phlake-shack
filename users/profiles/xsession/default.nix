@@ -1,9 +1,9 @@
-{ config
-, lib
-, pkgs
-, ...
-}:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   # meaning of --no-startup-id https://faq.i3wm.org/question/561/what-is-that-thing-called-no-startup-id/index.html
   exec = "exec --no-startup-id";
 
@@ -25,8 +25,7 @@ let
     "joplin-desktop"
     "thunderbird"
   ];
-in
-{
+in {
   xsession = {
     enable = true;
     initExtra = ''
@@ -67,13 +66,13 @@ in
             "${sup}+Control+w" = "${exec} weylus";
           };
           fonts = {
-            names = [ "M PLUS 2" "FontAwesome" ];
+            names = ["M PLUS 2" "FontAwesome"];
             style = "Regular";
             size = 14.0;
           };
           defaultWorkspace = "workspace number 1";
           # notifications from Zoom are allowed to float
-          floating.criteria = [{ title = "^zoom$"; }];
+          floating.criteria = [{title = "^zoom$";}];
           # figure out how to use this with multiple screens
           #workspaceOutputAssign = [
           #  {
@@ -85,7 +84,7 @@ in
           #    workspace = "2";
           #  }
           #];
-          bars = [ ];
+          bars = [];
           gaps = {
             top = 60;
             inner = 5;
@@ -99,28 +98,28 @@ in
                 instance = "^brave-browser";
               }
             ];
-            "3" = [{ class = "^Joplin$"; } { class = "^Ferdium$"; }];
-            "4" = [{ class = "^thunderbird$"; }];
+            "3" = [{class = "^Joplin$";} {class = "^Ferdium$";}];
+            "4" = [{class = "^thunderbird$";}];
           };
           startup =
-            [ ]
+            []
             ++ builtins.map
-              (
-                command: {
-                  command = command;
-                  always = true;
-                  notification = false;
-                }
-              )
-              alwaysRun
+            (
+              command: {
+                command = command;
+                always = true;
+                notification = false;
+              }
+            )
+            alwaysRun
             ++ builtins.map
-              (
-                command: {
-                  command = command;
-                  notification = false;
-                }
-              )
-              run;
+            (
+              command: {
+                command = command;
+                notification = false;
+              }
+            )
+            run;
         };
       };
     };

@@ -1,4 +1,4 @@
-moduleArgs @ { pkgs, ... }: {
+moduleArgs @ {pkgs, ...}: {
   services.swayidle = {
     enable = true;
     events = [

@@ -1,8 +1,9 @@
-{ hmUsers
-, pkgs
-, ...
+{
+  hmUsers,
+  pkgs,
+  ...
 }: {
-  home-manager.users = { inherit (hmUsers) roberto; };
+  home-manager.users = {inherit (hmUsers) roberto;};
 
   users.users.roberto = {
     description = "Roberto Di Remigio Eikås";

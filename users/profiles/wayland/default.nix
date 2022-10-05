@@ -1,9 +1,9 @@
-{ config
-, lib
-, pkgs
-, ...
-}:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   sup = "Mod1"; # this is the "Alt" key
   mod = "Mod4"; # this is the "Windows" key
 
@@ -22,8 +22,7 @@ let
     "joplin-desktop"
     "thunderbird"
   ];
-in
-{
+in {
   wayland = {
     windowManager = {
       sway = {
@@ -92,7 +91,7 @@ in
           };
 
           fonts = {
-            names = [ "M PLUS 2" "FontAwesome" ];
+            names = ["M PLUS 2" "FontAwesome"];
             style = "Regular";
             size = 14.0;
           };
@@ -109,9 +108,9 @@ in
           defaultWorkspace = "workspace number 1";
 
           # notifications from Zoom are allowed to float
-          floating.criteria = [{ title = "^zoom$"; }];
+          floating.criteria = [{title = "^zoom$";}];
 
-          bars = [ ];
+          bars = [];
 
           menu = "${pkgs.rofi}/bin/rofi -show drun -show-icons";
 
@@ -122,27 +121,27 @@ in
                 instance = "^brave-browser";
               }
             ];
-            "3" = [{ class = "^Joplin$"; } { class = "^Ferdium$"; }];
-            "4" = [{ class = "^thunderbird$"; }];
+            "3" = [{class = "^Joplin$";} {class = "^Ferdium$";}];
+            "4" = [{class = "^thunderbird$";}];
           };
 
           startup =
-            [ ]
+            []
             ++ builtins.map
-              (
-                command: {
-                  command = command;
-                  always = true;
-                }
-              )
-              alwaysRun
+            (
+              command: {
+                command = command;
+                always = true;
+              }
+            )
+            alwaysRun
             ++ builtins.map
-              (
-                command: {
-                  command = command;
-                }
-              )
-              run;
+            (
+              command: {
+                command = command;
+              }
+            )
+            run;
         };
       };
     };
