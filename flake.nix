@@ -294,7 +294,7 @@
           });
         };
         users = {
-          roberto = {suites, ...}: {imports = with suites; base ++ development ++ multimedia ++ office ++ i3wm ++ synchronize;};
+          roberto = {suites, ...}: {imports = with suites; base ++ development ++ multimedia ++ office ++ swaywm ++ synchronize;};
         }; # digga.lib.importers.rakeLeaves ./users/hm;
       };
 
