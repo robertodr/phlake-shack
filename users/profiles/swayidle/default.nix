@@ -1,13 +1,15 @@
-moduleArgs @ { pkgs
-, ...
-}:
-
-{
+moduleArgs @ { pkgs, ... }: {
   services.swayidle = {
     enable = true;
     events = [
-      { event = "before-sleep"; command = "swaylock"; }
-      { event = "lock"; command = "lock"; }
+      {
+        event = "before-sleep";
+        command = "swaylock";
+      }
+      {
+        event = "lock";
+        command = "lock";
+      }
     ];
   };
 

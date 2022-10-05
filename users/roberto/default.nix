@@ -1,5 +1,7 @@
-{ hmUsers, pkgs, ... }:
-{
+{ hmUsers
+, pkgs
+, ...
+}: {
   home-manager.users = { inherit (hmUsers) roberto; };
 
   users.users.roberto = {

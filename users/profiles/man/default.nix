@@ -1,6 +1,4 @@
-{ lib, ... }:
-
-{
+{ lib, ... }: {
   programs.man = {
     enable = true;
 

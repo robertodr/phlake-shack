@@ -1,13 +1,21 @@
-{ pkgs, extraModulesPath, inputs, lib, ... }:
+{ pkgs
+, extraModulesPath
+, inputs
+, lib
+, ...
+}:
 let
-
-  inherit (pkgs)
+  inherit
+    (pkgs)
     agenix
+    alejandra
     cachix
     editorconfig-checker
     mdbook
     nixUnstable
     nixpkgs-fmt
+    nvfetcher-bin
+    treefmt
     ;
 
   hooks = import ./hooks;
@@ -16,7 +24,6 @@ let
   devos = pkgWithCategory "devos";
   linter = pkgWithCategory "linter";
   docs = pkgWithCategory "docs";
-
 in
 {
   _file = toString ./.;
@@ -39,18 +46,27 @@ in
     unset _PATH
   '');
 
-  commands = [
-    (devos nixUnstable)
-    (devos agenix)
+  commands =
+    [
+      (devos nixUnstable)
+      (devos agenix)
 
-    (linter nixpkgs-fmt)
-    (linter editorconfig-checker)
+      {
+        category = "devos";
+        name = nvfetcher-bin.pname;
+        help = nvfetcher-bin.meta.description;
+        command = "cd $PRJ_ROOT/pkgs; ${nvfetcher-bin}/bin/nvfetcher -c ./sources.toml $@";
+      }
 
-    (docs mdbook)
-  ]
-  ++ lib.optional (!pkgs.stdenv.buildPlatform.isi686)
-    (devos cachix)
-  ++ lib.optional (pkgs.stdenv.hostPlatform.isLinux && !pkgs.stdenv.buildPlatform.isDarwin)
-    (devos inputs.nixos-generators.defaultPackage.${pkgs.system})
-  ;
+      (linter alejandra)
+      (linter treefmt)
+      (linter nixpkgs-fmt)
+      (linter editorconfig-checker)
+
+      (docs mdbook)
+    ]
+    ++ lib.optional (!pkgs.stdenv.buildPlatform.isi686)
+      (devos cachix)
+    ++ lib.optional (pkgs.stdenv.hostPlatform.isLinux && !pkgs.stdenv.buildPlatform.isDarwin)
+      (devos inputs.nixos-generators.defaultPackage.${pkgs.system});
 }

@@ -97,6 +97,9 @@
 ;;                    :remote? t
 ;;                    :server-id 'clangd-remote)))
 
+;; use alejandra as Nix formatter
+(after! nix-mode (setq nix-nixfmt-bin "alejandra"))
+
 ;; TRAMP set up
 ;; Ratios equal to the default values of these variables of 10240 and 4096
 (setq tramp-copy-size-limit 10485760)  ;; 2^20 * 10

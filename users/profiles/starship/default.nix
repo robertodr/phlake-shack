@@ -1,14 +1,12 @@
-{ ... }:
-
-{
+{ ... }: {
   programs.starship = {
     enable = true;
     enableFishIntegration = true;
     settings = {
       add_newline = false;
-      format = ''[┌─](bold) $username$hostname:$directory
-[│](bold) $time \[$nix_shell$python$rust\]
-[└─](bold) 美男象 \($git_branch$git_state$git_status\) $character'';
+      format = ''        [┌─](bold) $username$hostname:$directory
+        [│](bold) $time \[$nix_shell$python$rust\]
+        [└─](bold) 美男象 \($git_branch$git_state$git_status\) $character'';
       scan_timeout = 10;
       character = {
         success_symbol = "[](bold green) ";

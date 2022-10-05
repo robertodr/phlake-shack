@@ -1,6 +1,7 @@
-{ self, pkgs, ... }:
-
-{
+{ self
+, pkgs
+, ...
+}: {
   # Select internationalisation properties.
   console = {
     keyMap = "us";
@@ -86,36 +87,35 @@
     ];
 
     # TODO review these aliases
-    shellAliases =
-      {
-        # quick cd
-        ".." = "cd ..";
-        "..." = "cd ../..";
-        "...." = "cd ../../..";
-        "....." = "cd ../../../..";
+    shellAliases = {
+      # quick cd
+      ".." = "cd ..";
+      "..." = "cd ../..";
+      "...." = "cd ../../..";
+      "....." = "cd ../../../..";
 
-        # fix nixos-option for flake compat
-        nixos-option = "nixos-option -I nixpkgs=${self}/lib/compat";
+      # fix nixos-option for flake compat
+      nixos-option = "nixos-option -I nixpkgs=${self}/lib/compat";
 
-        # grep
-        grep = "rg";
+      # grep
+      grep = "rg";
 
-        # ls
-        ls = "exa";
+      # ls
+      ls = "exa";
 
-        # internet ip
-        # TODO: explain this hard-coded IP address
-        myip = "dig +short myip.opendns.com @208.67.222.222 2>&1";
+      # internet ip
+      # TODO: explain this hard-coded IP address
+      myip = "dig +short myip.opendns.com @208.67.222.222 2>&1";
 
-        # nix-related
-        # TODO not sure if I want to use manix or nix-doc
-        mn = ''
-          manix "" | grep '^# ' | sed 's/^# \(.*\) (.*/\1/;s/ (.*//;s/^# //' | fzf --preview="manix '{}'" | xargs manix
-        '';
+      # nix-related
+      # TODO not sure if I want to use manix or nix-doc
+      mn = ''
+        manix "" | grep '^# ' | sed 's/^# \(.*\) (.*/\1/;s/ (.*//;s/^# //' | fzf --preview="manix '{}'" | xargs manix
+      '';
 
-        # top
-        top = "btm";
-        htop = "btm";
-      };
+      # top
+      top = "btm";
+      htop = "btm";
+    };
   };
 }

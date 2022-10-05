@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{ pkgs, ... }: {
   programs.fish = {
     enable = true;
 
@@ -35,13 +33,25 @@
         };
       }
 
-      { name = "done"; src = pkgs.fishPlugins.done.src; }
+      {
+        name = "done";
+        src = pkgs.fishPlugins.done.src;
+      }
 
-      { name = "forgit"; src = pkgs.fishPlugins.forgit.src; }
+      {
+        name = "forgit";
+        src = pkgs.fishPlugins.forgit.src;
+      }
 
-      { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
+      {
+        name = "fzf-fish";
+        src = pkgs.fishPlugins.fzf-fish.src;
+      }
 
-      { name = "foreign-env"; src = pkgs.fishPlugins.foreign-env.src; }
+      {
+        name = "foreign-env";
+        src = pkgs.fishPlugins.foreign-env.src;
+      }
     ];
 
     shellAliases = {

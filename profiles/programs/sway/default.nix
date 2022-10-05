@@ -1,6 +1,8 @@
-{ config, lib, pkgs, ... }:
-
-{
+{ config
+, lib
+, pkgs
+, ...
+}: {
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
@@ -17,4 +19,3 @@
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 }
-

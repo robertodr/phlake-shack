@@ -1,5 +1,5 @@
 let
-  # zoidberg 
+  # zoidberg
   system1 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6izX6NfvrBov8odmlShUoRMT0kb1at3flUjccFhpxJ root@zoidberg";
   # pulsedemon
   system2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG03D6lVdGcC1poN8ebau8ShMTTd6gag+8IYQ8EoZO8f root@pulsedemon";

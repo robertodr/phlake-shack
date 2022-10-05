@@ -1,8 +1,5 @@
 # collect Nix settings
-
-{ ... }:
-
-{
+{ ... }: {
   nix = {
     optimise.automatic = true;
 
@@ -25,7 +22,7 @@
       extra-substituters = [
         "https://cache.floxdev.com?trusted=1"
       ];
-      extra-truster-public-keys = [
+      extra-trusted-public-keys = [
         "flox-store-public-0:8c/B+kjIaQ+BloCmNkRUKwaVPFWkriSAd0JJvuDu4F0="
       ];
     };

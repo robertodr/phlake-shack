@@ -1,21 +1,25 @@
-{ config, lib, pkgs, suites, profiles, ... }:
-
-{
-  imports = [
-    # Include the results of the hardware scan.
-    # and ZFS partitions configuration
-    ./hardware-configuration.nix
-    # configuration of kernel and boot due to ZFS
-    ./zfs.nix
-  ]
-  ++ suites.base
-  ++ suites.virtualisation
-  ++ suites.i3wm
-  ++ suites.multimedia
-  ++ (with profiles.users; [
-    roberto
-  ])
-  ;
+{ config
+, lib
+, pkgs
+, suites
+, profiles
+, ...
+}: {
+  imports =
+    [
+      # Include the results of the hardware scan.
+      # and ZFS partitions configuration
+      ./hardware-configuration.nix
+      # configuration of kernel and boot due to ZFS
+      ./zfs.nix
+    ]
+    ++ suites.base
+    ++ suites.virtualisation
+    ++ suites.i3wm
+    ++ suites.multimedia
+    ++ (with profiles.users; [
+      roberto
+    ]);
 
   boot = {
     kernel = {

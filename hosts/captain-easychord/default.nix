@@ -1,18 +1,22 @@
-{ config, lib, pkgs, suites, profiles, ... }:
-
-{
-  imports = [
-    # Include the results of the hardware scan.
-    ./hardware-configuration.nix
-  ]
-  ++ suites.base
-  ++ suites.swaywm
-  ++ suites.multimedia
-  ++ suites.virtualisation
-  ++ (with profiles.users; [
-    roberto
-  ])
-  ;
+{ config
+, lib
+, pkgs
+, suites
+, profiles
+, ...
+}: {
+  imports =
+    [
+      # Include the results of the hardware scan.
+      ./hardware-configuration.nix
+    ]
+    ++ suites.base
+    ++ suites.swaywm
+    ++ suites.multimedia
+    ++ suites.virtualisation
+    ++ (with profiles.users; [
+      roberto
+    ]);
 
   boot = {
     kernel = {

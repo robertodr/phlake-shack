@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{ pkgs, ... }: {
   services.polybar = {
     enable = true;
     package = pkgs.polybar.override {
@@ -150,17 +148,16 @@
         type = "internal/xkeyboard";
       };
 
-      "module/time" =
-        {
-          type = "internal/date";
-          date = "%A, %B %d %Y";
-          time = "%H:%M";
-          label = "%time% - %date%";
-          format = "<label>";
-          label-padding = 2;
-          label-foreground = "\${colors.background}";
-          label-background = "\${colors.color3}";
-        };
+      "module/time" = {
+        type = "internal/date";
+        date = "%A, %B %d %Y";
+        time = "%H:%M";
+        label = "%time% - %date%";
+        format = "<label>";
+        label-padding = 2;
+        label-foreground = "\${colors.background}";
+        label-background = "\${colors.color3}";
+      };
 
       "module/battery" = {
         type = "internal/battery";

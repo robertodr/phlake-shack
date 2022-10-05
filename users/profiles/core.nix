@@ -82,7 +82,7 @@ in
       hyperfine
       iputils
       openconnect
-      #openconnect-sso # <- FIXME needs an overlay or something
+      openconnect-sso
       openvpn
       # TODO double check if this is actually needed
       #pulseaudio # to get pactl
@@ -118,6 +118,7 @@ in
       unifdef
       universal-ctags
 
+      alejandra
       niv
       nix-prefetch
       nix-prefetch-github

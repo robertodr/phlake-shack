@@ -1,6 +1,8 @@
-{ config, lib, pkgs, ... }:
-
-{
+{ config
+, lib
+, pkgs
+, ...
+}: {
   services.xserver = {
     enable = true;
 
@@ -49,15 +51,14 @@
             name = "ePapirus";
             package = pkgs.papirus-icon-theme;
           };
-          indicators =
-            [
-              "~host"
-              "~spacer"
-              "~clock"
-              "~spacer"
-              "~session"
-              "~power"
-            ];
+          indicators = [
+            "~host"
+            "~spacer"
+            "~clock"
+            "~spacer"
+            "~session"
+            "~power"
+          ];
           clock-format = "%H:%M - %A, %B %d %Y";
         };
       };

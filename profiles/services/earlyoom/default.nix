@@ -1,5 +1,3 @@
-{ ... }:
-
-{
+{ ... }: {
   services.earlyoom.enable = true;
 }

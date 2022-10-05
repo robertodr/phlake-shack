@@ -1,7 +1,4 @@
-{ pkgs, ... }:
-
-{
-
+{ pkgs, ... }: {
   services.greetd = {
     enable = true;
     package = pkgs.greetd.gtkgreet;

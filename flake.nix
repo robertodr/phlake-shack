@@ -11,44 +11,48 @@
     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
   ];
 
-  inputs =
-    {
-      # Track channels with commits tested and built by hydra
-      nixos.url = "github:nixos/nixpkgs/nixos-22.05";
-      latest.url = "github:nixos/nixpkgs/nixos-unstable";
-      # known-to-work commit with ZFS and recent enough Linux kernel
-      nixos-zoidberg.url = "github:nixos/nixpkgs?rev=2da64a81275b68fdad38af669afeda43d401e94b";
+  inputs = {
+    # Track channels with commits tested and built by hydra
+    nixos.url = "github:nixos/nixpkgs/nixos-22.05";
+    latest.url = "github:nixos/nixpkgs/nixos-unstable";
+    # known-to-work commit with ZFS and recent enough Linux kernel
+    nixos-zoidberg.url = "github:nixos/nixpkgs?rev=2da64a81275b68fdad38af669afeda43d401e94b";
 
-      home = {
-        url = "github:nix-community/home-manager/release-22.05";
-        inputs.nixpkgs.follows = "nixos";
-      };
+    home = {
+      url = "github:nix-community/home-manager/release-22.05";
+      inputs.nixpkgs.follows = "nixos";
+    };
 
-      nixos-hardware.url = "github:nixos/nixos-hardware";
+    nixos-hardware.url = "github:nixos/nixos-hardware";
 
-      nixos-generators.url = "github:nix-community/nixos-generators";
+    nixos-generators.url = "github:nix-community/nixos-generators";
 
-      digga = {
-        url = "github:divnix/digga";
-        inputs = {
-          nixpkgs.follows = "nixos";
-          nixlib.follows = "nixos";
-          home-manager.follows = "home";
-        };
-      };
-
-      # age-encrypted secrets for NixOS
-      agenix = {
-        url = "github:ryantm/agenix";
-        inputs.nixpkgs.follows = "nixos";
-      };
-
-      # my NUR packages
-      robertodr = {
-        url = "github:robertodr/nur-packages";
-        inputs.nixpkgs.follows = "nixos";
+    digga = {
+      url = "github:divnix/digga";
+      inputs = {
+        nixpkgs.follows = "nixos";
+        nixlib.follows = "nixos";
+        home-manager.follows = "home";
       };
     };
+
+    nvfetcher = {
+      url = "github:berberman/nvfetcher";
+      inputs.nixpkgs.follows = "nixos";
+    };
+
+    # age-encrypted secrets for NixOS
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixos";
+    };
+
+    # my NUR packages
+    robertodr = {
+      url = "github:robertodr/nur-packages";
+      inputs.nixpkgs.follows = "nixos";
+    };
+  };
 
   outputs =
     { self
@@ -58,6 +62,7 @@
     , nixos-hardware
     , nur
     , agenix
+    , nvfetcher
     , nixpkgs
     , ...
     } @ inputs:
@@ -72,16 +77,22 @@
 
         channelsConfig = { allowUnfree = true; };
 
+        # FIXME there is a lot of duplication to get the openconnect-sso overlay...
         channels = {
           nixos = {
             imports = [ (digga.lib.importOverlays ./overlays) ];
-            overlays = [
-            ];
-          };
-          latest = {
             overlays = [ ];
           };
+          latest = {
+            overlays = [
+              (import "${fetchTarball {
+              url = "https://github.com/vlaci/openconnect-sso/archive/master.tar.gz";
+              sha256 = "04y2h9yrb14klwifvr9zns8369sg4jfq2wlrxmlzhzn5lxhlzy2n";
+            }}/overlay.nix")
+            ];
+          };
           nixos-zoidberg = {
+            imports = [ (digga.lib.importOverlays ./overlays) ];
             overlays = [ ];
           };
         };
@@ -98,6 +109,7 @@
 
           nur.overlay
           agenix.overlay
+          nvfetcher.overlay
 
           (import ./pkgs)
         ];
@@ -132,15 +144,18 @@
             };
           };
           importables = rec {
-            profiles = digga.lib.rakeLeaves ./profiles // {
-              users = digga.lib.rakeLeaves ./users;
-            };
+            profiles =
+              digga.lib.rakeLeaves ./profiles
+              // {
+                users = digga.lib.rakeLeaves ./users;
+              };
             # suites provide a mechanism for users to easily combine and name collections of profiles
             suites = nixos.lib.fix (suites: {
               nix-settings = with profiles.nix; [ cachix gc settings ];
 
-              base = suites.nix-settings ++
-                (with profiles; [
+              base =
+                suites.nix-settings
+                ++ (with profiles; [
                   core
                   fonts.common
                   hardware.bluetooth
@@ -285,9 +300,8 @@
 
         devshell = ./shell;
 
-        homeConfigurations = digga.lib.mergeAny
-          (digga.lib.mkHomeConfigurations self.nixosConfigurations)
-        ;
-      }
-  ;
+        homeConfigurations =
+          digga.lib.mergeAny
+            (digga.lib.mkHomeConfigurations self.nixosConfigurations);
+      };
 }

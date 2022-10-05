@@ -1,8 +1,8 @@
 # collect Nix garbage-collection options
-
-{ pkgs, lib, ... }:
-
-{
+{ pkgs
+, lib
+, ...
+}: {
   nix.gc = {
     automatic = true;
     dates = "weekly";
