@@ -17,7 +17,7 @@
   # TODO probably add 1password GUI as well?
   run = [
     "kitty"
-    "brave"
+    "\"brave --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
     "\"ferdium --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
     "thunderbird"
     # FIXME Joplin looks crappy with Wayland, but the electron flags do not work...
