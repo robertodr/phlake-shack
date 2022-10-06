@@ -1,6 +1,12 @@
 {
   programs.brave = {
     enable = true;
+
+    commandLineArgs = [
+      "--enable-features=UseOzonePlatform,WaylandWindowDecorations"
+      "--ozone-platform=wayland"
+    ];
+
     extensions = [
       # 1password
       {id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";}
