@@ -25,8 +25,7 @@ in {
       fullName = "${whoami.firstName} ${whoami.lastName}";
       email = "roberto@totaltrash.xyz";
       githubUserName = "robertodr";
-      # FIXME
-      #pgpPublicKey = "0x135EEDD0F71934F3";
+      pgpPublicKey = "E4FADFE6DFB29C6E";
     };
 
     emacs = {
