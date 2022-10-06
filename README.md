@@ -46,6 +46,7 @@ Here `...` is any of the commands accepted by `nixos-rebuild`.
 - https://github.com/montchr/dotfield
 - https://github.com/GTrunSec/nixos-flk
 - https://github.com/linyinfeng/dotfiles
+- https://git.sr.ht/~jshholland/nixos-configs/tree/master
 
 ### Odds and ends
 
@@ -54,3 +55,30 @@ Use `syncthing` to transfer data
 #### Backing up GPG
 
 Follow this guide: https://serverfault.com/a/1040984
+
+#### Backing up Thunderbird
+
+Follow: https://support.mozilla.org/en-US/kb/profiles-where-thunderbird-stores-user-data
+
+#### Backing up Brave
+
+Follow: https://community.brave.com/t/linux-how-to-restore-brave-bookmarks-settings-and-passwords-from-backup-of-home-user/162967
+
+To back up open tabs, bookmark them all in a folder. After restoring Brave, you can re-open them all.
+
+#### Backing up Ferdium
+
+1. In Ferdium: Help > Import/Export Configuration Data
+2. In the browser window, click on "Export Data" and save it.
+3. Sync the file with Syncthing.
+4. In Ferdium: Help > Import/Export Configuration Data
+5. In the browser window, click on "Import Data". 
+
+You need to re-login on all services...
+
+#### Configuring Joplin
+
+1. Tools > Options > Synchronization.
+2. Select "Nextcloud" as sychronization target.
+3. Use https://yoshimi.totaltrash.xyz/remote.php/dav/files/robertodr/joplin as WebDAV URL
+4. Insert username and password, check configuration.
