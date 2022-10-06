@@ -17,8 +17,8 @@
   # TODO probably add 1password GUI as well?
   run = [
     "kitty"
-    "brave --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland"
-    "ferdium --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland"
+    "brave"
+    "\"ferdium --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
     "thunderbird"
     # FIXME Joplin looks crappy with Wayland, but the electron flags do not work...
     "joplin-desktop"
@@ -117,12 +117,11 @@ in {
           assigns = {
             "2" = [
               {
-                class = "^Brave-browser$";
-                instance = "^brave-browser";
+                app_id = "^brave-browser$";
               }
             ];
-            "3" = [{class = "^Joplin$";} {class = "^Ferdium$";}];
-            "4" = [{class = "^thunderbird$";}];
+            "3" = [{class = "^Joplin$";} {app_id = "^ferdium$";}];
+            "4" = [{app_id = "^thunderbird$";}];
           };
 
           startup =
