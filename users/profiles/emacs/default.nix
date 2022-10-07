@@ -62,8 +62,10 @@ in {
     package =
       (pkgs.emacs.override {
         withSQLite3 = true;
-        withPgtk = true;
-        nativeComp = true;
+        # setting withPgtk is needed for Wayland support.
+        # However, it won't work on Emacs 28: https://github.com/NixOS/nixpkgs/issues/192692
+        # I can't switch to Emacs 29 because Doom doesn't support it yet!
+        # withPgtk = true;
       })
       .overrideAttrs (attrs: {
         # I don't want emacs.desktop file because I only use
@@ -78,7 +80,8 @@ in {
   };
 
   services.emacs = {
-    # Doom will start the daemon
+    # Doom will start the daemon, hence the separate `programs.emacs` instead
+    # of just giving `package` here.
     enable = lib.mkDefault false;
     defaultEditor = lib.mkForce true;
     socketActivation.enable = true;
