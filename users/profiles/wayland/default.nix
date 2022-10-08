@@ -112,7 +112,9 @@ in {
 
           bars = [];
 
-          menu = "${pkgs.fuzzel}/bin/fuzzel";
+          menu = ''
+            ${pkgs.fuzzel}/bin/fuzzel --font='M PLUS 2 Regular' --icon-theme='ePapirus' --width=50
+          '';
 
           assigns = {
             "2" = [
