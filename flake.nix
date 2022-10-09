@@ -36,6 +36,12 @@
       };
     };
 
+    # bleeding edge emacs overlay
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "latest";
+    };
+
     nvfetcher = {
       url = "github:berberman/nvfetcher";
       inputs.nixpkgs.follows = "nixos";
@@ -64,6 +70,7 @@
     agenix,
     nvfetcher,
     nixpkgs,
+    emacs-overlay,
     ...
   } @ inputs:
     digga.lib.mkFlake
@@ -77,7 +84,6 @@
 
       channelsConfig = {allowUnfree = true;};
 
-      # FIXME there is a lot of duplication to get the openconnect-sso overlay...
       channels = {
         nixos = {
           imports = [(digga.lib.importOverlays ./overlays)];
@@ -85,14 +91,9 @@
         };
         latest = {
           overlays = [
-            (import "${fetchTarball {
-              url = "https://github.com/vlaci/openconnect-sso/archive/master.tar.gz";
-              sha256 = "04y2h9yrb14klwifvr9zns8369sg4jfq2wlrxmlzhzn5lxhlzy2n";
-            }}/overlay.nix")
           ];
         };
         nixos-zoidberg = {
-          imports = [(digga.lib.importOverlays ./overlays)];
           overlays = [];
         };
       };
@@ -110,6 +111,12 @@
         nur.overlay
         agenix.overlay
         nvfetcher.overlay
+        emacs-overlay.overlay
+
+        (import "${fetchTarball {
+          url = "https://github.com/vlaci/openconnect-sso/archive/master.tar.gz";
+          sha256 = "04y2h9yrb14klwifvr9zns8369sg4jfq2wlrxmlzhzn5lxhlzy2n";
+        }}/overlay.nix")
 
         (import ./pkgs)
       ];

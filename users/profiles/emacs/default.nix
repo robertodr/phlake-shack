@@ -59,23 +59,15 @@ in {
 
   programs.emacs = {
     enable = true;
-    package =
-      (pkgs.emacs.override {
-        withSQLite3 = true;
-        # setting withPgtk is needed for Wayland support.
-        # However, it won't work on Emacs 28: https://github.com/NixOS/nixpkgs/issues/192692
-        # I can't switch to Emacs 29 because Doom doesn't support it yet!
-        # withPgtk = true;
-      })
-      .overrideAttrs (attrs: {
-        # I don't want emacs.desktop file because I only use
-        # emacsclient.
-        postInstall =
-          (attrs.postInstall or "")
-          + ''
-            rm $out/share/applications/emacs.desktop
-          '';
-      });
+    package = pkgs.emacsPgtkNativeComp.overrideAttrs (attrs: {
+      # I don't want emacs.desktop file because I only use
+      # emacsclient.
+      postInstall =
+        (attrs.postInstall or "")
+        + ''
+          rm $out/share/applications/emacs.desktop
+        '';
+    });
     extraPackages = epkgs: with epkgs; [vterm];
   };
 
