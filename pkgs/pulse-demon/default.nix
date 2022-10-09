@@ -9,6 +9,6 @@ stdenv.mkDerivation {
 
   installPhase = ''
     mkdir -p $out/share
-    cp $src/pulse-demon.png $out/share/pulse-demon.png
+    cp $src/*.png $out/share
   '';
 }

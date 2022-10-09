@@ -126,6 +126,7 @@ in {
       gnome.nautilus
       joplin-desktop
       libreoffice
+      nomacs
       onlyoffice-bin
       pdf2svg
       pdftk

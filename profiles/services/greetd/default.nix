@@ -32,7 +32,7 @@
 
     "greetd/gtkgreet.css".text = ''
       window {
-        background-image: url("${pkgs.pulse-demon}/share/pulse-demon.png");
+        background-image: url("file://${pkgs.pulse-demon}/share/flop-blur-pulse-demon.png");
         background-size: cover;
         background-position: center;
       }

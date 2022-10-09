@@ -12,7 +12,7 @@
   ];
 
   lockCmd = ''
-    swaylock -k -l -i ${pkgs.pulse-demon}/share/pulse-demon.png
+    swaylock -k -l -i ${pkgs.pulse-demon}/share/blur-pulse-demon.png
   '';
 
   # TODO probably add 1password GUI as well?
