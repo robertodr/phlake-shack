@@ -1,13 +1,224 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   programs.waybar = {
     enable = true;
 
     systemd.enable = true;
 
-    package = pkgs.waybar.override {
-      withMediaPlayer = true;
+    # TODO figure out whether I want this override or not
+    #package = pkgs.waybar.override {
+    #  withMediaPlayer = true;
+    #};
+
+    settings = {
+      mainBar = {
+        layer = "top";
+
+        position = "top";
+
+        modules-left = [
+          "sway/workspaces"
+          "custom/right-arrow-dark"
+        ];
+
+        modules-center = [
+          "custom/left-arrow-dark"
+          "clock#1"
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+          "clock#2"
+          "custom/right-arrow-dark"
+          "custom/right-arrow-light"
+          "clock#3"
+          "custom/right-arrow-dark"
+        ];
+
+        modules-right = [
+          #"custom/left-arrow-dark"
+          #"pulseaudio"
+          #"custom/left-arrow-light"
+          "custom/left-arrow-dark"
+          "memory"
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+          "cpu"
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+          "battery"
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+          "sway/language"
+          "custom/left-arrow-light"
+          "custom/left-arrow-dark"
+          "tray"
+        ];
+
+        "custom/left-arrow-dark" = {
+          format = "";
+          tooltip = false;
+        };
+
+        "custom/left-arrow-light" = {
+          format = "";
+          tooltip = false;
+        };
+
+        "custom/right-arrow-dark" = {
+          format = "";
+          tooltip = false;
+        };
+
+        "custom/right-arrow-light" = {
+          format = "";
+          tooltip = false;
+        };
+
+        "sway/workspaces" = {
+          disable-scroll = true;
+          format = "{name}";
+        };
+
+        # day of the week
+        "clock#1" = {
+          format = "{:%a}";
+          tooltip = false;
+        };
+
+        # hour
+        "clock#2" = {
+          format = "{:%H:%M}";
+          tooltip = false;
+        };
+
+        # day and month
+        "clock#3" = {
+          format = "{:%d %B}";
+          tooltip = false;
+        };
+
+        # FIXME I am using pipewire
+        pulseaudio = {
+          format = "{icon} {volume=2}%";
+          format-bluetooth = "{icon}  {volume}%";
+          format-muted = "MUTE";
+          format-icons = {
+            headphones = "";
+            default = [
+              ""
+              ""
+            ];
+          };
+          scroll-step = 5;
+          on-click = "pamixer -t";
+          on-click-right = "pavucontrol";
+        };
+
+        memory = {
+          interval = 30;
+          format = "{}% ";
+        };
+
+        cpu = {
+          interval = 10;
+          format = "{}% ";
+        };
+
+        battery = {
+          states = {
+            good = 95;
+            warning = 30;
+            critical = 15;
+          };
+          format = "{capacity}% {icon}";
+          format-icons = [
+            ""
+            ""
+            ""
+            ""
+            ""
+          ];
+        };
+
+        "sway/language" = {
+          format = "{short} {variant}";
+          on-click = "swaymsg input type:keyboard xkb_switch_layout next";
+        };
+
+        "tray" = {
+          icon-size = 25;
+        };
+      };
     };
 
-    # TODO add fancy configuration :)
+    style = ''
+      * {
+        font-size: 20px;
+        font-family: "M PLUS 2 Regular", sans-serif;
+      }
+
+      window#waybar {
+        background: #292b2e;
+        color: #fdf6e3;
+      }
+
+      #custom-right-arrow-dark,
+      #custom-left-arrow-dark {
+        color: #1a1a1a;
+      }
+      #custom-right-arrow-light,
+      #custom-left-arrow-light {
+        color: #292b2e;
+        background: #1a1a1a;
+      }
+
+      #workspaces,
+      #clock.1,
+      #clock.2,
+      #clock.3,
+      #memory,
+      #cpu,
+      #battery,
+      #language,
+      #tray {
+        background: #1a1a1a;
+      }
+
+      #workspaces button {
+        padding: 0 2px;
+        color: #fdf6e3;
+      }
+      #workspaces button.focused {
+        color: #268bd2;
+      }
+      #workspaces button:hover {
+        box-shadow: inherit;
+        text-shadow: inherit;
+      }
+      #workspaces button:hover {
+        background: #1a1a1a;
+        border: #1a1a1a;
+        padding: 0 3px;
+      }
+
+      #memory {
+        color: #2aa198;
+      }
+      #cpu {
+        color: #6c71c4;
+      }
+      #battery {
+        color: #859900;
+      }
+      #language {
+        color: #b58900;
+      }
+
+      #clock,
+      #memory,
+      #cpu,
+      #battery,
+      #language {
+        padding: 0 10px;
+      }
+    '';
   };
 }
