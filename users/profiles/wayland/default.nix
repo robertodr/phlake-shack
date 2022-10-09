@@ -8,11 +8,12 @@
   mod = "Mod4"; # this is the "Windows" key
 
   alwaysRun = [
-    # FIXME application of background
-    #"feh --bg-fill ~/.background-image"
     "blueman-applet"
-    #"systemctl --user restart polybar"
   ];
+
+  lockCmd = ''
+    swaylock -k -l -i ${pkgs.pulse-demon}/share/pulse-demon.png
+  '';
 
   # TODO probably add 1password GUI as well?
   run = [
@@ -79,7 +80,7 @@ in {
             "XF86MonBrightnessDown" = "exec ${pkgs.light}/bin/light -U 5%";
             "XF86MonBrightnessUp" = "exec ${pkgs.light}/bin/light -A 5%";
             "Print" = "exec flameshot gui";
-            "${mod}+l" = "exec swaylock -k -l";
+            "${mod}+l" = "exec ${lockCmd}";
             "${mod}+Shift+e" = "exec emacsclient -c -n -a \'\'";
             "${sup}+p" = "exec ${pkgs.wlogout}/bin/wlogout";
             "${sup}+j" = "move workspace to output left";
@@ -99,6 +100,10 @@ in {
           # TODO figure out how to switch based on hostname
           # see: https://git.sr.ht/~jshholland/nixos-configs/tree/master/item/home/sway.nix
           output = {
+            "*".background = ''
+              ${pkgs.pulse-demon}/share/pulse-demon.png fill
+            '';
+
             "eDP-1" = {
               mode = "2256x1504";
               scale = "1.5";

@@ -29,5 +29,13 @@
 
       include /etc/sway/config.d/*
     '';
+
+    "greetd/gtkgreet.css".text = ''
+      window {
+        background-image: url("${pkgs.pulse-demon}/share/pulse-demon.png");
+        background-size: cover;
+        background-position: center;
+      }
+    '';
   };
 }

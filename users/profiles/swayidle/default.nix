@@ -1,4 +1,8 @@
-moduleArgs @ {pkgs, ...}: {
+{pkgs, ...}: let
+  lockCmd = ''
+    swaylock -k -l -i ${pkgs.pulse-demon}/share/pulse-demon.png
+  '';
+in {
   services.swayidle = {
     enable = true;
     events = [
@@ -6,13 +10,13 @@ moduleArgs @ {pkgs, ...}: {
       {
         event = "before-sleep";
         command = ''
-          swaylock -k -l
+          ${lockCmd}
         '';
       }
 
       # turn displays back on when resuming
       {
-        event = "resume";
+        event = "after-resume";
         command = ''
           swaymsg 'output * dpms on'
         '';
@@ -23,7 +27,7 @@ moduleArgs @ {pkgs, ...}: {
       {
         timeout = 60;
         command = ''
-          swaylock -k -l
+          ${lockCmd}
         '';
       }
 
