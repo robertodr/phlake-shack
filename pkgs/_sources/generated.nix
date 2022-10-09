@@ -13,4 +13,16 @@
     });
     date = "2021-04-20";
   };
+  openconnect-sso = {
+    pname = "openconnect-sso";
+    version = "4430cb09aefe15108e5f3b40b94ed792fbe9548b";
+    src = fetchFromGitHub ({
+      owner = "vlaci";
+      repo = "openconnect-sso";
+      rev = "4430cb09aefe15108e5f3b40b94ed792fbe9548b";
+      fetchSubmodules = false;
+      sha256 = "sha256-VvhPYafFfvhp7ZlygZ0kTyczkLY/5e0ip5OElX2CwhM=";
+    });
+    date = "2021-12-14";
+  };
 }
