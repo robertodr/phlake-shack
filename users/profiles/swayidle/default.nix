@@ -1,8 +1,7 @@
 { pkgs, ... }:
 let
-  lockCmd = ''
-    swaylock -k -l -i ${pkgs.pulse-demon}/share/blur-pulse-demon.png
-  '';
+  lockCmd = "swaylock -k -l -i ${pkgs.pulse-demon}/share/blur-pulse-demon.png";
+  resumeCmd = "swaymsg \"output * dpms on\"";
 in
 {
   services.swayidle = {
@@ -17,8 +16,7 @@ in
       # turn displays back on when resuming
       {
         event = "after-resume";
-        command =
-          "swaymsg 'output * dpms on'";
+        command = "${resumeCmd}";
       }
     ];
     timeouts = [
@@ -31,7 +29,8 @@ in
       # turn off displays after 120 seconds idle
       {
         timeout = 120;
-        command = "\"swaymsg 'output * dpms off'\" resume \"swaymsg 'output * dpms on'\"";
+        command = "swaymsg \"output * dpms off\"";
+        resumeCommand = "${resumeCmd}";
       }
     ];
   };
