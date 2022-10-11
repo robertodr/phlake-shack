@@ -1,4 +1,5 @@
 {pkgs, ...}: {
+  # TODO review styling, especially colors!
   programs.waybar = {
     enable = true;
 
@@ -17,6 +18,9 @@
 
         modules-left = [
           "sway/workspaces"
+          "custom/right-arrow-dark"
+          "custom/right-arrow-light"
+          "sway/language"
           "custom/right-arrow-dark"
         ];
 
@@ -44,9 +48,6 @@
           "custom/left-arrow-light"
           "custom/left-arrow-dark"
           "battery"
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
-          "sway/language"
           "custom/left-arrow-light"
           "custom/left-arrow-dark"
           "tray"
@@ -79,7 +80,7 @@
 
         # day of the week
         "clock#1" = {
-          format = "{:%a}";
+          format = "{:%A}";
           tooltip = false;
         };
 
@@ -91,12 +92,13 @@
 
         # day and month
         "clock#3" = {
-          formata-alt = "{:%d %B}";
+          format = "{:%d %B}";
+          tooltip = true;
           tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
           today-format = "<span color='#ff6699'><b><u>{}</u></b></span>";
           calendar-weeks-pos = "left";
           format-calendar = "<span color='#ecc6d9'><b>{}</b></span>";
-          format-calendar-weeks = "<span color='#99ffdd'><b>W{:%V}</b></span>";
+          format-calendar-weeks = "<span color='#99ffdd'><b>{}</b></span>";
           format-calendar-weekdays = "<span color='#ffcc66'><b>{}</b></span>";
         };
 
