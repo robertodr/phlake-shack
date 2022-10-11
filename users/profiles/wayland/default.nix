@@ -7,15 +7,15 @@
   sup = "Mod1"; # this is the "Alt" key
   mod = "Mod4"; # this is the "Windows" key
 
+  # commands to be run on each sway startup
   alwaysRun = [
-    "blueman-applet"
-    "nm-applet --indicator"
   ];
 
   lockCmd = ''
     swaylock -k -l -i ${pkgs.pulse-demon}/share/blur-pulse-demon.png
   '';
 
+  # commands to be run on sway startup
   # TODO probably add 1password GUI as well?
   run = [
     "kitty"
