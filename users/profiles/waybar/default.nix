@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.waybar = {
     enable = true;
 
@@ -91,8 +91,13 @@
 
         # day and month
         "clock#3" = {
-          format = "{:%d %B}";
-          tooltip = false;
+          formata-alt = "{:%d %B}";
+          tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+          today-format = "<span color='#ff6699'><b><u>{}</u></b></span>";
+          calendar-weeks-pos = "left";
+          format-calendar = "<span color='#ecc6d9'><b>{}</b></span>";
+          format-calendar-weeks = "<span color='#99ffdd'><b>W{:%V}</b></span>";
+          format-calendar-weekdays = "<span color='#ffcc66'><b>{}</b></span>";
         };
 
         # FIXME I am using pipewire

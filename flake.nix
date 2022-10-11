@@ -228,6 +228,7 @@
           suites = nixos.lib.fix (suites: {
             base = with profiles; [
               bat
+              blueman-applet
               bottom
               core
               exa
