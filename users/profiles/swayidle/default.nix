@@ -18,17 +18,19 @@ in {
       }
     ];
     timeouts = [
-      # lock after 120 seconds idle
+      # turn off displays after 120 seconds idle
       {
         timeout = 120;
-        command = "${lockCmd}";
+        command = "swaymsg \"output * dpms off\"";
+        #command = "if pgrep swaylock; then swaymsg \"output * dpms off\"; fi";
+        #resumeCommand = "if pgrep swaylock; ${resumeCmd}; fi";
+        resumeCommand = "${resumeCmd}";
       }
 
-      # turn off displays after 240 seconds idle
+      # lock after 150 seconds idle
       {
-        timeout = 240;
-        command = "if pgrep swaylock; then swaymsg \"output * dpms off\"; fi";
-        resumeCommand = "if pgrep swaylock; ${resumeCmd}; fi";
+        timeout = 150;
+        command = "${lockCmd}";
       }
     ];
   };
