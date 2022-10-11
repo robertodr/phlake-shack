@@ -17,7 +17,7 @@
 
     "greetd/sway-config".text = ''
       # `-l` activates layer-shell mode. Notice that `swaymsg exit` will run after gtkgreet.
-      exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l; swaymsg exit"
+      exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css; swaymsg exit"
 
       input type:keyboard xkb_layout it(us)
 
@@ -35,6 +35,7 @@
         background-image: url("file://${pkgs.pulse-demon}/share/flop-blur-pulse-demon.png");
         background-size: cover;
         background-position: center;
+        font-weight: bold;
       }
     '';
   };
