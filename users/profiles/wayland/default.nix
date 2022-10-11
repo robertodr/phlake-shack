@@ -9,6 +9,7 @@
 
   alwaysRun = [
     "blueman-applet"
+    "nm-applet --indicator"
   ];
 
   lockCmd = ''
