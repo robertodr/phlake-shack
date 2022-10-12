@@ -27,8 +27,8 @@
   ];
 in {
   home.packages = with pkgs; [
-    cliphist
     thunderbird-wayland
+    wl-clipboard
   ];
 
   wayland = {

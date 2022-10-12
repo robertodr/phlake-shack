@@ -73,4 +73,13 @@
       ];
     };
   };
+
+  environment = {
+    systemPackages = with pkgs; [
+      xbindkeys # launch shell commands with your keyboard or your mouse under X Window
+      xclip # tool to access the X clipboard from a console application
+      xorg.lndir # create a shadow directory of symbolic links to another directory tree
+      xsel # command-line program for getting and setting the contents of the X selection
+    ];
+  };
 }
