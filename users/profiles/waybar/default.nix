@@ -152,6 +152,8 @@
 
         "tray" = {
           icon-size = 25;
+          show-passive-items = true;
+          spacing = 5;
         };
       };
     };
