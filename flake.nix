@@ -38,7 +38,7 @@
 
     # bleeding edge emacs overlay
     emacs-overlay = {
-      url = "github:nix-community/emacs-overlay";
+      url = "github:nix-community/emacs-overlay?rev=2cf9caa06c8fbe3f973afd597584f08e3d56fdd6";
       inputs.nixpkgs.follows = "latest";
     };
 
@@ -241,7 +241,6 @@
               kitty
               man
               neovim
-              network-manager-applet
               ssh
               starship
               tealdeer
