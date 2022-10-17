@@ -8,4 +8,6 @@
     };
     useDHCP = lib.mkDefault false;
   };
+
+  programs.nm-applet.enable = true;
 }
