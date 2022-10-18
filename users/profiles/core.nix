@@ -89,6 +89,7 @@ in {
       cmake-language-server
       delta # TODO <- this or difftastic?
       dive
+      nur.repos.robertodr.enso
       flamegraph
       nur.repos.robertodr.git-along
       git-extras

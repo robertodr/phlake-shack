@@ -3,8 +3,6 @@
   fonts = {
     fontDir.enable = true;
     fonts = with pkgs; [
-      # FIXME why does this give a hash mismatch?
-      #nur.repos.robertodr.mplus-fonts
       bakoma_ttf
       comfortaa
       corefonts
@@ -20,8 +18,8 @@
       lmmath
       material-design-icons
       material-icons
-      mplus-outline-fonts.githubRelease
       nerdfonts
+      nur.repos.robertodr.mplus-fonts
       open-sans
       terminus_font
       tex-gyre-math.bonum

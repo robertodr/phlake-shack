@@ -53,11 +53,9 @@
       inputs.nixpkgs.follows = "nixos";
     };
 
-    # my NUR packages
-    robertodr = {
-      url = "github:robertodr/nur-packages";
-      inputs.nixpkgs.follows = "nixos";
-    };
+    # NUR packages
+    nur.url =
+      "github:nix-community/NUR";
   };
 
   outputs = {
