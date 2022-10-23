@@ -102,11 +102,6 @@ in {
             "*".background = ''
               ${pkgs.pulse-demon}/share/pulse-demon.png fill
             '';
-
-            "eDP-1" = {
-              mode = "2256x1504";
-              scale = "1.5";
-            };
           };
 
           defaultWorkspace = "workspace number 1";
