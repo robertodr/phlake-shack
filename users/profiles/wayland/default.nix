@@ -22,11 +22,13 @@
     "thunderbird"
     # FIXME Joplin looks crappy with Wayland, but the electron flags do not work...
     "joplin-desktop"
+    "sworkstyle &> /tmp/sworkstyle.log"
   ];
 in {
   home.packages = with pkgs; [
     thunderbird-wayland
     wl-clipboard
+    swayest-workstyle
   ];
 
   wayland = {
@@ -116,13 +118,13 @@ in {
           '';
 
           assigns = {
-            "2" = [
+            "number 2" = [
               {
                 app_id = "^brave-browser$";
               }
             ];
-            "3" = [{class = "^Joplin$";} {app_id = "^ferdium$";}];
-            "4" = [{app_id = "^thunderbird$";}];
+            "number 3" = [{class = "^Joplin$";} {app_id = "^ferdium$";}];
+            "number 4" = [{app_id = "^thunderbird$";}];
           };
 
           startup =
