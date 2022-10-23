@@ -6,6 +6,7 @@
         bbenoist.nix
         ms-pyright.pyright
         ms-python.python
+        # is this needed when the python extension is installed?
         ms-toolsai.jupyter
         ms-vscode.cpptools
         ms-vsliveshare.vsliveshare
@@ -24,6 +25,20 @@
           publisher = "quarto";
           version = "1.43.0";
           sha256 = "sha256-4F25n0NZ+GhnzkwFvjnHFK7PX2z5Tlmp90snC2IRvkM=";
+        }
+
+        {
+          name = "cmake-tools";
+          publisher = "ms-vscode";
+          version = "1.13.16";
+          sha256 = "sha256-DMfSIsbtCaLk7xFZq4aI4Of6+2QCX/WesuBGjzOdnWw=";
+        }
+
+        {
+          name = "magit";
+          publisher = "kahole";
+          version = "0.6.33";
+          sha256 = "sha256-qrqvlOGHkLQtIu5GbG06XYbyGNMzZtui/mpk60X3djE=";
         }
       ];
   };
