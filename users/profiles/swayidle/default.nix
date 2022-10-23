@@ -11,6 +11,12 @@ in {
         command = "${lockCmd}";
       }
 
+      # if playing music, pause it
+      {
+        event = "before-sleep";
+        command = "${pkgs.playerctl}/bin/playerctl -a pause";
+      }
+
       # turn displays back on when resuming
       {
         event = "after-resume";
