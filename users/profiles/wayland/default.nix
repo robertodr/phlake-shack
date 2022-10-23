@@ -11,9 +11,7 @@
   alwaysRun = [
   ];
 
-  lockCmd = ''
-    swaylock -k -l -i ${pkgs.pulse-demon}/share/blur-pulse-demon.png
-  '';
+  lockCmd = "\'${pkgs.playerctl}/bin/playerctl -a pause; swaylock -k -l -i ${pkgs.pulse-demon}/share/blur-pulse-demon.png\'";
 
   # commands to be run on sway startup
   # TODO probably add 1password GUI as well?
