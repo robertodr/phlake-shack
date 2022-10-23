@@ -63,10 +63,6 @@ in {
             };
           };
 
-          window = {
-            titlebar = false;
-          };
-
           terminal = "kitty";
 
           modifier = "${mod}";
@@ -108,14 +104,46 @@ in {
 
           defaultWorkspace = "workspace number 1";
 
-          # notifications from Zoom are allowed to float
-          floating.criteria = [{title = "^zoom$";}];
-
           bars = [];
 
           menu = ''
             ${pkgs.fuzzel}/bin/fuzzel --font='M PLUS 2 Regular' --icon-theme='ePapirus' --width=50
           '';
+
+          window = {
+            titlebar = false;
+            # FIXME Zoom doesn't happen to have an app_id...
+            commands = [
+              # inhibit idle when Zoom window is visible
+              {
+                command = "inhibit_idle visible";
+                criteria = {app_id = "zoom";};
+              }
+
+              # center Zoom toolbar when screensharing
+              {
+                command = "floating enable move position 50ppt 0 move left 402";
+                criteria = {app_id = "zoom";};
+              }
+
+              # float any zoom window by default...
+              {
+                command = "floating enable";
+                criteria = {
+                  app_id = "zoom";
+                };
+              }
+
+              # ...except these ones
+              {
+                command = "floating disable";
+                criteria = {
+                  app_id = "zoom";
+                  title = "(Account|Chat|Meeting|Participants)";
+                };
+              }
+            ];
+          };
 
           assigns = {
             "number 2" = [
