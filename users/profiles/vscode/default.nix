@@ -40,6 +40,27 @@
           version = "0.6.33";
           sha256 = "sha256-qrqvlOGHkLQtIu5GbG06XYbyGNMzZtui/mpk60X3djE=";
         }
+
+        {
+          name = "remote-ssh";
+          publisher = "ms-vscode-remote";
+          version = "0.90.1";
+          sha256 = "sha256-xF40bhjeNmCGK77Qhs3zWbs3gkCpXvMAijK0A0LhmaY=";
+        }
+
+        {
+          name = "remote-containers";
+          publisher = "ms-vscode-remote";
+          version = "0.260.0";
+          sha256 = "sha256-MnY0NdfLEP4cDBUwuQPLFZUUxWJDH2838tq0Cslm+L4=";
+        }
+
+        {
+          name = "direnv";
+          publisher = "mkhl";
+          version = "0.6.1";
+          sha256 = "sha256-5/Tqpn/7byl+z2ATflgKV1+rhdqj+XMEZNbGwDmGwLQ=";
+        }
       ];
   };
 }
