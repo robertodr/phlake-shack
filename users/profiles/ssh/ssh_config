@@ -133,3 +133,8 @@ Host squirrel
 ## Borgbase
 Host *.repo.borgbase.com
   IdentityFile ~/.ssh/borgbase_ed25519
+
+## Algorithmiq
+Host algotwo
+  HostName algotwo.clusters.algorithmiq.fi
+  User roberto
