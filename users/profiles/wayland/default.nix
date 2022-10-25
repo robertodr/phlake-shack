@@ -31,6 +31,15 @@ in {
     swayest-workstyle
   ];
 
+  xdg.configFile."sworkstyle/config.toml".text = ''
+    [matching]
+    'kitty' = ''
+    'brave-browser' = ''
+    '/[Bb]rave/' = ''
+    'Joplin' = 'ﴬ'
+    'ferdium'= ''
+  '';
+
   wayland = {
     windowManager = {
       sway = {
@@ -76,14 +85,15 @@ in {
             "XF86AudioMicMute" = "exec ${pkgs.pamixer}/bin/pamixer --default-source -t";
             "XF86MonBrightnessDown" = "exec ${pkgs.light}/bin/light -U 5%";
             "XF86MonBrightnessUp" = "exec ${pkgs.light}/bin/light -A 5%";
+            "XF86AudioPlay" = "exec playerctl play-pause";
+            "XF86AudioNext" = "exec playerctl next";
+            "XF86AudioPrev" = "exec playerctl previous";
             "Print" = "exec flameshot gui";
             "${mod}+l" = "exec ${lockCmd}";
             "${mod}+Shift+e" = "exec emacsclient -c -n -a \'\'";
             "${sup}+p" = "exec ${pkgs.wlogout}/bin/wlogout";
             "${sup}+j" = "move workspace to output left";
             "${sup}+l" = "move workspace to output right";
-            # FIXME we're using kanshi!
-            #"${sup}+a" = "exec autorandr --change";
             # FIXME weylus
             "${sup}+Control+w" = "exec weylus";
           };
@@ -100,6 +110,11 @@ in {
             "*".background = ''
               ${pkgs.pulse-demon}/share/pulse-demon.png fill
             '';
+
+            "eDP-1" = {
+              mode = "2256x1504";
+              scale = "1.5";
+            };
           };
 
           defaultWorkspace = "workspace number 1";
@@ -114,6 +129,15 @@ in {
             titlebar = false;
             # FIXME Zoom doesn't happen to have an app_id...
             commands = [
+              # inhibit idle when Zoom meeting in progress in Brave browser
+              {
+                command = "inhibit_idle visible";
+                criteria = {
+                  app_id = "brave-browser";
+                  title = "[Mm]eeting";
+                };
+              }
+
               # inhibit idle when Zoom window is visible
               {
                 command = "inhibit_idle visible";
