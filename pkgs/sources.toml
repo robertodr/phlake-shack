@@ -2,7 +2,3 @@
 [manix]
 src.git = "https://github.com/mlvzk/manix"
 fetch.github = "mlvzk/manix"
-
-[openconnect-sso]
-src.git = "https://github.com/vlaci/openconnect-sso"
-fetch.github = "vlaci/openconnect-sso"
