@@ -25,8 +25,6 @@
 
     nixos-hardware.url = "github:nixos/nixos-hardware";
 
-    nixos-generators.url = "github:nix-community/nixos-generators";
-
     digga = {
       url = "github:divnix/digga";
       inputs = {
