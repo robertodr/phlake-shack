@@ -11,10 +11,6 @@ Host fram
 Host saga
   Hostname saga.sigma2.no
   User roberto
-Host repo.respect.savba.sk
-  HostName repo.respect.savba.sk
-  PreferredAuthentications publickey
-  IdentityFile ~/.ssh/minazo_rsa.pub
 Host sandel
   ForwardX11 Yes
   ForwardX11Trusted No
@@ -24,57 +20,9 @@ Host woolf
   ForwardX11Trusted No
   Hostname woolf.chem.uit.no
 
-## Virginia Tech
-Host cascades cascades1 cascades2
-  HostName %h.arc.vt.edu
-Host dragonstooth dragonstooth1 dragonstooth2
-  HostName %h.arc.vt.edu
-Host newriver newriver1 newriver2
-  HostName %h.arc.vt.edu
-Host tinkercliffs tinkercliffs1 tinkercliffs2
-  HostName %h.arc.vt.edu
-Match Host *.arc.vt.edu
-  User drobe88
-  ForwardX11 yes
-  IdentityFile ~/.ssh/minazo_rsa
-
-## JUWELS
-# cluster
-Host juwels juwels0? juwels1?
-  Hostname %h.fz-juelich.de
-# booster
-Host juwels-booster juwels2?
-  Hostname %h.fz-juelich.de
-# set up for both
-Match Host *.fz-juelich.de
-  User diremigio1
-  IdentityFile ~/.ssh/pulsedemon_ed25519
-  ForwardX11 Yes
-  ForwardX11Trusted No
-  ForwardAgent No
-  AddKeysToAgent Confirm
-  LogLevel Verbose
-
-## Vega
-Host vega
-  Hostname login.%h.izum.si
-  User eurobertodr
-  IdentityFile ~/.ssh/vega_ed25519
-  ForwardAgent No
-  LogLevel Verbose
-
-## Karolina
-Host karolina
-  Hostname %h.it4i.cz
-  User it4i-robedr
-  AddressFamily inet
-  IdentityFile ~/.ssh/karolina_ed25519
-  ForwardAgent No
-  LogLevel Verbose
-
 ## machines in Sweden
 Host monkey
-  Hostname 130.237.52.109
+  Hostname 130.237.6.44
   User roberto
 ## Dardel
 Host dardel
@@ -103,22 +51,7 @@ Host dt0 dt1
 #  # Prefer GSSAPI key exchange
 #  PreferredAuthentications gssapi-keyex,gssapi-with-mic
 
-Host tetralith tetralith1 tetralith2
-  HostName %h.nsc.liu.se
-  User x_robdi
-Host sigma
-  HostName %h.nsc.liu.se
-  User x_robdi
-Host berzelius berzelius1 berzelius2
-  HostName %h.nsc.liu.se
-  User x_robdi
-
-Host n166-p44
-  HostName 130.129.166.44
-  User roberto
-
 ## LUMI
-# test node in Grenoble
 Host lumi
   Hostname lumi.csc.fi
   User rodiremi
