@@ -17,6 +17,7 @@
       "disk"
       "docker"
       "docker"
+      "input"
       "networkmanager"
       "root"
       "systemd-journal"

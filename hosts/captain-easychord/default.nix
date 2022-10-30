@@ -56,9 +56,6 @@
     };
   };
 
-  # NOTE fprintd is enabled by default on the Framework!
-  services.fprintd.enable = false;
-
   services.tlp = {
     enable = true;
     settings = {
