@@ -75,8 +75,7 @@ in {
       hyperfine
       iputils
       openconnect
-      # FIXME there is a bug in the official derivation...
-      #openconnect-sso
+      openconnect-sso
       openvpn
       rclone
       remmina

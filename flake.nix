@@ -110,7 +110,7 @@
 
         (import "${fetchTarball {
           url = "https://github.com/vlaci/openconnect-sso/archive/master.tar.gz";
-          sha256 = "sha256:04y2h9yrb14klwifvr9zns8369sg4jfq2wlrxmlzhzn5lxhlzy2n";
+          sha256 = "sha256:04kwar7cxz7399bwlka6raqwq5jd27khkjdxk11k08846bkjckx5";
         }}/overlay.nix")
 
         (import ./pkgs)
