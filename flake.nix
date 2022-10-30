@@ -19,8 +19,8 @@
     nixos-zoidberg.url = "github:nixos/nixpkgs?rev=2da64a81275b68fdad38af669afeda43d401e94b";
 
     home = {
-      url = "github:nix-community/home-manager/release-22.05";
-      inputs.nixpkgs.follows = "nixos";
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "latest";
     };
 
     nixos-hardware.url = "github:nixos/nixos-hardware";
@@ -281,10 +281,11 @@
             ];
 
             swaywm = with profiles; [
-              kanshi
-              swayidle
               gammastep
               gtk
+              kanshi
+              swayidle
+              swaylock
               waybar
               wayland
             ];

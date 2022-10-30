@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  lockCmd = "swaylock -k -l -i ${pkgs.pulse-demon}/share/blur-pulse-demon.png";
+  lockCmd = "swaylock";
   resumeCmd = "swaymsg \"output * dpms on\"";
 in {
   services.swayidle = {
