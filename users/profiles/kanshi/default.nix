@@ -23,7 +23,7 @@
             scale = 1.5;
           }
           {
-            criteria = "DP-6";
+            criteria = "Lenovo Group Limited Q27q-10 0x00000101";
             mode = "2560x1440";
             position = "0,0";
             scale = 1.0;
