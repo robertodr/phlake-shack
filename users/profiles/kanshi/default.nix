@@ -31,8 +31,8 @@
         ];
 
         exec = [
-          "${pkgs.sway}/bin/swaymsg workspace number 1, move workspace to DP-6"
-          "${pkgs.sway}/bin/swaymsg workspace number 2, move workspace to DP-6"
+          "${pkgs.sway}/bin/swaymsg workspace number 1, move workspace to '\"Lenovo Group Limited Q27q-10 0x00000101\"'"
+          "${pkgs.sway}/bin/swaymsg workspace number 2, move workspace to '\"Lenovo Group Limited Q27q-10 0x00000101\"'"
           "${pkgs.sway}/bin/swaymsg workspace number 3, move workspace to eDP-1"
           "${pkgs.sway}/bin/swaymsg workspace number 4, move workspace to eDP-1"
         ];
@@ -47,7 +47,7 @@
             scale = 1.5;
           }
           {
-            criteria = "DP-3";
+            criteria = "ViewSonic Corporation VG2719-2K V4H174900131";
             mode = "2560x1440";
             position = "0,0";
             scale = 1.0;
@@ -55,8 +55,8 @@
         ];
 
         exec = [
-          "${pkgs.sway}/bin/swaymsg workspace number 1, move workspace to DP-3"
-          "${pkgs.sway}/bin/swaymsg workspace number 2, move workspace to DP-3"
+          "${pkgs.sway}/bin/swaymsg workspace number 1, move workspace to '\"ViewSonic Corporation VG2719-2K V4H174900131\"'"
+          "${pkgs.sway}/bin/swaymsg workspace number 2, move workspace to '\"ViewSonic Corporation VG2719-2K V4H174900131\"'"
           "${pkgs.sway}/bin/swaymsg workspace number 3, move workspace to eDP-1"
           "${pkgs.sway}/bin/swaymsg workspace number 4, move workspace to eDP-1"
         ];
