@@ -4,7 +4,6 @@
     extensions = with pkgs.vscode-extensions;
       [
         bbenoist.nix
-        ms-pyright.pyright
         ms-python.python
         # is this needed when the python extension is installed?
         ms-toolsai.jupyter
