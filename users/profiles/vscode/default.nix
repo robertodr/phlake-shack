@@ -5,11 +5,12 @@
       [
         bbenoist.nix
         ms-python.python
-        # is this needed when the python extension is installed?
-        ms-toolsai.jupyter
         ms-vscode.cpptools
         ms-vsliveshare.vsliveshare
         vscodevim.vim
+        tuttieee.emacs-mcx
+        # is this needed when the python extension is installed?
+        ms-toolsai.jupyter
       ]
       ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
@@ -22,8 +23,8 @@
         {
           name = "quarto";
           publisher = "quarto";
-          version = "1.43.0";
-          sha256 = "sha256-4F25n0NZ+GhnzkwFvjnHFK7PX2z5Tlmp90snC2IRvkM=";
+          version = "1.54.0";
+          sha256 = "sha256-9sszs1DTzAeblIUE48jDTeU6GDDyLFzW2eQWaw0Y5zE=";
         }
 
         {
@@ -36,15 +37,15 @@
         {
           name = "magit";
           publisher = "kahole";
-          version = "0.6.33";
-          sha256 = "sha256-qrqvlOGHkLQtIu5GbG06XYbyGNMzZtui/mpk60X3djE=";
+          version = "0.6.34";
+          sha256 = "sha256-EbjXBffpiI1z6GDzumx5Vw7JgDsXCalsf+4mOm/SzDM=";
         }
 
         {
           name = "remote-ssh";
           publisher = "ms-vscode-remote";
-          version = "0.90.1";
-          sha256 = "sha256-xF40bhjeNmCGK77Qhs3zWbs3gkCpXvMAijK0A0LhmaY=";
+          version = "0.92.0";
+          sha256 = "sha256-Mrfv7rhNT6H+cZcgRGPZEFFnxHp6WX9rNVs1xV6NSLw=";
         }
 
         {
@@ -57,8 +58,8 @@
         {
           name = "direnv";
           publisher = "mkhl";
-          version = "0.6.1";
-          sha256 = "sha256-5/Tqpn/7byl+z2ATflgKV1+rhdqj+XMEZNbGwDmGwLQ=";
+          version = "0.7.0";
+          sha256 = "sha256-MLBPhDBU8vPVvbde3fdwhxKvQa8orUMKAAXoOfNrbh4=";
         }
       ];
   };
