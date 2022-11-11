@@ -18,38 +18,38 @@
 
         modules-left = [
           "sway/workspaces"
-          "custom/right-arrow-dark"
-          "custom/right-arrow-light"
+          #"custom/right-arrow-dark"
+          #"custom/right-arrow-light"
           "sway/language"
-          "custom/right-arrow-dark"
+          #"custom/right-arrow-dark"
         ];
 
         modules-center = [
-          "custom/left-arrow-dark"
+          #"custom/left-arrow-dark"
           "clock#1"
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
+          #"custom/left-arrow-light"
+          #"custom/left-arrow-dark"
           "clock#2"
-          "custom/right-arrow-dark"
-          "custom/right-arrow-light"
+          #"custom/right-arrow-dark"
+          #"custom/right-arrow-light"
           "clock#3"
-          "custom/right-arrow-dark"
+          #"custom/right-arrow-dark"
         ];
 
         modules-right = [
           #"custom/left-arrow-dark"
           #"pulseaudio"
           #"custom/left-arrow-light"
-          "custom/left-arrow-dark"
+          #"custom/left-arrow-dark"
           "memory"
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
+          #"custom/left-arrow-light"
+          #"custom/left-arrow-dark"
           "cpu"
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
+          #"custom/left-arrow-light"
+          #"custom/left-arrow-dark"
           "battery"
-          "custom/left-arrow-light"
-          "custom/left-arrow-dark"
+          #"custom/left-arrow-light"
+          #"custom/left-arrow-dark"
           "tray"
         ];
 
@@ -95,11 +95,11 @@
           format = "{:%d %B}";
           tooltip = true;
           tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-          today-format = "<span color='#ff6699'><b><u>{}</u></b></span>";
+          #today-format = "<span color='#ff6699'><b><u>{}</u></b></span>";
           calendar-weeks-pos = "left";
-          format-calendar = "<span color='#ecc6d9'><b>{}</b></span>";
-          format-calendar-weeks = "<span color='#99ffdd'><b>{}</b></span>";
-          format-calendar-weekdays = "<span color='#ffcc66'><b>{}</b></span>";
+          #format-calendar = "<span color='#ecc6d9'><b>{}</b></span>";
+          #format-calendar-weeks = "<span color='#99ffdd'><b>{}</b></span>";
+          #format-calendar-weekdays = "<span color='#ffcc66'><b>{}</b></span>";
         };
 
         # FIXME I am using pipewire

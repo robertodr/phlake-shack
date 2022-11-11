@@ -40,6 +40,7 @@ Here `...` is any of the commands accepted by `nixos-rebuild`.
 
 - https://github.com/SenchoPens/base16.nix
 - https://github.com/danth/stylix
+- https://github.com/lgaboury/Sway-Waybar-Install-Script
 
 ### Repos I've looked at for inspiration
 
