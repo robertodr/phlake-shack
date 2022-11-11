@@ -18,8 +18,8 @@
         outputs = [
           {
             criteria = "eDP-1";
-            position = "2560,260";
             mode = "2256x1504";
+            position = "2560,260";
             scale = 1.5;
           }
           {
@@ -42,8 +42,8 @@
         outputs = [
           {
             criteria = "eDP-1";
-            position = "2560,260";
             mode = "2256x1504";
+            position = "2560,260";
             scale = 1.5;
           }
           {
@@ -57,6 +57,30 @@
         exec = [
           "${pkgs.sway}/bin/swaymsg workspace number 1, move workspace to '\"ViewSonic Corporation VG2719-2K V4H174900131\"'"
           "${pkgs.sway}/bin/swaymsg workspace number 2, move workspace to '\"ViewSonic Corporation VG2719-2K V4H174900131\"'"
+          "${pkgs.sway}/bin/swaymsg workspace number 3, move workspace to eDP-1"
+          "${pkgs.sway}/bin/swaymsg workspace number 4, move workspace to eDP-1"
+        ];
+      };
+
+      oslo = {
+        outputs = [
+          {
+            criteria = "eDP-1";
+            mode = "2256x1504";
+            position = "320,1080";
+            scale = 1.5;
+          }
+          {
+            criteria = "Acer Technologies ED320QR P 31100208D3W01";
+            mode = "1920x1080";
+            position = "0,0";
+            scale = 1.0;
+          }
+        ];
+
+        exec = [
+          "${pkgs.sway}/bin/swaymsg workspace number 1, move workspace to '\"Acer Technologies ED320QR P 31100208D3W01\"'"
+          "${pkgs.sway}/bin/swaymsg workspace number 2, move workspace to '\"Acer Technologies ED320QR P 31100208D3W01\"'"
           "${pkgs.sway}/bin/swaymsg workspace number 3, move workspace to eDP-1"
           "${pkgs.sway}/bin/swaymsg workspace number 4, move workspace to eDP-1"
         ];
