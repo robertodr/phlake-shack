@@ -257,6 +257,7 @@
               brave
               flameshot
               mpris-proxy
+              obs-studio
               pasystray
             ];
 
