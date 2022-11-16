@@ -3,7 +3,7 @@
     enable = true;
     package = pkgs.greetd.gtkgreet;
     settings = {
-      default_session.command = "sway --config /etc/greetd/sway-config";
+      default_session.command = "${pkgs.sway}/bin/sway --config /etc/greetd/sway-config";
     };
   };
 
@@ -17,11 +17,11 @@
 
     "greetd/sway-config".text = ''
       # `-l` activates layer-shell mode. Notice that `swaymsg exit` will run after gtkgreet.
-      exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css; swaymsg exit"
+      exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css; ${pkgs.sway}/bin/swaymsg exit"
 
       input type:keyboard xkb_layout it(us)
 
-      bindsym Mod4+shift+e exec swaynag \
+      bindsym Mod4+shift+e exec ${pkgs.sway}/bin/swaynag \
         -t warning \
         -m 'What do you want to do?' \
         -b 'Poweroff' 'systemctl poweroff' \

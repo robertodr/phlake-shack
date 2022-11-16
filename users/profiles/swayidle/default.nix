@@ -1,6 +1,6 @@
 {pkgs, ...}: let
   lockCmd = "swaylock";
-  resumeCmd = "swaymsg \"output * dpms on\"";
+  resumeCmd = "${pkgs.sway}/bin/swaymsg \"output * dpms on\"";
 in {
   services.swayidle = {
     enable = true;
@@ -27,8 +27,8 @@ in {
       # turn off displays after 300 seconds idle
       {
         timeout = 300;
-        command = "swaymsg \"output * dpms off\"";
-        #command = "if pgrep swaylock; then swaymsg \"output * dpms off\"; fi";
+        command = "${pkgs.sway}/bin/swaymsg \"output * dpms off\"";
+        #command = "if pgrep swaylock; then ${pkgs.sway}/bin/swaymsg \"output * dpms off\"; fi";
         #resumeCommand = "if pgrep swaylock; ${resumeCmd}; fi";
         resumeCommand = "${resumeCmd}";
       }
