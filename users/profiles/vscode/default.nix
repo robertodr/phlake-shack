@@ -8,7 +8,6 @@
         ms-vscode.cpptools
         ms-vsliveshare.vsliveshare
         vscodevim.vim
-        tuttieee.emacs-mcx
         # is this needed when the python extension is installed?
         ms-toolsai.jupyter
       ]
