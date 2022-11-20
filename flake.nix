@@ -258,7 +258,6 @@
               flameshot
               mpris-proxy
               obs-studio
-              pasystray
             ];
 
             office = with profiles; [

@@ -33,6 +33,7 @@ in
         modules-left = [
           "sway/workspaces"
           "sway/language"
+          "pulseaudio"
         ];
 
         modules-center = [
@@ -56,6 +57,27 @@ in
           format = "{short} {variant} ";
           on-click = "${pkgs.sway}/bin/swaymsg input type:keyboard xkb_switch_layout next";
           tooltip = false;
+        };
+
+        pulseaudio = {
+          reverse-scrolling = 1;
+          format = "{volume}% {icon} {format_source}";
+          format-bluetooth = "{volume}% {icon} {format_source}";
+          format-bluetooth-muted = " {icon} {format_source}";
+          format-muted = " {format_source}";
+          format-source = " {volume}%";
+          format-source-muted = "";
+          format-icons = {
+            headphone = "";
+            hands-free = "";
+            headset = "";
+            phone = "";
+            portable = "";
+            car = "";
+            default = [ "" "" "" ];
+          };
+          on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
+          min-length = 13;
         };
 
         clock = {
@@ -167,6 +189,7 @@ in
       #language {
           padding-left: 16px;
           padding-right: 8px;
+          margin-right: 8px;
           border-radius: 10px;
           transition: none;
           color: #ffffff;
