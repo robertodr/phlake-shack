@@ -1,4 +1,15 @@
-{pkgs, ...}: {
+{ config, pkgs, ... }:
+
+let
+
+  wttr = pkgs.writers.writePython3Bin "wttr.py"
+    {
+      libraries = [ pkgs.python3Packages.requests ];
+    }
+    (builtins.readFile ./wttr.py);
+
+in
+{
   # TODO review styling, especially colors!
   programs.waybar = {
     enable = true;
@@ -16,112 +27,59 @@
 
         position = "top";
 
+        # top|left|bottom|right
+        margin = "5 2 5 2";
+
         modules-left = [
           "sway/workspaces"
-          #"custom/right-arrow-dark"
-          #"custom/right-arrow-light"
           "sway/language"
-          #"custom/right-arrow-dark"
         ];
 
         modules-center = [
-          #"custom/left-arrow-dark"
-          "clock#1"
-          #"custom/left-arrow-light"
-          #"custom/left-arrow-dark"
-          "clock#2"
-          #"custom/right-arrow-dark"
-          #"custom/right-arrow-light"
-          "clock#3"
-          #"custom/right-arrow-dark"
+          "clock"
+          "custom/weather"
         ];
 
         modules-right = [
-          #"custom/left-arrow-dark"
-          #"pulseaudio"
-          #"custom/left-arrow-light"
-          #"custom/left-arrow-dark"
           "memory"
-          #"custom/left-arrow-light"
-          #"custom/left-arrow-dark"
           "cpu"
-          #"custom/left-arrow-light"
-          #"custom/left-arrow-dark"
           "battery"
-          #"custom/left-arrow-light"
-          #"custom/left-arrow-dark"
           "tray"
         ];
-
-        "custom/left-arrow-dark" = {
-          format = "";
-          tooltip = false;
-        };
-
-        "custom/left-arrow-light" = {
-          format = "";
-          tooltip = false;
-        };
-
-        "custom/right-arrow-dark" = {
-          format = "";
-          tooltip = false;
-        };
-
-        "custom/right-arrow-light" = {
-          format = "";
-          tooltip = false;
-        };
 
         "sway/workspaces" = {
           disable-scroll = true;
           format = "{name}";
         };
 
-        # day of the week
-        "clock#1" = {
-          format = "{:%A}";
+        "sway/language" = {
+          format = "{short} {variant} ";
+          on-click = "${pkgs.sway}/bin/swaymsg input type:keyboard xkb_switch_layout next";
           tooltip = false;
         };
 
-        # hour
-        "clock#2" = {
-          format = "{:%H:%M}";
-          tooltip = false;
-        };
-
-        # day and month
-        "clock#3" = {
-          format = "{:%d %B}";
+        clock = {
+          format = "{:%A  %d %B  %H:%M}";
           tooltip = true;
           tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-          #today-format = "<span color='#ff6699'><b><u>{}</u></b></span>";
-          calendar-weeks-pos = "left";
-          #format-calendar = "<span color='#ecc6d9'><b>{}</b></span>";
-          #format-calendar-weeks = "<span color='#99ffdd'><b>{}</b></span>";
-          #format-calendar-weekdays = "<span color='#ffcc66'><b>{}</b></span>";
+          today-format = "<span color='#ff6699'><b><u>{}</u></b></span>";
+          format-calendar = "<span color='#ecc6d9'><b>{}</b></span>";
+          format-calendar-weekdays = "<span color='#ffcc66'><b>{}</b></span>";
+          calendar-weeks-pos = "right";
+          format-calendar-weeks = "<span color='#99ffdd'><b><tt><small>{:%V}</small></tt></b></span>";
         };
 
-        # FIXME I am using pipewire
-        pulseaudio = {
-          format = "{icon} {volume=2}%";
-          format-bluetooth = "{icon}  {volume}%";
-          format-muted = "MUTE";
-          format-icons = {
-            headphones = "";
-            default = [
-              ""
-              ""
-            ];
-          };
-          scroll-step = 5;
-          on-click = "pamixer -t";
-          on-click-right = "pavucontrol";
+        "custom/weather" = {
+          format = "{}";
+          tooltip = true;
+          interval = 1800;
+          exec = "${wttr}/bin/wttr.py";
+          return-type = "json";
         };
 
         memory = {
           interval = 30;
-          format = "{}% ";
+          format = "{}% ";
         };
 
         cpu = {
@@ -136,6 +94,9 @@
             critical = 15;
           };
           format = "{capacity}% {icon}";
+          format-charging = "{capacity}% ";
+          format-plugged = "{capacity}% ";
+          format-alt = "{time} {icon}";
           format-icons = [
             ""
             ""
@@ -143,11 +104,6 @@
             ""
             ""
           ];
-        };
-
-        "sway/language" = {
-          format = "{short} {variant}";
-          on-click = "swaymsg input type:keyboard xkb_switch_layout next";
         };
 
         "tray" = {
@@ -160,73 +116,150 @@
 
     style = ''
       * {
-        font-size: 20px;
-        font-family: "M PLUS 2 Regular", sans-serif;
+        border: none;
+        border-radius: 0;
+        font-family: "M PLUS 2", "Font Awesome 6 Free Solid", "Weather Icons";
+        min-height: 20px;
       }
 
       window#waybar {
-        background: #292b2e;
-        color: #fdf6e3;
+        background: transparent;
       }
 
-      #custom-right-arrow-dark,
-      #custom-left-arrow-dark {
-        color: #1a1a1a;
-      }
-      #custom-right-arrow-light,
-      #custom-left-arrow-light {
-        color: #292b2e;
-        background: #1a1a1a;
+      window#waybar.hidden {
+          opacity: 0.2;
       }
 
-      #workspaces,
-      #clock.1,
-      #clock.2,
-      #clock.3,
-      #memory,
-      #cpu,
-      #battery,
-      #language,
-      #tray {
-        background: #1a1a1a;
+      #workspaces {
+          margin-right: 8px;
+          border-radius: 10px;
+          transition: none;
+          background: #383c4a;
       }
 
       #workspaces button {
-        padding: 0 2px;
-        color: #fdf6e3;
+          transition: none;
+          color: #7c818c;
+          background: transparent;
+          padding: 5px;
+          font-size: 18px;
       }
+
+      #workspaces button.persistent {
+          color: #7c818c;
+          font-size: 12px;
+      }
+
+      /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+      #workspaces button:hover {
+          transition: none;
+          box-shadow: inherit;
+          text-shadow: inherit;
+          border-radius: inherit;
+          color: #383c4a;
+          background: #7c818c;
+      }
+
       #workspaces button.focused {
-        color: #268bd2;
-      }
-      #workspaces button:hover {
-        box-shadow: inherit;
-        text-shadow: inherit;
-      }
-      #workspaces button:hover {
-        background: #1a1a1a;
-        border: #1a1a1a;
-        padding: 0 3px;
+          color: white;
       }
 
-      #memory {
-        color: #2aa198;
-      }
-      #cpu {
-        color: #6c71c4;
-      }
-      #battery {
-        color: #859900;
-      }
       #language {
-        color: #b58900;
+          padding-left: 16px;
+          padding-right: 8px;
+          border-radius: 10px;
+          transition: none;
+          color: #ffffff;
+          background: #383c4a;
       }
 
-      #clock,
-      #memory,
+      #clock {
+          padding-left: 16px;
+          padding-right: 16px;
+          border-radius: 10px 0px 0px 10px;
+          transition: none;
+          color: #ffffff;
+          background: #383c4a;
+      }
+
+      #custom-weather {
+          padding-right: 16px;
+          border-radius: 0px 10px 10px 0px;
+          transition: none;
+          color: #ffffff;
+          background: #383c4a;
+      }
+
+      #pulseaudio {
+          margin-right: 8px;
+          padding-left: 16px;
+          padding-right: 16px;
+          border-radius: 10px;
+          transition: none;
+          color: #ffffff;
+          background: #383c4a;
+      }
+
+      #pulseaudio.muted {
+          background-color: #90b1b1;
+          color: #2a5c45;
+      }
+
       #cpu,
-      #battery,
-      #language {
-        padding: 0 10px;
+      #memory {
+          margin-right: 8px;
+          padding-left: 16px;
+          padding-right: 16px;
+          border-radius: 10px;
+          transition: none;
+          color: #ffffff;
+          background: #383c4a;
+      }
+
+      #battery {
+          margin-right: 8px;
+          padding-left: 16px;
+          padding-right: 16px;
+          border-radius: 10px;
+          transition: none;
+          color: #ffffff;
+          background: #383c4a;
+      }
+
+      #battery.charging {
+          color: #ffffff;
+          background-color: #26A65B;
+      }
+
+      #battery.warning:not(.charging) {
+          background-color: #ffbe61;
+          color: black;
+      }
+
+      #battery.critical:not(.charging) {
+          background-color: #f53c3c;
+          color: #ffffff;
+          animation-name: blink;
+          animation-duration: 0.5s;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          animation-direction: alternate;
+      }
+
+      #tray {
+          padding-left: 16px;
+          padding-right: 16px;
+          border-radius: 10px;
+          transition: none;
+          color: #ffffff;
+          background: #383c4a;
+      }
+
+      @keyframes blink {
+          to {
+              background-color: #ffffff;
+              color: #000000;
+          }
       }
     '';
   };
