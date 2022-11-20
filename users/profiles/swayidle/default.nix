@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  lockCmd = "swaylock";
+  lockCmd = "${pkgs.swaylock}/bin/swaylock";
   resumeCmd = "${pkgs.sway}/bin/swaymsg \"output * dpms on\"";
 in {
   services.swayidle = {
