@@ -1,5 +1,4 @@
-{pkgs, ...}: {
-  # TODO most of these fonts should be installed in a user profile
+{ pkgs, ... }: {
   fonts = {
     fontDir.enable = true;
     fonts = with pkgs; [
@@ -11,6 +10,7 @@
       fira-code
       fira-code-symbols
       fira-mono
+      font-awesome
       gentium
       gyre-fonts
       inconsolata
@@ -18,17 +18,25 @@
       lmmath
       material-design-icons
       material-icons
-      nerdfonts
       nur.repos.robertodr.mplus-fonts
       open-sans
+      openmoji-black
+      openmoji-color
       terminus_font
-      tex-gyre-math.bonum
-      tex-gyre-math.pagella
-      tex-gyre-math.schola
-      tex-gyre-math.termes
       ubuntu_font_family
       unifont
+      weather-icons
       xits-math
     ];
+    fontconfig = {
+      enable = true;
+      antialias = true;
+      defaultFonts = {
+        serif = [ "Gentium" ];
+        sansSerif = [ "M PLUS 2 Regular" ];
+        monospace = [ "Fira Code" ];
+        emoji = [ "OpenMoji Color" ];
+      };
+    };
   };
 }
