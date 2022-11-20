@@ -11,7 +11,7 @@
   alwaysRun = [
   ];
 
-  lockCmd = "\'${pkgs.playerctl}/bin/playerctl -a pause; swaylock\'";
+  lockCmd = "\'${pkgs.playerctl}/bin/playerctl -a pause; ${pkgs.swaylock}/bin/swaylock\'";
 
   # commands to be run on sway startup
   # TODO probably add 1password GUI as well?
@@ -22,23 +22,12 @@
     "thunderbird"
     # FIXME Joplin looks crappy with Wayland, but the electron flags do not work...
     "joplin-desktop"
-    "sworkstyle &> /tmp/sworkstyle.log"
   ];
 in {
   home.packages = with pkgs; [
     thunderbird-wayland
     wl-clipboard
-    swayest-workstyle
   ];
-
-  xdg.configFile."sworkstyle/config.toml".text = ''
-    [matching]
-    'kitty' = ''
-    'brave-browser' = ''
-    '/[Bb]rave/' = ''
-    'Joplin' = 'ﴬ'
-    'ferdium'= ''
-  '';
 
   wayland = {
     windowManager = {
@@ -99,7 +88,7 @@ in {
           };
 
           fonts = {
-            names = ["M PLUS 2" "FontAwesome"];
+            names = ["M PLUS 2" "Font Awesome 6 Free Solid"];
             style = "Regular";
             size = 14.0;
           };
