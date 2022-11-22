@@ -230,7 +230,7 @@
               fish
               fzf
               git
-              gnome-keyring
+              #gnome-keyring
               gpg-agent
               jq
               kitty
