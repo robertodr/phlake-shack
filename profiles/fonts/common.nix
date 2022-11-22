@@ -1,6 +1,7 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   fonts = {
     fontDir.enable = true;
+
     fonts = with pkgs; [
       bakoma_ttf
       comfortaa
@@ -18,6 +19,7 @@
       lmmath
       material-design-icons
       material-icons
+      (nerdfonts.override {fonts = ["FiraCode"];})
       nur.repos.robertodr.mplus-fonts
       open-sans
       openmoji-black
@@ -28,14 +30,15 @@
       weather-icons
       xits-math
     ];
+
     fontconfig = {
       enable = true;
       antialias = true;
       defaultFonts = {
-        serif = [ "Gentium" ];
-        sansSerif = [ "M PLUS 2 Regular" ];
-        monospace = [ "Fira Code" ];
-        emoji = [ "OpenMoji Color" ];
+        serif = ["Gentium"];
+        sansSerif = ["M PLUS 2"];
+        monospace = ["Fira Code"];
+        emoji = ["OpenMoji Color"];
       };
     };
   };
