@@ -90,16 +90,11 @@ in {
           fonts = {
             names = ["M PLUS 2" "Font Awesome 6 Free Solid"];
             style = "Regular";
-            size = 14.0;
           };
 
           # TODO figure out how to switch based on hostname
           # see: https://git.sr.ht/~jshholland/nixos-configs/tree/master/item/home/sway.nix
           output = {
-            "*".background = ''
-              ${pkgs.pulse-demon}/share/pulse-demon.png fill
-            '';
-
             "eDP-1" = {
               mode = "2256x1504";
               scale = "1.5";

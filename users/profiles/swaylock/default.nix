@@ -7,7 +7,6 @@
       indicator-caps-lock = true;
       show-keyboard-layout = true;
       daemonize = true;
-      image = "${pkgs.pulse-demon}/share/blur-pulse-demon.png";
     };
   };
 }

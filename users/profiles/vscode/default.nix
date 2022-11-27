@@ -1,6 +1,14 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   programs.vscode = {
     enable = true;
+
+    enableUpdateCheck = false;
+    enableExtensionUpdateCheck = false;
+    userSettings = {
+      "telemetry.telemetryLevel" = "off";
+      "quarto.mathjax.theme" = "dark";
+    };
+
     extensions = with pkgs.vscode-extensions;
       [
         bbenoist.nix

@@ -8,10 +8,7 @@
       size = 32;
     };
 
-    font = {
-      name = "M PLUS 2 Regular";
-      size = 14;
-    };
+    font.size = 14;
 
     iconTheme = {
       name = "ePapirus";

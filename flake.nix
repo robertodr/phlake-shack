@@ -53,6 +53,19 @@
 
     # NUR packages
     nur.url = "github:nix-community/NUR";
+
+    base16-schemes = {
+      url = github:base16-project/base16-schemes;
+      flake = false;
+    };
+
+    stylix = {
+      url = "github:danth/stylix";
+      inputs = {
+        nixpkgs.follows = "latest";
+        home-manager.follows = "home";
+      };
+    };
   };
 
   outputs = {
@@ -66,6 +79,7 @@
     nvfetcher,
     nixpkgs,
     emacs-overlay,
+    stylix,
     ...
   } @ inputs:
     digga.lib.mkFlake
@@ -127,6 +141,7 @@
             digga.nixosModules.nixConfig
             home.nixosModules.home-manager
             agenix.nixosModules.age
+            stylix.nixosModules.stylix
           ];
         };
 
