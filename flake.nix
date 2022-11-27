@@ -247,6 +247,7 @@
               git
               gpg-agent
               jq
+              keychain
               kitty
               man
               neovim
