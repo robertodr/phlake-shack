@@ -29,7 +29,6 @@ in {
   home.packages = with pkgs; [
     arandr
     rofi-power-menu
-    thunderbird
   ];
 
   xsession = {

@@ -179,9 +179,12 @@
                 networking
                 powertop
                 programs._1password
+                programs.thunar
+                services.automatic-timezoned
                 services.earlyoom
                 services.fwupd
                 services.hardware.bolt
+                services.languagetool
                 services.openssh
                 services.thermald
                 services.udisks2

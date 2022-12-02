@@ -25,7 +25,6 @@
   ];
 in {
   home.packages = with pkgs; [
-    thunderbird-wayland
     wl-clipboard
   ];
 

@@ -3,7 +3,6 @@
     enable = true;
     packages = with pkgs; [
       dconf
-      gnome.nautilus
     ];
   };
 }

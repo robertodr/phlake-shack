@@ -12,7 +12,6 @@ channels: final: prev: {
     rage
     starship
     thunderbird
-    thunderbird-wayland
     treefmt
     zoom-us
     ;

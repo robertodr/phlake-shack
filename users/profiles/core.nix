@@ -127,7 +127,6 @@ in {
       evince
       ferdium
       gimp
-      gnome.nautilus
       joplin-desktop
       libreoffice
       nomacs
@@ -136,6 +135,7 @@ in {
       pdftk
       playerctl
       spotify
+      thunderbird
       vlc
       wordnet
       write_stylus

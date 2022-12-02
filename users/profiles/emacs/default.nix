@@ -120,7 +120,6 @@ in {
         sv
       ]))
     enchant
-    languagetool
 
     ##: === lang/lsp ===
 
