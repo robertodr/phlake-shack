@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.vscode = {
     enable = true;
 
@@ -30,8 +30,8 @@
         {
           name = "quarto";
           publisher = "quarto";
-          version = "1.54.0";
-          sha256 = "sha256-9sszs1DTzAeblIUE48jDTeU6GDDyLFzW2eQWaw0Y5zE=";
+          version = "1.57.0";
+          sha256 = "sha256-WpXcvznXmrZwY1kafETUKZ6puX7YVAt9JtG3IGmj5OA=";
         }
 
         {
@@ -65,8 +65,8 @@
         {
           name = "direnv";
           publisher = "mkhl";
-          version = "0.7.0";
-          sha256 = "sha256-MLBPhDBU8vPVvbde3fdwhxKvQa8orUMKAAXoOfNrbh4=";
+          version = "0.10.1";
+          sha256 = "sha256-Da9Anme6eoKLlkdYaeLFDXx0aQgrtepuUnw2jEPXCVU=";
         }
       ];
   };
