@@ -24,6 +24,10 @@
     };
   };
 
+  # Set your time zone.
+  # Home: "Europe/Stockholm";
+  time.timeZone = "Europe/Stockholm";
+
   environment = {
     # TODO review which packages should be here and which in user profiles
     systemPackages = with pkgs; [
