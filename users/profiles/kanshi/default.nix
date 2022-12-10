@@ -62,25 +62,25 @@
         ];
       };
 
-      oslo = {
+      tromso = {
         outputs = [
           {
             criteria = "eDP-1";
             mode = "2256x1504";
-            position = "320,1080";
+            position = "2560,260";
             scale = 1.5;
           }
           {
-            criteria = "Acer Technologies ED320QR P 31100208D3W01";
-            mode = "1920x1080";
+            criteria = "Dell Inc. DELL C2722DE F4FNZG3";
+            mode = "2560x1440";
             position = "0,0";
             scale = 1.0;
           }
         ];
 
         exec = [
-          "${pkgs.sway}/bin/swaymsg workspace number 1, move workspace to '\"Acer Technologies ED320QR P 31100208D3W01\"'"
-          "${pkgs.sway}/bin/swaymsg workspace number 2, move workspace to '\"Acer Technologies ED320QR P 31100208D3W01\"'"
+          "${pkgs.sway}/bin/swaymsg workspace number 1, move workspace to '\"Dell Inc. DELL C2722DE F4FNZG3\"'"
+          "${pkgs.sway}/bin/swaymsg workspace number 2, move workspace to '\"Dell Inc. DELL C2722DE F4FNZG3\"'"
           "${pkgs.sway}/bin/swaymsg workspace number 3, move workspace to eDP-1"
           "${pkgs.sway}/bin/swaymsg workspace number 4, move workspace to eDP-1"
         ];

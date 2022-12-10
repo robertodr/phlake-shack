@@ -44,7 +44,7 @@ in {
 
       # needed for electron-based applications to look OK on Wayland
       # though not all of them seem to honor it!
-      NIXOS_OZONE_WL="1";
+      NIXOS_OZONE_WL = "1";
     };
 
     stateVersion = lib.mkForce "22.05";
@@ -128,7 +128,6 @@ in {
       ferdium
       gimp
       joplin-desktop
-      libreoffice
       nomacs
       onlyoffice-bin
       pdf2svg
