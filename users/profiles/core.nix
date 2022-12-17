@@ -127,6 +127,7 @@ in {
       evince
       ferdium
       gimp
+      inkscape
       joplin-desktop
       nomacs
       onlyoffice-bin
