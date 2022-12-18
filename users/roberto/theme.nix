@@ -1,6 +1,8 @@
-{ inputs, pkgs, ... }:
-
 {
+  inputs,
+  pkgs,
+  ...
+}: {
   stylix = {
     image = pkgs.fetchurl {
       url = "https://www.pixelstalk.net/wp-content/uploads/2016/10/Paint-pattern-colored-abstract-background.jpg";
@@ -25,7 +27,7 @@
       monospace = {
         name = "Fira Code Retina";
         package =
-          (pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; });
+          pkgs.nerdfonts.override {fonts = ["FiraCode"];};
       };
 
       emoji = {

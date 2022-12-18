@@ -1,15 +1,15 @@
-{ config, pkgs, ... }:
-
-let
-
-  wttr = pkgs.writers.writePython3Bin "wttr.py"
+{
+  config,
+  pkgs,
+  ...
+}: let
+  wttr =
+    pkgs.writers.writePython3Bin "wttr.py"
     {
-      libraries = [ pkgs.python3Packages.requests ];
+      libraries = [pkgs.python3Packages.requests];
     }
     (builtins.readFile ./wttr.py);
-
-in
-{
+in {
   # TODO review styling, especially colors!
   programs.waybar = {
     enable = true;
@@ -74,7 +74,7 @@ in
             phone = "";
             portable = "";
             car = "";
-            default = [ "" "" "" ];
+            default = ["" "" ""];
           };
           on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
           min-length = 13;

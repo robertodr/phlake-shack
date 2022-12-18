@@ -1,12 +1,13 @@
-{ hmUsers
-, pkgs
-, ...
+{
+  hmUsers,
+  pkgs,
+  ...
 }: {
   home-manager.users = {
     inherit (hmUsers) roberto;
   };
 
-  imports = [ ./theme.nix ];
+  imports = [./theme.nix];
 
   users.users.roberto = {
     description = "Roberto Di Remigio Eikås";
