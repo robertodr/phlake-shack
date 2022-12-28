@@ -58,8 +58,9 @@ WEATHER_CODES = {
 
 data = {}
 
+position = requests.get("https://ipinfo.io/json").json()
 
-weather = requests.get("https://wttr.in/, ?format=j1").json()
+weather = requests.get(f"https://wttr.in/{position['city']}?format=j1").json()
 
 
 def format_time(time):
