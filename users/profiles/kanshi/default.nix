@@ -1,4 +1,8 @@
 {pkgs, ...}: {
+  home.packages = [
+    pkgs.wdisplays
+  ];
+
   services.kanshi = {
     enable = true;
 
