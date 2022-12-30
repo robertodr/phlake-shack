@@ -23,51 +23,59 @@
         {
           name = "language-julia";
           publisher = "julialang";
-          version = "1.7.12";
-          sha256 = "sha256-g6os6ktSWzUSCnLzMkGRoOhCEvU3gXcGGj2cq1NKkaE=";
-        }
-
-        {
-          name = "quarto";
-          publisher = "quarto";
-          version = "1.57.0";
-          sha256 = "sha256-WpXcvznXmrZwY1kafETUKZ6puX7YVAt9JtG3IGmj5OA=";
-        }
-
-        {
-          name = "cmake-tools";
-          publisher = "ms-vscode";
-          version = "1.13.16";
-          sha256 = "sha256-DMfSIsbtCaLk7xFZq4aI4Of6+2QCX/WesuBGjzOdnWw=";
+          version = "1.40.1";
+          sha256 = "1pw2s8qdgvacrb8bfxz4baszlzkc2frrvgk3n9g30vzfj0kprw84";
         }
 
         {
           name = "magit";
           publisher = "kahole";
-          version = "0.6.34";
-          sha256 = "sha256-EbjXBffpiI1z6GDzumx5Vw7JgDsXCalsf+4mOm/SzDM=";
-        }
-
-        {
-          name = "remote-ssh";
-          publisher = "ms-vscode-remote";
-          version = "0.92.0";
-          sha256 = "sha256-Mrfv7rhNT6H+cZcgRGPZEFFnxHp6WX9rNVs1xV6NSLw=";
-        }
-
-        {
-          name = "remote-containers";
-          publisher = "ms-vscode-remote";
-          version = "0.260.0";
-          sha256 = "sha256-MnY0NdfLEP4cDBUwuQPLFZUUxWJDH2838tq0Cslm+L4=";
+          version = "0.6.36";
+          sha256 = "0fkrjcw3kiggdqd81v03q80mgdv6ykckpi25mcj9jp4vz027dgg3";
         }
 
         {
           name = "direnv";
           publisher = "mkhl";
           version = "0.10.1";
-          sha256 = "sha256-Da9Anme6eoKLlkdYaeLFDXx0aQgrtepuUnw2jEPXCVU=";
+          sha256 = "0m89sx1qqdkwa9pfmd9b11lp8z0dqpi6jn27js5q4ymscyg41bqd";
         }
+
+        {
+          name = "remote-containers";
+          publisher = "ms-vscode-remote";
+          version = "0.269.0";
+          sha256 = "0zlssgrr5d3cxivjyv6ifx6nl8ai08nf4kahsdb4w0cv0bl3hxph";
+        }
+
+        {
+          name = "remote-ssh";
+          publisher = "ms-vscode-remote";
+          version = "0.95.2022122215";
+          sha256 = "105bmfgi3ir0smjr7rwigwwa7ar5kklrw22qr6755dgsppbq4kpy";
+        }
+
+        {
+          name = "cmake-tools";
+          publisher = "ms-vscode";
+          version = "1.13.32";
+          sha256 = "08rimkqlcmzdw9qhm3y7lwx10mfdds11v6zflqblnxsc0ag9bcgi";
+        }
+
+        {
+          name = "quarto";
+          publisher = "quarto";
+          version = "1.59.0";
+          sha256 = "0piqxdf73n34pj58wf4wz4i2mkmrhg7xn96zhzaiqs1613b8cjip";
+        }
+
+        # can't install it :(
+        #{
+        #  name = "ruff";
+        #  publisher = "charliermash";
+        #  version = "2022.1.13600349";
+        #  sha256 = "sha256-Da9Anme6eoKLlkdYaeLFDXx0aQgrtepuUnw2jEPXCVr=";
+        #}
       ];
   };
 }
