@@ -68,6 +68,9 @@ Host *.repo.borgbase.com
   IdentityFile ~/.ssh/borgbase_ed25519
 
 ## Algorithmiq
+Host algone
+  HostName %h.clusters.algorithmiq.fi
+  User roberto
 Host algotwo
-  HostName algotwo.clusters.algorithmiq.fi
+  HostName %h.clusters.algorithmiq.fi
   User roberto
