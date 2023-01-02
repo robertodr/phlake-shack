@@ -21,6 +21,13 @@
       ]
       ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
+          name = "gitlens";
+          publisher = "eamodio";
+          version = "2022.12.2304";
+          sha256 = "17zzx86k767d0hp6yidxq41mfvqvm8588kxdk1zkr8rlqsxjadz0";
+        }
+
+        {
           name = "language-julia";
           publisher = "julialang";
           version = "1.40.1";
