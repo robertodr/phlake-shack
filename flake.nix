@@ -266,6 +266,7 @@
             development = with profiles; [
               direnv
               emacs
+              gh
               nix-index
               tmpi
               vscode
