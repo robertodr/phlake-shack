@@ -123,6 +123,7 @@ in {
       python3
 
       asciinema
+      calibre
       drawio
       evince
       ferdium
