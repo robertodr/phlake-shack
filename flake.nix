@@ -40,11 +40,6 @@
       inputs.nixpkgs.follows = "latest";
     };
 
-    nvfetcher = {
-      url = "github:berberman/nvfetcher";
-      inputs.nixpkgs.follows = "nixos";
-    };
-
     # age-encrypted secrets for NixOS
     agenix = {
       url = "github:ryantm/agenix";
@@ -76,7 +71,6 @@
     nixos-hardware,
     nur,
     agenix,
-    nvfetcher,
     nixpkgs,
     emacs-overlay,
     stylix,
@@ -119,7 +113,6 @@
 
         nur.overlay
         agenix.overlay
-        nvfetcher.overlay
         emacs-overlay.overlay
 
         (import "${fetchTarball {

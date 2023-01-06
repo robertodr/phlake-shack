@@ -14,7 +14,6 @@
     mdbook
     nixUnstable
     nixpkgs-fmt
-    nvfetcher-bin
     treefmt
     ;
 
@@ -49,13 +48,6 @@ in {
     [
       (devos nixUnstable)
       (devos agenix)
-
-      {
-        category = "devos";
-        name = nvfetcher-bin.pname;
-        help = nvfetcher-bin.meta.description;
-        command = "cd $PRJ_ROOT/pkgs; ${nvfetcher-bin}/bin/nvfetcher -c ./sources.toml $@";
-      }
 
       (linter alejandra)
       (linter treefmt)
