@@ -41,10 +41,6 @@ in {
       PHLAKE_SHACK_DIR = config.lib.phlake-shack.fsPath;
 
       LESSHISTFILE = "$XDG_STATE_HOME/lesshst";
-
-      # needed for electron-based applications to look OK on Wayland
-      # though not all of them seem to honor it!
-      NIXOS_OZONE_WL = "1";
     };
 
     stateVersion = lib.mkForce "22.05";
