@@ -23,8 +23,8 @@
         {
           name = "gitlens";
           publisher = "eamodio";
-          version = "2022.12.2304";
-          sha256 = "17zzx86k767d0hp6yidxq41mfvqvm8588kxdk1zkr8rlqsxjadz0";
+          version = "2023.1.104";
+          sha256 = "1rg99gfv4zz7l1rx0hpgq6f0kn22k61qbi257czcdnsdzd05qyn6";
         }
 
         {
@@ -65,8 +65,8 @@
         {
           name = "cmake-tools";
           publisher = "ms-vscode";
-          version = "1.13.32";
-          sha256 = "08rimkqlcmzdw9qhm3y7lwx10mfdds11v6zflqblnxsc0ag9bcgi";
+          version = "1.13.33";
+          sha256 = "1x0ji8dgmr64fkvh8nz953xcyaarfqbfkf3q2p157xm7pl3zv9k0";
         }
 
         {
@@ -80,7 +80,7 @@
         #{
         #  name = "ruff";
         #  publisher = "charliermash";
-        #  version = "2022.1.13600349";
+        #  version = "2023.3.10031531";
         #  sha256 = "sha256-Da9Anme6eoKLlkdYaeLFDXx0aQgrtepuUnw2jEPXCVr=";
         #}
       ];
