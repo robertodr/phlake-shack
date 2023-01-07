@@ -16,12 +16,13 @@
   # commands to be run on sway startup
   # TODO probably add 1password GUI as well?
   run = [
-    "kitty"
+    "wezterm"
     "\"brave --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
-    "\"ferdium --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
+    # FIXME usage of the flags broke, so reverting to plain invocation
+    #"\"ferdium --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
+    "ferdium"
     "thunderbird"
-    # FIXME Joplin looks crappy with Wayland, but the electron flags do not work...
-    "joplin-desktop"
+    "\"joplin-desktop --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
   ];
 in {
   home.packages = with pkgs; [
@@ -60,7 +61,7 @@ in {
             };
           };
 
-          terminal = "kitty";
+          terminal = "wezterm";
 
           modifier = "${mod}";
 

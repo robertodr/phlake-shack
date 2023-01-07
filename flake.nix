@@ -13,7 +13,7 @@
 
   inputs = {
     # Track channels with commits tested and built by hydra
-    nixos.url = "github:nixos/nixpkgs/nixos-22.05";
+    nixos.url = "github:nixos/nixpkgs/nixos-22.11";
     latest.url = "github:nixos/nixpkgs/nixos-unstable";
     # known-to-work commit with ZFS and recent enough Linux kernel
     nixos-zoidberg.url = "github:nixos/nixpkgs?rev=2da64a81275b68fdad38af669afeda43d401e94b";
@@ -252,6 +252,7 @@
               tealdeer
               tmux
               udiskie
+              wezterm
               zellij
               zoxide
             ];
