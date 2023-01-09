@@ -159,7 +159,14 @@ in {
                 app_id = "^brave-browser$";
               }
             ];
-            "number 3" = [{app_id = "^@joplin$";} {app_id = "^ferdium$";}];
+            "number 3" = [
+              {app_id = "^@joplin";}
+              {app_id = "^ferdium$";}
+              {
+                instance = "^ferdium$";
+                class = "^Ferdium$";
+              }
+            ];
             "number 4" = [{app_id = "^thunderbird$";}];
           };
 
