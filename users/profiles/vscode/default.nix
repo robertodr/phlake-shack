@@ -83,6 +83,13 @@
         #  version = "2023.3.10031531";
         #  sha256 = "sha256-Da9Anme6eoKLlkdYaeLFDXx0aQgrtepuUnw2jEPXCVr=";
         #}
+
+        {
+          name = "protein-viewer";
+          publisher = "ArianJamasb";
+          version = "0.1.0";
+          sha256 = "sha256-xsqpuVVyeeEuz4uu4S9hCW9q+7xyy79s9XVockMiucw=";
+        }
       ];
   };
 }
