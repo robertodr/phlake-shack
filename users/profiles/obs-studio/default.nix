@@ -1,6 +1,10 @@
-{pkgs, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   programs.obs-studio = {
     enable = true;
-    plugins = [pkgs.obs-studio-plugins.wlrobs];
+    plugins = lib.attrVals ["wlrobs"] pkgs.obs-studio-plugins;
   };
 }
