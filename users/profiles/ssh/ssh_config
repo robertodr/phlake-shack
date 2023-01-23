@@ -73,3 +73,7 @@ Host algone algotwo
   User roberto
   ForwardAgent yes
   IdentityFile ~/.ssh/id_ed25519
+Host bebe
+  Hostname %h.algorithmiq.fi
+  User roberto
+  Port 10022
