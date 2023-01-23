@@ -167,6 +167,7 @@
       # logging
       rank = "shortlog -sn --no-merges";
       last = "log -1 HEAD";
+      graph = "log --all --graph --decorate --oneline";
       ll = "log --stat";
       sha = "log --pretty=format:'%h' -n 1";
       lol = "log --graph --decorate --pretty=oneline --abbrev-commit";
