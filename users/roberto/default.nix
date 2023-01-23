@@ -20,15 +20,15 @@
       "audio"
       "disk"
       "docker"
-      "docker"
       "input"
       "networkmanager"
+      # I don't understand why I need to do this _explicitly_
+      "onepassword-cli"
       "root"
       "systemd-journal"
       "users"
       "vboxusers"
       "video"
-      "wheel"
       "wheel"
     ];
     shell = pkgs.fish;
