@@ -75,5 +75,5 @@ Host algone algotwo
   IdentityFile ~/.ssh/id_ed25519
 Host bebe
   Hostname %h.algorithmiq.fi
-  User roberto
+  User robertodr
   Port 10022
