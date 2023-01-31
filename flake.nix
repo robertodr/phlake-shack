@@ -112,7 +112,7 @@
         })
 
         nur.overlay
-        agenix.overlay
+        agenix.overlays.default
         emacs-overlay.overlay
 
         (import "${fetchTarball {
