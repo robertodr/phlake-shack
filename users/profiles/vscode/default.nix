@@ -26,14 +26,14 @@
         {
           name = "ruff";
           publisher = "charliermarsh";
-          version = "2023.5.10291638";
-          sha256 = "sha256-231jttvt3v9NqagkntCOahFK2TtDGk7TPPqo7EzrgsQ=";
+          version = "2023.6.0";
+          sha256 = "sha256-TomJMcL/JYFQkrbWGimUYJlvEJxDzQH656R9Z1HiQN4=";
         }
         {
           name = "gitlens";
           publisher = "eamodio";
-          version = "2023.1.3011";
-          sha256 = "1q6n1xr7r53vw9f8bnf9x49s320r822f5xgivyq7cjhngz3csfaw";
+          version = "2023.2.304";
+          sha256 = "1is0mfxl2qyf00i5p80nh6bfaz0a0sa4gvdr32fjbizgnz9465k8";
         }
         {
           name = "language-julia";
@@ -56,14 +56,14 @@
         {
           name = "python";
           publisher = "ms-python";
-          version = "2023.1.10271009";
-          sha256 = "1q8big0c4w8r14lvrkp5l2y26c1fkb7ili647pgzgj1vwal0g0g4";
+          version = "2023.3.10341119";
+          sha256 = "1nplfvjx7arjw1ljy8rfw7vz04y5l5rlzryxjwxd7dq5nz3hwda9";
         }
         {
           name = "jupyter";
           publisher = "ms-toolsai";
-          version = "2023.1.2000281008";
-          sha256 = "0jykd8dqbp3q7fbjyc19yan3d24fg7mdf8m5bqddgayl48qbirqd";
+          version = "2023.2.1000360234";
+          sha256 = "0a06rzjizr8h1vyczvk1aysparf0xhk70iw86i49f6pw72pa52wn";
         }
         {
           name = "jupyter-keymap";
@@ -74,38 +74,38 @@
         {
           name = "remote-containers";
           publisher = "ms-vscode-remote";
-          version = "0.274.0";
-          sha256 = "0y7skjrs8bckw86zbc7f1npyhjdmn49p27j26fd8q9g53s8bm1xh";
+          version = "0.276.0";
+          sha256 = "1973x9r4k2b8919wzpash17c58csv2d6k953szfk3gcrvx8xdffq";
         }
         {
           name = "remote-ssh";
           publisher = "ms-vscode-remote";
-          version = "0.95.2023012415";
-          sha256 = "1zl0my7i70s70vxiqak8yhfqbbzk2jb97pk39iyg22flgikb2bq9";
+          version = "0.97.2023020215";
+          sha256 = "0iy0s4whm19r59a5x03phk71ryf9arbmpi5qasa44ymnhhhl1a4w";
         }
         {
           name = "cmake-tools";
           publisher = "ms-vscode";
-          version = "1.14.4";
-          sha256 = "08v6cbjl4sy2p6vay4g8rdg9ybh0wf6lragmirm17718rfyvykrv";
+          version = "1.14.6";
+          sha256 = "1cip4250332ywipvbd9h6xqrr861n22ri7acw00i7ximvghvnf49";
         }
         {
           name = "cpptools";
           publisher = "ms-vscode";
-          version = "1.14.0";
-          sha256 = "sha256-rnZqy94LedtULLm2i65usffnjDdWursxrd2oI1zTV5s=";
+          version = "1.14.1";
+          sha256 = "02c17s2w6bxv5gdpjvx2fks7ci256nbjm57cavrxycwc4appr8xh";
         }
         {
           name = "vsliveshare";
           publisher = "ms-vsliveshare";
-          version = "1.0.5823";
-          sha256 = "0sb6fm2z8cnz3da6wmljwi0fvfjkm9vvmb1xgqfwfn6qd3r2yi1b";
+          version = "1.0.5828";
+          sha256 = "1myk9njk2l3r989vf6m1x7ff0ygkrpkf2i5h2ba3zczp4sp8fh6d";
         }
         {
           name = "quarto";
           publisher = "quarto";
-          version = "1.59.0";
-          sha256 = "0piqxdf73n34pj58wf4wz4i2mkmrhg7xn96zhzaiqs1613b8cjip";
+          version = "1.61.0";
+          sha256 = "0sr5y2w7cfcyhjmszcmphx321d618snh8dbqvr8ydv7d8j92891k";
         }
         {
           name = "vim";
