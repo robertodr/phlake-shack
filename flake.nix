@@ -15,8 +15,6 @@
     # Track channels with commits tested and built by hydra
     nixos.url = "github:nixos/nixpkgs/nixos-22.11";
     latest.url = "github:nixos/nixpkgs/nixos-unstable";
-    # known-to-work commit with ZFS and recent enough Linux kernel
-    nixos-zoidberg.url = "github:nixos/nixpkgs?rev=2da64a81275b68fdad38af669afeda43d401e94b";
 
     home = {
       url = "github:nix-community/home-manager";
@@ -36,7 +34,7 @@
 
     # bleeding edge emacs overlay
     emacs-overlay = {
-      url = "github:nix-community/emacs-overlay?rev=2cf9caa06c8fbe3f973afd597584f08e3d56fdd6";
+      url = "github:nix-community/emacs-overlay?rev=88b2e9eda133e593558680ffb6262203db193ac4";
       inputs.nixpkgs.follows = "latest";
     };
 
@@ -96,9 +94,6 @@
           overlays = [
           ];
         };
-        nixos-zoidberg = {
-          overlays = [];
-        };
       };
 
       lib = import ./lib {lib = digga.lib // nixos.lib;};
@@ -141,12 +136,6 @@
         imports = [(digga.lib.importHosts ./hosts)];
         hosts = {
           # set host-specific properties here
-          zoidberg = {
-            system = "x86_64-linux";
-            channelName = "nixos-zoidberg";
-            modules = [nixos-hardware.nixosModules.lenovo-thinkpad-x1];
-          };
-
           captain-easychord = {
             system = "x86_64-linux";
             channelName = "latest";

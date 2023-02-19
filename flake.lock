@@ -390,22 +390,6 @@
         "type": "github"
       }
     },
-    "nixos-zoidberg": {
-      "locked": {
-        "lastModified": 1662019588,
-        "narHash": "sha256-oPEjHKGGVbBXqwwL+UjsveJzghWiWV0n9ogo1X6l4cw=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "2da64a81275b68fdad38af669afeda43d401e94b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "2da64a81275b68fdad38af669afeda43d401e94b",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1664435807,
@@ -460,7 +444,6 @@
         "latest": "latest",
         "nixos": "nixos",
         "nixos-hardware": "nixos-hardware",
-        "nixos-zoidberg": "nixos-zoidberg",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
         "stylix": "stylix"
