@@ -11,6 +11,7 @@
 (package! playerctl)
 (package! floobits)
 (package! magit-todos)
+(package! magit-annex)
 (package! smudge)
 (package! quarto-mode)
 ;(package! counsel-spotify)

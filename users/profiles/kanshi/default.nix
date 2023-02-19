@@ -13,9 +13,11 @@
 
       kth = import ./kth.nix {inherit pkgs;};
 
-      tromso = import ./tromso.nix {inherit pkgs;};
+      uit = import ./uit.nix {inherit pkgs;};
 
-      helsinki = import ./helsinki.nix {inherit pkgs;};
+      uio = import ./uio.nix {inherit pkgs;};
+
+      algo-hq = import ./algo-hq.nix {inherit pkgs;};
 
       bergen = import ./bergen.nix {inherit pkgs;};
     };

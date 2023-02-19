@@ -7,6 +7,7 @@
     userSettings = {
       "telemetry.telemetryLevel" = "off";
       "quarto.mathjax.theme" = "dark";
+      "files.trimTrailingWhitespace" = "true";
     };
 
     extensions = with pkgs.vscode-extensions;
