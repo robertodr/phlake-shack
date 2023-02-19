@@ -9,7 +9,7 @@
       sha256 = "sha256-kEdO+d3LXsRQdyyKck4YTkkwqz//CK8Z+RzXC9DSIpw=";
     };
 
-    base16Scheme = "${inputs.base16-schemes}/helios.yaml";
+    base16Scheme = "${inputs.base16-schemes}/papercolor-dark.yaml";
 
     polarity = "dark";
 
