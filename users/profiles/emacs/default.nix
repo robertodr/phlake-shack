@@ -59,7 +59,7 @@ in {
 
   programs.emacs = {
     enable = true;
-    package = pkgs.emacsPgtkNativeComp.overrideAttrs (attrs: {
+    package = pkgs.emacsPgtk.overrideAttrs (attrs: {
       # I don't want emacs.desktop file because I only use
       # emacsclient.
       postInstall =
