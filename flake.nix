@@ -162,6 +162,7 @@
                 powertop
                 programs._1password
                 programs.thunar
+                programs.gnupg
                 services.earlyoom
                 services.fwupd
                 services.geoclue2
@@ -170,6 +171,7 @@
                 services.openssh
                 services.thermald
                 services.udisks2
+                services.gnome-keyring
                 systemd
                 users.root
               ]);
@@ -231,8 +233,8 @@
               fzf
               git
               gpg-agent
+              gnome-keyring
               jq
-              keychain
               kitty
               man
               neovim
