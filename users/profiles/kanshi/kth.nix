@@ -1,11 +1,11 @@
 {pkgs, ...}: let
-  name = "ViewSonic Corporation VG2719-2K V4H174900131";
+  name = "Hewlett Packard HP ZR2740w CNT312Y0FK";
 in {
   outputs = [
     {
       criteria = "eDP-1";
       mode = "2256x1504";
-      position = "2560,260";
+      position = "540,1440";
       scale = 1.5;
     }
     {

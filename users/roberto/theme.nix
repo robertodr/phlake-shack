@@ -9,7 +9,7 @@
       sha256 = "sha256-kEdO+d3LXsRQdyyKck4YTkkwqz//CK8Z+RzXC9DSIpw=";
     };
 
-    base16Scheme = "${inputs.base16-schemes}/papercolor-dark.yaml";
+    base16Scheme = "${inputs.base16-schemes}/helios.yaml";
 
     polarity = "dark";
 
@@ -38,6 +38,8 @@
 
     targets = {
       grub.enable = false;
+      # see here: https://github.com/nix-community/home-manager/issues/3671
+      vscode.enable = false;
     };
   };
 }
