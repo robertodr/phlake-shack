@@ -98,9 +98,9 @@
 ;;                    :server-id 'clangd-remote)))
 
 ;; use alejandra as Nix formatter
-(after! nix-mode
-  (set-formatter! 'alejandra "alejandra" :modes '(nix-mode))
-  (puthash 'alejandra "alejandra" format-all--executable-table))
+;; (after! nix-mode
+;;   (set-formatter! 'alejandra "alejandra" :modes '(nix-mode))
+;;   (puthash 'alejandra "alejandra" format-all--executable-table))
 
 ;; TRAMP set up
 ;; Ratios equal to the default values of these variables of 10240 and 4096

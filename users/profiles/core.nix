@@ -14,6 +14,8 @@
     ;
 
   hmLib = config.lib;
+
+  mountdir = "${config.home.homeDirectory}/clouds/gdrive";
 in {
   lib.phlake-shack = rec {
     fsPath = "${configHome}/phlake-shack";
@@ -43,7 +45,7 @@ in {
       LESSHISTFILE = "$XDG_STATE_HOME/lesshst";
     };
 
-    stateVersion = lib.mkForce "22.05";
+    stateVersion = lib.mkForce "22.11";
 
     extraOutputsToInstall = [
       "doc"
@@ -139,5 +141,12 @@ in {
       xournalpp
       zoom-us
     ];
+  };
+
+  systemd.user = {
+    services = {
+      paperpile-mount = import ./gdrive-rclone/paperpile.nix {inherit mountdir pkgs;};
+      concepts-mount = import ./gdrive-rclone/concepts.nix {inherit mountdir pkgs;};
+    };
   };
 }
