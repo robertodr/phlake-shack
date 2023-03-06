@@ -31,8 +31,8 @@
       };
 
       emoji = {
-        name = "OpenMoji Color";
-        package = pkgs.openmoji-color;
+        name = "Noto Color Emoji";
+        package = pkgs.noto-fonts-emoji;
       };
     };
 

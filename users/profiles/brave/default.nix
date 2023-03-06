@@ -12,14 +12,12 @@
       {id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";}
       # C/C++ Search Extension
       {id = "ifpcmhciihicaljnhgobnhoehoabidhd";}
-      # hypothesis
-      {id = "bjfhmglciegochdpefhhlphglcehbmek";}
       # joplin web clipper
       {id = "alofnhikmmkdbbbgpnglcpdollgjjfek";}
+      # nordpvn
+      {id = "fjoaledfpmneenckfbpdfhkmimnjocfa";}
       # paperpile
       {id = "bomfdkbfpdhijjbeoicnfhjbdhncfhig";}
-      # unpaywall
-      {id = "iplffkdpngmdjhlpjmppncnlhomiipha";}
     ];
   };
 }

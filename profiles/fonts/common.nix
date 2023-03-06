@@ -46,7 +46,7 @@
         serif = ["Gentium"];
         sansSerif = ["M PLUS 2"];
         monospace = ["Fira Code"];
-        emoji = ["OpenMoji Color"];
+        emoji = ["Noto Color Emoji"];
       };
     };
   };
