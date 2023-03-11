@@ -9,6 +9,10 @@
       "quarto.mathjax.theme" = "dark";
       "files.trimTrailingWhitespace" = "true";
       "git.mergeEditor" = "true";
+      "autoDocstring.docstringFormat" = "google-notypes";
+      "editor.formatOnSave" = "true";
+      "python.analysis.diagnosticMode" = "workspace";
+      "python.formatting.provider" = "black";
     };
 
     extensions = with pkgs.vscode-extensions;
@@ -28,8 +32,8 @@
         {
           name = "ruff";
           publisher = "charliermarsh";
-          version = "2023.9.10640400";
-          sha256 = "1fr5s28rc7z6wz41blbyg4b4ibx1yw6fpi17knh01krr3fcm129d";
+          version = "2023.9.10700555";
+          sha256 = "0lm4bw710rg9qjw6p47qax50bzapx1z4sghd3fsbw4cwfg4734wf";
         }
         {
           name = "vscode-github-actions";
@@ -40,14 +44,14 @@
         {
           name = "gitlens";
           publisher = "eamodio";
-          version = "2023.3.604";
-          sha256 = "1qb4kd1v8ppfdnldg979yjjhgbdm9b7jmp2189wggcax8s4cvqjy";
+          version = "2023.3.1104";
+          sha256 = "1j42hh6fpimnf5cgp68x0081sk7vz6gc57znkbc291bhkdgh5v8w";
         }
         {
           name = "vscode-pull-request-github";
           publisher = "GitHub";
-          version = "0.61.2023030611";
-          sha256 = "0y0iv4sh9r3w7468p6l91mjgsw8dhjlw5zf9rq86v080rjj26p9n";
+          version = "0.61.2023030915";
+          sha256 = "0njm4g7jz5q1iq9rw9n4016sy0cjx9781vjr64b9pk6czx891l5p";
         }
         {
           name = "language-julia";
@@ -70,14 +74,14 @@
         {
           name = "python";
           publisher = "ms-python";
-          version = "2023.5.10651007";
-          sha256 = "0gvkaxsiy12bry5q349skxagx6yivf86cmngg5i0nmhwq3i5cpln";
+          version = "2023.5.10681722";
+          sha256 = "1hj2hbi68v7xcvl0c0i3xg9jm7bs5gwam2akmlfgqlrs9nbp0y4a";
         }
         {
           name = "jupyter";
           publisher = "ms-toolsai";
-          version = "2023.3.1000671010";
-          sha256 = "0lbb3bz6iasz6vndwq9z56qalapp82m4zm3ilw13mi5q0lbaf9z4";
+          version = "2023.3.1000711009";
+          sha256 = "0nzd03sb1lhxzdma00wf4yyiwjf90v6hva89x72af2cgvw61fz5q";
         }
         {
           name = "jupyter-keymap";
@@ -112,14 +116,20 @@
         {
           name = "vsliveshare";
           publisher = "ms-vsliveshare";
-          version = "1.0.5832";
-          sha256 = "1saa615yrhqildlji3f3wsq87r5fdbamdi15hg377ssxxw5snsxw";
+          version = "1.0.5834";
+          sha256 = "0xh719xmacgyn59xvbl4isb5xvg5i11bjmqpqra5pm8niyyy59zq";
+        }
+        {
+          name = "autodocstring";
+          publisher = "njpwerner";
+          version = "0.6.1";
+          sha256 = "11vsvr3pggr6xn7hnljins286x6f5am48lx4x8knyg8r7dp1r39l";
         }
         {
           name = "quarto";
           publisher = "quarto";
-          version = "1.71.0";
-          sha256 = "0fsa8dylbm2s5xzy8dmibkmh0349yrj78j20g2zkmmy6k9qxk68y";
+          version = "1.73.0";
+          sha256 = "0nnvc7p44zmpncbzvg7gqkqgzbpnvrqqlq8l84zlv1vvcpwa0f45";
         }
         {
           name = "vim";
