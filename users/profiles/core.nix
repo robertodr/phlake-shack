@@ -86,12 +86,14 @@ in {
       awscli2
       bear
       cachix
+      nodePackages.carbon-now-cli
       clang-tools # TODO <- needed here?
       cmake-language-server
       delta # TODO <- this or difftastic?
       dive
       #nur.repos.robertodr.enso
       flamegraph
+      fx
       nur.repos.robertodr.git-along
       git-extras
       gitAndTools.git-annex
