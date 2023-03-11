@@ -77,3 +77,7 @@ Host bebe
   Hostname %h.algorithmiq.fi
   User robertodr
   Port 10022
+Host whale
+  Hostname 172.174.216.80
+  User roberto
+  IdentityFile ~/.ssh/azure_rsa
