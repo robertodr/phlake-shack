@@ -38,8 +38,11 @@
 
     targets = {
       grub.enable = false;
-      # see here: https://github.com/nix-community/home-manager/issues/3671
-      vscode.enable = false;
     };
+  };
+
+  home-manager.users.roberto = {
+    # see here: https://github.com/nix-community/home-manager/issues/3671
+    stylix.targets.vscode.enable = false;
   };
 }
