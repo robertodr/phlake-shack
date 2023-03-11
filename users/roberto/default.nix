@@ -23,6 +23,7 @@
       "input"
       "networkmanager"
       # I don't understand why I need to do this _explicitly_
+      "onepassword"
       "onepassword-cli"
       "root"
       "systemd-journal"
