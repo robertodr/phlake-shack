@@ -29,6 +29,8 @@
   # Home: "Europe/Stockholm";
   time.timeZone = "Europe/Stockholm";
 
+  security.polkit.enable = true;
+
   environment = {
     # TODO review which packages should be here and which in user profiles
     systemPackages =
