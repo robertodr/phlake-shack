@@ -1,3 +1,5 @@
+IdentityAgent "~/.1password/agent.sock"
+
 Host yoshimi
   User roberto
   Hostname yoshimi.totaltrash.xyz

@@ -8,51 +8,21 @@ in {
 
     lfs.enable = true;
 
-    userName = "Roberto Di Remigio Eikås";
-
-    userEmail = "roberto@totaltrash.xyz";
-
-    signing = {
-      key = "roberto@totaltrash.xyz";
-      signByDefault = true;
-    };
-
-    delta = {
-      enable = true;
-      options = {
-        features = "side-by-side line-numbers decorations";
-        syntax-theme = "base16-256";
-        plus-style = "syntax \"#003800\"";
-        minus-style = "syntax \"#3f0001\"";
-
-        decorations = {
-          commit-decoration-style = "bold yellow box ul";
-          file-decoration-style = "none";
-          file-style = "bold yellow ul";
-          hunk-header-decoration-style = "cyan box ul";
-        };
-
-        interactive = {
-          keep-plus-minus-markers = false;
-        };
-
-        line-numbers = {
-          line-numbers-left-style = "cyan";
-          line-numbers-right-style = "cyan";
-          line-numbers-minus-style = 124;
-          line-numbers-plus-style = 28;
-        };
-
-        # see here: https://github.com/dandavison/magit-delta/issues/13
-        magit-delta = {
-          line-numbers = false;
-          side-by-side = false;
-          keep-plus-minus-markers = true;
-        };
-      };
-    };
-
     extraConfig = {
+      user = {
+        name = "Roberto Di Remigio Eikås";
+        email = "roberto@totaltrash.xyz";
+        signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIODV5S21+jV0900ubPoYvdHol/xfbJjVhxayuMEFuPKo";
+      };
+
+      gpg = {
+        format = "ssh";
+        ssh.program = "${pkgs._1password-gui}/share/1password/op-ssh-sign";
+      };
+
+      commit.gpgSign = true;
+      tag.gpgSign = true;
+
       color = {
         ui = true;
 
@@ -88,37 +58,26 @@ in {
         tool = "meld";
       };
 
-      difftool = {
+      difftool.
         prompt = false;
-      };
 
-      github = {
+      github.
         user = "robertodr";
-      };
 
-      gitlab = {
+      gitlab.
         user = "robertodr";
-      };
 
-      grep = {
+      grep.
         linenumber = true;
-      };
 
-      help = {
+      help.
         autocorrect = 0;
-      };
 
-      http = {
-        sslVerify = false;
-      };
-
-      init = {
+      init.
         defaultBranch = "main";
-      };
 
-      log = {
+      log.
         mailmap = true;
-      };
 
       magithub = {
         online = false;
@@ -129,13 +88,10 @@ in {
         };
       };
 
-      merge = {
-        tool = "meld";
-      };
+      merge.tool = "meld";
 
-      mergetool = {
+      mergetool.
         prompt = false;
-      };
 
       pager = {
         diff = "delta";
@@ -144,17 +100,11 @@ in {
         show = "delta";
       };
 
-      pull = {
+      pull.
         rebase = false;
-      };
 
-      push = {
+      push.
         default = "current";
-      };
-
-      tag = {
-        gpgSign = true;
-      };
     };
 
     aliases = {
@@ -184,6 +134,41 @@ in {
 
       # delete merged branches
       bdm = "!git branch --merged | grep -v '*' | xargs -n 1 git branch -d";
+    };
+
+    delta = {
+      enable = true;
+      options = {
+        features = "side-by-side line-numbers decorations";
+        syntax-theme = "base16-256";
+        plus-style = "syntax \"#003800\"";
+        minus-style = "syntax \"#3f0001\"";
+
+        decorations = {
+          commit-decoration-style = "bold yellow box ul";
+          file-decoration-style = "none";
+          file-style = "bold yellow ul";
+          hunk-header-decoration-style = "cyan box ul";
+        };
+
+        interactive = {
+          keep-plus-minus-markers = false;
+        };
+
+        line-numbers = {
+          line-numbers-left-style = "cyan";
+          line-numbers-right-style = "cyan";
+          line-numbers-minus-style = 124;
+          line-numbers-plus-style = 28;
+        };
+
+        # see here: https://github.com/dandavison/magit-delta/issues/13
+        magit-delta = {
+          line-numbers = false;
+          side-by-side = false;
+          keep-plus-minus-markers = true;
+        };
+      };
     };
   };
 }
