@@ -42,6 +42,7 @@
   };
 
   home-manager.users.roberto = {
+    stylix.targets.emacs.enable = false;
     # see here: https://github.com/nix-community/home-manager/issues/3671
     stylix.targets.vscode.enable = false;
   };
