@@ -43,6 +43,8 @@ in {
       PHLAKE_SHACK_DIR = config.lib.phlake-shack.fsPath;
 
       LESSHISTFILE = "$XDG_STATE_HOME/lesshst";
+
+      SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
     };
 
     stateVersion = lib.mkForce "22.11";
@@ -149,6 +151,27 @@ in {
     services = {
       paperpile-mount = import ./gdrive-rclone/paperpile.nix {inherit mountdir pkgs;};
       concepts-mount = import ./gdrive-rclone/concepts.nix {inherit mountdir pkgs;};
+      # needed to get 1password to use system authentication correctly:
+      # https://1password.community/discussion/comment/634787/#Comment_634787
+      polkit-gnome-authentication-agent-1 = {
+        Unit = {
+          After = ["graphical-session-pre.target"];
+          Description = "polkit-gnome-authentication-agent-1";
+          PartOf = ["graphical-session.target"];
+        };
+
+        Service = {
+          ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+          Restart = "on-failure";
+          RestartSec = 1;
+          TimeoutStopSec = 10;
+          Type = "simple";
+        };
+
+        Install = {
+          WantedBy = ["graphical-session.target"];
+        };
+      };
     };
   };
 }
