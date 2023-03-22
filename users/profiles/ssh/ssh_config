@@ -83,3 +83,8 @@ Host whale
   Hostname 172.174.216.80
   User roberto
   IdentityFile ~/.ssh/azure_rsa
+Host Tiina
+  Hostname 79.134.102.118
+  User robertoeikas
+  Port 11022
+
