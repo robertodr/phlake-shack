@@ -32,32 +32,32 @@
         {
           name = "ruff";
           publisher = "charliermarsh";
-          version = "2023.9.10700555";
-          sha256 = "0lm4bw710rg9qjw6p47qax50bzapx1z4sghd3fsbw4cwfg4734wf";
-        }
-        {
-          name = "vscode-github-actions";
-          publisher = "cschleiden";
-          version = "0.24.4";
-          sha256 = "0371rms5cq2s7kfbzx078bfp7lcyq3lnxp1hrw1wy5igz94lvicp";
+          version = "2023.10.0";
+          sha256 = "07x1slkf2g02pxdgmnl4k43wa5vkh8csrz9vrralnz4d63i3b00b";
         }
         {
           name = "gitlens";
           publisher = "eamodio";
-          version = "2023.3.1805";
-          sha256 = "14dv5dg1abn9gm597xyzj97dyis30b18p1ycwwqa0v7abxxwvjdm";
+          version = "2023.3.2505";
+          sha256 = "0a5gngckkyipy5a51b67rjs8qa8srixdsy499ryy4s17wwzi1phr";
+        }
+        {
+          name = "vscode-github-actions";
+          publisher = "github";
+          version = "0.25.2";
+          sha256 = "06x3bm7w2am6nwsg2s0gvlghp27jgadb61axv58q4ja9b4fq1xz1";
         }
         {
           name = "vscode-pull-request-github";
           publisher = "GitHub";
-          version = "0.61.2023031710";
-          sha256 = "1zw95f7dci6yrrn41v3fg424vwvs89bpaqgca5ja0b9995n5h9nw";
+          version = "0.61.2023032418";
+          sha256 = "1hb3p9p049h1wggw7imaa9gj2bl58xrb9hcglgkpf7qca396l8d4";
         }
         {
           name = "language-julia";
           publisher = "julialang";
-          version = "1.42.1";
-          sha256 = "1kvydrxhjmczky1322m89cgzq8whld3fr9xsbb5abxlg04vrbr3p";
+          version = "1.45.1";
+          sha256 = "1bid8p5i7sx6qigj0g3n5kl7v3kvgih54rrfplc7720sc7g9ybrw";
         }
         {
           name = "magit";
@@ -74,14 +74,14 @@
         {
           name = "python";
           publisher = "ms-python";
-          version = "2023.5.10752340";
-          sha256 = "04zhh6p5h3cgp2q6dq5rjrishmzj1ah0xf7f37fydrs0xgara183";
+          version = "2023.5.10831011";
+          sha256 = "011gcm4bfxpqlp655nrdlj9b7gybb6hj77s6225bciq2y058c49g";
         }
         {
           name = "jupyter";
           publisher = "ms-toolsai";
-          version = "2023.3.1000771902";
-          sha256 = "0wypc8dxbxlfcfpckhcs4jwh2rdwip1lkblrs4f1lg9pwa88mn4r";
+          version = "2023.3.1000851011";
+          sha256 = "0v0frndcppk61sw6w3pdcl0bldin6si9k0hck0865d1g5niqz1sn";
         }
         {
           name = "jupyter-keymap";
@@ -92,26 +92,26 @@
         {
           name = "remote-containers";
           publisher = "ms-vscode-remote";
-          version = "0.285.0";
-          sha256 = "0bg336vwiwbbzpjm4g1gra7qdd7gch7d13h6iv7lnvbl1h9plyjh";
+          version = "0.287.0";
+          sha256 = "1zn3hzw9laagrjgg943g5nzydxiljq93ckb270fw0bjmab7hqi0c";
         }
         {
           name = "remote-ssh";
           publisher = "ms-vscode-remote";
-          version = "0.99.2023031515";
-          sha256 = "1pm1a4m1x9x6s4669jhl756acbzi608lqfzzhhhy7fvp8hjd1gjz";
+          version = "0.101.2023032415";
+          sha256 = "0bzg9g3nxig3d359f248flybxry3nihq8l07r6i95jv5wr3h5svk";
         }
         {
           name = "cmake-tools";
           publisher = "ms-vscode";
-          version = "1.14.17";
-          sha256 = "08nk48kjxiz64ya8fx180bdvb3p726f1iycvb8hzgfzvlqcklcdx";
+          version = "1.14.20";
+          sha256 = "0shzgys095c10vnlk8cqs5ds10iwmmh5kj4cccq6yqbxjgmxkblg";
         }
         {
           name = "cpptools";
           publisher = "ms-vscode";
-          version = "1.15.0";
-          sha256 = "1skg7qy6phgkf9jdr8d9asfsg87nfpnrlnzhfwbaj5vr3q2r5ygx";
+          version = "1.15.1";
+          sha256 = "0s1jvvdgvd5zb5wfxjar89w9q519nv5nks2zgc7f4mbhv1h5ikks";
         }
         {
           name = "vsliveshare";
@@ -128,8 +128,8 @@
         {
           name = "quarto";
           publisher = "quarto";
-          version = "1.77.0";
-          sha256 = "0d7ifqh699s10pd65kijnxi1r3wii3yj59mbfd6cazzzs0m6zl23";
+          version = "1.78.0";
+          sha256 = "1p45qhj1kpy8cv243afkwra8a67yy5rnp340l00zpygki8yba018";
         }
         {
           name = "vim";
