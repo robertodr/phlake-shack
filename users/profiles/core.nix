@@ -139,6 +139,7 @@ in {
       playerctl
       spotify
       thunderbird
+      typst
       vlc
       wordnet
       write_stylus
