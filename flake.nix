@@ -235,7 +235,6 @@
               gpg-agent
               gnome-keyring
               jq
-              kitty
               man
               neovim
               ssh
