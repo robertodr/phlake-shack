@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   gtk = {
     enable = true;
 
@@ -8,7 +12,7 @@
       size = 32;
     };
 
-    font.size = 14;
+    font.size = lib.mkDefault 14;
 
     iconTheme = {
       name = "ePapirus";
