@@ -11,7 +11,7 @@
       "git.mergeEditor" = true;
       "autoDocstring.docstringFormat" = "google-notypes";
       "editor.formatOnSave" = true;
-      "python.analysis.diagnosticMode" = "workspace";
+      "python.analysis.diagnosticMode" = "openFilesOnly";
       "python.formatting.provider" = "black";
     };
 
@@ -22,12 +22,6 @@
           publisher = "ArianJamasb";
           version = "0.1.0";
           sha256 = "1k5r491p4s3mymnbzjvjpkxnlvq9c4py3blbrwpf2ybjanwskjn6";
-        }
-        {
-          name = "Nix";
-          publisher = "bbenoist";
-          version = "1.0.1";
-          sha256 = "0zd0n9f5z1f0ckzfjr38xw2zzmcxg1gjrava7yahg5cvdcw6l35b";
         }
         {
           name = "ruff";
@@ -50,20 +44,8 @@
         {
           name = "vscode-pull-request-github";
           publisher = "GitHub";
-          version = "0.61.2023032418";
-          sha256 = "1hb3p9p049h1wggw7imaa9gj2bl58xrb9hcglgkpf7qca396l8d4";
-        }
-        {
-          name = "language-julia";
-          publisher = "julialang";
-          version = "1.45.1";
-          sha256 = "1bid8p5i7sx6qigj0g3n5kl7v3kvgih54rrfplc7720sc7g9ybrw";
-        }
-        {
-          name = "magit";
-          publisher = "kahole";
-          version = "0.6.39";
-          sha256 = "0ljmrgyd6sxd40gg0l82nxrp90dnaj20r1lc1wgmkv02v9qqrpq7";
+          version = "0.60.0";
+          sha256 = "sha256-VAoKNRYrzUXUQSDAX8NM17aknCUxMRsTRd5adQu+w/s=";
         }
         {
           name = "direnv";
@@ -74,20 +56,8 @@
         {
           name = "python";
           publisher = "ms-python";
-          version = "2023.5.10831011";
-          sha256 = "011gcm4bfxpqlp655nrdlj9b7gybb6hj77s6225bciq2y058c49g";
-        }
-        {
-          name = "jupyter";
-          publisher = "ms-toolsai";
-          version = "2023.3.1000851011";
-          sha256 = "0v0frndcppk61sw6w3pdcl0bldin6si9k0hck0865d1g5niqz1sn";
-        }
-        {
-          name = "jupyter-keymap";
-          publisher = "ms-toolsai";
-          version = "1.1.0";
-          sha256 = "1i3qjvw5mmj53ysp0vgnjs48191raxkycbhp5gsrg229wr3yvc4j";
+          version = "2023.4.0";
+          sha256 = "sha256-owQmPlTgcX6NmtfRrd9i8DMflP65smAmsedPYqV/Gzg=";
         }
         {
           name = "remote-containers";
@@ -100,18 +70,6 @@
           publisher = "ms-vscode-remote";
           version = "0.101.2023032415";
           sha256 = "0bzg9g3nxig3d359f248flybxry3nihq8l07r6i95jv5wr3h5svk";
-        }
-        {
-          name = "cmake-tools";
-          publisher = "ms-vscode";
-          version = "1.14.20";
-          sha256 = "0shzgys095c10vnlk8cqs5ds10iwmmh5kj4cccq6yqbxjgmxkblg";
-        }
-        {
-          name = "cpptools";
-          publisher = "ms-vscode";
-          version = "1.15.1";
-          sha256 = "0s1jvvdgvd5zb5wfxjar89w9q519nv5nks2zgc7f4mbhv1h5ikks";
         }
         {
           name = "vsliveshare";
@@ -136,6 +94,18 @@
           publisher = "vscodevim";
           version = "1.25.2";
           sha256 = "0j0li3ddrknh34k2w2f13j4x8s0lb9gsmq7pxaldhwqimarqlbc7";
+        }
+        {
+          name = "cpptools-extension-pack";
+          publisher = "ms-vscode";
+          version = "1.3.0";
+          sha256 = "sha256-rHST7CYCVins3fqXC+FYiS5Xgcjmi7QW7M4yFrUR04U=";
+        }
+        {
+          name = "vscode-docker";
+          publisher = "ms-azuretools";
+          version = "1.24.0";
+          sha256 = "sha256-zZ34KQrRPqVbfGdpYACuLMiMj4ZIWSnJIPac1yXD87k=";
         }
       ];
   };
