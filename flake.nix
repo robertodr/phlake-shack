@@ -159,21 +159,21 @@
                 fonts.common
                 hardware.bluetooth
                 networking
-                powertop
                 programs._1password
-                programs.thunar
                 programs.gnupg
+                programs.thunar
                 services.earlyoom
                 services.fwupd
                 services.geoclue2
+                services.gnome-keyring
                 services.hardware.bolt
                 services.languagetool
                 services.openssh
                 services.thermald
                 services.udisks2
-                services.gnome-keyring
                 systemd
                 users.root
+                zsa
               ]);
 
             i3wm = with profiles; [
