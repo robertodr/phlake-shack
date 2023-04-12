@@ -109,13 +109,7 @@ in {
         en-computers
         en-science
         it
-        # FIXME this gives the following error:
-        # > unpacking sources
-        # > unpacking source archive /nix/store/i6c535ji47xxak70bf94ql13ws6apxjf-aspell-nb-0.50.1-0.tar.bz2
-        # > tar: aspell-nb-0.50.1-0/bokm\345l.alias: Cannot open: Invalid or incomplete multibyte or wide character
-        # > tar: Exiting with failure status due to previous errors
-        # > do not know how to unpack source archive /nix/store/i6c535ji47xxak70bf94ql13ws6apxjf-aspell-nb-0.50.1-0.tar.bz2
-        #nb
+        nb
         nn
         sv
       ]))
