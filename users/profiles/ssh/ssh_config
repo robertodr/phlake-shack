@@ -71,10 +71,15 @@ Host *.repo.borgbase.com
 
 ## Algorithmiq
 Host algone algotwo
-  HostName %h.clusters.algorithmiq.fi
+  Hostname %h.clusters.algorithmiq.fi
   User roberto
   ForwardAgent yes
   IdentityFile ~/.ssh/id_ed25519
+Host aarchie
+  Hostname 20.84.43.25
+  User roberto
+  ForwardAgent yes
+  IdentityFile ~/.ssh/azure_rsa
 Host bebe
   Hostname %h.algorithmiq.fi
   User robertodr
