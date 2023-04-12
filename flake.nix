@@ -34,7 +34,7 @@
 
     # bleeding edge emacs overlay
     emacs-overlay = {
-      url = "github:nix-community/emacs-overlay?rev=88b2e9eda133e593558680ffb6262203db193ac4";
+      url = "github:nix-community/emacs-overlay?rev=42223accdafd3e9803e2ce955c85903c86ab2b1b";
       inputs.nixpkgs.follows = "latest";
     };
 
@@ -294,7 +294,7 @@
             ];
 
             synchronize = with profiles; [
-              syncthing
+              #syncthing
             ];
           });
         };
