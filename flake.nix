@@ -159,6 +159,7 @@
                 fonts.common
                 hardware.bluetooth
                 networking
+                powertop
                 programs._1password
                 programs.gnupg
                 programs.thunar
