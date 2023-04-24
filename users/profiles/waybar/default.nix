@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }: let
   wttr =
@@ -136,7 +137,7 @@ in {
       };
     };
 
-    style = ''
+    style = lib.mkDefault ''
       * {
         border: none;
         border-radius: 0;
