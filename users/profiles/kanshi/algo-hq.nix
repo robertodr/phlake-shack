@@ -5,13 +5,13 @@ in {
     {
       criteria = "eDP-1";
       mode = "2256x1504";
-      position = "0,850";
+      position = "517,1440";
       scale = 1.5;
     }
     {
       criteria = name;
       mode = "3840x2160";
-      position = "1504,0";
+      position = "0,0";
       scale = 1.5;
     }
   ];
