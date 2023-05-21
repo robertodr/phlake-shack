@@ -26,29 +26,29 @@
     digga = {
       url = "github:divnix/digga";
       inputs = {
-        nixpkgs.follows = "nixos";
-        nixlib.follows = "nixos";
+        nixpkgs.follows = "latest";
+        nixlib.follows = "latest";
         home-manager.follows = "home";
       };
     };
 
     # bleeding edge emacs overlay
     emacs-overlay = {
-      url = "github:nix-community/emacs-overlay?rev=42223accdafd3e9803e2ce955c85903c86ab2b1b";
+      url = "github:nix-community/emacs-overlay?rev=fd44d0d55374c24bf92aa59b4131a5cada358bb6";
       inputs.nixpkgs.follows = "latest";
     };
 
     # age-encrypted secrets for NixOS
     agenix = {
       url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixos";
+      #inputs.nixpkgs.follows = "latest";
     };
 
     # NUR packages
     nur.url = "github:nix-community/NUR";
 
     base16-schemes = {
-      url = github:base16-project/base16-schemes;
+      url = "github:tinted-theming/base16-schemes";
       flake = false;
     };
 
@@ -207,7 +207,7 @@
             virtualisation = with profiles; [
               programs.singularity
               virtualisation.docker
-              virtualisation.virtualbox
+              #virtualisation.virtualbox
             ];
           });
         };
