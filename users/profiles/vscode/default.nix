@@ -5,14 +5,17 @@
     enableUpdateCheck = false;
     enableExtensionUpdateCheck = false;
     userSettings = {
-      "telemetry.telemetryLevel" = "off";
-      "quarto.mathjax.theme" = "dark";
-      "files.trimTrailingWhitespace" = true;
-      "git.mergeEditor" = true;
       "autoDocstring.docstringFormat" = "google-notypes";
       "editor.formatOnSave" = true;
+      "extensions.autoCheckUpdates" = false;
+      "files.trimTrailingWhitespace" = true;
+      "git.mergeEditor" = true;
       "python.analysis.diagnosticMode" = "openFilesOnly";
       "python.formatting.provider" = "black";
+      "quarto.mathjax.theme" = "dark";
+      "telemetry.telemetryLevel" = "off";
+      "update.mode" = "none";
+      "cmake.configureOnOpen" = true;
     };
 
     extensions = with pkgs.vscode-extensions;
@@ -100,6 +103,24 @@
           publisher = "ms-vscode";
           version = "1.3.0";
           sha256 = "sha256-rHST7CYCVins3fqXC+FYiS5Xgcjmi7QW7M4yFrUR04U=";
+        }
+        {
+          name = "cpptools";
+          publisher = "ms-vscode";
+          version = "1.15.4";
+          sha256 = "sha256-ldgbAaJ4sVFMEXuhXbMBwSvpsym4XOQ0//JGeOVHpyY=";
+        }
+        {
+          name = "cpptools-themes";
+          publisher = "ms-vscode";
+          version = "2.0.0";
+          sha256 = "sha256-YWA5UsA+cgvI66uB9d9smwghmsqf3vZPFNpSCK+DJxc=";
+        }
+        {
+          name = "cmake-tools";
+          publisher = "ms-vscode";
+          version = "1.15.7";
+          sha256 = "sha256-kkD2mLaQoHOWwUz3IKuSwJxwlHCL5gaHeIAgAoy5n8s=";
         }
         {
           name = "vscode-docker";
