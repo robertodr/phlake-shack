@@ -17,11 +17,12 @@ in {
 
       gpg = {
         format = "ssh";
-        ssh.program = "${pkgs._1password-gui}/share/1password/op-ssh-sign";
+        #ssh.program = "${pkgs._1password-gui}/share/1password/op-ssh-sign";
+        ssh.program = "op-ssh-sign";
       };
 
-      commit.gpgSign = true;
-      tag.gpgSign = true;
+      commit.gpgSign = false;
+      tag.gpgSign = false;
 
       color = {
         ui = true;
