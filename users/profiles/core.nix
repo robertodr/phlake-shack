@@ -67,8 +67,6 @@ in {
       du-dust #   <- Like du but more intuitive.
       procs #     <- A modern replacement for ps.
 
-      grex #      <- Generate regexps from user-provided test cases.
-      pastel #    <- A command-line tool to generate, analyze, convert and manipulate colors
       tealdeer #  <- A very fast implementation of tldr in Rust.
 
       freerdp
@@ -81,22 +79,16 @@ in {
       remmina
       tokei
 
-      ansible
-      ansible-lint
       autoconf
       automake
       awscli2
-      bear
       cachix
       nodePackages.carbon-now-cli
       clang-tools # TODO <- needed here?
       cmake-language-server
       delta # TODO <- this or difftastic?
-      dive
-      #nur.repos.robertodr.enso
       flamegraph
       fx
-      nur.repos.robertodr.git-along
       git-extras
       gitAndTools.git-annex
       gitAndTools.git-annex-remote-rclone
@@ -106,7 +98,6 @@ in {
       linuxPackages.perf
       meld
       perf-tools
-      pijul
       unifdef
       universal-ctags
 
@@ -125,7 +116,6 @@ in {
       python3
 
       asciinema
-      calibre
       drawio
       evince
       ferdium

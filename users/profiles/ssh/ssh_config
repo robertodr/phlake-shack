@@ -65,10 +65,6 @@ Host squirrel
   User ubuntu
   IdentityFile ~/.ssh/oracle_ed25519
 
-## Borgbase
-Host *.repo.borgbase.com
-  IdentityFile ~/.ssh/borgbase_ed25519
-
 ## Algorithmiq
 Host algone algotwo
   Hostname %h.clusters.algorithmiq.fi

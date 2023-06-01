@@ -194,11 +194,6 @@
               services.upower
             ];
 
-            # TODO add borgbackup service
-            backup = with profiles; [
-              services.borgbackup
-            ];
-
             multimedia = with profiles; [
               services.pipewire
               services.printing
@@ -207,6 +202,7 @@
             virtualisation = with profiles; [
               programs.singularity
               virtualisation.docker
+              # FIXME commented out because build broken in recent NixOS
               #virtualisation.virtualbox
             ];
           });

@@ -37,17 +37,14 @@
       lib.attrVals [
         "acpi" # show battery status and other ACPI information
         "atool" # archive command line helper
-        "bc" #
         "binutils" # tools for manipulating binaries (linker, assembler, etc.)
-        "borgbackup" # deduplicating archiver with compression and encryption TODO should go into a user profile!
-        "bottom" #
+        "bottom" # a cross-platform graphical process/system monitor with a customizable interface
         "cacert" # a bundle of X.509 certificates of public Certificate Authorities (CA)
         "coreutils" # the basic file, shell and text manipulation utilities of the GNU operating system
         "curl" # a command line tool for transferring files with URL syntax
         "dmidecode" # a tool that reads information about your system's hardware from the BIOS according to the SMBIOS/DMI standard
-        "dosfstools" #
-        "dstat" #
-        "efibootmgr" #
+        "dosfstools" # utilities for creating and checking FAT and VFAT file systems
+        "efibootmgr" # a Linux user-space application to modify the Intel Extensible Firmware Interface (EFI) Boot Manager
         "exa" #
         "fd" #
         "file" # a program that shows the type of files
@@ -55,21 +52,18 @@
         "fzf" #
         "git" #
         "gnupg" #
-        "gptfdisk" #
-        "libseccomp" # High level library for the Linux Kernel seccomp filter
+        "gptfdisk" # set of text-mode partitioning tools for Globally Unique Identifier (GUID) Partition Table (GPT) disks
+        "libseccomp" # high level library for the Linux Kernel seccomp filter
         "lm_sensors" #
-        "manix" #
-        "moreutils" #
+        "manix" # a fast focumentation searcher for Nix
         "neofetch" #
         "neovim" # vim text editor fork focused on extensibility and agility
         "nix-index" #
-        "patchelf" # a small utility to modify the dynamic linker and RPATH of ELF executables
         "pciutils" # a collection of programs for inspecting and manipulating configuration of PCI devices
         "procs" #
         "psmisc" # a set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
         "ripgrep" #
         "rsync" # a fast incremental file transfer utility
-        "tealdeer" #
         "tree" # command to produce a depth indented directory listing
         "unrar" # utility for RAR archives
         "unzip" # an extraction utility for archives compressed in .zip format
