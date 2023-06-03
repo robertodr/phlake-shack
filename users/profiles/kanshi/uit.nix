@@ -1,17 +1,17 @@
 {pkgs, ...}: let
-  name = "Dell Inc. DELL C2722DE F4FNZG3";
+  name = "Samsung Electric Company C34H89x H4ZR909034";
 in {
   outputs = [
     {
       criteria = "eDP-1";
       mode = "2256x1504";
-      position = "2560,260";
+      position = "2477,1440";
       scale = 1.5;
     }
     {
       criteria = name;
-      mode = "2560x1440";
-      position = "0,0";
+      mode = "3440x1440";
+      position = "1504,0";
       scale = 1.0;
     }
   ];
