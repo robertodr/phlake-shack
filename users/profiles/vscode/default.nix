@@ -128,6 +128,18 @@
           version = "1.24.0";
           sha256 = "sha256-zZ34KQrRPqVbfGdpYACuLMiMj4ZIWSnJIPac1yXD87k=";
         }
+        {
+          name = "vscode-pylance";
+          publisher = "ms-python";
+          version = "2023.6.11";
+          sha256 = "sha256-beRcnS5FcQXQ9LHLclMdxEDcNHPWLXCqlJZCQdBWetQ=";
+        }
+        {
+          name = "jupyter";
+          publisher = "ms-toolsai";
+          version = "2023.5.1001582324";
+          sha256 = "sha256-EyN3WkUCcPokT20fwHvQt7v0t+gNLhm/oehML+XDxUY=";
+        }
       ];
   };
 }

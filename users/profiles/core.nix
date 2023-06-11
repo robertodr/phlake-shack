@@ -83,7 +83,6 @@ in {
       automake
       awscli2
       cachix
-      nodePackages.carbon-now-cli
       clang-tools # TODO <- needed here?
       cmake-language-server
       delta # TODO <- this or difftastic?
