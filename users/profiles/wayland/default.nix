@@ -34,7 +34,7 @@ in {
       sway = {
         enable = true;
 
-        systemdIntegration = true;
+        systemd.enable = true;
 
         wrapperFeatures = {
           base = true;

@@ -262,8 +262,8 @@
 
             office = with profiles; [
               newsboat
-              pandoc
-              texlive
+              #pandoc
+              #texlive
             ];
 
             i3wm = with profiles; [
