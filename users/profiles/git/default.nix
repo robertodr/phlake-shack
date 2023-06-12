@@ -17,8 +17,7 @@ in {
 
       gpg = {
         format = "ssh";
-        #ssh.program = "${pkgs._1password-gui}/share/1password/op-ssh-sign";
-        ssh.program = "op-ssh-sign";
+        #ssh.program = "op-ssh-sign";
       };
 
       commit.gpgSign = false;
