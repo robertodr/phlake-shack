@@ -76,6 +76,11 @@
       ]
       pkgs;
 
+    # see here: https://github.com/NixOS/nixpkgs/issues/64965#issuecomment-991839786
+    etc."ipsec.secrets".text = ''
+      include ipsec.d/ipsec.nm-l2tp.secrets
+    '';
+
     # TODO review these aliases
     shellAliases = {
       # quick cd
