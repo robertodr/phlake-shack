@@ -23,6 +23,8 @@
       {id = "alofnhikmmkdbbbgpnglcpdollgjjfek";}
       # nordpvn
       {id = "fjoaledfpmneenckfbpdfhkmimnjocfa";}
+      # notion web clipper
+      {id = "knheggckgoiihginacbkhaalnibhilkk";}
       # paperpile
       {id = "bomfdkbfpdhijjbeoicnfhjbdhncfhig";}
     ];
