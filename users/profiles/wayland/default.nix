@@ -18,9 +18,7 @@
   run = [
     "wezterm"
     "\"brave --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
-    # FIXME usage of the flags broke, so reverting to plain invocation
-    #"\"ferdium --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
-    "ferdium"
+    "\"ferdium --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
     "thunderbird"
     "\"joplin-desktop --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
   ];
@@ -125,13 +123,19 @@ in {
               # inhibit idle when Zoom window is visible
               {
                 command = "inhibit_idle visible";
-                criteria = {app_id = "zoom";};
+                criteria = {
+                  app_id = "zoom";
+                  title = "Zoom";
+                };
               }
 
               # center Zoom toolbar when screensharing
               {
                 command = "floating enable move position 50ppt 0 move left 402";
-                criteria = {app_id = "zoom";};
+                criteria = {
+                  app_id = "zoom";
+                  title = "Zoom";
+                };
               }
 
               # float any zoom window by default...
@@ -139,6 +143,7 @@ in {
                 command = "floating enable";
                 criteria = {
                   app_id = "zoom";
+                  title = "Zoom";
                 };
               }
 

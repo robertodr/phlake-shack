@@ -35,6 +35,7 @@ in {
           "sway/workspaces"
           "sway/language"
           "pulseaudio"
+          "idle_inhibitor"
         ];
 
         modules-center = [
@@ -79,6 +80,14 @@ in {
           };
           on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
           min-length = 13;
+        };
+
+        idle_inhibitor = {
+          format = "{icon}";
+          format-icons = {
+            activated = "";
+            deactivated = "";
+          };
         };
 
         clock = {
@@ -227,6 +236,15 @@ in {
       #pulseaudio.muted {
           background-color: #90b1b1;
           color: #2a5c45;
+      }
+
+      #idle_inhibitor {
+          padding-left: 16px;
+          padding-right: 16px;
+          border-radius: 10px;
+          transition: none;
+          color: #ffffff;
+          background: #383c4a;
       }
 
       #cpu,
