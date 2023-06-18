@@ -4,6 +4,8 @@
 
     enableUpdateCheck = false;
     enableExtensionUpdateCheck = false;
+    mutableExtensionsDir = false;
+
     userSettings = {
       "autoDocstring.docstringFormat" = "google-notypes";
       "editor.formatOnSave" = true;
@@ -21,35 +23,29 @@
     extensions = with pkgs.vscode-extensions;
       pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
-          name = "protein-viewer";
-          publisher = "ArianJamasb";
-          version = "0.1.0";
-          sha256 = "1k5r491p4s3mymnbzjvjpkxnlvq9c4py3blbrwpf2ybjanwskjn6";
-        }
-        {
           name = "ruff";
           publisher = "charliermarsh";
           version = "2023.10.0";
-          sha256 = "07x1slkf2g02pxdgmnl4k43wa5vkh8csrz9vrralnz4d63i3b00b";
+          sha256 = "sha256-fL6ylJJu2kygMNxmJdBJ4SSmj5dJwL749hCsMHcQiqw=";
         }
         {
           name = "gitlens";
           publisher = "eamodio";
-          version = "2023.3.2505";
-          sha256 = "0a5gngckkyipy5a51b67rjs8qa8srixdsy499ryy4s17wwzi1phr";
+          version = "2023.6.1605";
+          sha256 = "sha256-+yF+Qpx+67mgRdtEOPOE0ycwsOLJyAVAJ4KFBBBfLao=";
         }
-        {
-          name = "vscode-github-actions";
-          publisher = "github";
-          version = "0.25.2";
-          sha256 = "06x3bm7w2am6nwsg2s0gvlghp27jgadb61axv58q4ja9b4fq1xz1";
-        }
-        {
-          name = "vscode-pull-request-github";
-          publisher = "GitHub";
-          version = "0.60.0";
-          sha256 = "sha256-VAoKNRYrzUXUQSDAX8NM17aknCUxMRsTRd5adQu+w/s=";
-        }
+        #{
+        #  name = "vscode-github-actions";
+        #  publisher = "github";
+        #  version = "0.25.2";
+        #  sha256 = "06x3bm7w2am6nwsg2s0gvlghp27jgadb61axv58q4ja9b4fq1xz1";
+        #}
+        #{
+        #  name = "vscode-pull-request-github";
+        #  publisher = "GitHub";
+        #  version = "0.60.0";
+        #  sha256 = "sha256-VAoKNRYrzUXUQSDAX8NM17aknCUxMRsTRd5adQu+w/s=";
+        #}
         {
           name = "direnv";
           publisher = "mkhl";
@@ -65,8 +61,8 @@
         {
           name = "remote-containers";
           publisher = "ms-vscode-remote";
-          version = "0.287.0";
-          sha256 = "1zn3hzw9laagrjgg943g5nzydxiljq93ckb270fw0bjmab7hqi0c";
+          version = "0.294.0";
+          sha256 = "sha256-Lnwan4jT5cQ/0ymd3skxS3cAhXZdwvKDRjzheX1Hqf4=";
         }
         {
           name = "remote-ssh";
@@ -108,7 +104,7 @@
           name = "cpptools";
           publisher = "ms-vscode";
           version = "1.15.4";
-          sha256 = "sha256-ldgbAaJ4sVFMEXuhXbMBwSvpsym4XOQ0//JGeOVHpyY=";
+          sha256 = "sha256-+EfEeta+qAnX/xmcGP0sa6U0+VhToiqdHEXQDENxyGA=";
         }
         {
           name = "cpptools-themes";
