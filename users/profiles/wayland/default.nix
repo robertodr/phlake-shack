@@ -13,14 +13,20 @@
 
   lockCmd = "\'${pkgs.playerctl}/bin/playerctl -a pause; ${pkgs.swaylock}/bin/swaylock\'";
 
+  commandLineArgs = toString [
+    "--enable-features=UseOzonePlatform,WaylandWindowDecorations"
+    "--ozone-platform=wayland"
+  ];
+
   # commands to be run on sway startup
   # TODO probably add 1password GUI as well?
   run = [
     "wezterm"
-    "\"brave --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
-    "\"ferdium --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
+    #"\"brave --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
+    "brave"
+    "ferdium ${commandLineArgs}"
     "thunderbird"
-    "\"joplin-desktop --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
+    "joplin-desktop ${commandLineArgs}"
   ];
 in {
   home.packages = with pkgs; [
