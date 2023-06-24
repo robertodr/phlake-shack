@@ -17,8 +17,7 @@ in {
 
       gpg = {
         format = "ssh";
-        ssh.program = "ssh-keygen -v \"$@\"";
-        #ssh.program = "op-ssh-sign";
+        ssh.program = "op-ssh-sign";
       };
 
       commit.gpgSign = false;
