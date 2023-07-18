@@ -20,8 +20,8 @@ in {
         ssh.program = "op-ssh-sign";
       };
 
-      commit.gpgSign = false;
-      tag.gpgSign = false;
+      commit.gpgSign = true;
+      tag.gpgSign = true;
 
       color = {
         ui = true;
