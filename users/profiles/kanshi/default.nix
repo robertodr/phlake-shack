@@ -11,10 +11,6 @@
 
       docked = import ./docked.nix {inherit pkgs;};
 
-      kth = import ./kth.nix {inherit pkgs;};
-
-      uit = import ./uit.nix {inherit pkgs;};
-
       uio = import ./uio.nix {inherit pkgs;};
 
       algo-hq = import ./algo-hq.nix {inherit pkgs;};
