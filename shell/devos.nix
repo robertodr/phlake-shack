@@ -7,7 +7,6 @@
 }: let
   inherit
     (pkgs)
-    agenix
     alejandra
     cachix
     editorconfig-checker
@@ -47,7 +46,6 @@ in {
   commands =
     [
       (devos nixUnstable)
-      (devos agenix)
 
       (linter alejandra)
       (linter treefmt)

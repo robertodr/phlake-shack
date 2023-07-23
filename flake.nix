@@ -38,12 +38,6 @@
       inputs.nixpkgs.follows = "latest";
     };
 
-    # age-encrypted secrets for NixOS
-    agenix = {
-      url = "github:ryantm/agenix";
-      #inputs.nixpkgs.follows = "latest";
-    };
-
     # NUR packages
     nur.url = "github:nix-community/NUR";
 
@@ -68,7 +62,6 @@
     home,
     nixos-hardware,
     nur,
-    agenix,
     nixpkgs,
     emacs-overlay,
     stylix,
@@ -107,7 +100,6 @@
         })
 
         nur.overlay
-        agenix.overlays.default
         emacs-overlay.overlay
 
         (import "${fetchTarball {
@@ -128,7 +120,6 @@
             digga.nixosModules.bootstrapIso
             digga.nixosModules.nixConfig
             home.nixosModules.home-manager
-            agenix.nixosModules.age
             stylix.nixosModules.stylix
           ];
         };
