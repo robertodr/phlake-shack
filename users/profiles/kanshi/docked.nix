@@ -10,7 +10,7 @@ in {
     }
     {
       criteria = name;
-      mode = "3440x1440@144Hz";
+      mode = "3440x1440@60Hz";
       position = "0,0";
       scale = 1.0;
       # can't be set because of this: https://github.com/nix-community/home-manager/issues/3136

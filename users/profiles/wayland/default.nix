@@ -21,7 +21,8 @@
   # commands to be run on sway startup
   # TODO probably add 1password GUI as well?
   run = [
-    "wezterm"
+    #"wezterm"
+    "kitty"
     #"\"brave --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland\""
     "brave"
     "ferdium ${commandLineArgs}"
@@ -95,13 +96,13 @@ in {
           };
 
           output = {
+            # NOTE blanket-enable adaptive sync (cannot be done per-profile) in kanshi
+            "*" = {
+              adaptive_sync = "on";
+            };
             "eDP-1" = {
               mode = "2256x1504";
               scale = "1.5";
-            };
-            # NOTE adaptive sync cannot be enabled in kanshi
-            "AOC U34G2G4R3 0x00000E8B" = {
-              adaptive_sync = "on";
             };
           };
 

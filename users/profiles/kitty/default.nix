@@ -1,6 +1,10 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   programs.kitty = {
     enable = true;
-    font.size = 14;
+    font.size = lib.mkDefault 14;
   };
 }
