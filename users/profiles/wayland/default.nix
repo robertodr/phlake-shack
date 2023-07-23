@@ -87,8 +87,6 @@ in {
             "${sup}+p" = "exec ${pkgs.wlogout}/bin/wlogout";
             "${sup}+j" = "move workspace to output left";
             "${sup}+l" = "move workspace to output right";
-            # FIXME weylus
-            "${sup}+Control+w" = "exec weylus";
           };
 
           fonts = {
@@ -96,12 +94,14 @@ in {
             style = "Regular";
           };
 
-          # TODO figure out how to switch based on hostname
-          # see: https://git.sr.ht/~jshholland/nixos-configs/tree/master/item/home/sway.nix
           output = {
             "eDP-1" = {
               mode = "2256x1504";
               scale = "1.5";
+            };
+            # NOTE adaptive sync cannot be enabled in kanshi
+            "AOC U34G2G4R3 0x00000E8B" = {
+              adaptive_sync = "on";
             };
           };
 
