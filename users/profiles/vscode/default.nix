@@ -18,6 +18,7 @@
       "telemetry.telemetryLevel" = "off";
       "update.mode" = "none";
       "cmake.configureOnOpen" = true;
+      "workbench.sideBar.location" = "right";
     };
 
     extensions = with pkgs.vscode-extensions;
