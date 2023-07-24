@@ -66,7 +66,7 @@ in {
             };
           };
 
-          terminal = "wezterm";
+          terminal = "kitty";
 
           modifier = "${mod}";
 
