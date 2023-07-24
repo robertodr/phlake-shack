@@ -34,6 +34,10 @@
         name = "Noto Color Emoji";
         package = pkgs.noto-fonts-emoji;
       };
+
+      sizes = {
+        terminal = 14;
+      };
     };
 
     targets = {

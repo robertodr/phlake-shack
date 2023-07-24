@@ -220,9 +220,10 @@
               fish
               fzf
               git
-              gpg-agent
               gnome-keyring
+              gpg-agent
               jq
+              kitty
               man
               neovim
               ssh
