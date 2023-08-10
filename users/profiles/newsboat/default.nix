@@ -19,51 +19,35 @@
         tags = [];
       }
       {
-        url = "http://feeds.feedburner.com/acs/achre4";
+        url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=achre4";
         tags = [];
       }
       {
-        url = "http://feeds.feedburner.com/acs/chreay";
+        url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=chreay";
         tags = [];
       }
       {
-        url = "http://feeds.feedburner.com/acs/inocaj";
+        url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jctcce";
         tags = [];
       }
       {
-        url = "http://feeds.feedburner.com/acs/jacsat";
+        url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jceda8";
         tags = [];
       }
       {
-        url = "http://feeds.feedburner.com/acs/jctcce";
+        url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jpcafh";
         tags = [];
       }
       {
-        url = "http://feeds.feedburner.com/acs/jceda8";
+        url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jpcbfk";
         tags = [];
       }
       {
-        url = "http://feeds.feedburner.com/acs/jpcafh";
+        url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jpccck";
         tags = [];
       }
       {
-        url = "http://feeds.feedburner.com/acs/jpcbfk";
-        tags = [];
-      }
-      {
-        url = "http://feeds.feedburner.com/acs/jpccck";
-        tags = [];
-      }
-      {
-        url = "http://feeds.feedburner.com/acs/langd5";
-        tags = [];
-      }
-      {
-        url = "http://feeds.feedburner.com/acs/orlef7";
-        tags = [];
-      }
-      {
-        url = "http://feeds.feedburner.com/acs/jpclcd";
+        url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jpclcd";
         tags = [];
       }
       {
@@ -96,14 +80,6 @@
       }
       {
         url = "http://feeds.rsc.org/rss/CP?format=xml";
-        tags = [];
-      }
-      {
-        url = "http://www.nature.com/nchem.rss";
-        tags = [];
-      }
-      {
-        url = "https://api.quantamagazine.org/feed/";
         tags = [];
       }
     ];
