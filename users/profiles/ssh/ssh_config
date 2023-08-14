@@ -83,3 +83,7 @@ Host Tiina
   User robertoeikas
   Port 11022
 
+## Karolina
+Host karolina
+  Hostname karolina.it4i.cz
+  User it4i-robdre
