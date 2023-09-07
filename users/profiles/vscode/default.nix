@@ -54,12 +54,6 @@
           sha256 = "1frz1gj8r12vjhklk15kwqlq6vlzapk4wb70z9dkxb4xd5f4iv1j";
         }
         {
-          name = "vscode-pylance";
-          publisher = "ms-python";
-          version = "2023.9.11";
-          sha256 = "18lmi5jjqifpafh0v5b0k90yfcmlrvp402c5py43gcagz1zrd607";
-        }
-        {
           name = "jupyter";
           publisher = "ms-toolsai";
           version = "2023.6.1001861915";
