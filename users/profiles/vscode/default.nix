@@ -36,12 +36,6 @@
           sha256 = "16kp1yxs798jp8ffqq3ixm3pyz4f3wgdkdyjpjy94ppqp4aklixh";
         }
         {
-          name = "vscode-pull-request-github";
-          publisher = "GitHub";
-          version = "0.71.2023090709";
-          sha256 = "128p0g97b6lq5p0i9dnri64k8idmxh3j8xznmv8sm0jk1lwk06zw";
-        }
-        {
           name = "direnv";
           publisher = "mkhl";
           version = "0.14.0";
@@ -56,8 +50,8 @@
         {
           name = "python";
           publisher = "ms-python";
-          version = "2023.17.12491008";
-          sha256 = "1y09n9b3107d33c44bz48v33q4pbx1s2hxby1gczif4qgdy2hpyb";
+          version = "2023.13.11871009";
+          sha256 = "1frz1gj8r12vjhklk15kwqlq6vlzapk4wb70z9dkxb4xd5f4iv1j";
         }
         {
           name = "vscode-pylance";
@@ -68,8 +62,8 @@
         {
           name = "jupyter";
           publisher = "ms-toolsai";
-          version = "2023.8.1002501831";
-          sha256 = "sha256-Kp6tCTmji81cGrCF64NofQr0SqyK84kVr7qkWuV18Ts=";
+          version = "2023.6.1001861915";
+          sha256 = "sha256-aTHa5nAixrE6iWg+3Rq8i98pMQzuu3rYBHqxN0JlPjo=";
         }
         {
           name = "remote-containers";
@@ -80,8 +74,8 @@
         {
           name = "remote-ssh";
           publisher = "ms-vscode-remote";
-          version = "0.106.2023090115";
-          sha256 = "0ldrgb3472yaj404mky040ylnnl1p6sfcblw29w1zpfg720qdic0";
+          version = "0.103.2023062115";
+          sha256 = "01fshvm2j4bx6ray75rap7yczhc52bnvpww65rg4kvdsabxr71v8";
         }
         {
           name = "cmake-tools";

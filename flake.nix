@@ -26,8 +26,8 @@
     digga = {
       url = "github:divnix/digga";
       inputs = {
-        nixpkgs.follows = "latest";
-        nixlib.follows = "latest";
+        nixpkgs.follows = "nixos";
+        nixpkgs-unstable.follows = "latest";
         home-manager.follows = "home";
       };
     };
@@ -113,7 +113,7 @@
       nixos = {
         hostDefaults = {
           system = "x86_64-linux";
-          channelName = "nixos";
+          channelName = "latest";
           imports = [(digga.lib.importExportableModules ./modules)];
           modules = [
             {lib.our = self.lib;}
@@ -167,14 +167,6 @@
                 users.root
                 zsa
               ]);
-
-            i3wm = with profiles; [
-              programs.dconf
-              services.blueman
-              services.dbus
-              services.upower
-              services.xserver
-            ];
 
             swaywm = with profiles; [
               programs.sway
@@ -256,20 +248,6 @@
               newsboat
               pandoc
               texlive
-            ];
-
-            i3wm = with profiles; [
-              autorandr
-              betterlockscreen
-              dunst
-              feh
-              gtk
-              picom
-              polybar
-              redshift
-              rofi
-              screen-locker
-              xsession
             ];
 
             swaywm = with profiles; [

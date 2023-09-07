@@ -48,7 +48,6 @@
   home-manager.users.roberto = {
     stylix.targets = {
       emacs.enable = false;
-      # see here: https://github.com/nix-community/home-manager/issues/3671
       vscode.enable = false;
       # I prefer to do it explicitly!
       waybar.enable = false;
