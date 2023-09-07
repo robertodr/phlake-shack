@@ -94,6 +94,7 @@ in {
       gitAndTools.git-annex-utils
       global
       gnumake
+      graphite-cli
       linuxPackages.perf
       meld
       perf-tools
