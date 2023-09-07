@@ -44,7 +44,7 @@ in {
 
       LESSHISTFILE = "$XDG_STATE_HOME/lesshst";
 
-      #SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
+      SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
     };
 
     stateVersion = lib.mkForce "22.11";
