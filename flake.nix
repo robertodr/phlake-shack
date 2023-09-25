@@ -185,8 +185,7 @@
             virtualisation = with profiles; [
               programs.singularity
               virtualisation.docker
-              # FIXME commented out because build broken in recent NixOS
-              #virtualisation.virtualbox
+              virtualisation.virtualbox
             ];
           });
         };
