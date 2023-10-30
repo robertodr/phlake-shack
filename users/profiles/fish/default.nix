@@ -46,7 +46,7 @@
 
     shellAliases = {
       cat = "bat";
-      ls = "exa -bghluHS --git";
+      #ls = "eza -bghluHS --git";
       xopen = "xdg-open";
     };
   };

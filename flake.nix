@@ -207,7 +207,7 @@
               blueman-applet
               bottom
               core
-              exa
+              eza
               fish
               fzf
               git

@@ -29,6 +29,11 @@
   # Home: "Europe/Stockholm";
   time.timeZone = "Europe/Stockholm";
 
+  #nixpkgs.config.permittedInsecurePackages = [
+  #  "python3.10-requests-2.29.0"
+  #  "python3.10-cryptography-40.0.2"
+  #];
+
   security.polkit.enable = true;
 
   environment = {
@@ -45,7 +50,7 @@
         "dmidecode" # a tool that reads information about your system's hardware from the BIOS according to the SMBIOS/DMI standard
         "dosfstools" # utilities for creating and checking FAT and VFAT file systems
         "efibootmgr" # a Linux user-space application to modify the Intel Extensible Firmware Interface (EFI) Boot Manager
-        "exa" #
+        #"eza" #
         "fd" #
         "file" # a program that shows the type of files
         "findutils" # GNU Find Utilities, the basic directory searching utilities of the GNU operating system
