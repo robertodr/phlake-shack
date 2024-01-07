@@ -45,14 +45,22 @@
     impermanence,
     home-manager,
   }: {
-    nixosConfigurations.kellanved = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        ./systems/x86_64-linux/kellanved
-        nixos-hardware.nixosModules.framework-12th-gen-intel
-        disko.nixosModules.disko
-        impermanence.nixosModules.impermanence
-      ];
+    nixosConfigurations = {
+      kellanved = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./systems/x86_64-linux/kellanved
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.roberto = import (./. + "/homes/x86_64-linux/roberto@kellanved");
+          }
+          nixos-hardware.nixosModules.framework-12th-gen-intel
+          disko.nixosModules.disko
+          impermanence.nixosModules.impermanence
+        ];
+      };
     };
   };
 }
