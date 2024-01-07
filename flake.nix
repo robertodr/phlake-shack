@@ -12,13 +12,13 @@
 
     impermanence.url = "github:nix-community/impermanence?rev=033643a45a4a920660ef91caa391fbffb14da466";
 
-    #home-manager = {
-    #  url = "github:nix-community/home-manager/release-23.11";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
+    home-manager = {
+      url = "github:nix-community/home-manager/release-23.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    #nur = { 
-    #  url = "github:nix-community/NUR"; 
+    #nur = {
+    #  url = "github:nix-community/NUR";
     #  inputs.nixpkgs.follows = "nixpkgs";
     #};
 
@@ -49,17 +49,29 @@
         allowUnfree = true;
       };
 
+      src = ./.;
+
       # overlays = with inputs; [];
 
+      # add modules to _all_ NixOS systems
       systems.modules.nixos = with inputs; [
         disko.nixosModules.disko
         impermanence.nixosModules.impermanence
       ];
 
+      # add modules to a _specific_ host
       systems.hosts.kellanved.modules = with inputs; [
         nixos-hardware.nixosModules.framework-12th-gen-intel
       ];
 
-      src = ./.;
+      ## add modules to _all_ homes
+      #homes.modules = with inputs; [
+      #  # my-input.homeModules.my-module
+      #];
+
+      ## add modules to a _specific_ home
+      #homes.users."robertor@kellanved".modules = with inputs; [
+      #  # my-input.homeModules.my-module
+      #];
     };
 }

@@ -134,17 +134,13 @@
         extraGroups = ["users" "networkmanager" "wheel"];
         shell = pkgs.fish;
         hashedPassword = "$y$j9T$9CT7imGp.njKexGkzwsTh/$7y/T3A6cPIvy7CFKEBOJzil4sJmof0IaFR9BlJr2b15";
-        packages = with pkgs; [
-        ];
       };
     };
   };
 
   environment.systemPackages = with pkgs; [
     alejandra
-    gh
     neovim
-    zoom-us
   ];
 
   programs = {
@@ -153,7 +149,6 @@
       polkitPolicyOwners = ["roberto"];
     };
     _1password.enable = true;
-    firefox.enable = true;
     fish.enable = true;
     git.enable = true;
   };
