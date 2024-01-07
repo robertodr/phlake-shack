@@ -55,6 +55,7 @@
 
       # add modules to _all_ NixOS systems
       systems.modules.nixos = with inputs; [
+        home-manager.nixosModules.home-manager
         disko.nixosModules.disko
         impermanence.nixosModules.impermanence
       ];
