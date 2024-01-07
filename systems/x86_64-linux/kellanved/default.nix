@@ -88,6 +88,10 @@
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
+  nixpkgs = {
+    config.allowUnfree = true;
+  };
+
   networking = {
     hostName = "kellanved";
     networkmanager.enable = true;

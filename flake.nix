@@ -34,45 +34,25 @@
     #    home-manager.follows = "home";
     #  };
     #};
-
-    snowfall-lib = {
-      url = "github:snowfallorg/lib";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = inputs:
-    inputs.snowfall-lib.mkFlake {
-      inherit inputs;
-
-      channels-config = {
-        allowUnfree = true;
-      };
-
-      src = ./.;
-
-      # overlays = with inputs; [];
-
-      # add modules to _all_ NixOS systems
-      systems.modules.nixos = with inputs; [
-        home-manager.nixosModules.home-manager
+  outputs = {
+    self,
+    nixpkgs,
+    unstable,
+    nixos-hardware,
+    disko,
+    impermanence,
+    home-manager,
+  }: {
+    nixosConfigurations.kellanved = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ./systems/x86_64-linux/kellanved
+        nixos-hardware.nixosModules.framework-12th-gen-intel
         disko.nixosModules.disko
         impermanence.nixosModules.impermanence
       ];
-
-      # add modules to a _specific_ host
-      systems.hosts.kellanved.modules = with inputs; [
-        nixos-hardware.nixosModules.framework-12th-gen-intel
-      ];
-
-      ## add modules to _all_ homes
-      #homes.modules = with inputs; [
-      #  # my-input.homeModules.my-module
-      #];
-
-      ## add modules to a _specific_ home
-      #homes.users."robertor@kellanved".modules = with inputs; [
-      #  # my-input.homeModules.my-module
-      #];
     };
+  };
 }
