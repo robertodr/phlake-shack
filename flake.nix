@@ -8,7 +8,10 @@
 
     nixos-hardware.url = "github:nixos/nixos-hardware";
 
-    disko.url = "github:nix-community/disko?rev=aef9a509db64a081186af2dc185654d78dc8e344";
+    disko = {
+      url = "github:nix-community/disko?rev=aef9a509db64a081186af2dc185654d78dc8e344";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     impermanence.url = "github:nix-community/impermanence?rev=033643a45a4a920660ef91caa391fbffb14da466";
 
@@ -17,10 +20,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #nur = {
-    #  url = "github:nix-community/NUR";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
+    nur.url = "github:nix-community/NUR";
 
     #base16-schemes = {
     #  url = "github:tinted-theming/schemes?dir=base16";
@@ -44,11 +44,16 @@
     disko,
     impermanence,
     home-manager,
+    nur,
   }: {
     nixosConfigurations = {
       kellanved = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
+          nixos-hardware.nixosModules.framework-12th-gen-intel
+          disko.nixosModules.disko
+          { nixpkgs.overlays = [ nur.overlay ]; }
+          impermanence.nixosModules.impermanence
           ./systems/x86_64-linux/kellanved
           home-manager.nixosModules.home-manager
           {
@@ -56,9 +61,6 @@
             home-manager.useUserPackages = true;
             home-manager.users.roberto = import (./. + "/homes/roberto@kellanved");
           }
-          nixos-hardware.nixosModules.framework-12th-gen-intel
-          disko.nixosModules.disko
-          impermanence.nixosModules.impermanence
         ];
       };
     };

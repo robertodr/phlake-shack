@@ -60,7 +60,6 @@ in {
 
     # TODO I think there's quite some crap in this lists of packages...
     packages = with pkgs; [
-      firefox # TODO remove in favour of programs.firefox
       ## === Sysadmin ===
       du-dust #   <- Like du but more intuitive.
       procs #     <- A modern replacement for ps.
@@ -199,8 +198,7 @@ in {
     ]
     # multimedia
     ++ [
-      # TODO switch to firefox
-      "brave"
+      "firefox"
       "flameshot"
       "mpris-proxy"
     ]
