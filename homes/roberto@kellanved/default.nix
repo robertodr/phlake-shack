@@ -191,10 +191,34 @@ in {
     ]
     # development
     ++ [
-      #"direnv"
+      "direnv"
       #"emacs"
       #"tmpi" # TODO this needs tmux to work
       "gh"
+      "vscode"
     ]
+    # multimedia
+    ++ [
+      # TODO switch to firefox
+      "brave"
+      "flameshot"
+      "mpris-proxy"
+    ]
+    # office
+    ++ [
+      "newsboat"
+      "pandoc"
+      "texlive"
+    ]
+    # swaywm
+    #++ [
+    #  "gammastep"
+    #  "gtk"
+    #  #"kanshi"  # TODO use shikane instead!
+    #  "swayidle"
+    #  "swaylock"
+    #  "waybar"
+    #  "wayland"
+    #]
   );
 }
