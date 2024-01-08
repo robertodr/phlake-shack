@@ -34,4 +34,10 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  imports = map (x: ./.. + ("/profiles/" + x)) [
+    "gh"
+    "git"
+    "ssh"
+  ];
 }

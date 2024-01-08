@@ -1,9 +1,70 @@
-{pkgs, ...}: {
-  imports = [./hardware-configuration.nix ./disko-config.nix];
+{
+  lib,
+  pkgs,
+  ...
+}: {
+  imports =
+    [
+      ./hardware-configuration.nix
+      ./disko-config.nix
+    ]
+    # users
+    ++ [
+      ../../../users/roberto
+    ]
+    # base
+    ++ map (x: ./../.. + ("/profiles/" + x)) (
+      [
+        "fonts"
+        "hardware/bluetooth"
+        "nix"
+        "networking"
+        "powertop"
+        "programs/_1password"
+        "programs/gnupg"
+        "programs/thunar"
+        "services/earlyoom"
+        "services/fwupd"
+        "services/geoclue2"
+        "services/gnome-keyring"
+        "services/hardware/bolt"
+        "services/languagetool"
+        "services/openssh"
+        "services/thermald"
+        "services/udisks2"
+        "systemd"
+        "zsa"
+      ]
+      # window manager
+      ++ [
+        #"programs/sway"
+        #"programs/dconf"  # needed?
+        #"services/blueman"
+        #"services/dbus"  # needed?
+        #"services/greetd"
+        #"services/upower"
+      ]
+      # multimedia
+      ++ [
+        "services/pipewire"
+      ]
+      # virtualisation
+      ++ [
+        "virtualisation/docker"
+      ]
+    );
 
   boot = {
+    kernel = {
+      sysctl = {
+        "kernel.perf_event_paranoid" = 0;
+      };
+    };
+
     kernelParams = ["resume_offset=533760"];
+
     resumeDevice = "/dev/disk/by-uuid/edc1b1c1-ae2e-462c-8390-fdf11cf81ea9";
+
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -86,15 +147,8 @@
     ];
   };
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
-
   nixpkgs = {
     config.allowUnfree = true;
-  };
-
-  networking = {
-    hostName = "kellanved";
-    networkmanager.enable = true;
   };
 
   time.timeZone = "Europe/Oslo";
@@ -113,48 +167,79 @@
       };
       libinput.enable = true;
     };
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-    };
   };
 
-  sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
+  security.polkit.enable = true;
 
-  users = {
-    groups = {
-      roberto = {gid = 1000;};
-    };
-    users = {
-      roberto = {
-        isNormalUser = true;
-        description = "Roberto Di Remigio Eikås";
-        group = "roberto";
-        uid = 1000;
-        extraGroups = ["users" "networkmanager" "wheel"];
-        shell = pkgs.fish;
-        hashedPassword = "$y$j9T$9CT7imGp.njKexGkzwsTh/$7y/T3A6cPIvy7CFKEBOJzil4sJmof0IaFR9BlJr2b15";
-      };
-    };
-  };
+  environment = {
+    # TODO review which packages should be here and which in user profiles
+    systemPackages =
+      lib.attrVals [
+        "acpi" # show battery status and other ACPI information
+        "alejandra" #
+        "atool" # archive command line helper
+        "binutils" # tools for manipulating binaries (linker, assembler, etc.)
+        "bottom" # a cross-platform graphical process/system monitor with a customizable interface
+        "cacert" # a bundle of X.509 certificates of public Certificate Authorities (CA)
+        "coreutils" # the basic file, shell and text manipulation utilities of the GNU operating system
+        "curl" # a command line tool for transferring files with URL syntax
+        "dmidecode" # a tool that reads information about your system's hardware from the BIOS according to the SMBIOS/DMI standard
+        "dosfstools" # utilities for creating and checking FAT and VFAT file systems
+        "efibootmgr" # a Linux user-space application to modify the Intel Extensible Firmware Interface (EFI) Boot Manager
+        "fd" #
+        "file" # a program that shows the type of files
+        "findutils" # GNU Find Utilities, the basic directory searching utilities of the GNU operating system
+        "fzf" #
+        "gnupg" #
+        "gptfdisk" # set of text-mode partitioning tools for Globally Unique Identifier (GUID) Partition Table (GPT) disks
+        "intel-media-driver"
+        "intel-gpu-tools"
+        "libseccomp" # high level library for the Linux Kernel seccomp filter
+        "lm_sensors" #
+        "neofetch" #
+        "neovim" # vim text editor fork focused on extensibility and agility
+        "nix-index" #
+        "pciutils" # a collection of programs for inspecting and manipulating configuration of PCI devices
+        "procs" #
+        "psmisc" # a set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
+        "ripgrep" #
+        "rsync" # a fast incremental file transfer utility
+        "tree" # command to produce a depth indented directory listing
+        "unrar" # utility for RAR archives
+        "unzip" # an extraction utility for archives compressed in .zip format
+        "usbutils" # tools for working with USB devices, such as lsusb
+        "util-linux" #
+        "wget" # tool for retrieving files using HTTP, HTTPS, and FTP
+        "which" # shows the full path of (shell) commands
+        "xdg-utils" # a set of command line tools that assist applications with a variety of desktop integration tasks
+        "zip" # compressor/archiver for creating and modifying zipfiles
+      ]
+      pkgs;
 
-  environment.systemPackages = with pkgs; [
-    alejandra
-    neovim
-  ];
+    # see here: https://github.com/NixOS/nixpkgs/issues/64965#issuecomment-991839786
+    etc."ipsec.secrets".text = ''
+      include ipsec.d/ipsec.nm-l2tp.secrets
+    '';
 
-  programs = {
-    _1password-gui = {
-      enable = true;
-      polkitPolicyOwners = ["roberto"];
+    # TODO review these aliases
+    shellAliases = {
+      # quick cd
+      ".." = "cd ..";
+      "..." = "cd ../..";
+      "...." = "cd ../../..";
+      "....." = "cd ../../../..";
+
+      # grep
+      grep = "rg";
+
+      # internet ip
+      # TODO: explain this hard-coded IP address
+      myip = "dig +short myip.opendns.com @208.67.222.222 2>&1";
+
+      # top
+      top = "btm";
+      htop = "btm";
     };
-    _1password.enable = true;
-    fish.enable = true;
-    git.enable = true;
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,

@@ -6,7 +6,7 @@
   fonts = {
     fontDir.enable = true;
 
-    fonts =
+    packages =
       lib.attrVals [
         "bakoma_ttf"
         "comfortaa"
@@ -24,8 +24,8 @@
         "lmmath"
         "material-design-icons"
         "material-icons"
-        "open-sans"
         "noto-fonts-emoji"
+        "open-sans"
         "terminus_font"
         "ubuntu_font_family"
         "unifont"
@@ -34,8 +34,8 @@
       ]
       pkgs
       ++ [
+        (pkgs.mplus-outline-fonts.githubRelease)
         (pkgs.nerdfonts.override {fonts = ["FiraCode"];})
-        pkgs.nur.repos.robertodr.mplus-fonts
       ];
 
     fontconfig = {

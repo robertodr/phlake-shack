@@ -54,7 +54,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.roberto = import (./. + "/homes/x86_64-linux/roberto@kellanved");
+            home-manager.users.roberto = import (./. + "/homes/roberto@kellanved");
           }
           nixos-hardware.nixosModules.framework-12th-gen-intel
           disko.nixosModules.disko
