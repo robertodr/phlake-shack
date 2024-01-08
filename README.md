@@ -3,6 +3,8 @@ This repository is home to the nix code that builds my systems.
 
 [_The simpler, the better_](https://discourse.nixos.org/t/how-do-i-modularize-configuration-snippets-to-modules/37512/3)
 
+* Activate the SSH agent in 1password
+
 ## Why Nix?
 Nix allows for easy to manage, collaborative, reproducible deployments. This means that once something is setup and configured once, it works forever. If someone else shares their configuration, anyone can make use of it.
 

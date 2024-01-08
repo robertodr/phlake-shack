@@ -1,4 +1,8 @@
-{pkgs, lib, ...}: let
+{
+  pkgs,
+  lib,
+  ...
+}: let
   folder = ./cachix;
   toImport = name: value: folder + ("/" + name);
   filterCaches = key: value: value == "regular" && lib.hasSuffix ".nix" key && key != "default.nix";

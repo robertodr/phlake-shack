@@ -179,7 +179,6 @@
         "alejandra" #
         "atool" # archive command line helper
         "binutils" # tools for manipulating binaries (linker, assembler, etc.)
-        "bottom" # a cross-platform graphical process/system monitor with a customizable interface
         "cacert" # a bundle of X.509 certificates of public Certificate Authorities (CA)
         "coreutils" # the basic file, shell and text manipulation utilities of the GNU operating system
         "curl" # a command line tool for transferring files with URL syntax
@@ -189,7 +188,6 @@
         "fd" #
         "file" # a program that shows the type of files
         "findutils" # GNU Find Utilities, the basic directory searching utilities of the GNU operating system
-        "fzf" #
         "gnupg" #
         "gptfdisk" # set of text-mode partitioning tools for Globally Unique Identifier (GUID) Partition Table (GPT) disks
         "intel-media-driver"
@@ -200,9 +198,7 @@
         "neovim" # vim text editor fork focused on extensibility and agility
         "nix-index" #
         "pciutils" # a collection of programs for inspecting and manipulating configuration of PCI devices
-        "procs" #
         "psmisc" # a set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
-        "ripgrep" #
         "rsync" # a fast incremental file transfer utility
         "tree" # command to produce a depth indented directory listing
         "unrar" # utility for RAR archives
@@ -229,16 +225,9 @@
       "...." = "cd ../../..";
       "....." = "cd ../../../..";
 
-      # grep
-      grep = "rg";
-
       # internet ip
       # TODO: explain this hard-coded IP address
       myip = "dig +short myip.opendns.com @208.67.222.222 2>&1";
-
-      # top
-      top = "btm";
-      htop = "btm";
     };
   };
 
