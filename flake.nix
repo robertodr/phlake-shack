@@ -31,9 +31,14 @@
     #  url = "github:danth/stylix";
     #  inputs = {
     #    nixpkgs.follows = "nixpkgs";
-    #    home-manager.follows = "home";
+    #    home-manager.follows = "home-manager";
     #  };
     #};
+
+    nix-vscode-extensions = {
+      url = "github:nix-community/nix-vscode-extensions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -45,6 +50,9 @@
     impermanence,
     home-manager,
     nur,
+    #base16-schemes,
+    #stylix,
+    nix-vscode-extensions,
   }: {
     nixosConfigurations = {
       kellanved = nixpkgs.lib.nixosSystem {
@@ -60,6 +68,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.roberto = import (./. + "/homes/roberto@kellanved");
+            home-manager.extraSpecialArgs = {inherit nix-vscode-extensions;};
           }
         ];
       };

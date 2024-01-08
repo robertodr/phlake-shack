@@ -2,6 +2,7 @@
   lib,
   pkgs,
   config,
+  nix-vscode-extensions,
   ...
 }: let
   inherit (config.home) username;

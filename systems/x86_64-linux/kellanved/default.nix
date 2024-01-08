@@ -132,7 +132,6 @@
       "/var/lib/fprint"
       "/var/lib/systemd/coredump"
       "/etc/NetworkManager/system-connections"
-      "/etc/nixos"
       {
         directory = "/var/lib/colord";
         user = "colord";

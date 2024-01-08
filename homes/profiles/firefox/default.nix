@@ -10,6 +10,8 @@
           "browser.startup.homepage" = "https://searx.aicampground.com";
           "browser.search.defaultenginename" = "Searx";
           "browser.search.order.1" = "Searx";
+          "browser.toolbars.bookmarks.visibility" = "always";
+          "font.name.serif.x-western" = "M PLUS 2";
         };
         search = {
           force = true;
@@ -52,15 +54,18 @@
           };
         };
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-          # the paperpile extension is not yet available, so remember to install it by hand
           c-c-search-extension
-          darkreader
+          #darkreader
           decentraleyes
           joplin-web-clipper
           notion-web-clipper
           onepassword-password-manager
+          # paperpile  # not yet available, installed by hand
           privacy-badger
+          privacy-redirect
+          rust-search-extension
           ublock-origin
+          unpaywall
         ];
       };
     };
