@@ -37,12 +37,12 @@
       ]
       # window manager
       ++ [
-        #"programs/sway"
-        #"programs/dconf"  # needed?
-        #"services/blueman"
-        #"services/dbus"  # needed?
-        #"services/greetd"
-        #"services/upower"
+        "programs/sway"
+        "programs/dconf"  # needed?
+        "services/blueman"
+        "services/dbus"  # needed?
+        "services/greetd"
+        "services/upower"
       ]
       # multimedia
       ++ [
@@ -154,20 +154,6 @@
   time.timeZone = "Europe/Oslo";
 
   i18n.defaultLocale = "en_US.UTF-8";
-
-  services = {
-    xserver = {
-      enable = true;
-      displayManager.gdm.enable = true;
-      displayManager.gdm.wayland = false;
-      desktopManager.gnome.enable = true;
-      xkb = {
-        layout = "us";
-        options = "eurosign:e,caps:escape";
-      };
-      libinput.enable = true;
-    };
-  };
 
   security.polkit.enable = true;
 

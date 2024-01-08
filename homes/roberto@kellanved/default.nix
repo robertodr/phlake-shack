@@ -210,14 +210,14 @@ in {
       "texlive"
     ]
     # swaywm
-    #++ [
-    #  "gammastep"
-    #  "gtk"
-    #  #"kanshi"  # TODO use shikane instead!
-    #  "swayidle"
-    #  "swaylock"
-    #  "waybar"
-    #  "wayland"
-    #]
+    ++ [
+      "gammastep"
+      "gtk"
+      #"kanshi"  # TODO use shikane instead!
+      "swayidle"
+      "swaylock"
+      "waybar"
+      "wayland"
+    ]
   );
 }
