@@ -1,7 +1,6 @@
 {pkgs, ...}: let
   gtkgreetStyle = pkgs.writeText "greetd-gtkgreet.css" ''
     window {
-      /* FIXME background-image: url("file://${pkgs.pulse-demon}/share/flop-blur-pulse-demon.png"); */
       background-size: cover;
       background-position: center;
       font-weight: bold;
