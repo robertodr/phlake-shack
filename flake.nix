@@ -53,22 +53,28 @@
     #base16-schemes,
     #stylix,
     nix-vscode-extensions,
-  }: {
+  } @ inputs: let
+    inherit (self) outputs;
+    system = "x86_64-linux";
+    user = "roberto";
+  in {
+    # Your custom packages and modifications, exported as overlays
+    overlays = import ./overlays {inherit inputs;};
     nixosConfigurations = {
+      inherit system;
       kellanved = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        specialArgs = {inherit inputs outputs;};
         modules = [
           nixos-hardware.nixosModules.framework-12th-gen-intel
           disko.nixosModules.disko
-          { nixpkgs.overlays = [ nur.overlay ]; }
+          {nixpkgs.overlays = [nur.overlay];}
           impermanence.nixosModules.impermanence
           ./systems/x86_64-linux/kellanved
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.roberto = import (./. + "/homes/roberto@kellanved");
-            home-manager.extraSpecialArgs = {inherit nix-vscode-extensions;};
+            home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
+            home-manager.extraSpecialArgs = {inherit inputs outputs nix-vscode-extensions;};
           }
         ];
       };

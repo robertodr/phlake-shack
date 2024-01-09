@@ -3,6 +3,8 @@
   pkgs,
   config,
   nix-vscode-extensions,
+  inputs,
+  outputs,
   ...
 }: let
   inherit (config.home) username;
@@ -19,6 +21,33 @@
   mountDir = "${config.home.homeDirectory}/clouds/gdrive";
 in {
   fonts.fontconfig.enable = true;
+
+  nixpkgs = {
+    # you can add overlays here
+    overlays = [
+      inputs.nur.overlay
+      # add overlays your own flake exports (from overlays and pkgs dir):
+      #outputs.overlays.additions
+      outputs.overlays.modifications
+      outputs.overlays.unstable-packages
+
+      # you can also add overlays exported from other flakes:
+      # neovim-nightly-overlay.overlays.default
+
+      # or define it inline, for example:
+      # (final: prev: {
+      #   hi = final.hello.overrideAttrs (oldAttrs: {
+      #     patches = [ ./change-hello-to-hi.patch ];
+      #   });
+      # })
+    ];
+    # configure your nixpkgs instance
+    config = {
+      allowUnfree = true;
+      # Workaround for https://github.com/nix-community/home-manager/issues/2942
+      allowUnfreePredicate = _: true;
+    };
+  };
 
   home = {
     username = "roberto";
@@ -212,7 +241,7 @@ in {
     # swaywm
     ++ [
       "gammastep"
-      "gtk"
+      #"gtk"
       #"kanshi"  # TODO use shikane instead!
       "swayidle"
       "swaylock"

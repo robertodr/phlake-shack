@@ -6,7 +6,9 @@ This repository is home to the nix code that builds my systems.
 ## imperative actions
 * Activate the SSH agent in 1password
 * Enable system authentication in 1password
-* `for finger in {left,right}-{index,middle}-finger; fprintd-enroll -f "$finger" "$USER"; end`
+* enroll fingerprints `for finger in {left,right}-{index,middle}-finger; fprintd-enroll -f "$finger" "$USER"; end`
+* Ferdium: import data, uncheck "Launche Ferdium on start", "Always show Ferdium in system tray", and "Enable updates".
+* Import Thunderbird data
 
 ## Why Nix?
 Nix allows for easy to manage, collaborative, reproducible deployments. This means that once something is setup and configured once, it works forever. If someone else shares their configuration, anyone can make use of it.
