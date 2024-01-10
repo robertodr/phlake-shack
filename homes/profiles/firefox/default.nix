@@ -7,10 +7,11 @@
         name = "default";
         isDefault = true;
         settings = {
-          "browser.startup.homepage" = "https://searx.aicampground.com";
           "browser.search.defaultenginename" = "Searx";
           "browser.search.order.1" = "Searx";
+          "browser.startup.homepage" = "https://searx.aicampground.com";
           "browser.toolbars.bookmarks.visibility" = "always";
+          "extensions.pocket.enabled" = "false";
           "font.name.serif.x-western" = "M PLUS 2";
         };
         search = {
