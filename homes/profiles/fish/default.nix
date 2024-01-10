@@ -2,10 +2,6 @@
   programs.fish = {
     enable = true;
 
-    shellAliases = {
-      eza = "eza --binary --header --smart-group --accessed --group-directories-first";
-    };
-
     plugins = [
       # keeps your fish shell history clean from typos, incorrectly used commands and everything you don't want to store due to privacy reasons
       {
