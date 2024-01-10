@@ -237,7 +237,7 @@
 
       # internet ip
       # TODO: explain this hard-coded IP address
-      myip = "dig +short myip.opendns.com @208.67.222.222 2>&1";
+      myip = "${pkgs.dig}/bin/dig +short myip.opendns.com @208.67.222.222 2>&1";
     };
   };
 
