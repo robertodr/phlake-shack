@@ -12,7 +12,8 @@
       size = 64;
     };
 
-    font.size = lib.mkDefault 14;
+    # TODO within stylix conf
+    #font.size = lib.mkDefault 14;
 
     iconTheme = {
       name = "ePapirus";
