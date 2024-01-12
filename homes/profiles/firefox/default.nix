@@ -74,7 +74,7 @@
           joplin-web-clipper
           notion-web-clipper
           onepassword-password-manager
-          #paperpile  # not yet available, installed by hand
+          paperpile
           privacy-badger
           privacy-redirect
           rust-search-extension
