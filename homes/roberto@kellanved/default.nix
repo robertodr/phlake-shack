@@ -105,6 +105,7 @@ in {
       rclone
       remmina
       tokei
+      shikane
 
       autoconf
       automake
@@ -160,7 +161,7 @@ in {
       vlc
       wordnet
       xournalpp
-      zoom-us
+      pkgs.unstable.zoom-us
     ];
   };
 
@@ -241,7 +242,7 @@ in {
     # swaywm
     ++ [
       "gammastep"
-      #"gtk"
+      "gtk"
       #"kanshi"  # TODO use shikane instead!
       "swayidle"
       "swaylock"
