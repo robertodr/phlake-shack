@@ -38,7 +38,10 @@ in {
       sway = {
         enable = true;
 
-        systemd.enable = true;
+        systemd = {
+          enable = true;
+          xdgAutostart = true;
+        };
 
         wrapperFeatures = {
           base = true;
@@ -110,7 +113,7 @@ in {
           bars = [];
 
           menu = ''
-            ${pkgs.fuzzel}/bin/fuzzel --font='M PLUS 2 Regular' --icon-theme='ePapirus' --width=50
+            ${pkgs.fuzzel}/bin/fuzzel
           '';
 
           window = {
