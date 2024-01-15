@@ -17,7 +17,6 @@ in {
 
       gpg = {
         format = "ssh";
-        ssh.program = "op-ssh-sign";
       };
 
       commit.gpgSign = true;
