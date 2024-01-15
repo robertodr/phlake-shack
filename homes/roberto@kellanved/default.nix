@@ -21,6 +21,10 @@
   mountDir = "${config.home.homeDirectory}/clouds/gdrive";
 in {
   fonts.fontconfig.enable = true;
+  manual = {
+    html.enable = true;
+    json.enable = true;
+  };
 
   nixpkgs = {
     # you can add overlays here
@@ -63,23 +67,16 @@ in {
     # changes in each release.
     stateVersion = "23.11";
 
-    extraOutputsToInstall = [
-      "doc"
-      "man"
-      "devdoc"
-      "info"
-    ];
-
     sessionVariables = {
       EDITOR = "nvim";
+      LESSHISTFILE = "${stateHome}/lesshst";
+      SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
     };
 
     shellAliases = {
       xopen = "xdg-open";
       du = "dust";
       ps = "procs";
-      LESSHISTFILE = "$XDG_STATE_HOME/lesshst";
-      SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
     };
 
     # TODO figure out how to handle this
@@ -146,7 +143,7 @@ in {
       asciinema
       drawio
       evince
-      ferdium
+      pkgs.unstable.ferdium
       gimp
       inkscape
       joplin-desktop
@@ -193,8 +190,14 @@ in {
     };
   };
 
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
+  programs = {
+    # let Home Manager install and manage itself.
+    home-manager.enable = true;
+    man = {
+      enable = true;
+      generateCaches = true;
+    };
+  };
 
   imports = map (x: ./.. + ("/profiles/" + x)) (
     # base
