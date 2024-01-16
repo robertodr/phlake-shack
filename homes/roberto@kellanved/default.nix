@@ -193,10 +193,6 @@ in {
   programs = {
     # let Home Manager install and manage itself.
     home-manager.enable = true;
-    man = {
-      enable = true;
-      generateCaches = true;
-    };
   };
 
   imports = map (x: ./.. + ("/profiles/" + x)) (
@@ -244,6 +240,7 @@ in {
     ]
     # swaywm
     ++ [
+      "fuzzel"
       "gammastep"
       "gtk"
       #"kanshi"  # TODO use shikane instead!
