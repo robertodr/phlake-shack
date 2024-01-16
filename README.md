@@ -10,6 +10,7 @@ This repository is home to the nix code that builds my systems.
 * Ferdium: import data, uncheck "Launche Ferdium on start", "Always show Ferdium in system tray", and "Enable updates".
 * Import Thunderbird data
 * keyring in `argv.json` for VSCode: https://code.visualstudio.com/docs/editor/settings-sync#_recommended-configure-the-keyring-to-use-with-vs-code
+* Zoom configuration according to https://wiki.archlinux.org/title/Zoom_Meetings
 
 ## Why Nix?
 Nix allows for easy to manage, collaborative, reproducible deployments. This means that once something is setup and configured once, it works forever. If someone else shares their configuration, anyone can make use of it.
