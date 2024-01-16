@@ -18,13 +18,18 @@ in {
       "files.trimTrailingWhitespace" = true;
       "git.mergeEditor" = true;
       "python.analysis.diagnosticMode" = "openFilesOnly";
-      "python.formatting.provider" = "black";
       "telemetry.telemetryLevel" = "off";
       "update.mode" = "none";
       "cmake.configureOnOpen" = true;
       "workbench.sideBar.location" = "right";
       # needed to get past an immediate crash after startup :(
       "window.titleBarStyle" = "custom";
+      "[python]" = {
+        "editor.codeActionsOnSave" = {
+          "source.fixAll" = "explicit";
+          "source.organizeImports" = "explicit";
+        };
+      };
     };
     extensions = with vscode-extensions; [
       charliermarsh.ruff
