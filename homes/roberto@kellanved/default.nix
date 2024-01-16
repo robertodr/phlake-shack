@@ -198,6 +198,7 @@ in {
   imports = map (x: ./.. + ("/profiles/" + x)) (
     # base
     [
+      "atuin"
       "bat"
       "blueman-applet"
       "bottom"
