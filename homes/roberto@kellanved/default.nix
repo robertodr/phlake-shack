@@ -96,6 +96,7 @@ in {
       freerdp
       hyperfine
       iputils
+      kooha
       openconnect
       # TODO openconnect-sso
       openvpn
@@ -119,7 +120,7 @@ in {
       gitAndTools.git-annex-utils
       global
       gnumake
-      graphite-cli
+      #graphite-cli
       linuxPackages.perf
       meld
       perf-tools
@@ -143,7 +144,6 @@ in {
       asciinema
       drawio
       evince
-      pkgs.unstable.ferdium
       gimp
       inkscape
       joplin-desktop
@@ -151,14 +151,15 @@ in {
       onlyoffice-bin
       pdf2svg
       pdftk
+      pkgs.unstable.ferdium
       playerctl
       spotify
       thunderbird
-      typst
+      #typst
       vlc
       wordnet
       xournalpp
-      pkgs.unstable.zoom-us
+      zoom-us
     ];
   };
 
@@ -223,7 +224,7 @@ in {
     ++ [
       "direnv"
       #"emacs"
-      #"tmpi" # TODO this needs tmux to work
+      "tmpi"
       "gh"
       "vscode"
     ]
