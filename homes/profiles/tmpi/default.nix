@@ -17,6 +17,7 @@ in {
       if [[ ! -f "${localBin}/tmpi" ]]; then
         mkdir -p ${localBin}
         ${curl} https://raw.githubusercontent.com/Azrael3000/tmpi/master/tmpi -o ${localBin}/tmpi
+        chmod u+x ${localBin}/tmpi
       fi
     '';
 
