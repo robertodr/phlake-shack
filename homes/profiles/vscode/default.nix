@@ -12,18 +12,18 @@ in {
     enableExtensionUpdateCheck = false;
     mutableExtensionsDir = false;
     userSettings = {
-      "autoDocstring.docstringFormat" = "google-notypes";
       "editor.formatOnSave" = true;
       "extensions.autoCheckUpdates" = false;
       "files.trimTrailingWhitespace" = true;
       "git.mergeEditor" = true;
-      "python.analysis.diagnosticMode" = "openFilesOnly";
       "telemetry.telemetryLevel" = "off";
       "update.mode" = "none";
-      "cmake.configureOnOpen" = true;
       "workbench.sideBar.location" = "right";
-      # needed to get past an immediate crash after startup :(
+      # NOTE needed to get past an immediate crash after startup :(
       "window.titleBarStyle" = "custom";
+      "autoDocstring.docstringFormat" = "google-notypes";
+      "python.analysis.diagnosticMode" = "openFilesOnly";
+      "cmake.configureOnOpen" = true;
       "[python]" = {
         "editor.codeActionsOnSave" = {
           "source.fixAll" = "explicit";
@@ -33,7 +33,8 @@ in {
     };
     extensions = with vscode-extensions; [
       charliermarsh.ruff
-      graphite.gti-vscode
+      # NOTE not really using Graphite at the moment
+      #graphite.gti-vscode
       mkhl.direnv
       ms-azuretools.vscode-docker
       ms-vsliveshare.vsliveshare
