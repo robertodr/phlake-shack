@@ -23,7 +23,8 @@ in {
       "window.titleBarStyle" = "custom";
       "autoDocstring.docstringFormat" = "google-notypes";
       "python.analysis.diagnosticMode" = "openFilesOnly";
-      "cmake.configureOnOpen" = true;
+      # FIXME see below
+      #"cmake.configureOnOpen" = true;
       "[python]" = {
         "editor.codeActionsOnSave" = {
           "source.fixAll" = "explicit";
@@ -42,11 +43,12 @@ in {
       ms-toolsai.jupyter
       ms-vscode-remote.remote-containers
       # FIXME requires bleeding edge vscode?
-      #ms-vscode-remote.remote-ssh
-      ms-vscode.cmake-tools
-      ms-vscode.cpptools
-      ms-vscode.cpptools-extension-pack
-      ms-vscode.cpptools-themes
+      ms-vscode-remote.remote-ssh
+      # FIXME seems not to be working...
+      #ms-vscode.cmake-tools
+      #ms-vscode.cpptools
+      #ms-vscode.cpptools-extension-pack
+      #ms-vscode.cpptools-themes
       njpwerner.autodocstring
       vscodevim.vim
     ];
