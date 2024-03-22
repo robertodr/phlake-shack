@@ -69,14 +69,14 @@
         };
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
           c-c-search-extension
-          #darkreader
+          darkreader
           decentraleyes
           joplin-web-clipper
           notion-web-clipper
           onepassword-password-manager
           paperpile
           privacy-badger
-          privacy-redirect
+          redirector
           rust-search-extension
           ublock-origin
           unpaywall
