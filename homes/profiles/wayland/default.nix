@@ -26,7 +26,7 @@
     "firefox"
     "ferdium ${commandLineArgs}"
     "thunderbird"
-    "joplin-desktop ${commandLineArgs}"
+    #"joplin-desktop ${commandLineArgs}"
   ];
 in {
   home.packages = with pkgs; [
