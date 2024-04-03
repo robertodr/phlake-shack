@@ -23,12 +23,13 @@ in {
       "window.titleBarStyle" = "custom";
     };
     extensions = with vscode-extensions; [
+      #alessandrosangalli.mob-vscode-gui
       github.vscode-github-actions
       github.copilot
       mkhl.direnv
       ms-azuretools.vscode-docker
       ms-vscode-remote.remote-containers
-      ms-vscode-remote.remote-ssh
+      #ms-vscode-remote.remote-ssh
       ms-vsliveshare.vsliveshare
       vscodevim.vim
     ];
