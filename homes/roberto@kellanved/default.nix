@@ -123,6 +123,7 @@ in {
       #graphite-cli
       linuxPackages.perf
       meld
+      mob
       perf-tools
       unifdef
       universal-ctags
@@ -237,8 +238,9 @@ in {
     # office
     ++ [
       "newsboat"
-      "pandoc"
-      "texlive"
+      # not really using these two, but I can keep the code to enable them
+      #"pandoc"
+      #"texlive"
     ]
     # swaywm
     ++ [
