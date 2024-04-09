@@ -56,8 +56,7 @@ Host dt0 dt1
 ## LUMI
 Host lumi
   Hostname lumi.csc.fi
-  User rodiremi
-  IdentityFile ~/.ssh/pulsedemon_ed25519
+  User rodiremi2
 
 ## Oracle Cloud
 Host squirrel
