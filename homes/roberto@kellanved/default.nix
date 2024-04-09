@@ -20,7 +20,27 @@
 
   mountDir = "${config.home.homeDirectory}/clouds/gdrive";
 in {
+  lib.phlake-shack = rec {
+    fsPath = builtins.toString ./../..;
+    userConfigPath = "${fsPath}/users/${username}/config";
+
+    whoami = {
+      firstName = "Roberto";
+      lastName = "Di Remigio Eikås";
+      fullName = "${whoami.firstName} ${whoami.lastName}";
+      email = "roberto@totaltrash.xyz";
+      githubUserName = "robertodr";
+      pgpPublicKey = "E4FADFE6DFB29C6E";
+    };
+
+    emacs = {
+      profilesBase = "emacs/profiles";
+      profilesPath = "${userConfigPath}/${emacs.profilesBase}";
+    };
+  };
+
   fonts.fontconfig.enable = true;
+
   manual = {
     html.enable = true;
     json.enable = true;
@@ -224,7 +244,7 @@ in {
     # development
     ++ [
       "direnv"
-      #"emacs"
+      "emacs"
       "tmpi"
       "gh"
       "vscode"
@@ -238,8 +258,8 @@ in {
     # office
     ++ [
       "newsboat"
-      # not really using these two, but I can keep the code to enable them
-      #"pandoc"
+      "pandoc"
+      # not really using latex locally, but I can keep the code to enable it
       #"texlive"
     ]
     # swaywm
