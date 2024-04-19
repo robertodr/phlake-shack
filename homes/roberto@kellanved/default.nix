@@ -141,6 +141,7 @@ in {
       global
       gnumake
       #graphite-cli
+      hotspot
       linuxPackages.perf
       meld
       mob
