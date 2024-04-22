@@ -22,6 +22,8 @@
 
     nur.url = "github:nix-community/NUR";
 
+    #nix-inspect.url = "github:bluskript/nix-inspect";
+
     #base16-schemes = {
     #  url = "github:tinted-theming/schemes?dir=base16";
     #  flake = false;

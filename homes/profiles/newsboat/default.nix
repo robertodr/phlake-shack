@@ -15,7 +15,11 @@
         tags = [];
       }
       {
-        url = "https://aip.scitation.org/action/showFeed?type=etoc&feed=rss&jc=jcp";
+        url = "https://pubs.aip.org/rss/site_1000043/1000024.xml";
+        tags = [];
+      }
+      {
+        url = "https://pubs.aip.org/rss/site_1000043/LatestOpenIssueArticles_1000024.xml";
         tags = [];
       }
       {
