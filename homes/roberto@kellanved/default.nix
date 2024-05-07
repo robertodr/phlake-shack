@@ -177,7 +177,7 @@ in {
       playerctl
       spotify
       thunderbird
-      #typst
+      unstable.typst
       vlc
       wordnet
       xournalpp
