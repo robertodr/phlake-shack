@@ -3,7 +3,6 @@ IdentityAgent "~/.1password/agent.sock"
 Host yoshimi
   User roberto
   Hostname yoshimi.totaltrash.xyz
-  IdentityFile ~/.ssh/pulsedemon_ed25519
   Port 48615
 
 ## Norway
