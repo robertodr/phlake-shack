@@ -55,6 +55,7 @@
       # virtualisation
       ++ [
         "virtualisation/docker"
+        "virtualisation/virtualbox"
       ]
     );
 
