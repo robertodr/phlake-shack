@@ -166,6 +166,7 @@ in {
       asciinema
       drawio
       evince
+      pkgs.unstable.eww
       gimp
       inkscape
       joplin-desktop
