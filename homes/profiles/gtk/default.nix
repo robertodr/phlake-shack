@@ -16,8 +16,8 @@
     #font.size = lib.mkDefault 14;
 
     iconTheme = {
-      name = "ePapirus";
-      package = pkgs.papirus-icon-theme;
+      name = "Nordzy-dark";
+      package = pkgs.nordzy-icon-theme;
     };
   };
 }

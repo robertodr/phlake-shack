@@ -7,7 +7,7 @@
         terminal = "${pkgs.kitty}/bin/kitty";
         layer = "overlay";
         font = "M PLUS 2 Regular";
-        icon-theme = "ePapirus";
+        icon-theme = "Nordzy-dark";
         dpi-aware = "yes";
         width = 50;
       };

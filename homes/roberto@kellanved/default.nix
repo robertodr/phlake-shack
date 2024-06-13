@@ -105,6 +105,16 @@ in {
     #    mkOutOfStoreSymlink "${config.lib.phlake-shack.userConfigPath}/authinfo.gpg";
     #};
 
+    pointerCursor = {
+      name = "Bibata-Modern-Classic";
+      package = pkgs.bibata-cursors;
+      size = 64;
+      x11 = {
+        enable = true;
+        defaultCursor = "Bibata-Modern-Classic";
+      };
+    };
+
     # TODO I think there's quite some crap in this lists of packages...
     packages = with pkgs; [
       ## === Sysadmin ===
