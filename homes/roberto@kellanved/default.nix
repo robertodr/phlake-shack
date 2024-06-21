@@ -50,6 +50,7 @@ in {
     # you can add overlays here
     overlays = [
       inputs.nur.overlay
+
       # add overlays your own flake exports (from overlays and pkgs dir):
       #outputs.overlays.additions
       outputs.overlays.modifications
@@ -128,7 +129,6 @@ in {
       iputils
       kooha
       openconnect
-      # TODO openconnect-sso
       openvpn
       rclone
       remmina
@@ -141,6 +141,7 @@ in {
       cachix
       clang-tools # TODO <- needed here?
       cmake-language-server
+      copier
       delta # TODO <- this or difftastic?
       flamegraph
       fx

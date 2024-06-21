@@ -11,6 +11,7 @@ This repository is home to the nix code that builds my systems.
 * Import Thunderbird data
 * keyring in `argv.json` for VSCode: https://code.visualstudio.com/docs/editor/settings-sync#_recommended-configure-the-keyring-to-use-with-vs-code
 * Zoom configuration according to https://wiki.archlinux.org/title/Zoom_Meetings
+* `openconnect-sso` (from a fork) installed to a profile `nix profile install github:jacekszymanski/openconnect-sso`
 
 ## Why Nix?
 Nix allows for easy to manage, collaborative, reproducible deployments. This means that once something is setup and configured once, it works forever. If someone else shares their configuration, anyone can make use of it.
