@@ -21,6 +21,10 @@ in {
       "workbench.sideBar.location" = "right";
       # NOTE needed to get past an immediate crash after startup :(
       "window.titleBarStyle" = "custom";
+      "cmake.pinnedCommands" = [
+        "workbench.action.tasks.configureTaskRunner"
+        "workbench.action.tasks.runTask"
+      ];
     };
     extensions = with vscode-extensions; [
       #alessandrosangalli.mob-vscode-gui
@@ -30,7 +34,7 @@ in {
       mkhl.direnv
       ms-azuretools.vscode-docker
       ms-vscode-remote.remote-containers
-      #ms-vscode-remote.remote-ssh
+      ms-vscode-remote.remote-ssh
       ms-vsliveshare.vsliveshare
       nvarner.typst-lsp
       vscodevim.vim
