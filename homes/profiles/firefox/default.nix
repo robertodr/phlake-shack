@@ -7,9 +7,9 @@
         name = "default";
         isDefault = true;
         settings = {
-          "browser.search.defaultenginename" = "Searx";
-          "browser.search.order.1" = "Searx";
-          "browser.startup.homepage" = "https://searx.aicampground.com";
+          "browser.search.defaultenginename" = "DuckDuckGo";
+          "browser.search.order.1" = "DuckDuckGo";
+          "browser.startup.homepage" = "https://duckduckgo.com";
           "browser.toolbars.bookmarks.visibility" = "always";
           "extensions.pocket.enabled" = "false";
           "font.name.serif.x-western" = "M PLUS 2";
