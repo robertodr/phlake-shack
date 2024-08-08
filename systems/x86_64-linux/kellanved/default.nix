@@ -66,6 +66,8 @@
       };
     };
 
+    kernelPackages = pkgs.linuxPackages_latest;
+
     kernelParams = ["resume_offset=533760"];
 
     resumeDevice = "/dev/disk/by-uuid/edc1b1c1-ae2e-462c-8390-fdf11cf81ea9";
