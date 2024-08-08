@@ -21,22 +21,38 @@ in {
       "workbench.sideBar.location" = "right";
       # NOTE needed to get past an immediate crash after startup :(
       "window.titleBarStyle" = "custom";
-      "cmake.pinnedCommands" = [
-        "workbench.action.tasks.configureTaskRunner"
-        "workbench.action.tasks.runTask"
-      ];
+      #"cmake.pinnedCommands" = [
+      #  "workbench.action.tasks.configureTaskRunner"
+      #  "workbench.action.tasks.runTask"
+      #];
+      #"cmake.options.statusBarVisibility" = "hidden";
+      #"cmake.options.advanced" = {
+      #  "build" = {
+      #    "statusBarVisibility" = "inherit";
+      #  };
+      #  "launch" = {
+      #    "statusBarVisibility" = "inherit";
+      #  };
+      #  "debug" = {
+      #    "statusBarVisibility" = "inherit";
+      #  };
+      #};
+      #"cmake.configureOnOpen" = true;
+      #"cmake.showOptionsMovedNotification" = false;
     };
     extensions = with vscode-extensions; [
       #alessandrosangalli.mob-vscode-gui
       github.copilot
       github.vscode-github-actions
-      mgt19937.typst-preview
       mkhl.direnv
       ms-azuretools.vscode-docker
       ms-vscode-remote.remote-containers
       ms-vscode-remote.remote-ssh
+      #ms-vscode.cmake-tools
+      #ms-vscode.cpptools
+      #ms-vscode.cpptools-extension-pack
+      #ms-vscode.cpptools-themes
       ms-vsliveshare.vsliveshare
-      nvarner.typst-lsp
       vscodevim.vim
     ];
   };
@@ -61,4 +77,22 @@ in {
 #ms-vscode.cpptools
 #ms-vscode.cpptools-extension-pack
 #ms-vscode.cpptools-themes
+#"cmake.pinnedCommands" = [
+#  "workbench.action.tasks.configureTaskRunner"
+#  "workbench.action.tasks.runTask"
+#];
+#"cmake.options.statusBarVisibility" = "hidden";
+#"cmake.options.advanced" = {
+#  "build" = {
+#    "statusBarVisibility" = "inherit";
+#  };
+#  "launch" = {
+#    "statusBarVisibility" = "inherit";
+#  };
+#  "debug" = {
+#    "statusBarVisibility" = "inherit";
+#  };
+#};
+#"cmake.configureOnOpen" = true;
+#"cmake.showOptionsMovedNotification" = false;
 
