@@ -133,7 +133,7 @@ in {
       rclone
       remmina
       tokei
-      shikane
+      pkgs.unstable.shikane
 
       autoconf
       automake
@@ -193,7 +193,7 @@ in {
       vlc
       wordnet
       xournalpp
-      zoom-us
+      pkgs.unstable.zoom-us
     ];
   };
 
@@ -284,7 +284,7 @@ in {
       "swayidle"
       "swaylock"
       "waybar"
-      "wayland"
+      "wayland/sway"
     ]
   );
 }

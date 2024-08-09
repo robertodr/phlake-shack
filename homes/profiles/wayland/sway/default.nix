@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   ...
@@ -7,7 +6,7 @@
   sup = "Mod1"; # this is the "Alt" key
   mod = "Mod4"; # this is the "Windows" key
 
-  # commands to be run on each sway startup
+  # commands to be run on each startup
   alwaysRun = [
   ];
 
