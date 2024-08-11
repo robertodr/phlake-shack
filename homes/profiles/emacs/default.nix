@@ -69,7 +69,8 @@ in {
     #: org
     graphviz
 
-    # FIXME: do I need these two here?
+    # FIXME: do I need these three here?
+    cmake
     gcc
     sqlite
 
@@ -93,12 +94,14 @@ in {
 
     #: docker
     nodePackages.dockerfile-language-server-nodejs
+    dockfmt
     #: markdown
     nodePackages.unified-language-server
     #: nix
     nil
     #: sh
     nodePackages.bash-language-server
+    shfmt
 
     html-tidy
     nodePackages.js-beautify

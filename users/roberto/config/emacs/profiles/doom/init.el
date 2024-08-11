@@ -35,7 +35,6 @@
   ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
   ;;(emoji +unicode)
   hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-  hydra
   indent-guides     ; highlighted indent columns
   ;;ligatures         ; ligatures and symbols to make your code pretty again
   minimap           ; show a map of the code on the side
@@ -86,7 +85,6 @@
   grammar           ; tasing grammar mistake every you make
 
   :tools
-  ansible
   biblio
   debugger            ; FIXME stepping through code, to help you add bugs
   direnv
@@ -132,7 +130,7 @@
   ;;ess               ; emacs speaks statistics
   ;;factor
   ;;faust             ; dsp, but you get to keep your soul
-  (fortran +lsp)      ; in FORTRAN, GOD is REAL (unless declared INTEGER)
+  ;(fortran +lsp)      ; in FORTRAN, GOD is REAL (unless declared INTEGER)
   ;;fsharp            ; ML stands for Microsoft's Language
   ;;fstar             ; (dependent) types and (monadic) effects and Z3
   ;;gdscript          ; the language you waited for
@@ -173,7 +171,7 @@
   ;;solidity          ; do you need a blockchain? No.
   ;;swift             ; who asked for emoji variables?
   ;;terra             ; Earth and Moon in alignment for performance.
-  (web +css +html)    ; the tubes
+  ;(web +css +html)    ; the tubes
   yaml                ; JSON, but readable
   ;;zig               ; C, but simpler
 
