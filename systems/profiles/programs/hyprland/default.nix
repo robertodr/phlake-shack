@@ -1,14 +1,6 @@
-{
-  pkgs,
-  ...
-}: {
-  programs.sway = {
+{pkgs, ...}: {
+  programs.hyprland = {
     enable = true;
-    wrapperFeatures.gtk = true;
-    extraPackages = with pkgs; [
-      swaylock
-      swayidle
-    ];
   };
 
   environment.sessionVariables = {
@@ -18,8 +10,11 @@
 
   xdg.portal = {
     enable = true;
-    wlr.enable = true;
     # gtk portal needed to make gtk apps happy
     extraPortals = [pkgs.xdg-desktop-portal-gtk];
   };
+
+  # hyprlock needs PAM access to authenticate, else it fallbacks to su
+  # hyprlock and hypridle are installed/configured through home-manager
+  security.pam.services.hyprlock = {};
 }

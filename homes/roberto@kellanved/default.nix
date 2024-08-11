@@ -281,11 +281,13 @@ in {
       "fuzzel"
       "gammastep"
       "gtk"
-      #"kanshi"  # TODO use shikane instead!
       "swayidle"
       "swaylock"
       "waybar"
       "wayland/sway"
+      "hypridle"
+      "hyprlock"
+      "wayland/hyprland"
     ]
   );
 }

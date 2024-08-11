@@ -47,6 +47,8 @@
         "services/dbus" # needed?
         "services/greetd"
         "services/upower"
+        # hyprland
+        "programs/hyprland"
       ]
       # multimedia
       ++ [
