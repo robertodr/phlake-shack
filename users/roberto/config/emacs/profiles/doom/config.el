@@ -81,11 +81,14 @@
 ;; LSP setup
 ;; C/C++: prefer clangd over ccls
 (setq lsp-clients-clangd-args '("-j=3"
-                                "--background-index"
+                               "--background-index"
                                 "--clang-tidy"
                                 "--completion-style=detailed"
                                 "--header-insertion=never"
                                 "--header-insertion-decorators=0"))
+;; Nix
+(setq lsp-nix-nil-auto-eval-inputs f
+      lsp-nix-nil-formatter ["alejandra"])
 
 (after! lsp-clangd (set-lsp-priority! 'clangd 2))
 
