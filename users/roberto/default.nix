@@ -41,7 +41,8 @@
         #  "video"
         #  "wheel"
         #];
-        shell = pkgs.fish;
+        # see here: https://fzakaria.com/2024/07/17/fish-the-bash-way.html
+        shell = pkgs.bash;
         hashedPassword = "$y$j9T$9CT7imGp.njKexGkzwsTh/$7y/T3A6cPIvy7CFKEBOJzil4sJmof0IaFR9BlJr2b15";
       };
     };

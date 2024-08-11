@@ -234,6 +234,7 @@ in {
     # base
     [
       "atuin"
+      "bash"
       "bat"
       "blueman-applet"
       "bottom"
