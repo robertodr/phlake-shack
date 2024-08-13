@@ -1,4 +1,4 @@
-moduleArgs @ {
+{
   config,
   lib,
   ...
@@ -14,7 +14,12 @@ in {
     serverAliveCountMax = 2;
     serverAliveInterval = 300;
     # read the host configurations from file
-    extraConfig = lib.fileContents ./ssh_config;
+    extraConfig = ''
+      Host *
+          IdentityAgent "~/.1password/agent.sock"
+
+      ${lib.fileContents ./ssh_config}
+    '';
   };
 
   # create ~/.ssh/sockets if it doesn't already exist
