@@ -41,7 +41,9 @@
         #  "video"
         #  "wheel"
         #];
-        # see here: https://fzakaria.com/2024/07/17/fish-the-bash-way.html
+        # see:
+        # * https://fzakaria.com/2024/07/17/fish-the-bash-way.html
+        # * https://wiki.nixos.org/wiki/Fish#Setting_fish_as_your_shell
         shell = pkgs.bash;
         hashedPassword = "$y$j9T$9CT7imGp.njKexGkzwsTh/$7y/T3A6cPIvy7CFKEBOJzil4sJmof0IaFR9BlJr2b15";
       };

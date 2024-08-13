@@ -119,6 +119,7 @@ in {
     # TODO I think there's quite some crap in this lists of packages...
     packages = with pkgs; [
       ## === Sysadmin ===
+      brightnessctl
       du-dust #   <- Like du but more intuitive.
       procs #     <- A modern replacement for ps.
 
@@ -234,7 +235,6 @@ in {
     # base
     [
       "atuin"
-      "bash"
       "bat"
       "blueman-applet"
       "bottom"
@@ -285,7 +285,7 @@ in {
       "swaylock"
       "waybar"
       "wayland/sway"
-      "hypridle"
+      #"hypridle"
       "hyprlock"
       "wayland/hyprland"
     ]

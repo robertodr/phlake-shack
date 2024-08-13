@@ -2,18 +2,6 @@
   programs.fish = {
     enable = true;
 
-    # see here: https://fzakaria.com/2024/07/17/fish-the-bash-way.html
-    functions = {
-      # to avoid going into a loop from bash -> fish -> bash
-      # set the environment variable which stops that.
-      bash = {
-        body = ''
-          NO_FISH_BASH="1" command bash $argv
-        '';
-        wraps = "bash";
-      };
-    };
-
     plugins = [
       # keeps your fish shell history clean from typos, incorrectly used commands and everything you don't want to store due to privacy reasons
       {

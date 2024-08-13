@@ -22,6 +22,7 @@
         "networking"
         "nix"
         "powertop"
+        "programs/bash"
         "programs/_1password"
         "programs/gnupg"
         "programs/thunar"
