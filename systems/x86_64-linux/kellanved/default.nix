@@ -46,7 +46,7 @@
         "programs/dconf" # needed?
         "services/blueman"
         "services/dbus" # needed?
-        "services/greetd"
+        "services/sddm"
         "services/upower"
         # hyprland
         #"programs/hyprland"
