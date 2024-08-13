@@ -286,8 +286,8 @@ in {
       "waybar"
       "wayland/sway"
       #"hypridle"
-      "hyprlock"
-      "wayland/hyprland"
+      #"hyprlock"
+      #"wayland/hyprland"
     ]
   );
 }

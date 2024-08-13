@@ -49,7 +49,7 @@
         "services/greetd"
         "services/upower"
         # hyprland
-        "programs/hyprland"
+        #"programs/hyprland"
       ]
       # multimedia
       ++ [
