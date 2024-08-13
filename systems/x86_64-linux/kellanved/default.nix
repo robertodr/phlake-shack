@@ -48,7 +48,6 @@
         "services/dbus" # needed?
         "services/sddm"
         "services/upower"
-        # hyprland
         "programs/hyprland"
       ]
       # multimedia
