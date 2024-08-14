@@ -246,6 +246,7 @@ in {
       "gpg-agent"
       "jq"
       "kitty"
+      "mako"
       "man"
       "ripgrep"
       "ssh"
