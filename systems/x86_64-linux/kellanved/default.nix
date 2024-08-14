@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  inputs,
   outputs,
   ...
 }: {
@@ -130,6 +129,11 @@
     };
   };
 
+  documentation = {
+    man.generateCaches = true;
+    dev.enable = true;
+  };
+
   fileSystems."/persist".neededForBoot = true;
 
   environment.persistence."/persist" = {
@@ -241,8 +245,7 @@
       "....." = "cd ../../../..";
 
       # internet ip
-      # TODO: explain this hard-coded IP address
-      myip = "${pkgs.dig}/bin/dig +short myip.opendns.com @208.67.222.222 2>&1";
+      myip = "${lib.getExe pkgs.dig} +short myip.opendns.com @208.67.222.222 2>&1";
     };
   };
 
