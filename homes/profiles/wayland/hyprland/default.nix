@@ -4,9 +4,6 @@
   pkgs,
   ...
 }: let
-  sup = "Mod1"; # this is the "Alt" key
-  mod = "Mod4"; # this is the "Windows" key
-
   # commands to be run on each startup
   alwaysRun = [
   ];
@@ -29,6 +26,8 @@
     #"joplin-desktop ${commandLineArgs}"
   ];
 
+  kitty = lib.getExe pkgs.kitty;
+  fuzzel = lib.getExe pkgs.fuzzel;
   brightnessctl = lib.getExe pkgs.brightnessctl;
   playerctl = lib.getExe pkgs.playerctl;
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
@@ -48,9 +47,6 @@ in {
         };
 
         settings = {
-          "$mod" = "SUPER"; # this is the Windows key
-          "$terminal" = lib.getExe pkgs.kitty;
-          "$menu" = lib.getExe pkgs.fuzzel;
           animations = {
             enabled = false;
             first_launch_animation = false;
@@ -83,15 +79,18 @@ in {
           # keybindings
           bind =
             [
+              "SUPER, RETURN, exec, ${kitty}"
+              "SUPER, D, exec, ${fuzzel}"
+              "SUPER, E, exec, ${lib.getExe pkgs.xfce.thunar}"
               ", Print, exec, ${lib.getExe pkgs.flameshot} gui"
               ", XF86AudioNext, exec, ${playerctl} next"
               ", XF86AudioPrev, exec, ${playerctl} previous"
               # TODO
-              #"$mod, l, exec, ${lockCmd}"
-              "ALT, p, exec, ${lib.getExe pkgs.wlogout}"
+              #"SUPER, l, exec, ${lockCmd}"
+              "ALT, P, exec, ${lib.getExe pkgs.wlogout}"
               # FIXME to be tested!
-              "ALT, l, exec, movecurrentworkspacetomonitor, -1"
-              "ALT, r, exec, movecurrentworkspacetomonitor, +1"
+              "ALT, L, exec, movecurrentworkspacetomonitor, -1"
+              "ALT, R, exec, movecurrentworkspacetomonitor, +1"
             ]
             ++ (
               # workspaces
@@ -103,8 +102,8 @@ in {
                     in
                       builtins.toString (x + 1 - (c * 10));
                   in [
-                    "$mod, ${ws}, workspace, ${toString (x + 1)}"
-                    "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
+                    "SUPER, ${ws}, workspace, ${toString (x + 1)}"
+                    "SUPER SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
                   ]
                 )
                 10)
@@ -116,8 +115,8 @@ in {
           ];
           # locked (will also work when an input inhibitor (e.g. a lockscreen) is active)
           bindl = [
-            ", XF86AudioMute, exec, ${wpctl} set-mute toggle @DEFAULT_AUDIO_SINK@"
-            "$mod, XF86AudioMute, exec, ${wpctl} set-mute toggle @DEFAULT_AUDIO_SOURCE@"
+            ", XF86AudioMute, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SINK@ toggle"
+            "SUPER, XF86AudioMute, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
             ", XF86AudioPlay, exec, ${playerctl} play-pause"
           ];
           # repeat (will repeat when held) and locked (will also work when an input inhibitor (e.g. a lockscreen) is active)
