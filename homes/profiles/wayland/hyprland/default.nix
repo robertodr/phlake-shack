@@ -4,27 +4,7 @@
   pkgs,
   ...
 }: let
-  # commands to be run on each startup
-  alwaysRun = [
-  ];
-
   lockCmd = "\'${pkgs.playerctl}/bin/playerctl -a pause; ${pkgs.hyprlock}/bin/hyprlock\'";
-
-  commandLineArgs = toString [
-    "--enable-features=UseOzonePlatform,WaylandWindowDecorations"
-    "--ozone-platform=wayland"
-  ];
-
-  # commands to be run on sway startup
-  # TODO probably add 1password GUI as well?
-  run = [
-    #"wezterm"
-    "kitty"
-    "firefox"
-    "ferdium ${commandLineArgs}"
-    "thunderbird"
-    #"joplin-desktop ${commandLineArgs}"
-  ];
 
   kitty = lib.getExe pkgs.kitty;
   fuzzel = lib.getExe pkgs.fuzzel;
@@ -76,13 +56,19 @@ in {
             # switching workspaces centers the cursor on the last active window for that workspace
             workspace_center_on = 1;
           };
+          exec-once = [
+            "[workspace 1 silent] ${kitty}"
+            "[workspace 2 silent] ${lib.getExe config.programs.firefox.package}"
+            "[workspace 3 silent] ${lib.getExe' pkgs.ferdium "ferdium"}"
+            "[workspace 4 silent] ${lib.getExe pkgs.thunderbird}"
+          ];
           # keybindings
           bind =
             [
               "SUPER, RETURN, exec, ${kitty}"
               "SUPER, D, exec, ${fuzzel}"
               "SUPER, E, exec, ${lib.getExe pkgs.xfce.thunar}"
-              ", Print, exec, ${lib.getExe pkgs.flameshot} gui"
+              ", Print, exec, ${lib.getExe config.services.flameshot.package} gui"
               ", XF86AudioNext, exec, ${playerctl} next"
               ", XF86AudioPrev, exec, ${playerctl} previous"
               # TODO
