@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   pkgs,
   ...
 }: {
@@ -11,6 +9,8 @@
       thunar-volman
     ];
   };
+
+  programs.xfconf.enable = true;
 
   services = {
     # Mount, trash, and other functionalities
