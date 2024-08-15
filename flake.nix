@@ -22,18 +22,18 @@
 
     nur.url = "github:nix-community/NUR";
 
-    #base16-schemes = {
-    #  url = "github:tinted-theming/schemes?dir=base16";
-    #  flake = false;
-    #};
+    base16-schemes = {
+      url = "github:tinted-theming/schemes?dir=base16";
+      flake = false;
+    };
 
-    #stylix = {
-    #  url = "github:danth/stylix";
-    #  inputs = {
-    #    nixpkgs.follows = "nixpkgs";
-    #    home-manager.follows = "home-manager";
-    #  };
-    #};
+    stylix = {
+      url = "github:danth/stylix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
+    };
 
     nix-vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
@@ -50,8 +50,8 @@
     impermanence,
     home-manager,
     nur,
-    #base16-schemes,
-    #stylix,
+    base16-schemes,
+    stylix,
     nix-vscode-extensions,
   } @ inputs: let
     inherit (self) outputs;
