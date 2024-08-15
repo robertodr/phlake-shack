@@ -3,7 +3,7 @@
   nix-vscode-extensions,
   ...
 }: let
-  vscode-extensions = (nix-vscode-extensions.extensions.${pkgs.system}.forVSCodeVersion "${pkgs.unstable.vscode.version}").vscode-marketplace;
+  vscode-extensions = (nix-vscode-extensions.extensions.${pkgs.system}.forVSCodeVersion "${pkgs.vscode.version}").vscode-marketplace;
 in {
   programs.vscode = {
     enable = true;
