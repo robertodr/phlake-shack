@@ -286,6 +286,7 @@ in {
       "swaylock"
       "waybar"
       "wayland/sway"
+      "wlogout"
       #"hypridle"
       "hyprlock"
       "wayland/hyprland"
