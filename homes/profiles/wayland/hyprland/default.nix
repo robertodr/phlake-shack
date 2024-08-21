@@ -26,10 +26,23 @@ in {
           enableXdgAutostart = true;
         };
 
+        plugins = [pkgs.hyprlandPlugins.hy3];
+
         settings = {
           animations = {
             enabled = false;
             first_launch_animation = false;
+          };
+          general = {
+            layout = "hy3";
+            gaps_in = 2;
+            gaps_out = 0;
+            border_size = 1;
+          };
+          decoration = {
+            rounding = 10;
+            drop_shadow = false;
+            blur = {enabled = false;};
           };
           input = {
             kb_model = "pc105";
