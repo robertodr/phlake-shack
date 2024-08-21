@@ -7,7 +7,7 @@
         terminal = lib.getExe config.programs.kitty.package;
         layer = "overlay";
         icon-theme = "Nordzy-dark";
-        dpi-aware = "yes";
+        dpi-aware = lib.mkForce "yes";
         width = 50;
       };
     };
