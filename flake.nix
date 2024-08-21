@@ -22,11 +22,6 @@
 
     nur.url = "github:nix-community/NUR";
 
-    base16-schemes = {
-      url = "github:tinted-theming/schemes?dir=base16";
-      flake = false;
-    };
-
     stylix = {
       url = "github:danth/stylix";
       inputs = {
@@ -50,7 +45,6 @@
     impermanence,
     home-manager,
     nur,
-    base16-schemes,
     stylix,
     nix-vscode-extensions,
   } @ inputs: let
