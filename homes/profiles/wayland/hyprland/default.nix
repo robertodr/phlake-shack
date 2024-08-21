@@ -75,20 +75,30 @@ in {
             "[workspace 4 silent] ${lib.getExe pkgs.thunderbird}"
           ];
           # keybindings
-          bind =
+          # l -> locked, will also work when an input inhibitor (e.g. a lockscreen) is active.
+          # r -> release, will trigger on release of a key.
+          # e -> repeat, will repeat when held.
+          # n -> non-consuming, key/mouse events will be passed to the active window in addition to triggering the dispatcher.
+          # m -> mouse, see below.
+          # t -> transparent, cannot be shadowed by other binds.
+          # i -> ignore mods, will ignore modifiers.
+          # s -> separate, will arbitrarily combine keys between each mod/key, see [Keysym combos](#keysym-combos) above.
+          # d -> has description, will allow you to write a description for your bind.
+          # p -> bypasses the app's requests to inhibit keybinds.
+          bindd =
             [
-              "SUPER, RETURN, exec, ${kitty}"
-              "SUPER, D, exec, ${fuzzel}"
-              "SUPER, E, exec, ${lib.getExe pkgs.xfce.thunar}"
-              ", Print, exec, ${lib.getExe config.services.flameshot.package} gui"
-              ", XF86AudioNext, exec, ${playerctl} next"
-              ", XF86AudioPrev, exec, ${playerctl} previous"
+              "SUPER, RETURN, Open kitty, exec, ${kitty}"
+              "SUPER, D, Open fuzzel, exec, ${fuzzel}"
+              "SUPER, E, Open thunar, exec, ${lib.getExe pkgs.xfce.thunar}"
+              ", Print, Take screenshot with flameshot, exec, ${lib.getExe config.services.flameshot.package} gui"
+              ", XF86AudioNext, Play next, exec, ${playerctl} next"
+              ", XF86AudioPrev, Play previous, exec, ${playerctl} previous"
               # TODO
               #"SUPER, l, exec, ${lockCmd}"
               "ALT, P, Logout menu, exec, ${lib.getExe config.programs.wlogout.package}"
               # FIXME to be tested!
-              "ALT, L, exec, movecurrentworkspacetomonitor, -1"
-              "ALT, R, exec, movecurrentworkspacetomonitor, +1"
+              "ALT, L, Move current workspace to monitor on the left, exec, movecurrentworkspacetomonitor, -1"
+              "ALT, R, Move current workspace to monitor on the right, exec, movecurrentworkspacetomonitor, +1"
             ]
             ++ (
               # workspaces
@@ -100,27 +110,31 @@ in {
                     in
                       builtins.toString (x + 1 - (c * 10));
                   in [
-                    "SUPER, ${ws}, workspace, ${toString (x + 1)}"
-                    "SUPER SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
+                    "SUPER, ${ws}, Go to workspace ${toString (x + 1)}, workspace, ${toString (x + 1)}"
+                    "SUPER SHIFT, ${ws}, Move to worspace ${toString (x + 1)}, movetoworkspace, ${toString (x + 1)}"
                   ]
                 )
                 10)
             );
           # repeat (will repeat when held)
-          binde = [
-            ", XF86MonBrightnessUp, exec, ${brightnessctl} set 5%+"
-            ", XF86MonBrightnessDown, exec, ${brightnessctl} set 5%-"
+          bindde = [
+            ", XF86MonBrightnessUp, Increase laptop screen brightness, exec, ${brightnessctl} --device=intel_backlight set 5%+"
+            ", XF86MonBrightnessDown,Decrease laptop screen brightness, exec, ${brightnessctl} --device=intel_backlight set 5%-"
           ];
           # locked (will also work when an input inhibitor (e.g. a lockscreen) is active)
-          bindl = [
-            ", XF86AudioMute, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SINK@ toggle"
-            "SUPER, XF86AudioMute, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-            ", XF86AudioPlay, exec, ${playerctl} play-pause"
+          binddl = [
+            ", XF86AudioMute, Mute speakers, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SINK@ toggle"
+            "SUPER, XF86AudioMute, Mute microphone, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+            ", XF86AudioPlay, Toggle play/pause, exec, ${playerctl} play-pause"
           ];
           # repeat (will repeat when held) and locked (will also work when an input inhibitor (e.g. a lockscreen) is active)
-          bindel = [
-            ", XF86AudioRaiseVolume, exec, ${wpctl} set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
-            ", XF86AudioLowerVolume, exec, ${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+          binddel = [
+            ", XF86AudioRaiseVolume, Raise volume, exec, ${wpctl} set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
+            ", XF86AudioLowerVolume, Lower volume, exec, ${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+          ];
+          # TODO this can be managed with shikane
+          monitor = [
+            "eDP-1, 2256x1504@60, auto, 1.6"
           ];
           # TODO
           # window rules
