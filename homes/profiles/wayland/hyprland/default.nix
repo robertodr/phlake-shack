@@ -73,7 +73,7 @@ in {
               ", XF86AudioPrev, exec, ${playerctl} previous"
               # TODO
               #"SUPER, l, exec, ${lockCmd}"
-              "ALT, P, exec, ${lib.getExe pkgs.wlogout}"
+              "ALT, P, Logout menu, exec, ${lib.getExe config.programs.wlogout.package}"
               # FIXME to be tested!
               "ALT, L, exec, movecurrentworkspacetomonitor, -1"
               "ALT, R, exec, movecurrentworkspacetomonitor, +1"
