@@ -12,7 +12,7 @@
           "browser.startup.homepage" = "https://duckduckgo.com";
           "browser.toolbars.bookmarks.visibility" = "always";
           "extensions.pocket.enabled" = "false";
-          "font.name.serif.x-western" = "M PLUS 2";
+          "font.name.serif.x-western" = "M PLUS 2 Regular";
         };
         search = {
           force = true;
