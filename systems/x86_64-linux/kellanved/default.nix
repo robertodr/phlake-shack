@@ -36,6 +36,7 @@
         "services/thermald"
         "services/tlp"
         "services/udisks2"
+        "stylix"
         "systemd"
         "zsa"
       ]

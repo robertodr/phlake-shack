@@ -41,12 +41,6 @@
     fontconfig = {
       enable = true;
       antialias = true;
-      defaultFonts = {
-        serif = ["Gentium"];
-        sansSerif = ["M PLUS 2"];
-        monospace = ["Fira Code"];
-        emoji = ["Noto Color Emoji"];
-      };
     };
   };
 }

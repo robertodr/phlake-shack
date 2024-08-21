@@ -59,6 +59,7 @@
       kellanved = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
         modules = [
+          stylix.nixosModules.stylix
           nixos-hardware.nixosModules.framework-12th-gen-intel
           disko.nixosModules.disko
           {nixpkgs.overlays = [nur.overlay];}

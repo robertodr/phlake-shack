@@ -2,7 +2,6 @@
   programs.bat = {
     enable = true;
     config = {
-      theme = "Monokai Extended Origin";
       map-syntax = [
         ".*ignore:Git Ignore"
         ".gitconfig.local:Git Config"
