@@ -45,10 +45,9 @@ in {
             blur = {enabled = false;};
           };
           input = {
-            kb_model = "pc105";
-            kb_layout = "it(us),no,se";
-            kb_options = "grp:alt_shift_toggle";
-            #kb_variant = "colemak,,";
+            kb_model = "pc104"; # ANSI
+            kb_layout = "it(us),no,se,us(colemak)";
+            kb_options = "grp:alt_shift_toggle,";
             scroll_method = "2fg"; # two-finger
             natural_scroll = true;
             touchpad = {
