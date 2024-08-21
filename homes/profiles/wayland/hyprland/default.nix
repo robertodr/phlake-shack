@@ -36,8 +36,9 @@ in {
           general = {
             layout = "hy3";
             gaps_in = 2;
-            gaps_out = 0;
+            gaps_out = 4;
             border_size = 1;
+            resize_on_border = true;
           };
           decoration = {
             rounding = 10;
@@ -61,6 +62,8 @@ in {
           };
           misc = {
             disable_hyprland_logo = true;
+            disable_splash_rendering = true;
+            key_press_enables_dpms = true;
           };
           binds = {
             workspace_back_and_forth = true;
@@ -88,17 +91,41 @@ in {
           bindd =
             [
               "SUPER, RETURN, Open kitty, exec, ${kitty}"
-              "SUPER, D, Open fuzzel, exec, ${fuzzel}"
-              "SUPER, E, Open thunar, exec, ${lib.getExe pkgs.xfce.thunar}"
-              ", Print, Take screenshot with flameshot, exec, ${lib.getExe config.services.flameshot.package} gui"
-              ", XF86AudioNext, Play next, exec, ${playerctl} next"
-              ", XF86AudioPrev, Play previous, exec, ${playerctl} previous"
+              "SUPER, D, Open Fuzzel, exec, ${fuzzel}"
+              "SUPER SHIFT, E, Open Thunar, exec, ${lib.getExe pkgs.xfce.thunar}"
               # TODO
               #"SUPER, l, exec, ${lockCmd}"
               "ALT, P, Logout menu, exec, ${lib.getExe config.programs.wlogout.package}"
               # FIXME to be tested!
               "ALT, L, Move current workspace to monitor on the left, exec, movecurrentworkspacetomonitor, -1"
               "ALT, R, Move current workspace to monitor on the right, exec, movecurrentworkspacetomonitor, +1"
+              "SUPER SHIFT, Q, Close window, hy3:killactive"
+              "SUPER, F, Maximize focused window, fullscreen, 1"
+              "SUPER, V, Make a vertical split group, hy3:makegroup, h"
+              "SUPER, B, Make a horizontal split group, hy3:makegroup, v"
+              "SUPER, E, Toggle between horizontal/vertical group, hy3:changegroup, opposite"
+              "SUPER, W, Toggle tab status of group, hy3:changegroup, toggletab"
+              "SUPER SHIFT, SPACE, Toggle floating, togglefloating"
+              "SUPER, H, Focus window left, hy3:movefocus, l"
+              "SUPER, J, Focus window down, hy3:movefocus, d"
+              "SUPER, K, Focus window up, hy3:movefocus, u"
+              "SUPER, L, Focus window right, hy3:movefocus, r"
+              "SUPER, LEFT, Focus window left, hy3:movefocus, l"
+              "SUPER, DOWN, Focus window down, hy3:movefocus, d"
+              "SUPER, UP, Focus window up, hy3:movefocus, u"
+              "SUPER, RIGHT, Focus window right:, hy3:movefocus, r"
+              "SUPER SHIFT, H, Move window left, hy3:movewindow, l, once"
+              "SUPER SHIFT, J, Move window down, hy3:movewindow, d, once"
+              "SUPER SHIFT, K, Move window up, hy3:movewindow, u, once"
+              "SUPER SHIFT, L, Move window right, hy3:movewindow, r, once"
+              "SUPER SHIFT, LEFT, Move window left, hy3:movewindow, l, once"
+              "SUPER SHIFT, DOWN, Move window down, hy3:movewindow, d, once"
+              "SUPER SHIFT, UP, Move window up, hy3:movewindow, u, once"
+              "SUPER SHIFT, RIGHT, Move window right, hy3:movewindow, r, once"
+              # special  keys
+              ", Print, Take screenshot with flameshot, exec, ${lib.getExe config.services.flameshot.package} gui"
+              ", XF86AudioNext, Play next, exec, ${playerctl} next"
+              ", XF86AudioPrev, Play previous, exec, ${playerctl} previous"
             ]
             ++ (
               # workspaces
