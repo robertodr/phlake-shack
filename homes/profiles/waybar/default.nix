@@ -150,7 +150,7 @@ in {
       * {
         border: none;
         border-radius: 0;
-        font-family: "M PLUS 2 Regular", "Font Awesome 6 Free Solid", "Weather Icons";
+        font-family: "M PLUS 2", "Font Awesome 6 Free Solid", "Weather Icons";
         min-height: 20px;
       }
 
