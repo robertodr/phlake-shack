@@ -184,7 +184,7 @@ in {
       vlc
       wordnet
       xournalpp
-      pkgs.unstable.zoom-us
+      zoom-us
     ];
   };
 
