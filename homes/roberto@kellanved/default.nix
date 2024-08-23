@@ -216,6 +216,28 @@ in {
     };
   };
 
+  xdg.configFile."electron-flags.conf".text = ''
+    --enable-features=UseOzonePlatform
+    --ozone-platform=wayland
+  '';
+
+  xdg.portal = {
+    enable = true;
+    config = {
+      common = {
+        default = ["hyprland"];
+      };
+      hyprland = {
+        default = ["gtk" "hyprland"];
+      };
+    };
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-hyprland
+    ];
+    xdgOpenUsePortal = true;
+  };
+
   programs = {
     # let Home Manager install and manage itself.
     home-manager.enable = true;
