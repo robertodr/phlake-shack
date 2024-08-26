@@ -4,13 +4,17 @@
   pkgs,
   ...
 }: let
-  lockCmd = "\'${pkgs.playerctl}/bin/playerctl -a pause; ${pkgs.hyprlock}/bin/hyprlock\'";
-
   kitty = lib.getExe pkgs.kitty;
   fuzzel = lib.getExe pkgs.fuzzel;
   brightnessctl = lib.getExe pkgs.brightnessctl;
   playerctl = lib.getExe pkgs.playerctl;
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
+
+  locker =
+    pkgs.writeShellScriptBin "locker.sh" ''
+      ${playerctl} -a pause
+      ${lib.getExe config.programs.hyprlock.package}
+    '';
 in {
   home.packages = [
     pkgs.wl-clipboard
@@ -93,8 +97,7 @@ in {
               "SUPER, RETURN, Open kitty, exec, ${kitty}"
               "SUPER, D, Open Fuzzel, exec, ${fuzzel}"
               "SUPER SHIFT, E, Open Thunar, exec, ${lib.getExe pkgs.xfce.thunar}"
-              # TODO
-              #"SUPER, l, exec, ${lockCmd}"
+              "SUPER, L, Lock screen, exec, ${lib.getExe locker}"
               "ALT, P, Logout menu, exec, ${lib.getExe config.programs.wlogout.package}"
               # FIXME to be tested!
               "ALT, L, Move current workspace to monitor on the left, exec, movecurrentworkspacetomonitor, -1"
@@ -106,18 +109,10 @@ in {
               "SUPER, E, Toggle between horizontal/vertical group, hy3:changegroup, opposite"
               "SUPER, W, Toggle tab status of group, hy3:changegroup, toggletab"
               "SUPER SHIFT, SPACE, Toggle floating, togglefloating"
-              "SUPER, H, Focus window left, hy3:movefocus, l"
-              "SUPER, J, Focus window down, hy3:movefocus, d"
-              "SUPER, K, Focus window up, hy3:movefocus, u"
-              "SUPER, L, Focus window right, hy3:movefocus, r"
               "SUPER, LEFT, Focus window left, hy3:movefocus, l"
               "SUPER, DOWN, Focus window down, hy3:movefocus, d"
               "SUPER, UP, Focus window up, hy3:movefocus, u"
               "SUPER, RIGHT, Focus window right:, hy3:movefocus, r"
-              "SUPER SHIFT, H, Move window left, hy3:movewindow, l, once"
-              "SUPER SHIFT, J, Move window down, hy3:movewindow, d, once"
-              "SUPER SHIFT, K, Move window up, hy3:movewindow, u, once"
-              "SUPER SHIFT, L, Move window right, hy3:movewindow, r, once"
               "SUPER SHIFT, LEFT, Move window left, hy3:movewindow, l, once"
               "SUPER SHIFT, DOWN, Move window down, hy3:movewindow, d, once"
               "SUPER SHIFT, UP, Move window up, hy3:movewindow, u, once"
