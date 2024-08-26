@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{
   programs.swaylock = {
     settings = {
       ignore-empty-password = true;
