@@ -105,7 +105,7 @@ in {
           format = "{}";
           tooltip = true;
           interval = 1800;
-          exec = "${wttr}/bin/wttr.py";
+          exec = "${lib.getExe wttr}";
           return-type = "json";
         };
 
