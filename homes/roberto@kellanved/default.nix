@@ -281,6 +281,7 @@ in {
       "firefox"
       "flameshot"
       "mpris-proxy"
+      "playerctld"
     ]
     # office
     ++ [
