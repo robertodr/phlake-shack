@@ -300,7 +300,7 @@ in {
       "waybar"
       "wayland/sway"
       "wlogout"
-      #"hypridle"
+      "hypridle"
       "hyprlock"
       "wayland/hyprland"
     ]

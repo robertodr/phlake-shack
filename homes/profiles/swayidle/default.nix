@@ -3,7 +3,7 @@
   resumeCmd = "${pkgs.sway}/bin/swaymsg \"output * power on\"";
 in {
   services.swayidle = {
-    enable = true;
+    enable = false;
     events = [
       # lock displays before going to sleep
       {
