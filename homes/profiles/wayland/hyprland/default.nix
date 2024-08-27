@@ -7,7 +7,7 @@
   kitty = lib.getExe pkgs.kitty;
   fuzzel = lib.getExe pkgs.fuzzel;
   brightnessctl = lib.getExe pkgs.brightnessctl;
-  playerctl = lib.getExe pkgs.playerctl;
+  playerctl = lib.getExe config.services.playerctld.package;
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
 
   locker =
