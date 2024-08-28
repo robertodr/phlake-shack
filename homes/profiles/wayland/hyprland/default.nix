@@ -11,11 +11,10 @@
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
   clipse = lib.getExe pkgs.clipse;
 
-  locker =
-    pkgs.writeShellScriptBin "locker.sh" ''
-      ${playerctl} -a pause
-      ${lib.getExe config.programs.hyprlock.package}
-    '';
+  locker = pkgs.writeShellScriptBin "locker.sh" ''
+    ${playerctl} -a pause
+    ${lib.getExe config.programs.hyprlock.package}
+  '';
 in {
   home.packages = [
     pkgs.wl-clipboard
