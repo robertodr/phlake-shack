@@ -156,10 +156,8 @@ in {
       nix-prefetch
       nix-prefetch-github
       nix-prefetch-scripts
-      nix-top
       nix-tree
       nix-update
-      nixos-container
       nixpkgs-fmt
       nixpkgs-lint
 
@@ -168,7 +166,6 @@ in {
       asciinema
       drawio
       evince
-      pkgs.unstable.eww
       gimp
       inkscape
       joplin-desktop
@@ -180,7 +177,7 @@ in {
       playerctl
       spotify
       thunderbird
-      unstable.typst
+      pkgs.unstable.typst
       vlc
       wordnet
       xournalpp
