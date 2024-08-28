@@ -9,6 +9,7 @@
   brightnessctl = lib.getExe pkgs.brightnessctl;
   playerctl = lib.getExe config.services.playerctld.package;
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
+  clipse = lib.getExe pkgs.clipse;
 
   locker =
     pkgs.writeShellScriptBin "locker.sh" ''
@@ -80,6 +81,8 @@ in {
             "[workspace 2 silent] ${lib.getExe config.programs.firefox.package}"
             "[workspace 3 silent] ${lib.getExe' pkgs.ferdium "ferdium"}"
             "[workspace 4 silent] ${lib.getExe pkgs.thunderbird}"
+            # TODO remove when there is a clipse module in home-manager
+            "${clipse} -listen"
           ];
           # keybindings
           # l -> locked, will also work when an input inhibitor (e.g. a lockscreen) is active.
@@ -117,6 +120,7 @@ in {
               "SUPER SHIFT, DOWN, Move window down, hy3:movewindow, d, once"
               "SUPER SHIFT, UP, Move window up, hy3:movewindow, u, once"
               "SUPER SHIFT, RIGHT, Move window right, hy3:movewindow, r, once"
+              "SUPER, C, Open clipse, exec, ${kitty} --class clipse -e ${lib.getExe config.programs.fish.package} -c '${clipse} -fc $fish_pid'"
               # special  keys
               ", Print, Screenshot area with grimblast, exec, ${lib.getExe pkgs.grimblast} copysave area"
               ", XF86AudioNext, Play next, exec, ${playerctl} next"
