@@ -158,10 +158,14 @@ in {
           monitor = [
             "eDP-1, 2256x1504@60, auto, 1.6"
           ];
-          # TODO
           # window rules
-          #windowrulev2 = [
-          #];
+          windowrulev2 = [
+            "workspace 2, class:(firefox)"
+            "workspace 3, class:(ferdium)"
+            "workspace 4, class:(thunderbird)"
+            "float, class:(clipse)"
+            "size 1200 600, class:(clipse)"
+          ];
         };
       };
     };
