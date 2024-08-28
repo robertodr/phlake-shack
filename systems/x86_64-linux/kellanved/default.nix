@@ -42,7 +42,6 @@
       ]
       # window manager
       ++ [
-        "programs/sway"
         "programs/dconf" # needed?
         "services/blueman"
         "services/dbus" # needed?
