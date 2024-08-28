@@ -276,7 +276,6 @@ in {
     # multimedia
     ++ [
       "firefox"
-      "flameshot"
       "mpris-proxy"
       "playerctld"
     ]

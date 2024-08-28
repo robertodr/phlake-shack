@@ -118,7 +118,7 @@ in {
               "SUPER SHIFT, UP, Move window up, hy3:movewindow, u, once"
               "SUPER SHIFT, RIGHT, Move window right, hy3:movewindow, r, once"
               # special  keys
-              ", Print, Take screenshot with flameshot, exec, ${lib.getExe config.services.flameshot.package} gui"
+              ", Print, Screenshot area with grimblast, exec, ${lib.getExe pkgs.grimblast} copysave area"
               ", XF86AudioNext, Play next, exec, ${playerctl} next"
               ", XF86AudioPrev, Play previous, exec, ${playerctl} previous"
             ]
