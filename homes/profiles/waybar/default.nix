@@ -31,8 +31,8 @@ in {
         margin = "5 2 5 2";
 
         modules-left = [
-          "sway/workspaces"
-          "sway/language"
+          "hyprland/workspaces"
+          "hyprland/language"
           "pulseaudio"
           "idle_inhibitor"
         ];
@@ -49,14 +49,13 @@ in {
           "tray"
         ];
 
-        "sway/workspaces" = {
+        "hyprland/workspaces" = {
           disable-scroll = true;
           format = "{name}";
         };
 
-        "sway/language" = {
+        "hyprland/language" = {
           format = "{short} {variant} ";
-          on-click = "${pkgs.sway}/bin/swaymsg input type:keyboard xkb_switch_layout next";
           tooltip = false;
         };
 
@@ -77,7 +76,7 @@ in {
             car = "";
             default = ["" "" ""];
           };
-          on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
+          on-click = "${lib.getExe pkgs.pavucontrol}";
           min-length = 13;
         };
 
@@ -90,14 +89,25 @@ in {
         };
 
         clock = {
-          format = "{:%A  %d %B  %H:%M}";
+          format = "{:%A %R (%Z)}";
           tooltip = true;
-          tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-          today-format = "<span color='#ff6699'><b><u>{}</u></b></span>";
-          format-calendar = "<span color='#ecc6d9'><b>{}</b></span>";
-          format-calendar-weekdays = "<span color='#ffcc66'><b>{}</b></span>";
-          calendar-weeks-pos = "right";
-          format-calendar-weeks = "<span color='#99ffdd'><b><tt><small>{:%V}</small></tt></b></span>";
+          tooltip-format = "<tt><small>{calendar}</small></tt>";
+          calendar = {
+            "mode" = "month";
+            "mode-mon-col" = 3;
+            "weeks-pos" = "left";
+            "on-scroll" = 0;
+            "format" = {
+              "months" = "<span color='#ffead3'><b>{}</b></span>";
+              "days" = "<span color='#ecc6d9'><b>{}</b></span>";
+              "weeks" = "<span color='#99ffdd'><b><small>{:%W}</small></b></span>";
+              "weekdays" = "<span color='#ffcc66'><b>{}</b></span>";
+              "today" = "<span color='#ff6699'><b><u>{}</u></b></span>";
+            };
+          };
+          actions = {
+            "on-click-right" = "mode";
+          };
         };
 
         "custom/weather" = {
@@ -191,7 +201,7 @@ in {
           background: #7c818c;
       }
 
-      #workspaces button.focused {
+      #workspaces button.active {
           color: white;
       }
 
