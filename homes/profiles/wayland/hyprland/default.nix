@@ -9,7 +9,7 @@
   brightnessctl = lib.getExe pkgs.brightnessctl;
   playerctl = lib.getExe config.services.playerctld.package;
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
-  clipse = lib.getExe pkgs.clipse;
+  clipse = lib.getExe pkgs.unstable.clipse;
 
   locker = pkgs.writeShellScriptBin "locker.sh" ''
     ${playerctl} -a pause
