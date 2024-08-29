@@ -2,7 +2,6 @@
   lib,
   pkgs,
   config,
-  nix-vscode-extensions,
   inputs,
   outputs,
   ...
@@ -92,6 +91,7 @@ in {
       EDITOR = "nvim";
       LESSHISTFILE = "${stateHome}/lesshst";
       SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
+      XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
     };
 
     shellAliases = {
