@@ -34,6 +34,11 @@
       url = "github:nix-community/nix-vscode-extensions";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    #firefox-addons = {
+    #  url = "git+https://gitlab.com/rycee/nur-expressions?dir=pkgs/firefox-addons";
+    #  inputs.nixpkgs.follows = "nixpkgs";
+    #};
   };
 
   outputs = {
@@ -48,7 +53,6 @@
     stylix,
     nix-vscode-extensions,
   } @ inputs: let
-    inherit (self) outputs;
     system = "x86_64-linux";
     user = "roberto";
   in {
@@ -57,7 +61,7 @@
     nixosConfigurations = {
       inherit system;
       kellanved = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
+        specialArgs = {inherit inputs;};
         modules = [
           stylix.nixosModules.stylix
           nixos-hardware.nixosModules.framework-12th-gen-intel
@@ -69,7 +73,7 @@
           {
             home-manager.useUserPackages = true;
             home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
-            home-manager.extraSpecialArgs = {inherit inputs outputs nix-vscode-extensions;};
+            home-manager.extraSpecialArgs = {inherit inputs nix-vscode-extensions;};
           }
         ];
       };
