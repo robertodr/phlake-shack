@@ -1,14 +1,13 @@
-{
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: let
+  wallpaper = pkgs.fetchurl {
+    url = "https://www.pixelstalk.net/wp-content/uploads/2016/10/Paint-pattern-colored-abstract-background.jpg";
+    sha256 = "sha256-kEdO+d3LXsRQdyyKck4YTkkwqz//CK8Z+RzXC9DSIpw=";
+  };
+in {
   stylix = {
     enable = true;
 
-    image = pkgs.fetchurl {
-      url = "https://www.pixelstalk.net/wp-content/uploads/2016/10/Paint-pattern-colored-abstract-background.jpg";
-      sha256 = "sha256-kEdO+d3LXsRQdyyKck4YTkkwqz//CK8Z+RzXC9DSIpw=";
-    };
+    image = wallpaper;
 
     base16Scheme = "${pkgs.base16-schemes}/share/themes/helios.yaml";
 
