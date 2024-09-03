@@ -124,7 +124,6 @@ in {
       rclone
       remmina
       tokei
-      pkgs.unstable.shikane
 
       autoconf
       automake
@@ -296,6 +295,7 @@ in {
       "hypridle"
       "hyprlock"
       "wayland/hyprland"
+      "shikane"
     ]
   );
 }

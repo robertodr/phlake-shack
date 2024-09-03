@@ -37,6 +37,10 @@ in {
             enabled = false;
             first_launch_animation = false;
           };
+          debug = {
+            disable_logs = false;
+            disable_time = false;
+          };
           general = {
             layout = "hy3";
             gaps_in = 2;
@@ -102,8 +106,8 @@ in {
               "SUPER, L, Lock screen, exec, ${lib.getExe locker}"
               "ALT, P, Logout menu, exec, ${lib.getExe config.programs.wlogout.package}"
               # FIXME to be tested!
-              "ALT, L, Move current workspace to monitor on the left, exec, movecurrentworkspacetomonitor, -1"
-              "ALT, R, Move current workspace to monitor on the right, exec, movecurrentworkspacetomonitor, +1"
+              "ALT, L, Move current workspace to monitor on the left, movecurrentworkspacetomonitor, l"
+              "ALT, R, Move current workspace to monitor on the right, movecurrentworkspacetomonitor, r"
               "SUPER SHIFT, Q, Close window, hy3:killactive"
               "SUPER, F, Maximize focused window, fullscreen, 1"
               "SUPER, V, Make a vertical split group, hy3:makegroup, h"
@@ -156,10 +160,6 @@ in {
           binddel = [
             ", XF86AudioRaiseVolume, Raise volume, exec, ${wpctl} set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
             ", XF86AudioLowerVolume, Lower volume, exec, ${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-          ];
-          # TODO this can be managed with shikane
-          monitor = [
-            "eDP-1, 2256x1504@60, auto, 1.6"
           ];
           # window rules
           windowrulev2 = [
