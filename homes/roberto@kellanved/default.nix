@@ -94,6 +94,11 @@ in {
       XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
     };
 
+    # see: https://github.com/nix-community/home-manager/issues/3263#issuecomment-1505801395
+    file.".profile".text = ''
+      . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
+    '';
+
     shellAliases = {
       xopen = "xdg-open";
       du = "dust";

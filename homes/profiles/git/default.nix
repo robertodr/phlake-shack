@@ -1,4 +1,4 @@
-{lib, pkgs, ...}: let
+{pkgs, ...}: let
   wt-co =
     pkgs.writers.writeBashBin "clone-bare-for-worktrees.sh"
     (builtins.readFile ./clone-bare-for-worktrees.sh);
@@ -17,10 +17,6 @@ in {
 
       gpg = {
         format = "ssh";
-      };
-
-      "gpg \"ssh\"" = {
-        program = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
       };
 
       commit.gpgSign = true;
