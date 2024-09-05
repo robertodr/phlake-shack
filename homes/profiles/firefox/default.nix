@@ -78,6 +78,7 @@
           privacy-badger
           redirector
           rust-search-extension
+          toggl-button-time-tracker
           ublock-origin
           unpaywall
         ];
