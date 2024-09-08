@@ -5,6 +5,7 @@
   ...
 }: let
   hyprlock = lib.getExe config.programs.hyprlock.package;
+  hyprctl = lib.getExe' config.wayland.windowManager.hyprland.package "hyprctl";
   brightnessctl = lib.getExe pkgs.brightnessctl;
   playerctl = lib.getExe config.services.playerctld.package;
 in {
@@ -17,7 +18,7 @@ in {
         # lock before suspend
         before_sleep_cmd = "loginctl lock-session";
         # to avoid having to press a key twice to turn on the display
-        after_sleep_cmd = "hyprctl dispatch dpms on";
+        after_sleep_cmd = "${hyprctl} dispatch dpms on";
       };
 
       listener = [
@@ -51,9 +52,9 @@ in {
           # 6.5min
           timeout = 390;
           # screen off when timeout has passed
-          on-timeout = "hyprctl dispatch dpms off";
+          on-timeout = "${hyprctl} dispatch dpms off";
           # screen on when activity is detected after timeout has fired
-          on-resume = "hyprctl dispatch dpms on";
+          on-resume = "${hyprctl} dispatch dpms on";
         }
 
         {
