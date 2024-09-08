@@ -1,34 +1,25 @@
-{pkgs, ...}: let
-  gtkgreetStyle = pkgs.writeText "greetd-gtkgreet.css" ''
-    window {
-      background-size: cover;
-      background-position: center;
-      font-weight: bold;
-    }
-  '';
+{
+  lib,
+  config,
+  ...
+}: {
+  systemd.services.greetd.serviceConfig = {
+    Type = "idle";
+    StandardInput = "tty";
+    StandardOutput = "tty";
+    StandardError = "journal"; # without this errors will spam on screen
+    TTYReset = true; # without these bootlogs will spam on screen
+    TTYVHangup = true;
+    TTYVTDisallocate = true;
+  };
 
-  greetdSwayConfig = pkgs.writeText "greetd-sway-config" ''
-    # needed?
-    # exec "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP"
-    input type:keyboard xkb_layout it(us)
-
-    bindsym Mod4+shift+e exec ${pkgs.sway}/bin/swaynag \
-      -t warning \
-      -m 'What do you want to do?' \
-      -b 'Poweroff' 'systemctl poweroff' \
-      -b 'Reboot' 'systemctl reboot'
-
-    include /etc/sway/config.d/*
-
-    # `-l` activates layer-shell mode. Notice that `swaymsg exit` will run after gtkgreet.
-    exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s ${gtkgreetStyle}; ${pkgs.sway}/bin/swaymsg exit"
-  '';
-in {
   services.greetd = {
     enable = true;
-    package = pkgs.greetd.gtkgreet;
     settings = {
-      default_session.command = "${pkgs.sway}/bin/sway --config ${greetdSwayConfig}";
+      default_session = {
+        command = "${lib.getExe' config.programs.hyprland.package "Hyprland"}";
+        user = "roberto";
+      };
     };
   };
 
@@ -37,11 +28,24 @@ in {
     gnupg.enable = true;
   };
 
+  programs.regreet = {
+    enable = true;
+    settings = {
+      background = {
+        path = config.stylix.image;
+        fit = "Cover";
+      };
+      GTK = {
+        cursor_theme_name = config.stylix.cursor.name;
+        font_name = config.stylix.fonts.sansSerif.name;
+        icon_theme_name = "Nordzy-dark";
+      };
+    };
+  };
+
   environment.etc = {
     "greetd/environments".text = ''
-      sway
       Hyprland
-      fish
     '';
   };
 }
