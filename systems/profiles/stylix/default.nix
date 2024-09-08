@@ -55,7 +55,10 @@ in {
     };
 
     targets = {
-      grub.useImage = true;
+      grub = {
+        enable = true;
+        useImage = true;
+      };
     };
   };
 
