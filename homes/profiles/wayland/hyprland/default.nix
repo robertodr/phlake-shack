@@ -139,8 +139,10 @@ in {
                     in
                       builtins.toString (x + 1 - (c * 10));
                   in [
+                    # go to workspace
                     "SUPER, ${ws}, Go to workspace ${toString (x + 1)}, workspace, ${toString (x + 1)}"
-                    "SUPER SHIFT, ${ws}, Move to worspace ${toString (x + 1)}, movetoworkspace, ${toString (x + 1)}"
+                    # move window to workspace, but don't go to workspace
+                    "SUPER SHIFT, ${ws}, Move window to worspace ${toString (x + 1)}, movetoworkspacesilent, ${toString (x + 1)}"
                   ]
                 )
                 10)
