@@ -25,7 +25,6 @@
         "programs/_1password"
         "programs/gnupg"
         "programs/thunar"
-        "services/auto-cpufreq"
         "services/earlyoom"
         "services/fwupd"
         "services/geoclue2"
