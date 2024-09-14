@@ -1,8 +1,31 @@
 {
   lib,
   config,
+  pkgs,
   ...
-}: {
+}: let
+  hyprland = lib.getExe' config.programs.hyprland.package "Hyprland";
+  hyprctl = lib.getExe' config.programs.hyprland.package "hyprctl";
+  regreet = lib.getExe config.programs.regreet.package;
+  greetdHyprlandConfig = pkgs.writeText "greetd-hyprland-config" ''
+    debug {
+      disable_logs=false
+      disable_time=false
+    }
+
+    animations {
+      enabled=false
+      first_launch_animation=false
+    }
+
+    misc {
+      disable_hyprland_logo=true
+      disable_splash_rendering=true
+    }
+
+    exec-once = ${regreet}; ${hyprctl} dispatch exit
+  '';
+in {
   systemd.services.greetd.serviceConfig = {
     Type = "idle";
     StandardInput = "tty";
@@ -17,7 +40,7 @@
     enable = true;
     settings = {
       default_session = {
-        command = "${lib.getExe' config.programs.hyprland.package "Hyprland"}";
+        command = "${hyprland} --config ${greetdHyprlandConfig}";
         user = "roberto";
       };
     };
@@ -41,11 +64,5 @@
         icon_theme_name = "Nordzy-dark";
       };
     };
-  };
-
-  environment.etc = {
-    "greetd/environments".text = ''
-      Hyprland
-    '';
   };
 }
