@@ -20,7 +20,6 @@
         "hardware/bluetooth"
         "networking"
         "nix"
-        "powertop"
         "programs/bash"
         "programs/_1password"
         "programs/gnupg"
@@ -32,8 +31,7 @@
         "services/hardware/bolt"
         "services/languagetool"
         "services/openssh"
-        "services/thermald"
-        "services/tlp"
+        "services/power-profiles-daemon"
         "services/udisks2"
         "stylix"
         "systemd"
@@ -216,6 +214,7 @@
         "neovim" # vim text editor fork focused on extensibility and agility
         "nix-index" #
         "pciutils" # a collection of programs for inspecting and manipulating configuration of PCI devices
+        "powertop"
         "psmisc" # a set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
         "rsync" # a fast incremental file transfer utility
         "tree" # command to produce a depth indented directory listing
