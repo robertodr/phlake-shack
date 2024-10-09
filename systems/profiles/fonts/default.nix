@@ -20,6 +20,7 @@
         "gentium"
         "gyre-fonts"
         "inconsolata"
+        "julia-mono"
         "liberation_ttf"
         "lmmath"
         "material-design-icons"

@@ -13,6 +13,7 @@ in {
     mutableExtensionsDir = false;
     userSettings = {
       "editor.formatOnSave" = true;
+      "editor.fontFamily" = "'JuliaMono', 'Fira Code Retina', Consolas, 'Courier New', monospace";
       "extensions.autoCheckUpdates" = false;
       "files.trimTrailingWhitespace" = true;
       "git.mergeEditor" = true;

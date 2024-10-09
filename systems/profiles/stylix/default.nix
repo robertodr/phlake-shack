@@ -31,9 +31,8 @@ in {
       };
 
       monospace = {
-        name = "Fira Code Retina";
-        package =
-          pkgs.nerdfonts.override {fonts = ["FiraCode"];};
+        name = "JuliaMono";
+        package = pkgs.julia-mono;
       };
 
       emoji = {
