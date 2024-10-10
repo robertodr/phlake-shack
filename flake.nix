@@ -35,6 +35,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     #firefox-addons = {
     #  url = "git+https://gitlab.com/rycee/nur-expressions?dir=pkgs/firefox-addons";
     #  inputs.nixpkgs.follows = "nixpkgs";
@@ -52,6 +57,7 @@
     nur,
     stylix,
     nix-vscode-extensions,
+    agenix,
   } @ inputs: let
     system = "x86_64-linux";
     user = "roberto";
@@ -63,18 +69,19 @@
       kellanved = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
-          stylix.nixosModules.stylix
-          nixos-hardware.nixosModules.framework-12th-gen-intel
-          disko.nixosModules.disko
-          {nixpkgs.overlays = [nur.overlay];}
-          impermanence.nixosModules.impermanence
           ./systems/x86_64-linux/kellanved
+          agenix.nixosModules.default
+          disko.nixosModules.disko
+          impermanence.nixosModules.impermanence
           home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
             home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
             home-manager.extraSpecialArgs = {inherit inputs nix-vscode-extensions;};
           }
+          nixos-hardware.nixosModules.framework-12th-gen-intel
+          stylix.nixosModules.stylix
+          {nixpkgs.overlays = [nur.overlay];}
         ];
       };
     };

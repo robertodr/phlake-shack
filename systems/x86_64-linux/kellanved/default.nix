@@ -227,7 +227,10 @@
         "xdg-utils" # a set of command line tools that assist applications with a variety of desktop integration tasks
         "zip" # compressor/archiver for creating and modifying zipfiles
       ]
-      pkgs;
+      pkgs
+      ++ [
+        inputs.agenix.packages.x86_64-linux.default
+      ];
 
     # see here: https://github.com/NixOS/nixpkgs/issues/64965#issuecomment-991839786
     etc."ipsec.secrets".text = ''
