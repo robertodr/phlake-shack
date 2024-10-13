@@ -1,5 +1,6 @@
 {
   lib,
+  config,
   pkgs,
   inputs,
   ...
@@ -157,6 +158,14 @@
     ];
   };
 
+  age.secrets = {
+    qiskit_ibm_token = {
+      file = ../../../secrets/QISKIT_IBM_TOKEN.age;
+      owner = "roberto";
+      group = "roberto";
+    };
+  };
+
   nixpkgs = {
     # you can add overlays here
     overlays = [
@@ -231,6 +240,10 @@
       ++ [
         inputs.agenix.packages.x86_64-linux.default
       ];
+
+    sessionVariables = {
+      QISKIT_IBM_TOKEN = ''$(${pkgs.coreutils}/bin/cat ${config.age.secrets.qiskit_ibm_token.path})'';
+    };
 
     # see here: https://github.com/NixOS/nixpkgs/issues/64965#issuecomment-991839786
     etc."ipsec.secrets".text = ''

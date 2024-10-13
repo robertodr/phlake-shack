@@ -84,3 +84,10 @@ Host Tiina
 Host karolina
   Hostname karolina.it4i.cz
   User it4i-robdre
+
+
+## Vega
+Host vega
+  Hostname login.vega.izum.si
+  User remigior
+  IdentityFile ~/.ssh/vega_ed25519.pub
