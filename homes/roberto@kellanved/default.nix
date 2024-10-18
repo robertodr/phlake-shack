@@ -65,6 +65,7 @@ in {
       LESSHISTFILE = "${stateHome}/lesshst";
       SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
       XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
+      QISKIT_IBM_TOKEN = ''$(${pkgs.coreutils}/bin/cat ${config.sops.secrets."ibm-quantum/token".path})'';
     };
 
     # see: https://github.com/nix-community/home-manager/issues/3263#issuecomment-1505801395
@@ -276,4 +277,11 @@ in {
       "shikane"
     ]
   );
+
+  sops = {
+    age.sshKeyPaths = ["${config.home.homeDirectory}/.ssh/id_ed25519"];
+    secrets."ibm-quantum/token" = {
+      sopsFile = ../../secrets/qiskit_ibm_token.yaml;
+    };
+  };
 }

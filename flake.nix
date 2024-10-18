@@ -35,8 +35,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    agenix = {
-      url = "github:ryantm/agenix";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -57,7 +57,7 @@
     nur,
     stylix,
     nix-vscode-extensions,
-    agenix,
+    sops-nix,
   } @ inputs: let
     system = "x86_64-linux";
     user = "roberto";
@@ -70,7 +70,7 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./systems/x86_64-linux/kellanved
-          agenix.nixosModules.default
+          sops-nix.nixosModules.sops
           disko.nixosModules.disko
           impermanence.nixosModules.impermanence
           home-manager.nixosModules.home-manager
@@ -79,6 +79,7 @@
             home-manager.useUserPackages = true;
             home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
             home-manager.extraSpecialArgs = {inherit inputs nix-vscode-extensions;};
+            home-manager.sharedModules = [inputs.sops-nix.homeManagerModules.sops];
           }
           nixos-hardware.nixosModules.framework-12th-gen-intel
           stylix.nixosModules.stylix

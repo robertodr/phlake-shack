@@ -158,14 +158,6 @@
     ];
   };
 
-  age.secrets = {
-    qiskit_ibm_token = {
-      file = ../../../secrets/QISKIT_IBM_TOKEN.age;
-      owner = "roberto";
-      group = "roberto";
-    };
-  };
-
   nixpkgs = {
     # you can add overlays here
     overlays = [
@@ -215,8 +207,8 @@
         "findutils" # GNU Find Utilities, the basic directory searching utilities of the GNU operating system
         "gnupg" #
         "gptfdisk" # set of text-mode partitioning tools for Globally Unique Identifier (GUID) Partition Table (GPT) disks
-        "intel-media-driver"
         "intel-gpu-tools"
+        "intel-media-driver"
         "libseccomp" # high level library for the Linux Kernel seccomp filter
         "lm_sensors" #
         "neofetch" #
@@ -226,6 +218,8 @@
         "powertop"
         "psmisc" # a set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
         "rsync" # a fast incremental file transfer utility
+        "sops"
+        "ssh-to-age"
         "tree" # command to produce a depth indented directory listing
         "unrar" # utility for RAR archives
         "unzip" # an extraction utility for archives compressed in .zip format
@@ -236,14 +230,7 @@
         "xdg-utils" # a set of command line tools that assist applications with a variety of desktop integration tasks
         "zip" # compressor/archiver for creating and modifying zipfiles
       ]
-      pkgs
-      ++ [
-        inputs.agenix.packages.x86_64-linux.default
-      ];
-
-    sessionVariables = {
-      QISKIT_IBM_TOKEN = ''$(${pkgs.coreutils}/bin/cat ${config.age.secrets.qiskit_ibm_token.path})'';
-    };
+      pkgs;
 
     # see here: https://github.com/NixOS/nixpkgs/issues/64965#issuecomment-991839786
     etc."ipsec.secrets".text = ''
