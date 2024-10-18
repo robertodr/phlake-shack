@@ -19,4 +19,6 @@
   # hyprlock needs PAM access to authenticate, else it fallbacks to su
   # hyprlock and hypridle are installed/configured through home-manager
   security.pam.services.hyprlock = {};
+
+  environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications"];
 }

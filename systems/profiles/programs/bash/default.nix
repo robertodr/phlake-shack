@@ -8,4 +8,5 @@
       fi
     '';
   };
+  environment.pathsToLink = ["/share/bash-completion"];
 }
