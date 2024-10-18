@@ -75,6 +75,7 @@
           impermanence.nixosModules.impermanence
           home-manager.nixosModules.home-manager
           {
+            home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
             home-manager.extraSpecialArgs = {inherit inputs nix-vscode-extensions;};
