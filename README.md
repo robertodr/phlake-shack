@@ -7,11 +7,17 @@ This repository is home to the nix code that builds my systems.
 * Activate the SSH agent in 1password
 * Enable system authentication in 1password
 * enroll fingerprints `for finger in {left,right}-{index,middle}-finger; fprintd-enroll -f "$finger" "$USER"; end`
-* Ferdium: import data, uncheck "Launche Ferdium on start", "Always show Ferdium in system tray", and "Enable updates".
+* Ferdium: import data, uncheck "Launch Ferdium on start", "Always show Ferdium in system tray", and "Enable updates".
 * Import Thunderbird data
 * keyring in `argv.json` for VSCode: https://code.visualstudio.com/docs/editor/settings-sync#_recommended-configure-the-keyring-to-use-with-vs-code
 * Zoom configuration according to https://wiki.archlinux.org/title/Zoom_Meetings
 * `openconnect-sso` (from a fork) installed to a profile `nix profile install github:jacekszymanski/openconnect-sso`
+
+For sops-nix:
+* `mkdir -p ~/.config/sops/age`
+* generate age private key from SSH key `nix-shell -p ssh-to-age --run "ssh-to-age -private-key -i ~/.ssh/id_ed25519 > ~/.config/sops/age/keys.txt"`
+* find corresponding age public key `age-keygen -y ~/.config/sops/age/keys.txt`
+* host public key `nix-shell -p ssh-to-age --run 'cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age'`
 
 ## Why Nix?
 Nix allows for easy to manage, collaborative, reproducible deployments. This means that once something is setup and configured once, it works forever. If someone else shares their configuration, anyone can make use of it.
