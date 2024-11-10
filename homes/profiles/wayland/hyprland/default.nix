@@ -17,6 +17,7 @@
   '';
 in {
   home.packages = [
+    pkgs.waypipe
     pkgs.wl-clipboard
   ];
 
