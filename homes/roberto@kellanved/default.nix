@@ -235,6 +235,7 @@ in {
       "kitty"
       "mako"
       "man"
+      "navi"
       "ripgrep"
       "ssh"
       "starship"
