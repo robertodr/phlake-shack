@@ -1,4 +1,4 @@
-{...}: {
+{pkgs, ...}: {
   virtualisation = {
     docker = {
       enable = true;
@@ -7,4 +7,6 @@
       extraOptions = "--default-ulimit nofile=65536:65536";
     };
   };
+
+  environment.systemPackages = [pkgs.trivy pkgs.clair];
 }
