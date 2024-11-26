@@ -3,9 +3,10 @@
   config,
   lib,
   pkgs,
+  pkgsUnstable,
   ...
 }: let
-  package = pkgs.unstable.shikane;
+  package = pkgsUnstable.shikane;
   tomlFormat = pkgs.formats.toml {};
   hyprctl = lib.getExe' config.wayland.windowManager.hyprland.package "hyprctl";
 
@@ -66,7 +67,7 @@
 in {
   home.packages = [
     pkgs.wdisplays
-    pkgs.unstable.shikane
+    pkgsUnstable.shikane
   ];
 
   systemd.user.services.shikane = {

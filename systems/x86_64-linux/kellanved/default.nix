@@ -1,8 +1,6 @@
 {
   lib,
-  config,
   pkgs,
-  inputs,
   ...
 }: {
   imports =
@@ -156,30 +154,6 @@
         parentDirectory = {mode = "u=rwx,g=,o=";};
       }
     ];
-  };
-
-  nixpkgs = {
-    # you can add overlays here
-    overlays = [
-      # add overlays your own flake exports (from overlays and pkgs dir):
-      #inputs.self.overlays.additions
-      inputs.self.overlays.modifications
-      inputs.self.overlays.unstable-packages
-
-      # You can also add overlays exported from other flakes:
-      # neovim-nightly-overlay.overlays.default
-
-      # Or define it inline, for example:
-      # (final: prev: {
-      #   hi = final.hello.overrideAttrs (oldAttrs: {
-      #     patches = [ ./change-hello-to-hi.patch ];
-      #   });
-      # })
-    ];
-    # configure your nixpkgs instance
-    config = {
-      allowUnfree = true;
-    };
   };
 
   time.timeZone = "Europe/Oslo";

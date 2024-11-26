@@ -1,9 +1,7 @@
 {
-  lib,
   pkgs,
+  pkgsUnstable,
   config,
-  inputs,
-  outputs,
   ...
 }: let
   inherit (config.home) username;
@@ -151,11 +149,11 @@ in {
       onlyoffice-bin
       pdf2svg
       pdftk
-      pkgs.unstable.ferdium
+      ferdium
       playerctl
       spotify
       thunderbird
-      pkgs.unstable.typst
+      pkgsUnstable.typst
       vlc
       wordnet
       xournalpp

@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  pkgsUnstable,
   ...
 }: let
   kitty = lib.getExe pkgs.kitty;
@@ -9,7 +10,7 @@
   brightnessctl = lib.getExe pkgs.brightnessctl;
   playerctl = lib.getExe config.services.playerctld.package;
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
-  clipse = lib.getExe pkgs.unstable.clipse;
+  clipse = lib.getExe pkgsUnstable.clipse;
 
   locker = pkgs.writeShellScriptBin "locker.sh" ''
     ${playerctl} -a pause

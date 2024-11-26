@@ -1,0 +1,62 @@
+vscode_version = "1.95.2"
+
+[[extensions]]
+publisher_name = "github"
+extension_name = "copilot"
+
+[[extensions]]
+publisher_name = "github"
+extension_name = "copilot-chat"
+
+[[extensions]]
+publisher_name = "github"
+extension_name = "vscode-github-actions"
+
+[[extensions]]
+publisher_name = "github"
+extension_name = "vscode-pull-request-github"
+
+[[extensions]]
+publisher_name = "mkhl"
+extension_name = "direnv"
+
+[[extensions]]
+publisher_name = "ms-azuretools"
+extension_name = "vscode-docker"
+
+[[extensions]]
+publisher_name = "ms-vscode-remote"
+extension_name = "remote-containers"
+
+[[extensions]]
+publisher_name = "ms-vscode-remote"
+extension_name = "remote-ssh"
+
+[[extensions]]
+publisher_name = "ms-vsliveshare"
+extension_name = "vsliveshare"
+
+[[extensions]]
+publisher_name = "vscodevim"
+extension_name = "vim"
+
+[[extensions]]
+publisher_name = "aaron-bond"
+extension_name = "better-comments"
+
+[[extensions]]
+publisher_name = "adpyke"
+extension_name = "codesnap"
+
+[[extensions]]
+publisher_name = "eamodio"
+extension_name = "gitlens"
+
+[[extensions]]
+publisher_name = "oderwat"
+extension_name = "indent-rainbow"
+
+[[extensions]]
+publisher_name = "Gruntfuggly"
+extension_name = "todo-tree"
+

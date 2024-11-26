@@ -1,4 +1,10 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  firefox-addons,
+  ...
+}: let
+  addons = firefox-addons.packages.x86_64-linux;
+in {
   programs.firefox = {
     enable = true;
     profiles = {
@@ -67,21 +73,24 @@
             "Bing".metaData.hidden = true;
           };
         };
-        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+        extensions = with addons; [
+          # free
           c-c-search-extension
           darkreader
           decentraleyes
-          joplin-web-clipper
-          notion-web-clipper
-          onepassword-password-manager
-          paperpile
+          #joplin-web-clipper
           privacy-badger
           redirector
           rust-search-extension
           side-view
-          toggl-button-time-tracker
+          #toggl-button-time-tracker
           ublock-origin
-          unpaywall
+          #unpaywall
+
+          # unfree
+          notion-web-clipper
+          onepassword-password-manager
+          paperpile
         ];
       };
     };

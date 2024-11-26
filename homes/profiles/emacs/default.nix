@@ -1,8 +1,7 @@
-moduleArgs @ {
+{
   config,
   lib,
   pkgs,
-  self,
   ...
 }: let
   inherit (config.xdg) configHome;

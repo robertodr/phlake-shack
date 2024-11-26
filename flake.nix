@@ -20,8 +20,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nur.url = "github:nix-community/NUR";
-
     stylix = {
       url = "github:danth/stylix/release-24.05";
       inputs = {
@@ -30,60 +28,62 @@
       };
     };
 
-    nix-vscode-extensions = {
-      url = "github:nix-community/nix-vscode-extensions";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #firefox-addons = {
-    #  url = "git+https://gitlab.com/rycee/nur-expressions?dir=pkgs/firefox-addons";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
+    firefox-addons = {
+      url = "gitlab:robertodr/nur-expressions/fix-allowUnfree?dir=pkgs/firefox-addons";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
-    unstable,
-    nixos-hardware,
     disko,
-    impermanence,
     home-manager,
-    nur,
-    stylix,
-    nix-vscode-extensions,
+    impermanence,
+    nixos-hardware,
     sops-nix,
+    stylix,
+    unstable,
+    firefox-addons,
   } @ inputs: let
     system = "x86_64-linux";
     user = "roberto";
-  in {
-    # Your custom packages and modifications, exported as overlays
-    overlays = import ./overlays {inherit inputs;};
-    nixosConfigurations = {
+    pkgs = import nixpkgs {
       inherit system;
+      config = {
+        allowUnfree = true;
+      };
+    };
+    pkgsUnstable = import unstable {
+      inherit system;
+      config = {
+        allowUnfree = true;
+      };
+    };
+  in {
+    nixosConfigurations = {
       kellanved = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
+        specialArgs = {inherit pkgs pkgsUnstable;};
         modules = [
           ./systems/x86_64-linux/kellanved
-          sops-nix.nixosModules.sops
           disko.nixosModules.disko
-          impermanence.nixosModules.impermanence
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
-            home-manager.extraSpecialArgs = {inherit inputs nix-vscode-extensions;};
+            home-manager.extraSpecialArgs = {inherit pkgsUnstable firefox-addons;};
             home-manager.sharedModules = [inputs.sops-nix.homeManagerModules.sops];
           }
+          impermanence.nixosModules.impermanence
           nixos-hardware.nixosModules.framework-12th-gen-intel
+          sops-nix.nixosModules.sops
           stylix.nixosModules.stylix
-          {nixpkgs.overlays = [nur.overlay];}
         ];
       };
     };
