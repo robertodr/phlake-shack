@@ -8,13 +8,8 @@
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
-(package! playerctl)
-(package! floobits)
 (package! magit-todos)
 (package! magit-annex)
-(package! smudge)
-(package! quarto-mode)
-;(package! counsel-spotify)
 ;(package! magit-delta)
 
 ;; To install a package directly from a remote git repo, you must specify a
