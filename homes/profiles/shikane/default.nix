@@ -49,7 +49,6 @@
             enable = true;
             mode = "2256x1504@60Hz";
             position = "3440,350";
-            # TODO maybe do 2.0?
             scale = 1.6;
           }
           {
@@ -58,6 +57,29 @@
             mode = "3440x1440@60Hz";
             position = "0,0";
             scale = 1.0;
+            adaptive_sync = true;
+          }
+        ];
+      }
+      {
+        name = "uio";
+        exec = [
+          "${lib.getExe pkgs.libnotify} shikane \"Profile $SHIKANE_PROFILE_NAME has been applied\""
+        ];
+        output = [
+          {
+            search = "eDP-1";
+            enable = true;
+            mode = "2256x1504@60Hz";
+            position = "344,1440";
+            scale = 1.6;
+          }
+          {
+            search = "%Dell Inc. DELL U2720Q HR5GZ13";
+            enable = true;
+            mode = "3840x2160@60Hz";
+            position = "0,0";
+            scale = 1.5;
             adaptive_sync = true;
           }
         ];
