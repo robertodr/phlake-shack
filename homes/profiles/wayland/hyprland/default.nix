@@ -107,9 +107,10 @@ in {
               "SUPER SHIFT, E, Open Thunar, exec, ${lib.getExe pkgs.xfce.thunar}"
               "SUPER, L, Lock screen, exec, ${lib.getExe locker}"
               "ALT, P, Logout menu, exec, ${lib.getExe config.programs.wlogout.package}"
-              # FIXME to be tested!
               "ALT, L, Move current workspace to monitor on the left, movecurrentworkspacetomonitor, l"
               "ALT, R, Move current workspace to monitor on the right, movecurrentworkspacetomonitor, r"
+              "ALT, U, Move current workspace to monitor up, movecurrentworkspacetomonitor, u"
+              "ALT, D, Move current workspace to monitor down, movecurrentworkspacetomonitor, d"
               "SUPER SHIFT, Q, Close window, hy3:killactive"
               "SUPER, F, Maximize focused window, fullscreen, 1"
               "SUPER, V, Make a vertical split group, hy3:makegroup, h"
