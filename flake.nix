@@ -17,7 +17,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    impermanence.url = "github:nix-community/impermanence?rev=033643a45a4a920660ef91caa391fbffb14da466";
+    impermanence.url = "github:nix-community/impermanence?rev=3ed3f0eaae9fcc0a8331e77e9319c8a4abd8a71a";
 
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.5.0";
 
