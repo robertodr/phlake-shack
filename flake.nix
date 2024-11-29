@@ -34,7 +34,7 @@
     };
 
     firefox-addons = {
-      url = "gitlab:robertodr/nur-expressions/fix-allowUnfree?dir=pkgs/firefox-addons";
+      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -77,7 +77,10 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
-            home-manager.extraSpecialArgs = {inherit pkgsUnstable firefox-addons;};
+            home-manager.extraSpecialArgs = {
+              inherit pkgsUnstable;
+              firefox-addons-allowUnfree = pkgsUnstable.callPackage firefox-addons {};
+            };
             home-manager.sharedModules = [inputs.sops-nix.homeManagerModules.sops];
           }
           impermanence.nixosModules.impermanence

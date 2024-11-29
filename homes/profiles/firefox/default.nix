@@ -1,10 +1,8 @@
 {
   pkgs,
-  firefox-addons,
+  firefox-addons-allowUnfree,
   ...
-}: let
-  addons = firefox-addons.packages.x86_64-linux;
-in {
+}: {
   programs.firefox = {
     enable = true;
     profiles = {
@@ -73,7 +71,7 @@ in {
             "Bing".metaData.hidden = true;
           };
         };
-        extensions = with addons; [
+        extensions = with firefox-addons-allowUnfree; [
           # free
           c-c-search-extension
           darkreader
