@@ -19,11 +19,12 @@
         "hardware/bluetooth"
         "networking"
         "nix"
-        "programs/bash"
         "programs/_1password"
+        "programs/bash"
         "programs/gnupg"
         "programs/thunar"
         "services/earlyoom"
+        "services/flatpak"
         "services/fwupd"
         "services/geoclue2"
         "services/gnome-keyring"
@@ -132,30 +133,6 @@
 
   fileSystems."/persist".neededForBoot = true;
 
-  environment.persistence."/persist" = {
-    hideMounts = true;
-    directories = [
-      "/var/log"
-      "/var/lib/bluetooth"
-      "/var/lib/nixos"
-      "/var/lib/fprint"
-      "/var/lib/systemd/coredump"
-      "/etc/NetworkManager/system-connections"
-      {
-        directory = "/var/lib/colord";
-        user = "colord";
-        group = "colord";
-        mode = "u=rwx,g=rx,o=";
-      }
-    ];
-    files = [
-      {
-        file = "/var/keys/secret_file";
-        parentDirectory = {mode = "u=rwx,g=,o=";};
-      }
-    ];
-  };
-
   time.timeZone = "Europe/Oslo";
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -163,6 +140,31 @@
   security.polkit.enable = true;
 
   environment = {
+    # impermanence set up
+    persistence."/persist" = {
+      hideMounts = true;
+      directories = [
+        "/var/log"
+        "/var/lib/bluetooth"
+        "/var/lib/nixos"
+        "/var/lib/fprint"
+        "/var/lib/systemd/coredump"
+        "/etc/NetworkManager/system-connections"
+        {
+          directory = "/var/lib/colord";
+          user = "colord";
+          group = "colord";
+          mode = "u=rwx,g=rx,o=";
+        }
+      ];
+      files = [
+        {
+          file = "/var/keys/secret_file";
+          parentDirectory = {mode = "u=rwx,g=,o=";};
+        }
+      ];
+    };
+
     # TODO review which packages should be here and which in user profiles
     systemPackages =
       lib.attrVals [

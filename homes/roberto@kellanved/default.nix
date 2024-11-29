@@ -157,7 +157,6 @@ in {
       vlc
       wordnet
       xournalpp
-      zoom-us
     ];
   };
 

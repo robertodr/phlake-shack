@@ -144,17 +144,16 @@
       },
       "locked": {
         "dir": "pkgs/firefox-addons",
-        "lastModified": 1732625894,
-        "narHash": "sha256-nADc16uZGhxI9XN5kxDZBmJ+jFhWFN96pYd+I2BGWwA=",
-        "owner": "robertodr",
+        "lastModified": 1732852996,
+        "narHash": "sha256-0LD4nyz/Z2bDNjVj6p8O85uGtOmDCC9PdX5hh8Z3rSM=",
+        "owner": "rycee",
         "repo": "nur-expressions",
-        "rev": "513448c0dc8af82d55b0028b3ba7fad31fbb4732",
+        "rev": "0c855b6e0c58aef81f66c52f987f4c5ce8d48af0",
         "type": "gitlab"
       },
       "original": {
         "dir": "pkgs/firefox-addons",
-        "owner": "robertodr",
-        "ref": "fix-allowUnfree",
+        "owner": "rycee",
         "repo": "nur-expressions",
         "type": "gitlab"
       }
@@ -260,6 +259,22 @@
         "type": "github"
       }
     },
+    "nix-flatpak": {
+      "locked": {
+        "lastModified": 1732285094,
+        "narHash": "sha256-OD9tu/QN71OnEWtgvm9pXuQs+SGQtKnLHOGVRG5f9CU=",
+        "owner": "gmodena",
+        "repo": "nix-flatpak",
+        "rev": "d3a763532be5d223bb3474642f089667a8091cdf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gmodena",
+        "ref": "v0.5.0",
+        "repo": "nix-flatpak",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1732483221,
@@ -297,6 +312,7 @@
         "firefox-addons": "firefox-addons",
         "home-manager": "home-manager",
         "impermanence": "impermanence",
+        "nix-flatpak": "nix-flatpak",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix",
