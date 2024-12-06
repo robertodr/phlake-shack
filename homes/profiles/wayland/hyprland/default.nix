@@ -52,7 +52,7 @@ in {
           };
           decoration = {
             rounding = 10;
-            drop_shadow = false;
+            shadow = {enabled = false;};
             blur = {enabled = false;};
           };
           input = {

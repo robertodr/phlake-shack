@@ -58,11 +58,6 @@ in {
         path = config.stylix.image;
         fit = "Cover";
       };
-      GTK = {
-        cursor_theme_name = config.stylix.cursor.name;
-        font_name = config.stylix.fonts.sansSerif.name;
-        icon_theme_name = "Nordzy-dark";
-      };
     };
   };
 }

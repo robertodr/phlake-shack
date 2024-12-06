@@ -67,6 +67,7 @@ in {
       vscode.enable = false;
       # I prefer to do it explicitly!
       waybar.enable = false;
+      hyprlock.enable = false;
     };
   };
 }
