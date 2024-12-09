@@ -40,7 +40,7 @@ in {
 
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs29-pgtk;
+    package = pkgs.emacs30-pgtk;
     extraPackages = epkgs: with epkgs; [vterm];
   };
 
