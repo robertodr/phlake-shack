@@ -23,7 +23,7 @@
 ;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
 (setq
-  doom-font (font-spec :family "JuliaMono" :size 16 :weight 'normal :width 'normal)
+  doom-font (font-spec :family "JuliaMono" :size 16 :weight 'regular :width 'normal)
   doom-variable-pitch-font (font-spec :family "DejaVu Sans" :size 13)
   doom-symbol-font (font-spec :family "JuliaMono")
   doom-big-font (font-spec :family "JuliaMono" :size 20))

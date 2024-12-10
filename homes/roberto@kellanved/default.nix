@@ -142,18 +142,21 @@ in {
       asciinema
       drawio
       evince
+      ferdium
+      ffmpeg
       gimp
+      imagemagick
       inkscape
       joplin-desktop
       nomacs
       onlyoffice-bin
       pdf2svg
       pdftk
-      ferdium
+      pkgsUnstable.typst
       playerctl
+      poppler
       spotify
       thunderbird
-      pkgsUnstable.typst
       vlc
       wordnet
       xournalpp
@@ -244,6 +247,7 @@ in {
       "starship"
       "tealdeer"
       "udiskie"
+      "yazi"
       "zellij"
       "zoxide"
     ]

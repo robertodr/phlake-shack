@@ -89,7 +89,7 @@ in {
         };
 
         clock = {
-          format = "{:%A %R (%Z)}";
+          format = "{:%A, %e %R (%Z)}";
           tooltip = true;
           tooltip-format = "<tt><small>{calendar}</small></tt>";
           calendar = {
@@ -125,7 +125,17 @@ in {
 
         cpu = {
           interval = 10;
-          format = "{}% ";
+          format = "{icon} ";
+          "format-icons" = [
+            "<span color='#69ff94'>▁</span>" # // green
+            "<span color='#2aa9ff'>▂</span>" # // blue
+            "<span color='#f8f8f2'>▃</span>" # // white
+            "<span color='#f8f8f2'>▄</span>" # // white
+            "<span color='#ffffa5'>▅</span>" # // yellow
+            "<span color='#ffffa5'>▆</span>" # // yellow
+            "<span color='#ff9977'>▇</span>" # // orange
+            "<span color='#dd532e'>█</span>" # // red
+          ];
         };
 
         battery = {
