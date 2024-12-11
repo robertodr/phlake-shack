@@ -85,9 +85,21 @@ Host karolina
   Hostname karolina.it4i.cz
   User it4i-robdre
 
-
 ## Vega
 Host vega
   Hostname login.vega.izum.si
   User remigior
   IdentityFile ~/.ssh/vega_ed25519.pub
+
+## MareNostrum5
+Host gpp gpp1 glogin1 glogin1.bsc.es
+  HostName glogin1.bsc.es
+  User algo066442
+
+Host gpp2 glogin2 glogin2.bsc.es
+  HostName glogin2.bsc.es
+  User algo066442
+
+Host acc acc1 alogin1 alogin1.bsc.es
+  HostName alogin1.bsc.es
+  User algo066442
