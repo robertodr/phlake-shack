@@ -120,6 +120,7 @@ in {
       gnumake
       #graphite-cli
       hotspot
+      jless
       linuxPackages.perf
       meld
       mob
@@ -140,10 +141,12 @@ in {
       python3
 
       asciinema
+      avogadro2
       drawio
       evince
       ferdium
       ffmpeg
+      ghostscript
       gimp
       imagemagick
       inkscape
@@ -232,6 +235,7 @@ in {
       "blueman-applet"
       "bottom"
       "eza"
+      "fastfetch"
       "fish"
       "fzf"
       "git"

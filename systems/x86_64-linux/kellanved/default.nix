@@ -187,7 +187,6 @@
         "intel-media-driver"
         "libseccomp" # high level library for the Linux Kernel seccomp filter
         "lm_sensors" #
-        "neofetch" #
         "neovim" # vim text editor fork focused on extensibility and agility
         "nix-index" #
         "pciutils" # a collection of programs for inspecting and manipulating configuration of PCI devices
