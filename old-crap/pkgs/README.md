@@ -1,2 +1,0 @@
-- Use `nvfetcher` to generate Nix expressions to obtain sources with pinned versions.
-- Write the corresponding Nix expression to build the package.
