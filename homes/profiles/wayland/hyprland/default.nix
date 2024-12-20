@@ -27,10 +27,8 @@ in {
       hyprland = {
         enable = true;
 
-        systemd = {
-          enable = true;
-          enableXdgAutostart = true;
-        };
+        # see: https://wiki.hyprland.org/Useful-Utilities/Systemd-start
+        systemd.enable = false;
 
         plugins = [pkgs.hyprlandPlugins.hy3];
 

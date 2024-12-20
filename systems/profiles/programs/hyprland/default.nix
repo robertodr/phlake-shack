@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   programs.hyprland = {
     enable = true;
+    withUWSM = true;
   };
 
   environment = {
@@ -22,4 +23,17 @@
   # hyprlock needs PAM access to authenticate, else it fallbacks to su
   # hyprlock and hypridle are installed/configured through home-manager
   security.pam.services.hyprlock = {};
+
+  programs.uwsm = {
+    enable = true;
+    waylandCompositors = {
+      hyprland = {
+        prettyName = "Hyprland";
+        comment = "Hyprland compositor managed by UWSM";
+        binPath = "/run/current-system/sw/bin/Hyprland";
+      };
+    };
+  };
+
+  services.dbus.implementation = "broker";
 }
