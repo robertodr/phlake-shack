@@ -24,7 +24,7 @@
         "programs/gnupg"
         "programs/thunar"
         "services/earlyoom"
-        "services/flatpak"
+        #"services/flatpak"
         "services/fwupd"
         "services/gnome-keyring"
         "services/hardware/bolt"

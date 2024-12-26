@@ -156,6 +156,7 @@ in {
       pdf2svg
       pdftk
       pkgsUnstable.typst
+      pkgsUnstable.zoom-us
       playerctl
       poppler
       spotify
