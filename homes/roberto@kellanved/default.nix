@@ -276,17 +276,18 @@ in {
       # not really using latex locally, but I can keep the code to enable it
       #"texlive"
     ]
-    # swaywm
+    # wm
     ++ [
       "fuzzel"
       "gammastep"
       "gtk"
-      "waybar"
-      "wlogout"
       "hypridle"
       "hyprlock"
-      "wayland/hyprland"
+      "hyprpaper"
       "shikane"
+      "waybar"
+      "wayland/hyprland"
+      "wlogout"
     ]
   );
 

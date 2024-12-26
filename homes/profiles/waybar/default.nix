@@ -16,11 +16,6 @@ in {
 
     systemd.enable = true;
 
-    # TODO figure out whether I want this override or not
-    #package = pkgs.waybar.override {
-    #  withMediaPlayer = true;
-    #};
-
     settings = {
       mainBar = {
         layer = "top";

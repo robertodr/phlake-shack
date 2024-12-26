@@ -95,7 +95,7 @@ in {
           # m -> mouse, see below.
           # t -> transparent, cannot be shadowed by other binds.
           # i -> ignore mods, will ignore modifiers.
-          # s -> separate, will arbitrarily combine keys between each mod/key, see [Keysym combos](#keysym-combos) above.
+          # s -> separate, will arbitrarily combine keys between each mod/key.
           # d -> has description, will allow you to write a description for your bind.
           # p -> bypasses the app's requests to inhibit keybinds.
           bindd =

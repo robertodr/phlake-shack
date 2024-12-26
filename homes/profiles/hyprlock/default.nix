@@ -1,4 +1,13 @@
-{config, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: let
+  wallpaper = pkgs.fetchurl {
+    url = "https://w.wallhaven.cc/full/85/wallhaven-856e2j.jpg";
+    sha256 = "01bkswh8zb4v7ljkzbnn05qdmk9cxxbmryczilc3v8fhbchr094p";
+  };
+in {
   programs.hyprlock = {
     enable = true;
     settings = {
@@ -12,13 +21,13 @@
       background = [
         {
           monitor = "";
-          path = "${config.stylix.image}";
-          blur_passes = 1;
+          path = "${wallpaper}";
+          blur_passes = 3;
           blur_size = 7;
-          noise = 0.0117;
-          contrast = 0.8916;
-          brightness = 0.8172;
-          vibrancy = 0.1696;
+          noise = 0.2;
+          contrast = 0.7;
+          brightness = 0.6;
+          vibrancy = 0.1;
           vibrancy_darkness = 0.0;
         }
       ];
@@ -28,7 +37,7 @@
         text = "$TIME";
         color = "rgba(200, 200, 200, 1.0)";
         font_size = 36;
-        font_family = "M PLUS 2 Regular";
+        font_family = "${config.stylix.fonts.sansSerif.name}";
         rotate = 0; # degrees, counter-clockwise
         position = "0, 180";
         halign = "center";
