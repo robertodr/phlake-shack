@@ -36,13 +36,17 @@ in {
     TTYVTDisallocate = true;
   };
 
-  services.greetd = {
+  services.greetd = let
+    session = {
+      command = "${lib.getExe config.programs.uwsm.package} start hyprland-uwsm.desktop";
+      user = "roberto";
+    };
+  in {
     enable = true;
     settings = {
-      default_session = {
-        command = "${hyprland} --config ${greetdHyprlandConfig}";
-        user = "roberto";
-      };
+      terminal.vt = 1;
+      default_session = session;
+      initial_session = session;
     };
   };
 

@@ -10,6 +10,9 @@
     }
     (builtins.readFile ./wttr.py);
 in {
+  # from: https://github.com/fufexan/dotfiles/commit/a6084b9eec934ab9cbb452eb9accd2c20bb38444
+  systemd.user.targets.tray.Unit.Requires = lib.mkForce ["graphical-session.target"];
+
   # TODO review styling, especially colors!
   programs.waybar = {
     enable = true;
