@@ -246,6 +246,7 @@ in {
       "mako"
       "man"
       "navi"
+      "network-manager-applet"
       "ripgrep"
       "ssh"
       "starship"
