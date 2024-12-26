@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  lib,
+  ...
+}: let
   wallpaper = pkgs.fetchurl {
     url = "https://www.pixelstalk.net/wp-content/uploads/2016/10/Paint-pattern-colored-abstract-background.jpg";
     sha256 = "sha256-kEdO+d3LXsRQdyyKck4YTkkwqz//CK8Z+RzXC9DSIpw=";
@@ -7,6 +11,8 @@ in {
   stylix = {
     enable = true;
 
+    # NOTE: this is actually not used anywhere!
+    # https://github.com/danth/stylix/issues/442
     image = wallpaper;
 
     base16Scheme = "${pkgs.base16-schemes}/share/themes/helios.yaml";
@@ -68,6 +74,7 @@ in {
       # I prefer to do it explicitly!
       waybar.enable = false;
       hyprlock.enable = false;
+      hyprpaper.enable = lib.mkDefault false;
     };
   };
 }
