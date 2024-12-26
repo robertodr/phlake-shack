@@ -26,7 +26,6 @@
         "services/earlyoom"
         "services/flatpak"
         "services/fwupd"
-        "services/geoclue2"
         "services/gnome-keyring"
         "services/hardware/bolt"
         "services/languagetool"
