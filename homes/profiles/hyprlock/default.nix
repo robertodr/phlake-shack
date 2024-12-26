@@ -22,9 +22,9 @@ in {
         {
           monitor = "";
           path = "${wallpaper}";
-          blur_passes = 3;
-          blur_size = 7;
-          noise = 0.2;
+          blur_passes = 0;
+          blur_size = 2;
+          noise = 0.1;
           contrast = 0.7;
           brightness = 0.6;
           vibrancy = 0.1;
@@ -35,7 +35,7 @@ in {
       label = {
         monitor = "";
         text = "$TIME";
-        color = "rgba(200, 200, 200, 1.0)";
+        color = "rgba(0, 0, 0, 1.0)";
         font_size = 36;
         font_family = "${config.stylix.fonts.sansSerif.name}";
         rotate = 0; # degrees, counter-clockwise
