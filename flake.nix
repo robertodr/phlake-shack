@@ -19,7 +19,7 @@
 
     impermanence.url = "github:nix-community/impermanence?rev=3ed3f0eaae9fcc0a8331e77e9319c8a4abd8a71a";
 
-    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.5.0";
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.5.2";
 
     nixos-hardware.url = "github:nixos/nixos-hardware";
 
