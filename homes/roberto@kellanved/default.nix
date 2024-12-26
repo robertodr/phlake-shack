@@ -241,6 +241,7 @@ in {
       "git"
       "gnome-keyring"
       "gpg-agent"
+      "htop"
       "jq"
       "kitty"
       "mako"
