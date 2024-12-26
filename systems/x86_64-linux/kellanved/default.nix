@@ -202,6 +202,7 @@
         "wget" # tool for retrieving files using HTTP, HTTPS, and FTP
         "which" # shows the full path of (shell) commands
         "xdg-utils" # a set of command line tools that assist applications with a variety of desktop integration tasks
+        "sshfs"
         "zip" # compressor/archiver for creating and modifying zipfiles
       ]
       pkgs;
