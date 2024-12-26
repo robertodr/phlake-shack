@@ -7,9 +7,4 @@
       };
     };
   };
-
-  home.shellAliases = {
-    top = "btm";
-    htop = "btm";
-  };
 }
