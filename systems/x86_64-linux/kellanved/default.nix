@@ -134,7 +134,12 @@
 
   time.timeZone = "Europe/Oslo";
 
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_TIME = "it_IT.UTF-8";
+    };
+  };
 
   security.polkit.enable = true;
 
