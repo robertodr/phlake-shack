@@ -1,11 +1,7 @@
 {
-  lib,
-  pkgs,
-  ...
-}: {
   name = "undocked";
   exec = [
-    "${lib.getExe pkgs.libnotify} shikane \"Profile $SHIKANE_PROFILE_NAME has been applied\""
+    "notify-send shikane \"Profile $SHIKANE_PROFILE_NAME has been applied\""
   ];
   output = [
     {

@@ -9,9 +9,9 @@
 
   settings = {
     profile = [
-      ./undocked.nix
-      ./docked.nix
-      ./uio.nix
+      (import ./undocked.nix)
+      (import ./docked.nix)
+      (import ./uio.nix)
     ];
   };
 in {

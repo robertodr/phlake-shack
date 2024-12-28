@@ -1,11 +1,7 @@
 {
-  lib,
-  pkgs,
-  ...
-}: {
   name = "docked";
   exec = [
-    "${lib.getExe pkgs.libnotify} shikane \"Profile $SHIKANE_PROFILE_NAME has been applied\""
+    "notify-send shikane \"Profile $SHIKANE_PROFILE_NAME has been applied\""
     # let hyprland know the relative positioning of the screens
     # TODO figure out whether it's needed in future releases
     #hyprctl keyword monitor eDP-1, 2256x1504@60, 3440x350, 1.6"
