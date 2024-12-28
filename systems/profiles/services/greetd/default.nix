@@ -21,7 +21,7 @@ in {
     enable = true;
     settings = {
       default_session = {
-        command = "${tuigreet} --debug --remember --remember-session --user-menu --theme '${theme}' --time --time-format '%_H:%M • %A • %B, %d %Y'";;
+        command = "${tuigreet} --debug --remember --remember-session --user-menu --theme '${theme}' --time --time-format '%_H:%M • %A • %B, %d %Y'";
         user = "greeter";
       };
     };
