@@ -7,7 +7,7 @@ in {
     clipsePkg
   ];
 
-  xdg.configFile."clipse/config.json".source = jsonFormat.generate "settings" {
+  xdg.configFile."clipse/config.json".source = jsonFormat.generate "clipse-config" {
     allowDuplicates = false;
     historyFile = "clipboard_history.json";
     maxHistory = 100;
@@ -22,24 +22,24 @@ in {
     };
   };
 
-  xdg.configFile."clipse/custom_theme.json".source = jsonFormat.generate "theme" ''
+  xdg.configFile."clipse/custom_theme.json".source =
+    jsonFormat.generate "clipse-theme"
     {
-        useCustomTheme= false;
-        DimmedDesc= "#ffffff";
-        DimmedTitle= "#ffffff";
-        FilteredMatch= "#ffffff";
-        NormalDesc= "#ffffff";
-        NormalTitle= "#ffffff";
-        SelectedDesc= "#ffffff";
-        SelectedTitle= "#ffffff";
-        SelectedBorder= "#ffffff";
-        SelectedDescBorder= "#ffffff";
-        TitleFore= "#ffffff";
-        Titleback= "#434C5E";
-        StatusMsg= "#ffffff";
-        PinIndicatorColor= "#ff0000";
-    }
-  '';
+      useCustomTheme = false;
+      DimmedDesc = "#ffffff";
+      DimmedTitle = "#ffffff";
+      FilteredMatch = "#ffffff";
+      NormalDesc = "#ffffff";
+      NormalTitle = "#ffffff";
+      SelectedDesc = "#ffffff";
+      SelectedTitle = "#ffffff";
+      SelectedBorder = "#ffffff";
+      SelectedDescBorder = "#ffffff";
+      TitleFore = "#ffffff";
+      Titleback = "#434C5E";
+      StatusMsg = "#ffffff";
+      PinIndicatorColor = "#ff0000";
+    };
 
   systemd.user.services.clipse = {
     Unit = {
