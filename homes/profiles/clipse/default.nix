@@ -1,5 +1,4 @@
 # FIXME this is a simplification of the module in https://github.com/nix-community/home-manager/pull/5777
-
 {pkgs, ...}: let
   clipsePkg = pkgs.clipse;
   jsonFormat = pkgs.formats.json {};
