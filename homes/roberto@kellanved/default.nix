@@ -280,6 +280,7 @@ in {
     ]
     # wm
     ++ [
+      "clipse"
       "fuzzel"
       "gammastep"
       "gtk"
