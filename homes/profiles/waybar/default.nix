@@ -89,6 +89,7 @@ in {
         clock = {
           format = "{:%A, %e %R (%Z)}";
           tooltip = true;
+          #locale = "it_IT.UTF-8"; # so that Monday is the first day of the week
           tooltip-format = "<tt><small>{calendar}</small></tt>";
           calendar = {
             "mode" = "month";
