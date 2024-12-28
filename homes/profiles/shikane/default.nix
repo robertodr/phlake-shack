@@ -26,7 +26,7 @@ in {
     Unit = {
       Description = "Dynamic output configuration tool";
       Documentation = "man:shikane(1)";
-      After = ["graphical-session-pre.target"];
+      After = ["graphical-session.target"];
       PartOf = ["graphical-session.target"];
     };
 
