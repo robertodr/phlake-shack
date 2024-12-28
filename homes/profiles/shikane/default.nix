@@ -3,12 +3,10 @@
   config,
   lib,
   pkgs,
-  pkgsUnstable,
   ...
 }: let
-  package = pkgsUnstable.shikane;
+  package = pkgs.shikane;
   tomlFormat = pkgs.formats.toml {};
-  hyprctl = lib.getExe' config.wayland.windowManager.hyprland.package "hyprctl";
 
   settings = {
     profile = [
@@ -33,8 +31,8 @@
           "${lib.getExe pkgs.libnotify} shikane \"Profile $SHIKANE_PROFILE_NAME has been applied\""
           # let hyprland know the relative positioning of the screens
           # TODO figure out whether it's needed in future releases
-          #"${hyprctl} keyword monitor eDP-1, 2256x1504@60, 3440x350, 1.6"
-          #"${hyprctl} keyword monitor desc:AOC U34G2G4R3 0x00000E8B, 3440x1440@120, 0x0, 1, vrr, 1"
+          #hyprctl keyword monitor eDP-1, 2256x1504@60, 3440x350, 1.6"
+          #hyprctl keyword monitor desc:AOC U34G2G4R3 0x00000E8B, 3440x1440@120, 0x0, 1, vrr, 1"
           # TODO needs some JSON parsing to use hyprctl like so:
           # hyprctl keyword workspace "$i, monitor:${monitors[0]}" > /dev/null
           # hyprctl dispatch moveworkspacetomonitor $i ${monitors[0]} > /dev/null
@@ -89,7 +87,7 @@
 in {
   home.packages = [
     pkgs.wdisplays
-    pkgsUnstable.shikane
+    package
   ];
 
   systemd.user.services.shikane = {
