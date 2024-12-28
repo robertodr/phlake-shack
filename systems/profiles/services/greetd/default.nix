@@ -1,67 +1,34 @@
 {
   lib,
-  config,
   pkgs,
   ...
 }: let
-  hyprland = lib.getExe' config.programs.hyprland.package "Hyprland";
-  hyprctl = lib.getExe' config.programs.hyprland.package "hyprctl";
-  regreet = lib.getExe config.programs.regreet.package;
-  greetdHyprlandConfig = pkgs.writeText "greetd-hyprland-config" ''
-    debug {
-      disable_logs=false
-      disable_time=false
-    }
-
-    animations {
-      enabled=false
-      first_launch_animation=false
-    }
-
-    misc {
-      disable_hyprland_logo=true
-      disable_splash_rendering=true
-    }
-
-    exec-once = ${regreet}; ${hyprctl} dispatch exit
-  '';
+  tuigreet = lib.getExe pkgs.greetd.tuigreet;
+  theme = "border=magenta;text=cyan;prompt=green;time=red;action=blue;button=yellow;container=black;input=redborder=magenta;text=cyan;prompt=green;time=red;action=blue;button=yellow;container=black;input=red";
 in {
   systemd.services.greetd.serviceConfig = {
     Type = "idle";
     StandardInput = "tty";
     StandardOutput = "tty";
     StandardError = "journal"; # without this errors will spam on screen
-    TTYReset = true; # without these bootlogs will spam on screen
+    # without the following bootlogs will spam on screen
+    TTYReset = true;
     TTYVHangup = true;
     TTYVTDisallocate = true;
   };
 
-  services.greetd = let
-    session = {
-      command = "${lib.getExe config.programs.uwsm.package} start hyprland-uwsm.desktop";
-      user = "roberto";
-    };
-  in {
+  services.greetd = {
     enable = true;
     settings = {
-      terminal.vt = 1;
-      default_session = session;
-      initial_session = session;
+      default_session = {
+        command = "${tuigreet} --debug --remember --remember-session --user-menu --theme '${theme}' --time --time-format '%_H:%M • %A • %B, %d %Y'";;
+        user = "greeter";
+      };
     };
   };
 
   security.pam.services.greetd = {
     enableGnomeKeyring = true;
     gnupg.enable = true;
-  };
-
-  programs.regreet = {
-    enable = true;
-    settings = {
-      background = {
-        path = config.stylix.image;
-        fit = "Cover";
-      };
-    };
   };
 }
