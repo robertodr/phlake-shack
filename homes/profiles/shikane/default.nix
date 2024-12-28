@@ -20,6 +20,8 @@ in {
     shikanePkg
   ];
 
+  xdg.configFile."shikane/config.toml".source = tomlFormat.generate "shikane-config" settings;
+
   systemd.user.services.shikane = {
     Unit = {
       Description = "Dynamic output configuration tool";
@@ -29,8 +31,7 @@ in {
     };
 
     Service = {
-      ExecStart =
-        lib.escapeShellArgs [(lib.getExe shikanePkg) "--config" (tomlFormat.generate "shikane-config" settings)];
+      ExecStart = lib.getExe shikanePkg;
     };
 
     Install = {WantedBy = ["graphical-session.target"];};
