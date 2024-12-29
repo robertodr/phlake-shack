@@ -18,6 +18,7 @@
   '';
 in {
   home.packages = [
+    pkgs.grimblast
     pkgs.waypipe
     pkgs.wl-clipboard
   ];
