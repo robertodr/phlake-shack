@@ -2,20 +2,19 @@
   config,
   lib,
   pkgs,
-  pkgsUnstable,
   ...
 }: let
-  kitty = lib.getExe pkgs.kitty;
-  fuzzel = lib.getExe pkgs.fuzzel;
-  brightnessctl = lib.getExe pkgs.brightnessctl;
-  playerctl = lib.getExe config.services.playerctld.package;
-  wpctl = lib.getExe' pkgs.wireplumber "wpctl";
-  clipse = lib.getExe pkgsUnstable.clipse;
-
   locker = pkgs.writeShellScriptBin "locker.sh" ''
-    ${playerctl} -a pause
-    ${lib.getExe config.programs.hyprlock.package}
+    playerctl -a pause
+    # this is copy-pasted from runOnce
+    pgrep hyprlock || uwsm app -- hyprlock
   '';
+
+  toggle = program: let
+    prog = builtins.substring 0 14 program;
+  in "pkill ${prog} || uwsm app -- ${program}";
+
+  runOnce = program: "pgrep ${program} || uwsm app -- ${program}";
 in {
   home.packages = [
     pkgs.grimblast
@@ -81,12 +80,14 @@ in {
             workspace_center_on = 1;
           };
           exec-once = [
-            "[workspace 1 silent] ${kitty}"
-            "[workspace 2 silent] ${lib.getExe config.programs.firefox.package}"
-            "[workspace 3 silent] ${lib.getExe' pkgs.ferdium "ferdium"}"
-            "[workspace 4 silent] ${lib.getExe pkgs.thunderbird}"
-            # TODO remove when there is a clipse module in home-manager
-            "${clipse} -listen"
+            # finalize startup
+            "uwsm finalize"
+            "[workspace 1 silent] uwsm app -- kitty"
+            "[workspace 2 silent] uwsm app -- firefox"
+            "[workspace 3 silent] uwsm app -- ferdium"
+            "[workspace 4 silent] uwsm app -- thunderbird"
+            # start 1password in the tray
+            "uwsm app -- 1password --silent"
           ];
           # keybindings
           # l -> locked, will also work when an input inhibitor (e.g. a lockscreen) is active.
@@ -101,11 +102,11 @@ in {
           # p -> bypasses the app's requests to inhibit keybinds.
           bindd =
             [
-              "SUPER, RETURN, Open kitty, exec, ${kitty}"
-              "SUPER, D, Open Fuzzel, exec, ${fuzzel}"
+              "SUPER, RETURN, Open kitty, exec, uwsm app -- kitty"
+              "SUPER, D, Open Fuzzel, exec, ${toggle "fuzzel"}"
               "SUPER SHIFT, E, Open Thunar, exec, ${lib.getExe pkgs.xfce.thunar}"
               "SUPER, L, Lock screen, exec, ${lib.getExe locker}"
-              "ALT, P, Logout menu, exec, ${lib.getExe config.programs.wlogout.package}"
+              "SUPER, ESCAPE, Logout menu, exec, ${toggle "wlogout"} -p layer-shell"
               "ALT, L, Move current workspace to monitor on the left, movecurrentworkspacetomonitor, l"
               "ALT, R, Move current workspace to monitor on the right, movecurrentworkspacetomonitor, r"
               "ALT, U, Move current workspace to monitor up, movecurrentworkspacetomonitor, u"
@@ -125,11 +126,11 @@ in {
               "SUPER SHIFT, DOWN, Move window down, hy3:movewindow, d, once"
               "SUPER SHIFT, UP, Move window up, hy3:movewindow, u, once"
               "SUPER SHIFT, RIGHT, Move window right, hy3:movewindow, r, once"
-              "SUPER, C, Open clipse, exec, ${kitty} --class clipse -e ${lib.getExe config.programs.fish.package} -c '${clipse} -fc $fish_pid'"
+              "SUPER, C, Open clipse, exec, uwsm app -- kitty --class clipse -e ${lib.getExe config.programs.fish.package} -c 'clipse -fc $fish_pid'"
               # special  keys
-              ", Print, Screenshot area with grimblast, exec, ${lib.getExe pkgs.grimblast} copysave area"
-              ", XF86AudioNext, Play next, exec, ${playerctl} next"
-              ", XF86AudioPrev, Play previous, exec, ${playerctl} previous"
+              ", Print, Screenshot area with grimblast, exec, ${runOnce "grimblast"} --notify copysave area"
+              ", XF86AudioNext, Play next, exec, playerctl next"
+              ", XF86AudioPrev, Play previous, exec, playerctl previous"
             ]
             ++ (
               # workspaces
@@ -151,19 +152,19 @@ in {
             );
           # repeat (will repeat when held)
           bindde = [
-            ", XF86MonBrightnessUp, Increase laptop screen brightness, exec, ${brightnessctl} --device=intel_backlight set 5%+"
-            ", XF86MonBrightnessDown,Decrease laptop screen brightness, exec, ${brightnessctl} --device=intel_backlight set 5%-"
+            ", XF86MonBrightnessUp, Increase laptop screen brightness, exec, brightnessctl --device=intel_backlight set 5%+"
+            ", XF86MonBrightnessDown,Decrease laptop screen brightness, exec, brightnessctl --device=intel_backlight set 5%-"
           ];
           # locked (will also work when an input inhibitor (e.g. a lockscreen) is active)
           binddl = [
-            ", XF86AudioMute, Mute speakers, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SINK@ toggle"
-            "SUPER, XF86AudioMute, Mute microphone, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-            ", XF86AudioPlay, Toggle play/pause, exec, ${playerctl} play-pause"
+            ", XF86AudioMute, Mute speakers, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+            "SUPER, XF86AudioMute, Mute microphone, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+            ", XF86AudioPlay, Toggle play/pause, exec, playerctl play-pause"
           ];
           # repeat (will repeat when held) and locked (will also work when an input inhibitor (e.g. a lockscreen) is active)
           binddel = [
-            ", XF86AudioRaiseVolume, Raise volume, exec, ${wpctl} set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
-            ", XF86AudioLowerVolume, Lower volume, exec, ${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+            ", XF86AudioRaiseVolume, Raise volume, exec, wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
+            ", XF86AudioLowerVolume, Lower volume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
           ];
           # window rules
           windowrulev2 = [
