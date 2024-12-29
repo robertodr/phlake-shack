@@ -252,7 +252,6 @@ in {
       "ssh"
       "starship"
       "tealdeer"
-      "udiskie"
       "yazi"
       "zellij"
       "zoxide"
