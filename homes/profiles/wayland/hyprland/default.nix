@@ -87,7 +87,7 @@ in {
             "[workspace 3 silent] uwsm app -- ferdium"
             "[workspace 4 silent] uwsm app -- thunderbird"
             # start udiskie in the tray
-            "uwsm app -- ${lib.getExe pkgs.udiskie} --smart-tray"
+            "uwsm app -- ${lib.getExe' pkgs.udiskie "udiskie"} --smart-tray"
             # start 1password in the tray
             "uwsm app -- 1password --silent"
           ];
