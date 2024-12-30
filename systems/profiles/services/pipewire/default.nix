@@ -22,4 +22,6 @@
       };
     };
   };
+
+  programs.noisetorch.enable = true;
 }
