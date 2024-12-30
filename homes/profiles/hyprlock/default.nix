@@ -32,37 +32,79 @@ in {
         }
       ];
 
-      label = {
-        monitor = "";
-        text = "$TIME";
-        color = "rgba(0, 0, 0, 1.0)";
-        font_size = 36;
-        font_family = "${config.stylix.fonts.sansSerif.name}";
-        rotate = 0; # degrees, counter-clockwise
-        position = "0, 180";
-        halign = "center";
-        valign = "center";
-      };
+      label = [
+        # Hours
+        {
+          monitor = "";
+          text = "cmd[update:1000] echo \"<b><big> \"$(date +'%H')\" </big></b>\"";
+          color = "rgb(${config.lib.stylix.colors.base00})";
+          font_size = 112;
+          font_family = "${config.stylix.fonts.sansSerif.name}";
+          shadow_passes = 3;
+          shadow_size = 4;
+          position = "0, 220";
+          halign = "center";
+          valign = "center";
+        }
+
+        # Minutes
+        {
+          monitor = "";
+          text = "cmd[update:1000] echo \"<b><big> \"$(date +'%M')\" </big></b>\"";
+          color = "rgb(${config.lib.stylix.colors.base00})";
+          font_size = 112;
+          font_family = "${config.stylix.fonts.sansSerif.name}";
+          shadow_passes = 3;
+          shadow_size = 4;
+          position = "0, 80";
+          halign = "center";
+          valign = "center";
+        }
+
+        # Today
+        {
+          monitor = "";
+          text = "cmd[update:18000000] echo \"<b><big> \"$(date +'%A')\" </big></b>\"";
+          color = "rgb(${config.lib.stylix.colors.base01})";
+          font_size = 22;
+          font_family = "${config.stylix.fonts.sansSerif.name}";
+          position = "0, 30";
+          halign = "center";
+          valign = "center";
+        }
+
+        # Week
+        {
+          monitor = "";
+          text = "cmd[update:18000000] echo \"<b> \"$(date +'%d %b')\" </b>\"";
+          color = "rgb(${config.lib.stylix.colors.base01})";
+          font_size = 18;
+          font_family = "${config.stylix.fonts.sansSerif.name}";
+          position = "0, 6";
+          halign = "center";
+          valign = "center";
+        }
+      ];
 
       input-field = [
         {
           monitor = "";
-          size = "200, 50";
+          size = "250, 50";
           outline_thickness = 3;
           dots_size = 0.33; # Scale of input-field height, 0.2 - 0.8
           dots_spacing = 0.15; # Scale of dots' absolute size, 0.0 - 1.0
-          dots_center = false;
+          dots_center = true;
           dots_rounding = -1; # -1 default circle, -2 follow input-field rounding
-          outer_color = "rgb(151515)";
-          inner_color = "rgb(200, 200, 200)";
-          font_color = "rgb(10, 10, 10)";
+          outer_color = "rgb(${config.lib.stylix.colors.base00})";
+          inner_color = "rgb(${config.lib.stylix.colors.base00})";
+          font_color = "rgb(${config.lib.stylix.colors.base0A})";
           fade_on_empty = true;
           fade_timeout = 1000; # Milliseconds before fade_on_empty is triggered.
           placeholder_text = "<i>Input Password...</i>"; # Text rendered in the input box when it's empty.
           hide_input = false;
           rounding = -1; # -1 means complete rounding (circle/oval)
-          check_color = "rgb(204, 136, 34)";
-          fail_color = "rgb(204, 34, 34)"; # if authentication failed, changes outer_color and fail message color
+          check_color = "rgb(${config.lib.stylix.colors.base0B})";
+          fail_color = "rgb(${config.lib.stylix.colors.base08})"; # if authentication failed, changes outer_color and fail message color
           fail_text = "<i>$FAIL <b>($ATTEMPTS)</b></i>"; # can be set to empty
           fail_transition = 300; # transition time in ms between normal outer_color and fail_color
           capslock_color = -1;
