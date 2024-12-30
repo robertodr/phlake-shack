@@ -60,30 +60,6 @@ in {
           halign = "center";
           valign = "center";
         }
-
-        # Today
-        {
-          monitor = "";
-          text = "cmd[update:18000000] echo \"<b><big> \"$(date +'%A')\" </big></b>\"";
-          color = "rgb(${config.lib.stylix.colors.base01})";
-          font_size = 22;
-          font_family = "${config.stylix.fonts.sansSerif.name}";
-          position = "0, 30";
-          halign = "center";
-          valign = "center";
-        }
-
-        # Week
-        {
-          monitor = "";
-          text = "cmd[update:18000000] echo \"<b> \"$(date +'%d %b')\" </b>\"";
-          color = "rgb(${config.lib.stylix.colors.base01})";
-          font_size = 18;
-          font_family = "${config.stylix.fonts.sansSerif.name}";
-          position = "0, 6";
-          halign = "center";
-          valign = "center";
-        }
       ];
 
       input-field = [
