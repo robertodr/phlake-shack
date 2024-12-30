@@ -16,11 +16,18 @@
 
   runOnce = program: "pgrep ${program} || uwsm app -- ${program}";
 in {
-  home.packages = [
-    pkgs.grimblast
-    pkgs.waypipe
-    pkgs.wl-clipboard
-  ];
+  home = {
+    packages = [
+      pkgs.drawing
+      pkgs.grimblast
+      pkgs.waypipe
+      pkgs.wl-clipboard
+    ];
+
+    sessionVariables = {
+      GRIMBLAST_EDITOR = "drawing";
+    };
+  };
 
   wayland = {
     windowManager = {
@@ -130,7 +137,7 @@ in {
               "SUPER SHIFT, RIGHT, Move window right, hy3:movewindow, r, once"
               "SUPER, C, Open clipse, exec, uwsm app -- kitty --class clipse -e ${lib.getExe config.programs.fish.package} -c 'clipse -fc $fish_pid'"
               # special  keys
-              ", Print, Screenshot area with grimblast, exec, ${runOnce "grimblast"} --notify copysave area"
+              ", Print, Screenshot area with grimblast, exec, ${runOnce "grimblast"} --notify edit area"
               ", XF86AudioNext, Play next, exec, playerctl next"
               ", XF86AudioPrev, Play previous, exec, playerctl previous"
             ]

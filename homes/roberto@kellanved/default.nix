@@ -83,7 +83,7 @@ in {
     #    mkOutOfStoreSymlink "${config.lib.phlake-shack.userConfigPath}/authinfo.gpg";
     #};
 
-    # TODO I think there's quite some crap in this lists of packages...
+    # TODO I think there's quite some crap in this list of packages...
     packages = with pkgs; [
       ## === Sysadmin ===
       brightnessctl
