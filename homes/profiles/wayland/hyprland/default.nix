@@ -37,7 +37,10 @@ in {
         # see: https://wiki.hyprland.org/Useful-Utilities/Systemd-start
         systemd.enable = false;
 
-        plugins = [pkgs.hyprlandPlugins.hy3];
+        plugins = with pkgs.hyprlandPlugins; [
+        hy3
+        hyprspace
+        ];
 
         settings = {
           animations = {
@@ -85,6 +88,9 @@ in {
             allow_workspace_cycles = true;
             # switching workspaces centers the cursor on the last active window for that workspace
             workspace_center_on = 1;
+          };
+          plugin = {
+            hyprspace = {overview = {autoDrag = false;};};
           };
           exec-once = [
             # finalize startup
@@ -136,6 +142,7 @@ in {
               "SUPER SHIFT, UP, Move window up, hy3:movewindow, u, once"
               "SUPER SHIFT, RIGHT, Move window right, hy3:movewindow, r, once"
               "SUPER, C, Open clipse, exec, uwsm app -- kitty --class clipse -e ${lib.getExe config.programs.fish.package} -c 'clipse -fc $fish_pid'"
+              "SUPER, TAB, Hyprspace workspace overview, overview:toggle"
               # special  keys
               ", Print, Screenshot area with grimblast, exec, ${runOnce "grimblast"} --notify edit area"
               ", XF86AudioNext, Play next, exec, playerctl next"
