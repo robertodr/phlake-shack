@@ -108,7 +108,6 @@ in {
       cachix
       clang-tools # TODO <- needed here?
       cmake-language-server
-      copier
       delta # TODO <- this or difftastic?
       flamegraph
       fx
@@ -155,6 +154,7 @@ in {
       onlyoffice-bin
       pdf2svg
       pdftk
+      pika-backup
       pkgsUnstable.typst
       playerctl
       poppler
