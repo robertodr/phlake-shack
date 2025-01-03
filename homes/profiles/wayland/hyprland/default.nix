@@ -38,8 +38,8 @@ in {
         systemd.enable = false;
 
         plugins = with pkgs.hyprlandPlugins; [
-        hy3
-        hyprspace
+          hy3
+          hyprspace
         ];
 
         settings = {
