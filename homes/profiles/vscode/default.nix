@@ -1,7 +1,7 @@
 {
   pkgs,
-  pkgsUnstable,
   lib,
+  pkgsUnstable,
   ...
 }: let
   nix4vscode-extensions = (import ./nix4vscode-extensions.nix) {

@@ -20,44 +20,44 @@ in
           "eamodio"."gitlens" = vscode-utils.extensionFromVscodeMarketplace {
             name = "gitlens";
             publisher = "eamodio";
-            version = "2024.11.2604";
-            sha256 = "1i8adhy0n6j3hf8psa7jxhizrw2absn4a5x8i0q6y58cic7y8026";
+            version = "2025.1.104";
+            sha256 = "08pd4cf3b3dhky60c6nd8v7hh0yr6xhbqr06la8v2f5ypfg27c57";
           };
           "ms-vscode-remote"."remote-containers" = vscode-utils.extensionFromVscodeMarketplace {
             name = "remote-containers";
             publisher = "ms-vscode-remote";
-            version = "0.391.0";
-            sha256 = "1rw3k3slk7c815kbjbnbjdwgrskkhcjrqbdgyja8bydws10bxjcp";
+            version = "0.395.0";
+            sha256 = "19m1n2k9bw0kms2adz9lngxbf2ymnf2571n663mwd9yxsjrrm2km";
           };
           "github"."vscode-pull-request-github" = vscode-utils.extensionFromVscodeMarketplace {
             name = "vscode-pull-request-github";
             publisher = "github";
-            version = "0.101.2024111810";
-            sha256 = "012dm1x7wlhqa4dcb364m7b52g6mi9i2kvzb7vq0j9kxrlbwmh5c";
-          };
-          "ms-vscode-remote"."remote-ssh" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "remote-ssh";
-            publisher = "ms-vscode-remote";
-            version = "0.116.2024111219";
-            sha256 = "1vwkfc4iwvqrcs3r0gkz2aikl8dgzdznasajfs489da8vi3zc30v";
+            version = "0.103.2024121117";
+            sha256 = "0k90870ra85np0dg19mx2blr1yg9i2sk25mx08bblqh0hh0s5941";
           };
           "github"."copilot" = vscode-utils.extensionFromVscodeMarketplace {
             name = "copilot";
             publisher = "github";
-            version = "1.245.1227";
-            sha256 = "0x28ccvfgc7faf9g8qf6qz8g7s42xw89qh8ivbcmaas4il6c0z4f";
+            version = "1.254.1278";
+            sha256 = "0n55apya8q87l4ijfvj3qqwg6sij1k9is99zc2wffgmghqb9fv7l";
+          };
+          "ms-vscode-remote"."remote-ssh" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "remote-ssh";
+            publisher = "ms-vscode-remote";
+            version = "0.117.2024121915";
+            sha256 = "00mri2cv9agcl1xi34yi9bcwhalp1m3nb37qh66x903y7973l75s";
+          };
+          "github"."copilot-chat" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "copilot-chat";
+            publisher = "github";
+            version = "0.24.2024121201";
+            sha256 = "14cs1ncbv0fib65m1iv6njl892p09fmamjkfyxrsjqgks2hisz5z";
           };
           "ms-vsliveshare"."vsliveshare" = vscode-utils.extensionFromVscodeMarketplace {
             name = "vsliveshare";
             publisher = "ms-vsliveshare";
             version = "1.0.5941";
             sha256 = "0qpbq4j2mz1cv10bn7kdipyjany7j5zw71p3djp2dz9a5i1pmcxk";
-          };
-          "github"."copilot-chat" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "copilot-chat";
-            publisher = "github";
-            version = "0.23.2024102903";
-            sha256 = "0qdg4jc7rykm5a0ba9n2bflfm0dw0cja8j8sfvdnv2xqppww2sql";
           };
           "oderwat"."indent-rainbow" = vscode-utils.extensionFromVscodeMarketplace {
             name = "indent-rainbow";
@@ -74,8 +74,8 @@ in
           "vscodevim"."vim" = vscode-utils.extensionFromVscodeMarketplace {
             name = "vim";
             publisher = "vscodevim";
-            version = "1.28.1";
-            sha256 = "0cwml7z6gj2hi1hr9bzavg4zcij73lap9qgry3biv47pgwzn1gvj";
+            version = "1.29.0";
+            sha256 = "1r29gd6na3gyc38v8ynmc2c46mi38zms1p87y65v9n2rj94pqx97";
           };
           "gruntfuggly"."todo-tree" = vscode-utils.extensionFromVscodeMarketplace {
             name = "todo-tree";
