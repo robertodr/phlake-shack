@@ -275,7 +275,7 @@ in {
       "newsboat"
       "pandoc"
       # not really using latex locally, but I can keep the code to enable it
-      #"texlive"
+      "texlive"
     ]
     # wm
     ++ [
