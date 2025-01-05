@@ -144,7 +144,8 @@ in {
               "SUPER, C, Open clipse, exec, uwsm app -- kitty --class clipse -e ${lib.getExe config.programs.fish.package} -c 'clipse -fc $fish_pid'"
               "SUPER, TAB, Hyprspace workspace overview, overview:toggle"
               # special  keys
-              ", Print, Screenshot area with grimblast, exec, ${runOnce "grimblast"} --notify edit area"
+              ", Print, Screenshot area with grimblast, exec, ${runOnce "grimblast"} --notify copysave area"
+              "SUPER, Print, Screenshot area with grimblast and open editor, exec, ${runOnce "grimblast"} --notify edit area"
               ", XF86AudioNext, Play next, exec, playerctl next"
               ", XF86AudioPrev, Play previous, exec, playerctl previous"
             ]
