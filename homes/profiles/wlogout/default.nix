@@ -8,42 +8,36 @@
         action = "loginctl lock-session";
         text = "Lock";
         keybind = "l";
-        circular = true;
       }
       {
         label = "hibernate";
         action = "systemctl hibernate";
         text = "Hibernate";
         keybind = "h";
-        circular = true;
       }
       {
         label = "logout";
         action = "loginctl terminate-user $USER";
         text = "Logout";
         keybind = "e";
-        circular = true;
       }
       {
         label = "shutdown";
         action = "systemctl poweroff";
         text = "Shutdown";
         keybind = "s";
-        circular = true;
       }
       {
         label = "suspend";
         action = "systemctl suspend";
         text = "Suspend";
         keybind = "u";
-        circular = true;
       }
       {
         label = "reboot";
         action = "systemctl reboot";
         text = "Reboot";
         keybind = "r";
-        circular = true;
       }
     ];
   };
