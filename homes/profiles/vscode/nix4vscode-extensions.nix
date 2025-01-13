@@ -20,8 +20,8 @@ in
           "eamodio"."gitlens" = vscode-utils.extensionFromVscodeMarketplace {
             name = "gitlens";
             publisher = "eamodio";
-            version = "2025.1.104";
-            sha256 = "08pd4cf3b3dhky60c6nd8v7hh0yr6xhbqr06la8v2f5ypfg27c57";
+            version = "2025.1.1204";
+            sha256 = "0dsq6m1zc60p549479lff15pj7zjzy3pms4xqrbpz0zh6vp8zfjw";
           };
           "ms-vscode-remote"."remote-containers" = vscode-utils.extensionFromVscodeMarketplace {
             name = "remote-containers";
@@ -38,14 +38,14 @@ in
           "github"."copilot" = vscode-utils.extensionFromVscodeMarketplace {
             name = "copilot";
             publisher = "github";
-            version = "1.254.1278";
-            sha256 = "0n55apya8q87l4ijfvj3qqwg6sij1k9is99zc2wffgmghqb9fv7l";
+            version = "1.256.1304";
+            sha256 = "0pbmhqxxsbvxqcb9m7zki2n5vsgmrbknzija8c8417vn54dvadq6";
           };
           "ms-vscode-remote"."remote-ssh" = vscode-utils.extensionFromVscodeMarketplace {
             name = "remote-ssh";
             publisher = "ms-vscode-remote";
-            version = "0.117.2024121915";
-            sha256 = "00mri2cv9agcl1xi34yi9bcwhalp1m3nb37qh66x903y7973l75s";
+            version = "0.117.2025011020";
+            sha256 = "12q3ljh1bpv9705agl60imcqifm9cq986vgs3yxn59gvn715fdxi";
           };
           "github"."copilot-chat" = vscode-utils.extensionFromVscodeMarketplace {
             name = "copilot-chat";
@@ -56,8 +56,8 @@ in
           "ms-vsliveshare"."vsliveshare" = vscode-utils.extensionFromVscodeMarketplace {
             name = "vsliveshare";
             publisher = "ms-vsliveshare";
-            version = "1.0.5941";
-            sha256 = "0qpbq4j2mz1cv10bn7kdipyjany7j5zw71p3djp2dz9a5i1pmcxk";
+            version = "1.0.5948";
+            sha256 = "0rhwjar2c6bih1c5w4w8gdgpc6f18669gzycag5w9s35bv6bvsr8";
           };
           "oderwat"."indent-rainbow" = vscode-utils.extensionFromVscodeMarketplace {
             name = "indent-rainbow";
