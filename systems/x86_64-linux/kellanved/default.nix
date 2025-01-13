@@ -126,8 +126,15 @@
   };
 
   documentation = {
-    man.generateCaches = true;
+    enable = true;
+    man = {
+      enable = true;
+      generateCaches = true;
+    };
+    doc.enable = true;
     dev.enable = true;
+    info.enable = true;
+    nixos.enable = true;
   };
 
   fileSystems."/persist".neededForBoot = true;
