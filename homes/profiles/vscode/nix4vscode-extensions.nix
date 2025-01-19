@@ -20,8 +20,14 @@ in
           "eamodio"."gitlens" = vscode-utils.extensionFromVscodeMarketplace {
             name = "gitlens";
             publisher = "eamodio";
-            version = "2025.1.1204";
-            sha256 = "0dsq6m1zc60p549479lff15pj7zjzy3pms4xqrbpz0zh6vp8zfjw";
+            version = "2025.1.1804";
+            sha256 = "1fgbx2lj0rpm0v6kwrmjq2nxbd3d68yxq3mlls6q8658nc22bn1j";
+          };
+          "ms-vscode"."cpptools-extension-pack" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "cpptools-extension-pack";
+            publisher = "ms-vscode";
+            version = "1.3.0";
+            sha256 = "11fk26siccnfxhbb92z6r20mfbl9b3hhp5zsvpn2jmh24vn96x5c";
           };
           "ms-vscode-remote"."remote-containers" = vscode-utils.extensionFromVscodeMarketplace {
             name = "remote-containers";
@@ -38,14 +44,14 @@ in
           "github"."copilot" = vscode-utils.extensionFromVscodeMarketplace {
             name = "copilot";
             publisher = "github";
-            version = "1.256.1304";
-            sha256 = "0pbmhqxxsbvxqcb9m7zki2n5vsgmrbknzija8c8417vn54dvadq6";
+            version = "1.257.1319";
+            sha256 = "1rqvfkh1jwmpi9rrr05mpwv1nys6ikj5diigbvzcx90cwvh7dw6w";
           };
           "ms-vscode-remote"."remote-ssh" = vscode-utils.extensionFromVscodeMarketplace {
             name = "remote-ssh";
             publisher = "ms-vscode-remote";
-            version = "0.117.2025011020";
-            sha256 = "12q3ljh1bpv9705agl60imcqifm9cq986vgs3yxn59gvn715fdxi";
+            version = "0.117.2025011723";
+            sha256 = "05l0hjh51rak022ikg295ywhk5z0ia9sgmdchk6pqjnpdb61z137";
           };
           "github"."copilot-chat" = vscode-utils.extensionFromVscodeMarketplace {
             name = "copilot-chat";
@@ -100,6 +106,12 @@ in
             publisher = "mkhl";
             version = "0.17.0";
             sha256 = "1n2qdd1rspy6ar03yw7g7zy3yjg9j1xb5xa4v2q12b0y6dymrhgn";
+          };
+          "flox"."flox" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "flox";
+            publisher = "flox";
+            version = "1.0.0";
+            sha256 = "02fhscybb6026250dg4sgmhl7cyh7zj28cw56vnzmy8jd212a48v";
           };
         }
         (lib.attrsets.optionalAttrs (isLinux && (isi686 || isx86_64)) {}))

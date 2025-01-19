@@ -60,3 +60,10 @@ extension_name = "indent-rainbow"
 publisher_name = "Gruntfuggly"
 extension_name = "todo-tree"
 
+[[extensions]]
+publisher_name = "ms-vscode"
+extension_name = "cpptools-extension-pack"
+
+[[extensions]]
+publisher_name = "flox"
+extension_name = "flox"
