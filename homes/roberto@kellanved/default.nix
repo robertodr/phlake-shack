@@ -109,21 +109,17 @@ in {
       cmake-language-server
       delta # TODO <- this or difftastic?
       flamegraph
-      fx
       git-extras
       gitAndTools.git-annex
       gitAndTools.git-annex-remote-rclone
       gitAndTools.git-annex-utils
       global
       gnumake
-      #graphite-cli
       hotspot
       jless
       linuxPackages.perf
       meld
-      mob
       perf-tools
-      unifdef
       universal-ctags
 
       alejandra
