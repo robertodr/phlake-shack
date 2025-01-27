@@ -33,7 +33,7 @@ in {
       fallback = true;
       # trigger a garbage collection when the minimum free space drops below 1 GiB
       min-free = 1024 * 1024 * 1024;
-      substituters = ["https://cache.nixos.org/"];
+      substituters = ["https://cache.nixos.org/" "https://cache.flox.dev"];
       trusted-substituters = ["https://cache.flox.dev"];
       trusted-public-keys = ["flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="];
     };
