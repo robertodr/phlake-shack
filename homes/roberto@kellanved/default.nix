@@ -91,15 +91,15 @@ in {
       du-dust #   <- Like du but more intuitive.
       procs #     <- A modern replacement for ps.
 
-      tealdeer #  <- A very fast implementation of tldr in Rust.
-
       freerdp
       hyperfine
       iputils
       kooha
+      numbat
       openconnect
       openvpn
       rclone
+      tealdeer #  <- A very fast implementation of tldr in Rust.
       tokei
 
       autoconf
