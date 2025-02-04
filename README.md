@@ -9,7 +9,6 @@ This repository is home to the nix code that builds my systems.
 * enroll fingerprints `for finger in {left,right}-{index,middle}-finger; fprintd-enroll -f "$finger" "$USER"; end`
 * Ferdium: import data, uncheck "Launch Ferdium on start", "Always show Ferdium in system tray", and "Enable updates".
 * Import Thunderbird data
-* keyring in `argv.json` for VSCode: https://code.visualstudio.com/docs/editor/settings-sync#_recommended-configure-the-keyring-to-use-with-vs-code
 * Zoom configuration according to https://wiki.archlinux.org/title/Zoom_Meetings
 * `openconnect-sso` (from a fork) installed to a profile `nix profile install github:jacekszymanski/openconnect-sso`
 
