@@ -19,6 +19,7 @@
         "hardware/bluetooth"
         "networking"
         "nix"
+        "powerManagement"
         "programs/_1password"
         "programs/bash"
         "programs/gnupg"
@@ -201,7 +202,6 @@
         "neovim" # vim text editor fork focused on extensibility and agility
         "nix-index" #
         "pciutils" # a collection of programs for inspecting and manipulating configuration of PCI devices
-        "powertop"
         "psmisc" # a set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
         "rsync" # a fast incremental file transfer utility
         "sops"
