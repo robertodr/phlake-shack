@@ -177,6 +177,8 @@ in {
             ", XF86AudioMute, Mute speakers, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
             "SUPER, XF86AudioMute, Mute microphone, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
             ", XF86AudioPlay, Toggle play/pause, exec, playerctl play-pause"
+            ", switch:on:Lid Switch, Turn off laptop display on lid close, exec, hyprctl dispatch dpms off"
+            ", switch:off:Lid Switch, Turn on laptop display on lid close, exec, hyprctl dispatch dpms on"
           ];
           # repeat (will repeat when held) and locked (will also work when an input inhibitor (e.g. a lockscreen) is active)
           binddel = [
@@ -190,6 +192,9 @@ in {
             "workspace 4, class:(thunderbird)"
             "float, class:(clipse)"
             "size 1200 600, class:(clipse)"
+            "float, title:(1Password)"
+            "size 70% 70%, title:(1Password)"
+            "center, title:(1Password)"
           ];
         };
       };
