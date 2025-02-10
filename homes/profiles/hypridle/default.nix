@@ -1,5 +1,4 @@
-{lib, ...}:
-{
+{lib, ...}: {
   services.hypridle = {
     enable = true;
     settings = {
@@ -46,12 +45,12 @@
           on-resume = "hyprctl dispatch dpms on";
         }
 
-        {
-          # 1hour
-          timeout = 3600;
-          # suspend pc
-          on-timeout = "systemctl suspend";
-        }
+        #{
+        #  # 1hour
+        #  timeout = 3600;
+        #  # suspend pc
+        #  on-timeout = "systemctl suspend";
+        #}
       ];
     };
   };
