@@ -103,3 +103,8 @@ Host gpp2 glogin2 glogin2.bsc.es
 Host acc acc1 alogin1 alogin1.bsc.es
   HostName alogin1.bsc.es
   User algo066442
+
+Host leonardo
+  HostName login.leonardo.cineca.it
+  User rdiremig
+  StrictHostKeyChecking no

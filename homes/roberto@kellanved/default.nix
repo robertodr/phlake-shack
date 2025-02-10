@@ -100,7 +100,8 @@ in {
         openconnect
         openvpn
         rclone
-        tealdeer #  <- A very fast implementation of tldr in Rust.
+        step-cli
+        tealdeer
         tokei
 
         autoconf

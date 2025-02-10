@@ -15,7 +15,7 @@ in {
     serverAliveInterval = 300;
     # read the host configurations from file
     extraConfig = ''
-      Host *
+      Host * !*.cineca.it
           IdentityAgent "~/.1password/agent.sock"
 
       ${lib.fileContents ./ssh_config}
