@@ -142,6 +142,8 @@ in {
               "SUPER SHIFT, UP, Move window up, hy3:movewindow, u, once"
               "SUPER SHIFT, RIGHT, Move window right, hy3:movewindow, r, once"
               "SUPER, C, Open clipse, exec, uwsm app -- kitty --class clipse -e ${lib.getExe config.programs.fish.package} -c 'clipse -fc $fish_pid'"
+              "SUPER, N, Open numbat, exec, uwsm app -- kitty --class numbat -e ${lib.getExe pkgs.numbat}"
+              "SUPER, Y, Open yazi, exec, uwsm app -- kitty --class yazi -e ${lib.getExe config.programs.yazi.package}"
               "SUPER, TAB, Hyprspace workspace overview, overview:toggle"
               # special  keys
               ", Print, Screenshot area with grimblast, exec, ${runOnce "grimblast"} --notify copysave area"
@@ -192,8 +194,12 @@ in {
             "workspace 4, class:(thunderbird)"
             "float, class:(clipse)"
             "size 1200 600, class:(clipse)"
+            "float, class:(numbat)"
+            "size 1200 600, class:(numbat)"
+            "float, class:(yazi)"
+            "size 1200 1200, class:(numbat)"
             "float, title:(1Password)"
-            "size 70% 70%, title:(1Password)"
+            "size 1200 600, title:(1Password)"
             "center, title:(1Password)"
           ];
         };
