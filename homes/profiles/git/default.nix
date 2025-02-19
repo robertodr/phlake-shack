@@ -19,6 +19,8 @@ in {
         format = "ssh";
       };
 
+      http.postBuffer = 524288000;
+
       commit.gpgSign = true;
       tag.gpgSign = true;
 
