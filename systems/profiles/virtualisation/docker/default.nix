@@ -7,4 +7,9 @@
       extraOptions = "--default-ulimit nofile=65536:65536";
     };
   };
+
+  programs.singularity = {
+    enable = true;
+    enableSuid = true;
+  };
 }
