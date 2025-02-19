@@ -56,6 +56,10 @@ in {
       # NOTE needed to get past an immediate crash after startup :(
       "window.titleBarStyle" = "custom";
       "gitlens.plusFeatures.enabled" = false;
+      "cmake.pinnedCommands" = [
+        "workbench.action.tasks.configureTaskRunner"
+        "workbench.action.tasks.runTask"
+      ];
     };
   };
 
