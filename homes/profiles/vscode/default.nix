@@ -60,6 +60,21 @@ in {
         "workbench.action.tasks.configureTaskRunner"
         "workbench.action.tasks.runTask"
       ];
+      "cmake.options.statusBarVisibility" = "hidden";
+      "cmake.options.advanced" = {
+        "build" = {
+          "statusBarVisibility" = "inherit";
+        };
+        "ctest" = {
+          "statusBarVisibility" = "icon";
+        };
+        "launch" = {
+          "statusBarVisibility" = "inherit";
+        };
+        "debug" = {
+          "statusBarVisibility" = "inherit";
+        };
+      };
     };
   };
 
