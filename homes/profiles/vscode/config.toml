@@ -1,4 +1,4 @@
-vscode_version = "1.97.2"
+vscode_version = "1.98.2"
 
 [[extensions]]
 publisher_name = "github"
@@ -35,6 +35,10 @@ extension_name = "remote-ssh"
 [[extensions]]
 publisher_name = "ms-vsliveshare"
 extension_name = "vsliveshare"
+
+#[[extensions]]
+#publisher_name = "asvetliakov"
+#extension_name = "vscode-neovim"
 
 [[extensions]]
 publisher_name = "vscodevim"

@@ -12,17 +12,11 @@ in
     (merge
       (merge
         {
-          "github"."copilot" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "copilot";
-            publisher = "github";
-            version = "1.276.1407";
-            sha256 = "19sbsdwsff0gqnfrl7ksvcyl1fl0lpr77xjfpj61l8a7k12cdii2";
-          };
-          "mkhl"."direnv" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "direnv";
-            publisher = "mkhl";
-            version = "0.17.0";
-            sha256 = "1n2qdd1rspy6ar03yw7g7zy3yjg9j1xb5xa4v2q12b0y6dymrhgn";
+          "aaron-bond"."better-comments" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "better-comments";
+            publisher = "aaron-bond";
+            version = "3.0.2";
+            sha256 = "15w1ixvp6vn9ng6mmcmv9ch0ngx8m85i1yabxdfn6zx3ypq802c5";
           };
           "adpyke"."codesnap" = vscode-utils.extensionFromVscodeMarketplace {
             name = "codesnap";
@@ -33,26 +27,38 @@ in
           "eamodio"."gitlens" = vscode-utils.extensionFromVscodeMarketplace {
             name = "gitlens";
             publisher = "eamodio";
-            version = "2025.3.404";
-            sha256 = "0lkvwxpc97z4cnzxb00ygpzhy1rp2ph1gc1ggzc65mbfn6pzr5v3";
+            version = "17.0.0";
+            sha256 = "1vpxhl31vipzkf9lcvi3mzisi503mdjkr62j5fkrsgcbz0hh49wx";
           };
-          "ms-vsliveshare"."vsliveshare" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "vsliveshare";
-            publisher = "ms-vsliveshare";
-            version = "1.0.5948";
-            sha256 = "0rhwjar2c6bih1c5w4w8gdgpc6f18669gzycag5w9s35bv6bvsr8";
+          "flox"."flox" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "flox";
+            publisher = "flox";
+            version = "0.0.1";
+            sha256 = "1hx0szzak8b7gi4ixb771dkxv4i8f4i4in1ajsxrps66602hb9gj";
           };
-          "aaron-bond"."better-comments" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "better-comments";
-            publisher = "aaron-bond";
-            version = "3.0.2";
-            sha256 = "15w1ixvp6vn9ng6mmcmv9ch0ngx8m85i1yabxdfn6zx3ypq802c5";
+          "github"."copilot" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "copilot";
+            publisher = "github";
+            version = "1.293.0";
+            sha256 = "1547pgnszhv44l7gln1hwna7g9l1066w6k5a5xihy70ghwv0h21g";
           };
-          "ms-vscode"."cpptools-extension-pack" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "cpptools-extension-pack";
-            publisher = "ms-vscode";
-            version = "1.3.1";
-            sha256 = "0dhn7d8q2736r763hnqwbwvml4w7k4hxbiy3v3903fvwsd8k9chx";
+          "github"."copilot-chat" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "copilot-chat";
+            publisher = "github";
+            version = "0.25.1";
+            sha256 = "0qq55khxbn0r778sifbnbd3g8bv06012dixhhybdh74851zfj7vp";
+          };
+          "github"."vscode-github-actions" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "vscode-github-actions";
+            publisher = "github";
+            version = "0.27.1";
+            sha256 = "0pq97nl5h170r5cwsvps9z059lvj7a9aik2w84fnn3mjficrlwlq";
+          };
+          "github"."vscode-pull-request-github" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "vscode-pull-request-github";
+            publisher = "github";
+            version = "0.106.0";
+            sha256 = "07xlq6y3czj871sxlahzkyw9ajjl9fmflhpqvv2qlixlzs3rqvaf";
           };
           "gruntfuggly"."todo-tree" = vscode-utils.extensionFromVscodeMarketplace {
             name = "todo-tree";
@@ -60,17 +66,11 @@ in
             version = "0.0.226";
             sha256 = "0yrc9qbdk7zznd823bqs1g6n2i5xrda0f9a7349kknj9wp1mqgqn";
           };
-          "flox"."flox" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "flox";
-            publisher = "flox";
-            version = "0.0.2";
-            sha256 = "1qw8mxcmvgplsvcrycdkaa2gsjkb7c46ri2i0yljj2m7yhy63x62";
-          };
-          "github"."copilot-chat" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "copilot-chat";
-            publisher = "github";
-            version = "0.24.2025021302";
-            sha256 = "1w4haa98rgijnhv3bkbw0xbip7s8yqp34wh9mpb4pg2girzgwmps";
+          "mkhl"."direnv" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "direnv";
+            publisher = "mkhl";
+            version = "0.17.0";
+            sha256 = "1n2qdd1rspy6ar03yw7g7zy3yjg9j1xb5xa4v2q12b0y6dymrhgn";
           };
           "ms-azuretools"."vscode-docker" = vscode-utils.extensionFromVscodeMarketplace {
             name = "vscode-docker";
@@ -78,35 +78,35 @@ in
             version = "1.29.4";
             sha256 = "1nhrp43gh4pwsdy0d8prndx2l0mrczf1kirjl1figrmhcp7h4q4g";
           };
-          "github"."vscode-pull-request-github" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "vscode-pull-request-github";
-            publisher = "github";
-            version = "0.105.2025022704";
-            sha256 = "0dc48mr9j6qq1lkrr4f1xfp3a2dznkj28n0gscjf0n7d48z6w0sa";
+          "ms-vscode"."cpptools-extension-pack" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "cpptools-extension-pack";
+            publisher = "ms-vscode";
+            version = "1.3.1";
+            sha256 = "0dhn7d8q2736r763hnqwbwvml4w7k4hxbiy3v3903fvwsd8k9chx";
           };
           "ms-vscode-remote"."remote-containers" = vscode-utils.extensionFromVscodeMarketplace {
             name = "remote-containers";
             publisher = "ms-vscode-remote";
-            version = "0.400.0";
-            sha256 = "00glvjlx39pg44aiqx2xmy1qc52zy2n6nwyvlljx3myc7hbk4y2i";
+            version = "0.401.0";
+            sha256 = "0b2f95swfy01ycqr7jd4yc4x5r6ac0m9p8k1acqp13zvwjn69sck";
+          };
+          "ms-vscode-remote"."remote-ssh" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "remote-ssh";
+            publisher = "ms-vscode-remote";
+            version = "0.118.0";
+            sha256 = "0lfdfbbv9k0ds5j092jc0i3rakgxigyb6i8ricznw8jzbs70wyrc";
+          };
+          "ms-vsliveshare"."vsliveshare" = vscode-utils.extensionFromVscodeMarketplace {
+            name = "vsliveshare";
+            publisher = "ms-vsliveshare";
+            version = "1.0.5948";
+            sha256 = "0rhwjar2c6bih1c5w4w8gdgpc6f18669gzycag5w9s35bv6bvsr8";
           };
           "oderwat"."indent-rainbow" = vscode-utils.extensionFromVscodeMarketplace {
             name = "indent-rainbow";
             publisher = "oderwat";
             version = "8.3.1";
             sha256 = "0iwd6y2x2nx52hd3bsav3rrhr7dnl4n79ln09picmnh1mp4rrs3l";
-          };
-          "ms-vscode-remote"."remote-ssh" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "remote-ssh";
-            publisher = "ms-vscode-remote";
-            version = "0.118.2025022515";
-            sha256 = "1n5gqbm7v38xqq6qfy2j2hhmpiz9j0akg8mqz7q99j56l1mas6vf";
-          };
-          "github"."vscode-github-actions" = vscode-utils.extensionFromVscodeMarketplace {
-            name = "vscode-github-actions";
-            publisher = "github";
-            version = "0.27.1";
-            sha256 = "0pq97nl5h170r5cwsvps9z059lvj7a9aik2w84fnn3mjficrlwlq";
           };
           "vscodevim"."vim" = vscode-utils.extensionFromVscodeMarketplace {
             name = "vim";
