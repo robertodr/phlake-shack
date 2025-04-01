@@ -149,6 +149,7 @@ in {
         inkscape
         joplin-desktop
         nomacs
+        onedrive
         onlyoffice-bin
         pdf2svg
         pdftk

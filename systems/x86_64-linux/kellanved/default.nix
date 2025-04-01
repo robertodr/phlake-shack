@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  pkgsUnstable,
   ...
 }: {
   imports =
@@ -29,7 +30,7 @@
         "services/fwupd"
         "services/gnome-keyring"
         "services/hardware/bolt"
-        "services/languagetool"
+        #"services/languagetool"
         "services/openssh"
         "services/power-profiles-daemon"
         "services/udisks2"
@@ -60,7 +61,9 @@
   boot = {
     kernel = {
       sysctl = {
-        "kernel.perf_event_paranoid" = 0;
+        # allow perf as user
+        "kernel.perf_event_paranoid" = -1;
+        "kernel.kptr_restrict" = lib.mkForce 0;
       };
     };
 
@@ -199,7 +202,6 @@
         "intel-media-driver"
         "libseccomp" # high level library for the Linux Kernel seccomp filter
         "lm_sensors" #
-        "neovim" # vim text editor fork focused on extensibility and agility
         "nix-index" #
         "pciutils" # a collection of programs for inspecting and manipulating configuration of PCI devices
         "psmisc" # a set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
@@ -217,7 +219,8 @@
         "sshfs"
         "zip" # compressor/archiver for creating and modifying zipfiles
       ]
-      pkgs;
+      pkgs
+      ++ [pkgsUnstable.neovim];
 
     # see here: https://github.com/NixOS/nixpkgs/issues/64965#issuecomment-991839786
     etc."ipsec.secrets".text = ''

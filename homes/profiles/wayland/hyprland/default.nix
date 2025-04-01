@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  pkgsUnstable,
   ...
 }: let
   locker = pkgs.writeShellScriptBin "locker.sh" ''
@@ -20,7 +21,7 @@ in {
     packages = [
       pkgs.drawing
       pkgs.grimblast
-      pkgs.waypipe
+      pkgsUnstable.waypipe
       pkgs.wl-clipboard
     ];
 
