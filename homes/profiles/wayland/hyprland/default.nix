@@ -35,6 +35,8 @@ in {
       hyprland = {
         enable = true;
 
+        xwayland.enable = true;
+
         # see: https://wiki.hyprland.org/Useful-Utilities/Systemd-start
         systemd.enable = false;
 
