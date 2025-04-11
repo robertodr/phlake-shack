@@ -39,14 +39,14 @@ in
           "github"."copilot" = vscode-utils.extensionFromVscodeMarketplace {
             name = "copilot";
             publisher = "github";
-            version = "1.297.0";
-            sha256 = "1gfiyi5sy7dnhnalbdawpx0cwflnknpi0rpc9k28wj8czxhz8lji";
+            version = "1.300.0";
+            sha256 = "15m0l327y4f6yn3cr8c3903gqbyd2fplhygk03lh9bhb0yrawnn2";
           };
           "github"."copilot-chat" = vscode-utils.extensionFromVscodeMarketplace {
             name = "copilot-chat";
             publisher = "github";
-            version = "0.26.2";
-            sha256 = "1r06d7rhr5wki3vyp5dnq5xpfjbi8s21p2dg9w94cgc2gxlz61sf";
+            version = "0.26.3";
+            sha256 = "0pzafzkfc0hmgaipxvsb7zq9qs62cnsyi2flp7lcxmswshhgn1s0";
           };
           "github"."vscode-github-actions" = vscode-utils.extensionFromVscodeMarketplace {
             name = "vscode-github-actions";
@@ -75,8 +75,8 @@ in
           "ms-azuretools"."vscode-docker" = vscode-utils.extensionFromVscodeMarketplace {
             name = "vscode-docker";
             publisher = "ms-azuretools";
-            version = "1.29.4";
-            sha256 = "1nhrp43gh4pwsdy0d8prndx2l0mrczf1kirjl1figrmhcp7h4q4g";
+            version = "1.29.5";
+            sha256 = "1rj1bw16vw2zikpjgdm3bwdx1g1m76w4a4wn3q29ka7y5yl9a22r";
           };
           "ms-vscode"."cpptools-extension-pack" = vscode-utils.extensionFromVscodeMarketplace {
             name = "cpptools-extension-pack";
