@@ -3,7 +3,7 @@
 
   inputs = {
     disko = {
-      url = "github:nix-community/disko/?ref=v1.9.0";
+      url = "github:nix-community/disko/?ref=v1.11.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -21,9 +21,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    impermanence.url = "github:nix-community/impermanence?rev=3ed3f0eaae9fcc0a8331e77e9319c8a4abd8a71a";
+    impermanence.url = "github:nix-community/impermanence?rev=4b3e914cdf97a5b536a889e939fb2fd2b043a170";
 
-    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.5.2";
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.6.0";
 
     nixos-hardware.url = "github:nixos/nixos-hardware";
 
@@ -93,7 +93,7 @@
           }
           impermanence.nixosModules.impermanence
           nix-flatpak.nixosModules.nix-flatpak
-          nixos-hardware.nixosModules.framework-12th-gen-intel
+          nixos-hardware.nixosModules.framework-13-7040-amd
           sops-nix.nixosModules.sops
           stylix.nixosModules.stylix
         ];
