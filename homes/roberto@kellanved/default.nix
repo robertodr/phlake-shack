@@ -2,7 +2,6 @@
   pkgs,
   pkgsUnstable,
   config,
-  flox,
   ...
 }: let
   inherit (config.home) username;
@@ -163,8 +162,7 @@ in {
         wordnet
         xournalpp
         #zoom-us
-      ]
-      ++ [flox.packages.${pkgs.system}.default];
+      ];
   };
 
   systemd.user = {

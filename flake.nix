@@ -12,10 +12,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    flox = {
-      url = "github:flox/flox";
-    };
-
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -48,7 +44,6 @@
   outputs = {
     disko,
     firefox-addons,
-    flox,
     home-manager,
     impermanence,
     nix-flatpak,
@@ -86,7 +81,7 @@
             home-manager.useUserPackages = true;
             home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
             home-manager.extraSpecialArgs = {
-              inherit pkgsUnstable flox;
+              inherit pkgsUnstable;
               firefox-addons-allowUnfree = pkgsUnstable.callPackage firefox-addons {};
             };
             home-manager.sharedModules = [inputs.sops-nix.homeManagerModules.sops];
