@@ -6,7 +6,9 @@ This repository is home to the nix code that builds my systems.
 ## imperative actions
 * Activate the SSH agent in 1password
 * Enable system authentication in 1password
+* Copy backed-up ssh keys for sops
 * enroll fingerprints `for finger in {left,right}-{index,middle}-finger; fprintd-enroll -f "$finger" "$USER"; end`
+* Log in to atuin and sync
 * Ferdium: import data, uncheck "Launch Ferdium on start", "Always show Ferdium in system tray", and "Enable updates".
 * Import Thunderbird data
 * Zoom configuration according to https://wiki.archlinux.org/title/Zoom_Meetings
