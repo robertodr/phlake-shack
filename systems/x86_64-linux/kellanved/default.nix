@@ -7,7 +7,7 @@
   imports =
     [
       ./hardware-configuration.nix
-      ./disko-config.nix
+      ./disk-config.nix
     ]
     # users
     ++ [
@@ -72,7 +72,7 @@
 
     kernelParams = ["resume_offset=533760"];
 
-    resumeDevice = "/dev/disk/by-uuid/edc1b1c1-ae2e-462c-8390-fdf11cf81ea9";
+    resumeDevice = "/dev/disk/by-uuid/625de4d8-3972-4017-b0aa-de227f2cdf03";
 
     loader = {
       systemd-boot.enable = true;
@@ -200,8 +200,6 @@
         "findutils" # GNU Find Utilities, the basic directory searching utilities of the GNU operating system
         "gnupg" #
         "gptfdisk" # set of text-mode partitioning tools for Globally Unique Identifier (GUID) Partition Table (GPT) disks
-        "intel-gpu-tools"
-        "intel-media-driver"
         "libseccomp" # high level library for the Linux Kernel seccomp filter
         "lm_sensors" #
         "nix-index" #
@@ -222,7 +220,7 @@
         "zip" # compressor/archiver for creating and modifying zipfiles
       ]
       pkgs
-      ++ [pkgsUnstable.neovim];
+      ++ [pkgsUnstable.neovim pkgsUnstable.nixfmt-rfc-style];
 
     # see here: https://github.com/NixOS/nixpkgs/issues/64965#issuecomment-991839786
     etc."ipsec.secrets".text = ''
@@ -258,5 +256,5 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "23.11"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 }
