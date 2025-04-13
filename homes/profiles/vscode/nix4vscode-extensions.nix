@@ -2,9 +2,9 @@
 {
   pkgs,
   lib,
-}: let
-  inherit
-    (pkgs.stdenv)
+}:
+let
+  inherit (pkgs.stdenv)
     isDarwin
     isLinux
     isi686
@@ -15,9 +15,8 @@
   vscode-utils = pkgs.vscode-utils;
   merge = lib.attrsets.recursiveUpdate;
 in
-  merge
-  (merge (
-    merge
+merge
+  (merge (merge
     (merge {
       "aaron-bond"."better-comments" = vscode-utils.extensionFromVscodeMarketplace {
         name = "better-comments";
@@ -121,7 +120,7 @@ in
         version = "1.29.0";
         sha256 = "1r29gd6na3gyc38v8ynmc2c46mi38zms1p87y65v9n2rj94pqx97";
       };
-    } (lib.attrsets.optionalAttrs (isLinux && (isi686 || isx86_64)) {}))
-    (lib.attrsets.optionalAttrs (isLinux && (isAarch32 || isAarch64)) {})
-  ) (lib.attrsets.optionalAttrs (isDarwin && (isi686 || isx86_64)) {}))
-  (lib.attrsets.optionalAttrs (isDarwin && (isAarch32 || isAarch64)) {})
+    } (lib.attrsets.optionalAttrs (isLinux && (isi686 || isx86_64)) { }))
+    (lib.attrsets.optionalAttrs (isLinux && (isAarch32 || isAarch64)) { })
+  ) (lib.attrsets.optionalAttrs (isDarwin && (isi686 || isx86_64)) { }))
+  (lib.attrsets.optionalAttrs (isDarwin && (isAarch32 || isAarch64)) { })

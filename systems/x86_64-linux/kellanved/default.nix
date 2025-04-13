@@ -3,7 +3,8 @@
   pkgs,
   pkgsUnstable,
   ...
-}: {
+}:
+{
   imports =
     [
       ./hardware-configuration.nix
@@ -70,7 +71,7 @@
 
     kernelPackages = pkgs.linuxPackages_latest;
 
-    kernelParams = ["resume_offset=533760"];
+    kernelParams = [ "resume_offset=533760" ];
 
     resumeDevice = "/dev/disk/by-uuid/625de4d8-3972-4017-b0aa-de227f2cdf03";
 
@@ -177,7 +178,9 @@
       files = [
         {
           file = "/var/keys/secret_file";
-          parentDirectory = {mode = "u=rwx,g=,o=";};
+          parentDirectory = {
+            mode = "u=rwx,g=,o=";
+          };
         }
       ];
     };
@@ -186,7 +189,7 @@
     systemPackages =
       lib.attrVals [
         "acpi" # show battery status and other ACPI information
-        "alejandra" #
+        "alejandra"
         "atool" # archive command line helper
         "binutils" # tools for manipulating binaries (linker, assembler, etc.)
         "cacert" # a bundle of X.509 certificates of public Certificate Authorities (CA)
@@ -195,14 +198,14 @@
         "dmidecode" # a tool that reads information about your system's hardware from the BIOS according to the SMBIOS/DMI standard
         "dosfstools" # utilities for creating and checking FAT and VFAT file systems
         "efibootmgr" # a Linux user-space application to modify the Intel Extensible Firmware Interface (EFI) Boot Manager
-        "fd" #
+        "fd"
         "file" # a program that shows the type of files
         "findutils" # GNU Find Utilities, the basic directory searching utilities of the GNU operating system
-        "gnupg" #
+        "gnupg"
         "gptfdisk" # set of text-mode partitioning tools for Globally Unique Identifier (GUID) Partition Table (GPT) disks
         "libseccomp" # high level library for the Linux Kernel seccomp filter
-        "lm_sensors" #
-        "nix-index" #
+        "lm_sensors"
+        "nix-index"
         "pciutils" # a collection of programs for inspecting and manipulating configuration of PCI devices
         "psmisc" # a set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
         "rsync" # a fast incremental file transfer utility
@@ -212,15 +215,17 @@
         "unrar" # utility for RAR archives
         "unzip" # an extraction utility for archives compressed in .zip format
         "usbutils" # tools for working with USB devices, such as lsusb
-        "util-linux" #
+        "util-linux"
         "wget" # tool for retrieving files using HTTP, HTTPS, and FTP
         "which" # shows the full path of (shell) commands
         "xdg-utils" # a set of command line tools that assist applications with a variety of desktop integration tasks
         "sshfs"
         "zip" # compressor/archiver for creating and modifying zipfiles
-      ]
-      pkgs
-      ++ [pkgsUnstable.neovim pkgsUnstable.nixfmt-rfc-style];
+      ] pkgs
+      ++ [
+        pkgsUnstable.neovim
+        pkgsUnstable.nixfmt-rfc-style
+      ];
 
     # see here: https://github.com/NixOS/nixpkgs/issues/64965#issuecomment-991839786
     etc."ipsec.secrets".text = ''

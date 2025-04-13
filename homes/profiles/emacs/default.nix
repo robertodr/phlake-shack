@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (config.xdg) configHome;
   inherit (config.lib.dag) entryAfter;
   inherit (config.lib.file) mkOutOfStoreSymlink;
@@ -11,7 +12,8 @@
 
   doomRepoUrl = "https://github.com/doomemacs/doomemacs";
   emacsDir = "${configHome}/emacs";
-in {
+in
+{
   home.sessionVariables = {
     EMACSDIR = emacsDir;
 
@@ -22,17 +24,20 @@ in {
     LSP_USE_PLISTS = "true";
   };
 
-  home.sessionPath = ["${configHome}/emacs/bin" "$PATH"];
+  home.sessionPath = [
+    "${configHome}/emacs/bin"
+    "$PATH"
+  ];
 
   # symlink doom configuration
-  xdg.configFile."doom".source =
-    mkOutOfStoreSymlink "${profilesPath}/doom";
+  xdg.configFile."doom".source = mkOutOfStoreSymlink "${profilesPath}/doom";
 
   # Install Doom imperatively to make use of its CLI.
-  home.activation.installDoomEmacs = let
-    git = "$DRY_RUN_CMD ${pkgs.git}/bin/git";
-  in
-    entryAfter ["writeBoundary"] ''
+  home.activation.installDoomEmacs =
+    let
+      git = "$DRY_RUN_CMD ${pkgs.git}/bin/git";
+    in
+    entryAfter [ "writeBoundary" ] ''
       if [[ ! -f "${emacsDir}/README.md" ]]; then
         ${git} clone --depth 1 ${doomRepoUrl} ${emacsDir}
       fi
@@ -41,7 +46,7 @@ in {
   programs.emacs = {
     enable = true;
     package = pkgs.emacs30-pgtk;
-    extraPackages = epkgs: with epkgs; [vterm];
+    extraPackages = epkgs: with epkgs; [ vterm ];
   };
 
   services.emacs = {
@@ -77,8 +82,8 @@ in {
 
     ##: === writing ===
 
-    (aspellWithDicts (ds:
-      with ds; [
+    (aspellWithDicts (
+      ds: with ds; [
         en
         en-computers
         en-science
@@ -86,7 +91,8 @@ in {
         nb
         nn
         sv
-      ]))
+      ]
+    ))
     enchant
 
     ##: === lang/lsp ===

@@ -2,12 +2,14 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   wallpaper = pkgs.fetchurl {
     url = "https://www.pixelstalk.net/wp-content/uploads/2016/10/Paint-pattern-colored-abstract-background.jpg";
     sha256 = "sha256-kEdO+d3LXsRQdyyKck4YTkkwqz//CK8Z+RzXC9DSIpw=";
   };
-in {
+in
+{
   stylix = {
     enable = true;
 

@@ -1,7 +1,10 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   users = {
     groups = {
-      roberto = {gid = 1000;};
+      roberto = {
+        gid = 1000;
+      };
     };
     users = {
       # NOTE in case you need to change the UID

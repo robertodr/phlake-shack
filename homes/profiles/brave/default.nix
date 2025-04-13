@@ -16,17 +16,17 @@
 
     extensions = [
       # 1password
-      {id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";}
+      { id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa"; }
       # C/C++ Search Extension
-      {id = "ifpcmhciihicaljnhgobnhoehoabidhd";}
+      { id = "ifpcmhciihicaljnhgobnhoehoabidhd"; }
       # joplin web clipper
-      {id = "alofnhikmmkdbbbgpnglcpdollgjjfek";}
+      { id = "alofnhikmmkdbbbgpnglcpdollgjjfek"; }
       # nordpvn
-      {id = "fjoaledfpmneenckfbpdfhkmimnjocfa";}
+      { id = "fjoaledfpmneenckfbpdfhkmimnjocfa"; }
       # notion web clipper
-      {id = "knheggckgoiihginacbkhaalnibhilkk";}
+      { id = "knheggckgoiihginacbkhaalnibhilkk"; }
       # paperpile
-      {id = "bomfdkbfpdhijjbeoicnfhjbdhncfhig";}
+      { id = "bomfdkbfpdhijjbeoicnfhjbdhncfhig"; }
     ];
   };
 }

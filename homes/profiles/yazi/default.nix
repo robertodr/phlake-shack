@@ -1,5 +1,6 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.yazi.enable = true;
 
-  home.packages = [pkgs.exiftool];
+  home.packages = [ pkgs.exiftool ];
 }

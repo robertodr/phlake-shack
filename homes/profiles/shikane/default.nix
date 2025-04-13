@@ -3,9 +3,10 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   shikanePkg = pkgs.shikane;
-  tomlFormat = pkgs.formats.toml {};
+  tomlFormat = pkgs.formats.toml { };
 
   settings = {
     profile = [
@@ -14,7 +15,8 @@
       (import ./uio.nix)
     ];
   };
-in {
+in
+{
   home.packages = [
     pkgs.wdisplays
     shikanePkg
@@ -26,14 +28,16 @@ in {
     Unit = {
       Description = "Dynamic output configuration tool";
       Documentation = "man:shikane(1)";
-      After = ["graphical-session.target"];
-      PartOf = ["graphical-session.target"];
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
     };
 
     Service = {
       ExecStart = lib.getExe shikanePkg;
     };
 
-    Install = {WantedBy = ["graphical-session.target"];};
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
   };
 }

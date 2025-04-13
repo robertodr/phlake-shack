@@ -1,7 +1,9 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   lockCmd = "${pkgs.swaylock}/bin/swaylock";
   resumeCmd = "${pkgs.sway}/bin/swaymsg \"output * power on\"";
-in {
+in
+{
   services.swayidle = {
     enable = false;
     events = [

@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   inherit (config.lib.dag) entryAfter;
-in {
+in
+{
   programs.ssh = {
     enable = true;
     compression = false;
@@ -23,7 +25,7 @@ in {
   };
 
   # create ~/.ssh/sockets if it doesn't already exist
-  home.activation.createSshSocketsDir = entryAfter ["writeBoundary"] ''
+  home.activation.createSshSocketsDir = entryAfter [ "writeBoundary" ] ''
     if [[ ! -d "$HOME/.ssh/sockets" ]]; then
       mkdir -p $HOME/.ssh/sockets
     fi

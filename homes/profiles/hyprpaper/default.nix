@@ -2,7 +2,8 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   wallpaperLaptop = pkgs.fetchurl {
     url = "https://w.wallhaven.cc/full/nm/wallhaven-nmeo81.png";
     sha256 = "sha256-HhUXLU+QqYYY07LdxVF6bAKevSzPaJXbAYm6qf4g7rc=";
@@ -11,13 +12,20 @@
     url = "https://w.wallhaven.cc/full/1p/wallhaven-1pewy3.png";
     sha256 = "sha256-nk2IoRxKa4Y7k5PsrfqrH4sIoPk+h3WnIp25rABzQPg=";
   };
-in {
+in
+{
   services.hyprpaper = {
     enable = lib.mkForce true;
 
     settings = {
-      preload = ["${wallpaper}" "${wallpaperLaptop}"];
-      wallpaper = [", ${wallpaper}" "eDP-1, ${wallpaperLaptop}"];
+      preload = [
+        "${wallpaper}"
+        "${wallpaperLaptop}"
+      ];
+      wallpaper = [
+        ", ${wallpaper}"
+        "eDP-1, ${wallpaperLaptop}"
+      ];
     };
   };
 

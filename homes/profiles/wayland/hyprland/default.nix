@@ -4,19 +4,24 @@
   pkgs,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   locker = pkgs.writeShellScriptBin "locker.sh" ''
     playerctl -a pause
     # this is copy-pasted from runOnce
     pgrep hyprlock || uwsm app -- hyprlock
   '';
 
-  toggle = program: let
-    prog = builtins.substring 0 14 program;
-  in "pkill ${prog} || uwsm app -- ${program}";
+  toggle =
+    program:
+    let
+      prog = builtins.substring 0 14 program;
+    in
+    "pkill ${prog} || uwsm app -- ${program}";
 
   runOnce = program: "pgrep ${program} || uwsm app -- ${program}";
-in {
+in
+{
   home = {
     packages = [
       pkgs.drawing
@@ -63,8 +68,12 @@ in {
           };
           decoration = {
             rounding = 10;
-            shadow = {enabled = false;};
-            blur = {enabled = false;};
+            shadow = {
+              enabled = false;
+            };
+            blur = {
+              enabled = false;
+            };
           };
           input = {
             kb_model = "pc104"; # ANSI
@@ -93,7 +102,11 @@ in {
             workspace_center_on = 1;
           };
           plugin = {
-            hyprspace = {overview = {autoDrag = false;};};
+            hyprspace = {
+              overview = {
+                autoDrag = false;
+              };
+            };
           };
           exec-once = [
             # finalize startup
@@ -157,20 +170,24 @@ in {
             ++ (
               # workspaces
               # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
-              builtins.concatLists (builtins.genList (
-                  x: let
-                    ws = let
-                      c = (x + 1) / 10;
-                    in
+              builtins.concatLists (
+                builtins.genList (
+                  x:
+                  let
+                    ws =
+                      let
+                        c = (x + 1) / 10;
+                      in
                       builtins.toString (x + 1 - (c * 10));
-                  in [
+                  in
+                  [
                     # go to workspace
                     "SUPER, ${ws}, Go to workspace ${toString (x + 1)}, workspace, ${toString (x + 1)}"
                     # move window to workspace, but don't go to workspace
                     "SUPER SHIFT, ${ws}, Move window to worspace ${toString (x + 1)}, movetoworkspacesilent, ${toString (x + 1)}"
                   ]
-                )
-                10)
+                ) 10
+              )
             );
           # repeat (will repeat when held)
           bindde = [

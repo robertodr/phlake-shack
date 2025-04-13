@@ -2,15 +2,14 @@
   pkgs,
   lib,
   ...
-}: let
-  wttr =
-    pkgs.writers.writePython3Bin "wttr.py"
-    {
-      libraries = [pkgs.python3Packages.requests];
-    }
-    (builtins.readFile ./wttr.py);
-in {
-  systemd.user.services.waybar.Unit.After = lib.mkForce ["graphical-session.target"];
+}:
+let
+  wttr = pkgs.writers.writePython3Bin "wttr.py" {
+    libraries = [ pkgs.python3Packages.requests ];
+  } (builtins.readFile ./wttr.py);
+in
+{
+  systemd.user.services.waybar.Unit.After = lib.mkForce [ "graphical-session.target" ];
 
   # TODO review styling, especially colors!
   programs.waybar = {
@@ -71,7 +70,11 @@ in {
             phone = "";
             portable = "";
             car = "";
-            default = ["" "" ""];
+            default = [
+              ""
+              ""
+              ""
+            ];
           };
           on-click = "${lib.getExe pkgs.pavucontrol}";
           min-length = 13;

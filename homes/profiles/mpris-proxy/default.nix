@@ -1,3 +1,5 @@
 {
-  services.mpris-proxy = {enable = true;};
+  services.mpris-proxy = {
+    enable = true;
+  };
 }

@@ -6,7 +6,7 @@
 
     _1password-gui = {
       enable = true;
-      polkitPolicyOwners = ["roberto"];
+      polkitPolicyOwners = [ "roberto" ];
     };
   };
 }

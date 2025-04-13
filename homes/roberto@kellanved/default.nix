@@ -3,11 +3,11 @@
   pkgsUnstable,
   config,
   ...
-}: let
+}:
+let
   inherit (config.home) username;
   inherit (config.lib.file) mkOutOfStoreSymlink;
-  inherit
-    (config.xdg)
+  inherit (config.xdg)
     configHome
     dataHome
     stateHome
@@ -16,7 +16,8 @@
   hmLib = config.lib;
 
   mountDir = "${config.home.homeDirectory}/clouds/gdrive";
-in {
+in
+{
   lib.phlake-shack = rec {
     fsPath = builtins.toString ./../..;
     userConfigPath = "${fsPath}/users/${username}/config";
@@ -87,8 +88,8 @@ in {
     packages = with pkgs; [
       ## === Sysadmin ===
       brightnessctl
-      du-dust #   <- Like du but more intuitive.
-      procs #     <- A modern replacement for ps.
+      du-dust # <- Like du but more intuitive.
+      procs # <- A modern replacement for ps.
 
       freerdp
       hyperfine
@@ -172,9 +173,9 @@ in {
       # https://1password.community/discussion/comment/634787/#Comment_634787
       polkit-gnome-authentication-agent-1 = {
         Unit = {
-          After = ["graphical-session-pre.target"];
+          After = [ "graphical-session-pre.target" ];
           Description = "polkit-gnome-authentication-agent-1";
-          PartOf = ["graphical-session.target"];
+          PartOf = [ "graphical-session.target" ];
         };
 
         Service = {
@@ -186,7 +187,7 @@ in {
         };
 
         Install = {
-          WantedBy = ["graphical-session.target"];
+          WantedBy = [ "graphical-session.target" ];
         };
       };
     };
@@ -201,7 +202,10 @@ in {
     enable = true;
     config = {
       hyprland = {
-        default = ["hyprland" "gtk"];
+        default = [
+          "hyprland"
+          "gtk"
+        ];
         # Source: https://gitlab.archlinux.org/archlinux/packaging/packages/sway/-/commit/87acbcfcc8ea6a75e69ba7b0c976108d8e54855b
         "org.freedesktop.impl.portal.Inhibit" = "none";
         "org.freedesktop.impl.portal.ScreenCast" = "hyprland";
@@ -229,7 +233,7 @@ in {
       xdg-desktop-portal-hyprland
       gnome-keyring
     ];
-    configPackages = with pkgs; [gnome-keyring];
+    configPackages = with pkgs; [ gnome-keyring ];
     xdgOpenUsePortal = true;
   };
 
@@ -305,7 +309,7 @@ in {
   );
 
   sops = {
-    age.sshKeyPaths = ["${config.home.homeDirectory}/.ssh/id_ed25519"];
+    age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
     secrets."ibm-quantum/token" = {
       sopsFile = ../../secrets/qiskit_ibm_token.yaml;
     };

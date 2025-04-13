@@ -41,58 +41,61 @@
     unstable.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
-  outputs = {
-    disko,
-    firefox-addons,
-    home-manager,
-    impermanence,
-    nix-flatpak,
-    nixos-hardware,
-    nixpkgs,
-    sops-nix,
-    stylix,
-    unstable,
-    ...
-  } @ inputs: let
-    system = "x86_64-linux";
-    user = "roberto";
-    pkgs = import nixpkgs {
-      inherit system;
-      config = {
-        allowUnfree = true;
+  outputs =
+    {
+      disko,
+      firefox-addons,
+      home-manager,
+      impermanence,
+      nix-flatpak,
+      nixos-hardware,
+      nixpkgs,
+      sops-nix,
+      stylix,
+      unstable,
+      ...
+    }@inputs:
+    let
+      system = "x86_64-linux";
+      user = "roberto";
+      pkgs = import nixpkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
+        };
+      };
+      pkgsUnstable = import unstable {
+        inherit system;
+        config = {
+          allowUnfree = true;
+        };
+      };
+    in
+    {
+      nixosConfigurations = {
+        kellanved = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit pkgs pkgsUnstable; };
+          modules = [
+            ./systems/${system}/kellanved
+            disko.nixosModules.disko
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
+              home-manager.extraSpecialArgs = {
+                inherit pkgsUnstable;
+                firefox-addons-allowUnfree = pkgsUnstable.callPackage firefox-addons { };
+              };
+              home-manager.sharedModules = [ inputs.sops-nix.homeManagerModules.sops ];
+            }
+            impermanence.nixosModules.impermanence
+            nix-flatpak.nixosModules.nix-flatpak
+            nixos-hardware.nixosModules.framework-13-7040-amd
+            sops-nix.nixosModules.sops
+            stylix.nixosModules.stylix
+          ];
+        };
       };
     };
-    pkgsUnstable = import unstable {
-      inherit system;
-      config = {
-        allowUnfree = true;
-      };
-    };
-  in {
-    nixosConfigurations = {
-      kellanved = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit pkgs pkgsUnstable;};
-        modules = [
-          ./systems/${system}/kellanved
-          disko.nixosModules.disko
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
-            home-manager.extraSpecialArgs = {
-              inherit pkgsUnstable;
-              firefox-addons-allowUnfree = pkgsUnstable.callPackage firefox-addons {};
-            };
-            home-manager.sharedModules = [inputs.sops-nix.homeManagerModules.sops];
-          }
-          impermanence.nixosModules.impermanence
-          nix-flatpak.nixosModules.nix-flatpak
-          nixos-hardware.nixosModules.framework-13-7040-amd
-          sops-nix.nixosModules.sops
-          stylix.nixosModules.stylix
-        ];
-      };
-    };
-  };
 }

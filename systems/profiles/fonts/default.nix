@@ -2,7 +2,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   fonts = {
     fontDir.enable = true;
 
@@ -32,11 +33,10 @@
         "unifont"
         "weather-icons"
         "xits-math"
-      ]
-      pkgs
+      ] pkgs
       ++ [
         (pkgs.mplus-outline-fonts.githubRelease)
-        (pkgs.nerdfonts.override {fonts = ["FiraCode"];})
+        (pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; })
       ];
 
     fontconfig = {

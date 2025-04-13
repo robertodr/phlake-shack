@@ -2,12 +2,14 @@
   pkgs,
   config,
   ...
-}: let
+}:
+let
   wallpaper = pkgs.fetchurl {
     url = "https://w.wallhaven.cc/full/85/wallhaven-856e2j.jpg";
     sha256 = "01bkswh8zb4v7ljkzbnn05qdmk9cxxbmryczilc3v8fhbchr094p";
   };
-in {
+in
+{
   programs.hyprlock = {
     enable = true;
     settings = {

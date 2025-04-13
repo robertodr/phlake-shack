@@ -3,12 +3,14 @@
   lib,
   pkgsUnstable,
   ...
-}: let
+}:
+let
   nix4vscode-extensions = (import ./nix4vscode-extensions.nix) {
     pkgs = pkgs;
     lib = lib;
   };
-in {
+in
+{
   programs.vscode = {
     enable = true;
     package = pkgsUnstable.vscode;
@@ -16,7 +18,9 @@ in {
     enableExtensionUpdateCheck = false;
     mutableExtensionsDir = false;
 
-    extensions = with lib; lists.flatten (map attrsets.attrValues (attrsets.attrValues nix4vscode-extensions));
+    extensions =
+      with lib;
+      lists.flatten (map attrsets.attrValues (attrsets.attrValues nix4vscode-extensions));
 
     userSettings = {
       "editor.formatOnSave" = true;

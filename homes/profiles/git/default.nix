@@ -1,8 +1,10 @@
-{pkgs, ...}: let
-  wt-co =
-    pkgs.writers.writeBashBin "clone-bare-for-worktrees.sh"
-    (builtins.readFile ./clone-bare-for-worktrees.sh);
-in {
+{ pkgs, ... }:
+let
+  wt-co = pkgs.writers.writeBashBin "clone-bare-for-worktrees.sh" (
+    builtins.readFile ./clone-bare-for-worktrees.sh
+  );
+in
+{
   programs.git = {
     enable = true;
 
@@ -59,26 +61,19 @@ in {
         tool = "meld";
       };
 
-      difftool.
-        prompt = false;
+      difftool.prompt = false;
 
-      github.
-        user = "robertodr";
+      github.user = "robertodr";
 
-      gitlab.
-        user = "robertodr";
+      gitlab.user = "robertodr";
 
-      grep.
-        linenumber = true;
+      grep.linenumber = true;
 
-      help.
-        autocorrect = 0;
+      help.autocorrect = 0;
 
-      init.
-        defaultBranch = "main";
+      init.defaultBranch = "main";
 
-      log.
-        mailmap = true;
+      log.mailmap = true;
 
       magithub = {
         online = false;
@@ -91,8 +86,7 @@ in {
 
       merge.tool = "meld";
 
-      mergetool.
-        prompt = false;
+      mergetool.prompt = false;
 
       pager = {
         diff = "delta";
@@ -101,11 +95,9 @@ in {
         show = "delta";
       };
 
-      pull.
-        rebase = false;
+      pull.rebase = false;
 
-      push.
-        default = "current";
+      push.default = "current";
     };
 
     aliases = {

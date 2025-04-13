@@ -2,10 +2,12 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   tuigreet = lib.getExe pkgs.greetd.tuigreet;
   theme = "border=magenta;text=cyan;prompt=green;time=red;action=blue;button=yellow;container=black;input=redborder=magenta;text=cyan;prompt=green;time=red;action=blue;button=yellow;container=black;input=red";
-in {
+in
+{
   systemd.services.greetd.serviceConfig = {
     Type = "idle";
     StandardInput = "tty";

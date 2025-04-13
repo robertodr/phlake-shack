@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   powerManagement = {
     enable = true;
     powertop.enable = false;
@@ -14,6 +15,6 @@
   };
 
   environment = {
-    systemPackages = [pkgs.powertop];
+    systemPackages = [ pkgs.powertop ];
   };
 }

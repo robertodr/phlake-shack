@@ -2,7 +2,8 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   sup = "Mod1"; # this is the "Alt" key
   mod = "Mod4"; # this is the "Windows" key
 
@@ -27,7 +28,8 @@
     "thunderbird"
     #"joplin-desktop ${commandLineArgs}"
   ];
-in {
+in
+{
   home.packages = with pkgs; [
     wl-clipboard
   ];
@@ -92,7 +94,10 @@ in {
           };
 
           fonts = {
-            names = ["M PLUS 2" "Font Awesome 6 Free Solid"];
+            names = [
+              "M PLUS 2"
+              "Font Awesome 6 Free Solid"
+            ];
             style = "Regular";
           };
 
@@ -109,7 +114,7 @@ in {
 
           defaultWorkspace = "workspace number 1";
 
-          bars = [];
+          bars = [ ];
 
           menu = ''
             ${pkgs.fuzzel}/bin/fuzzel
@@ -173,33 +178,25 @@ in {
               }
             ];
             "number 3" = [
-              {app_id = "^@joplin";}
-              {app_id = "^ferdium$";}
+              { app_id = "^@joplin"; }
+              { app_id = "^ferdium$"; }
               {
                 instance = "^ferdium$";
                 class = "^Ferdium$";
               }
             ];
-            "number 4" = [{app_id = "^thunderbird$";}];
+            "number 4" = [ { app_id = "^thunderbird$"; } ];
           };
 
           startup =
-            []
-            ++ builtins.map
-            (
-              command: {
-                command = command;
-                always = true;
-              }
-            )
-            alwaysRun
-            ++ builtins.map
-            (
-              command: {
-                command = command;
-              }
-            )
-            run;
+            [ ]
+            ++ builtins.map (command: {
+              command = command;
+              always = true;
+            }) alwaysRun
+            ++ builtins.map (command: {
+              command = command;
+            }) run;
         };
       };
     };
