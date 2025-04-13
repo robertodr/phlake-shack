@@ -101,7 +101,7 @@ in {
             "[workspace 1 silent] uwsm app -- kitty"
             "[workspace 2 silent] uwsm app -- firefox"
             "[workspace 3 silent] uwsm app -- ferdium"
-            "[workspace 4 silent] uwsm app -- thunderbird"
+            #"[workspace 4 silent] uwsm app -- thunderbird"
             # start udiskie in the tray
             "uwsm app -- ${lib.getExe' pkgs.udiskie "udiskie"} --smart-tray"
             # start 1password in the tray
