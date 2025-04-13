@@ -84,85 +84,84 @@ in {
     #};
 
     # TODO I think there's quite some crap in this list of packages...
-    packages = with pkgs;
-      [
-        ## === Sysadmin ===
-        brightnessctl
-        du-dust #   <- Like du but more intuitive.
-        procs #     <- A modern replacement for ps.
+    packages = with pkgs; [
+      ## === Sysadmin ===
+      brightnessctl
+      du-dust #   <- Like du but more intuitive.
+      procs #     <- A modern replacement for ps.
 
-        freerdp
-        hyperfine
-        iputils
-        kooha
-        numbat
-        openconnect
-        openvpn
-        rclone
-        step-cli
-        tealdeer
-        tokei
+      freerdp
+      hyperfine
+      iputils
+      kooha
+      numbat
+      openconnect
+      openvpn
+      rclone
+      step-cli
+      tealdeer
+      tokei
 
-        autoconf
-        automake
-        awscli2
-        cachix
-        clang-tools # TODO <- needed here?
-        cmake-language-server
-        delta # TODO <- this or difftastic?
-        flamegraph
-        git-extras
-        gitAndTools.git-annex
-        gitAndTools.git-annex-remote-rclone
-        gitAndTools.git-annex-utils
-        global
-        gnumake
-        hotspot
-        jless
-        linuxPackages.perf
-        meld
-        perf-tools
-        universal-ctags
+      autoconf
+      automake
+      awscli2
+      cachix
+      clang-tools # TODO <- needed here?
+      cmake-language-server
+      delta # TODO <- this or difftastic?
+      flamegraph
+      git-extras
+      gitAndTools.git-annex
+      gitAndTools.git-annex-remote-rclone
+      gitAndTools.git-annex-utils
+      global
+      gnumake
+      hotspot
+      jless
+      linuxPackages.perf
+      meld
+      perf-tools
+      universal-ctags
 
-        alejandra
-        niv
-        nix-prefetch
-        nix-prefetch-github
-        nix-prefetch-scripts
-        nix-tree
-        nix-update
-        nixpkgs-fmt
-        nixpkgs-lint
+      alejandra
+      niv
+      nix-prefetch
+      nix-prefetch-github
+      nix-prefetch-scripts
+      nix-tree
+      nix-update
+      nixpkgs-fmt
+      nixpkgs-lint
 
-        python3
+      python3
 
-        asciinema
-        avogadro2
-        drawio
-        evince
-        ferdium
-        ffmpeg
-        ghostscript
-        gimp
-        imagemagick
-        inkscape
-        joplin-desktop
-        nomacs
-        onedrive
-        onlyoffice-bin
-        pdf2svg
-        pdftk
-        pika-backup
-        pkgsUnstable.typst
-        playerctl
-        poppler
-        spotify
-        thunderbird
-        vlc
-        wordnet
-        xournalpp
-        #zoom-us
-      ];
+      asciinema
+      avogadro2
+      drawio
+      evince
+      ferdium
+      ffmpeg
+      ghostscript
+      gimp
+      imagemagick
+      inkscape
+      joplin-desktop
+      nomacs
+      onedrive
+      onlyoffice-bin
+      pdf2svg
+      pdftk
+      pika-backup
+      pkgsUnstable.typst
+      playerctl
+      poppler
+      spotify
+      thunderbird
+      vlc
+      wordnet
+      xournalpp
+      #zoom-us
+    ];
   };
 
   systemd.user = {
