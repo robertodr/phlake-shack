@@ -30,12 +30,12 @@ merge
         version = "1.3.4";
         sha256 = "012sj4a65sr8014z4zpxqzb6bkj7pnhm4rls73xpwawk6hwal7km";
       };
-      "asvetliakov"."vscode-neovim" = vscode-utils.extensionFromVscodeMarketplace {
-        name = "vscode-neovim";
-        publisher = "asvetliakov";
-        version = "1.18.19";
-        sha256 = "0ppbi4hnxwv1d70z3dzd5awvn8nvphgiw42cq135b6jh6syb4v14";
-      };
+      #"asvetliakov"."vscode-neovim" = vscode-utils.extensionFromVscodeMarketplace {
+      #  name = "vscode-neovim";
+      #  publisher = "asvetliakov";
+      #  version = "1.18.19";
+      #  sha256 = "0ppbi4hnxwv1d70z3dzd5awvn8nvphgiw42cq135b6jh6syb4v14";
+      #};
       "eamodio"."gitlens" = vscode-utils.extensionFromVscodeMarketplace {
         name = "gitlens";
         publisher = "eamodio";
