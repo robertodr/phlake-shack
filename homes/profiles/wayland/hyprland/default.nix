@@ -191,8 +191,8 @@ in
             );
           # repeat (will repeat when held)
           bindde = [
-            ", XF86MonBrightnessUp, Increase laptop screen brightness, exec, brightnessctl --device=intel_backlight set 5%+"
-            ", XF86MonBrightnessDown,Decrease laptop screen brightness, exec, brightnessctl --device=intel_backlight set 5%-"
+            ", XF86MonBrightnessUp, Increase laptop screen brightness, exec, brightnessctl --device=amdgpu_bl1 set 5%+"
+            ", XF86MonBrightnessDown,Decrease laptop screen brightness, exec, brightnessctl --device=amdgpu_bl1 set 5%-"
           ];
           # locked (will also work when an input inhibitor (e.g. a lockscreen) is active)
           binddl = [
