@@ -28,7 +28,4 @@ in
       ];
     };
   };
-
-  # as per: https://github.com/nix-community/home-manager/issues/5899#issuecomment-2498226238
-  systemd.user.services.hyprpaper.Unit.After = lib.mkForce "graphical-session.target";
 }

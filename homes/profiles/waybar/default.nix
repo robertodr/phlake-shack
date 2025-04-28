@@ -9,8 +9,6 @@ let
   } (builtins.readFile ./wttr.py);
 in
 {
-  systemd.user.services.waybar.Unit.After = lib.mkForce [ "graphical-session.target" ];
-
   # TODO review styling, especially colors!
   programs.waybar = {
     enable = true;

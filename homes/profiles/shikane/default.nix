@@ -1,5 +1,6 @@
 # FIXME this is a simplification of the module in https://github.com/nix-community/home-manager/pull/4096
 {
+  config,
   lib,
   pkgs,
   ...
@@ -28,8 +29,8 @@ in
     Unit = {
       Description = "Dynamic output configuration tool";
       Documentation = "man:shikane(1)";
-      After = [ "graphical-session.target" ];
-      PartOf = [ "graphical-session.target" ];
+      After = [ config.wayland.systemd.target ];
+      PartOf = [ config.wayland.systemd.target ];
     };
 
     Service = {
@@ -37,7 +38,7 @@ in
     };
 
     Install = {
-      WantedBy = [ "graphical-session.target" ];
+      WantedBy = [ config.wayland.systemd.target ];
     };
   };
 }
