@@ -66,17 +66,17 @@ in
         enable = true;
         useImage = true;
       };
+      plymouth.enable = false;
     };
   };
 
   home-manager.users.roberto = {
     stylix.targets = {
       emacs.enable = false;
-      vscode.enable = false;
-      # I prefer to do it explicitly!
-      waybar.enable = false;
       hyprlock.enable = false;
       hyprpaper.enable = lib.mkDefault false;
+      vscode.enable = false;
+      waybar.enable = false;
     };
   };
 }

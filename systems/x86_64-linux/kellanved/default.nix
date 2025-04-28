@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   pkgsUnstable,
@@ -71,7 +72,15 @@
 
     kernelPackages = pkgs.linuxPackages_latest;
 
-    kernelParams = [ "resume_offset=533760" ];
+    kernelParams = [
+      "quiet"
+      "splash"
+      "intremap=on"
+      "boot.shell_on_fail"
+      "udev.log_priority=3"
+      "rd.systemd.show_status=auto"
+      "resume_offset=533760"
+    ];
 
     resumeDevice = "/dev/disk/by-uuid/625de4d8-3972-4017-b0aa-de227f2cdf03";
 
@@ -79,55 +88,91 @@
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    # the rollback service is from: https://discourse.nixos.org/t/impermanence-vs-systemd-initrd-w-tpm-unlocking/25167/3
-    initrd.systemd.services.root-rollback = {
-      description = "Rollback BTRFS root subvolume to a pristine state";
-      wantedBy = [
-        "initrd.target"
+
+    initrd = {
+      verbose = false;
+      systemd = {
+        enable = true;
+        # the rollback service is from: https://discourse.nixos.org/t/impermanence-vs-systemd-initrd-w-tpm-unlocking/25167/3
+        services.root-roolback = {
+          description = "Rollback BTRFS root subvolume to a pristine state";
+          wantedBy = [
+            "initrd.target"
+          ];
+          after = [
+            # LUKS/TPM process
+            "systemd-cryptsetup@encrypted.service"
+          ];
+          before = [
+            "sysroot.mount"
+          ];
+          unitConfig.DefaultDependencies = "no";
+          serviceConfig.Type = "oneshot";
+          script = ''
+            mkdir -p /mnt
+            # We first mount the btrfs root to /mnt
+            # so we can manipulate btrfs subvolumes.
+            mount -o subvol=/ /dev/mapper/encrypted /mnt
+            # While we're tempted to just delete /root and create
+            # a new snapshot from /root-blank, /root is already
+            # populated at this point with a number of subvolumes,
+            # which makes `btrfs subvolume delete` fail.
+            # So, we remove them first.
+            #
+            # /root contains subvolumes:
+            # - /root/var/lib/portables
+            # - /root/var/lib/machines
+            #
+            # I suspect these are related to systemd-nspawn, but
+            # since I don't use it I'm not 100% sure.
+            # Anyhow, deleting these subvolumes hasn't resulted
+            # in any issues so far, except for fairly
+            # benign-looking errors from systemd-tmpfiles.
+            btrfs subvolume list -o /mnt/root |
+              cut -f9 -d' ' |
+              while read subvolume; do
+                echo "deleting /$subvolume subvolume..."
+                btrfs subvolume delete "/mnt/$subvolume"
+              done &&
+              echo "deleting /root subvolume..." &&
+              btrfs subvolume delete /mnt/root
+            echo "restoring blank /root subvolume..."
+            btrfs subvolume snapshot /mnt/root-blank /mnt/root
+            # Once we're done rolling back to a blank snapshot,
+            # we can unmount /mnt and continue on the boot process.
+            umount /mnt
+          '';
+        };
+      };
+    };
+
+    plymouth = {
+      enable = true;
+      font = "${pkgs.mplus-outline-fonts.githubRelease}/share/fonts/truetype/mplus-outline-fonts/Mplus2-Bold.ttf";
+      logo = "${pkgs.nixos-icons}/share/icons/hicolor/128x128/apps/nix-snowflake.png";
+      theme = "unrap";
+      themePackages = [
+        (
+          (pkgs.adi1090x-plymouth-themes.overrideAttrs (oldAttrs: {
+            installPhase =
+              (oldAttrs.installPhase or "")
+              + ''
+                for theme in ${config.boot.plymouth.theme}; do
+                  echo 'nixos_image = Image("header-image.png");' >> $out/share/plymouth/themes/$theme/$theme.script
+                  echo 'nixos_sprite = Sprite();' >> $out/share/plymouth/themes/$theme/$theme.script
+                  echo 'nixos_sprite.SetImage(nixos_image);' >> $out/share/plymouth/themes/$theme/$theme.script
+                  echo 'nixos_sprite.SetX(Window.GetX() + (Window.GetWidth() / 2 - nixos_image.GetWidth() / 2));' >> $out/share/plymouth/themes/$theme/$theme.script
+                  echo 'nixos_sprite.SetY(Window.GetHeight() - nixos_image.GetHeight() - 50);' >> $out/share/plymouth/themes/$theme/$theme.script
+                done
+              '';
+          })).override
+          { selected_themes = [ config.boot.plymouth.theme ]; }
+        )
+        (pkgs.runCommand "add-logos" { inherit (config.boot.plymouth) logo theme; } ''
+          mkdir -p $out/share/plymouth/themes/$theme
+          ln -s $logo $out/share/plymouth/themes/$theme/header-image.png
+        '')
       ];
-      after = [
-        # LUKS/TPM process
-        "systemd-cryptsetup@encrypted.service"
-      ];
-      before = [
-        "sysroot.mount"
-      ];
-      unitConfig.DefaultDependencies = "no";
-      serviceConfig.Type = "oneshot";
-      script = ''
-        mkdir -p /mnt
-        # We first mount the btrfs root to /mnt
-        # so we can manipulate btrfs subvolumes.
-        mount -o subvol=/ /dev/mapper/encrypted /mnt
-        # While we're tempted to just delete /root and create
-        # a new snapshot from /root-blank, /root is already
-        # populated at this point with a number of subvolumes,
-        # which makes `btrfs subvolume delete` fail.
-        # So, we remove them first.
-        #
-        # /root contains subvolumes:
-        # - /root/var/lib/portables
-        # - /root/var/lib/machines
-        #
-        # I suspect these are related to systemd-nspawn, but
-        # since I don't use it I'm not 100% sure.
-        # Anyhow, deleting these subvolumes hasn't resulted
-        # in any issues so far, except for fairly
-        # benign-looking errors from systemd-tmpfiles.
-        btrfs subvolume list -o /mnt/root |
-          cut -f9 -d' ' |
-          while read subvolume; do
-            echo "deleting /$subvolume subvolume..."
-            btrfs subvolume delete "/mnt/$subvolume"
-          done &&
-          echo "deleting /root subvolume..." &&
-          btrfs subvolume delete /mnt/root
-        echo "restoring blank /root subvolume..."
-        btrfs subvolume snapshot /mnt/root-blank /mnt/root
-        # Once we're done rolling back to a blank snapshot,
-        # we can unmount /mnt and continue on the boot process.
-        umount /mnt
-      '';
     };
   };
 
