@@ -19,8 +19,6 @@
 
     impermanence.url = "github:nix-community/impermanence?rev=4b3e914cdf97a5b536a889e939fb2fd2b043a170";
 
-    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.6.0";
-
     nixos-hardware.url = "github:nixos/nixos-hardware";
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
@@ -47,7 +45,6 @@
       firefox-addons,
       home-manager,
       impermanence,
-      nix-flatpak,
       nixos-hardware,
       nixpkgs,
       sops-nix,
@@ -90,7 +87,6 @@
               home-manager.sharedModules = [ inputs.sops-nix.homeManagerModules.sops ];
             }
             impermanence.nixosModules.impermanence
-            nix-flatpak.nixosModules.nix-flatpak
             nixos-hardware.nixosModules.framework-13-7040-amd
             sops-nix.nixosModules.sops
             stylix.nixosModules.stylix
