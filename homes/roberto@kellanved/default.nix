@@ -135,6 +135,7 @@ in
       nixpkgs-lint
 
       python3
+      python3Packages.pip
 
       asciinema
       avogadro2
@@ -161,7 +162,7 @@ in
       vlc
       wordnet
       xournalpp
-      #zoom-us
+      pkgsUnstable.zoom-us
     ];
   };
 
