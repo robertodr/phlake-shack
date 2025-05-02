@@ -28,7 +28,6 @@
         "programs/gnupg"
         "programs/thunar"
         "services/earlyoom"
-        "services/flatpak"
         "services/fwupd"
         "services/geoclue2"
         "services/gnome-keyring"
