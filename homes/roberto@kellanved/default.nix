@@ -124,14 +124,12 @@ in
       perf-tools
       universal-ctags
 
-      alejandra
-      niv
       nix-prefetch
       nix-prefetch-github
       nix-prefetch-scripts
       nix-tree
       nix-update
-      nixpkgs-fmt
+      nixfmt-rfc-style
       nixpkgs-lint
 
       python3
@@ -147,9 +145,9 @@ in
       gimp
       imagemagick
       inkscape
+      insync
       joplin-desktop
       nomacs
-      onedrive
       onlyoffice-bin
       pdf2svg
       pdftk
