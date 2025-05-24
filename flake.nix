@@ -55,27 +55,22 @@
     let
       system = "x86_64-linux";
       user = "roberto";
-      pkgs = import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-        };
-      };
       pkgsUnstable = import unstable {
         inherit system;
-        config = {
-          allowUnfree = true;
-        };
+        config.allowUnfree = true;
       };
     in
     {
       nixosConfigurations = {
         kellanved = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit pkgs pkgsUnstable;
-          };
           modules = [
-            nixpkgs.nixosModules.readOnlyPkgs
+            (
+              { config, ... }:
+              {
+                # This enables unfree for the 'pkgs' (stable) set
+                nixpkgs.config.allowUnfree = true;
+              }
+            )
             ./systems/${system}/kellanved
             disko.nixosModules.disko
             home-manager.nixosModules.home-manager
@@ -94,6 +89,9 @@
             sops-nix.nixosModules.sops
             stylix.nixosModules.stylix
           ];
+          specialArgs = {
+            inherit pkgsUnstable;
+          };
         };
       };
     };
