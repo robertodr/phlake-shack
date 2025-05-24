@@ -1,8 +1,7 @@
 {
   programs.atuin = {
     enable = true;
-    # FIXME available in next version
-    #daemon = true;
+    daemon.enable = true;
     settings = {
       auto_sync = true;
       sync_frequency = "5m";

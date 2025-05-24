@@ -21,10 +21,10 @@
         };
         search = {
           force = true;
-          default = "DuckDuckGo";
+          default = "ddg";
           order = [
-            "DuckDuckGo"
-            "Google"
+            "ddg"
+            "google"
           ];
           engines = {
             "Nix Packages" = {
@@ -67,15 +67,13 @@
             };
             "NixOS Wiki" = {
               urls = [ { template = "https://wiki.nixos.org/w/index.php?search={searchTerms}"; } ];
-              iconUpdateURL = "https://wiki.nixos.org/favicon.ico";
+              icon = "https://wiki.nixos.org/favicon.ico";
               updateInterval = 24 * 60 * 60 * 1000; # every day
               definedAliases = [ "@nw" ];
             };
-            "Amazon".metaData.hidden = true;
-            "Bing".metaData.hidden = true;
           };
         };
-        extensions = with firefox-addons-allowUnfree; [
+        extensions.packages = with firefox-addons-allowUnfree; [
           # free
           c-c-search-extension
           darkreader

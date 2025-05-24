@@ -36,7 +36,7 @@
       ] pkgs
       ++ [
         (pkgs.mplus-outline-fonts.githubRelease)
-        (pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; })
+        (pkgs.nerd-fonts.fira-code)
       ];
 
     fontconfig = {

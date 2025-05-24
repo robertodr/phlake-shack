@@ -45,7 +45,7 @@ in
         # see: https://wiki.hyprland.org/Useful-Utilities/Systemd-start
         systemd.enable = false;
 
-        plugins = with pkgs.hyprlandPlugins; [
+        plugins = with pkgsUnstable.hyprlandPlugins; [
           hy3
           hyprspace
         ];

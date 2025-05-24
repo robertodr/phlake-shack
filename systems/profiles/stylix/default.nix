@@ -77,6 +77,7 @@ in
       hyprpaper.enable = lib.mkDefault false;
       vscode.enable = false;
       waybar.enable = false;
+      firefox.enable = false;
     };
   };
 }

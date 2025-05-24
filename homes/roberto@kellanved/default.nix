@@ -112,9 +112,9 @@ in
       delta # TODO <- this or difftastic?
       flamegraph
       git-extras
-      gitAndTools.git-annex
-      gitAndTools.git-annex-remote-rclone
-      gitAndTools.git-annex-utils
+      # not really using git-annex
+      #gitAndTools.git-annex
+      #gitAndTools.git-annex-remote-rclone
       global
       gnumake
       hotspot
