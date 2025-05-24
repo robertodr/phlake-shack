@@ -59,6 +59,10 @@ in
             disable_logs = false;
             disable_time = false;
           };
+          ecosystem = {
+            no_update_news = true;
+            no_donation_nag = true;
+          };
           general = {
             layout = "hy3";
             gaps_in = 2;
