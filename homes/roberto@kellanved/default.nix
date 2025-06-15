@@ -13,8 +13,6 @@ let
     stateHome
     ;
 
-  hmLib = config.lib;
-
   mountDir = "${config.home.homeDirectory}/clouds/gdrive";
 in
 {
@@ -48,6 +46,16 @@ in
   home = {
     username = "roberto";
     homeDirectory = "/home/roberto";
+
+    activation = {
+      createScreenshotsDir = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+        mkdir -p "${config.xdg.userDirs.pictures}/Screenshots"
+      '';
+      createSopsAgeDir = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+        mkdir -p "${config.xdg.configHome}/sops/age"
+      '';
+
+    };
 
     # This value determines the Home Manager release that your
     # configuration is compatible with. This helps avoid breakage

@@ -233,6 +233,7 @@
     systemPackages =
       lib.attrVals [
         "acpi" # show battery status and other ACPI information
+        "age"
         "atool" # archive command line helper
         "binutils" # tools for manipulating binaries (linker, assembler, etc.)
         "cacert" # a bundle of X.509 certificates of public Certificate Authorities (CA)
