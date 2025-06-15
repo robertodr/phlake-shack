@@ -64,6 +64,15 @@ in
         # NOTE needed to get past an immediate crash after startup :(
         "window.titleBarStyle" = "custom";
         "gitlens.plusFeatures.enabled" = false;
+        "dev.containers.defaultExtensions" = [
+          "Gruntfuggly.todo-tree"
+          "aaron-bond.better-comments"
+          "github.copilot"
+          "github.copilot-chat"
+          "github.vscode-github-actions"
+          "github.vscode-vscode-pull-request-github"
+          "oderwat.indent-rainbow"
+        ];
         "cmake.pinnedCommands" = [
           "workbench.action.tasks.configureTaskRunner"
           "workbench.action.tasks.runTask"
