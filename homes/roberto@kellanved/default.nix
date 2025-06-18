@@ -142,6 +142,7 @@ in
 
       python3
       python3Packages.pip
+      pkgsUnstable.uv
 
       asciinema
       avogadro2
