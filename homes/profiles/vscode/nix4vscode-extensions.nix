@@ -47,15 +47,15 @@ merge
       "github"."copilot" = vscode-utils.extensionFromVscodeMarketplace {
         name = "copilot";
         publisher = "github";
-        version = "1.335.0";
-        sha256 = "1mxpazy9w43yljap4yfs8gw128jgjgzx5ghcd528lp3ms601x98s";
+        version = "1.336.0";
+        sha256 = "15hkhmk4cbp8v4sdysyn1s9jcq4cqpp1np4ibgf5spppwmy9i27c";
 
       };
       "github"."copilot-chat" = vscode-utils.extensionFromVscodeMarketplace {
         name = "copilot-chat";
         publisher = "github";
-        version = "0.27.3";
-        sha256 = "021iifmfsaw29wmbhdcagnn2pqf9xlkdlryvlz0c29gh7infzg3g";
+        version = "0.28.1";
+        sha256 = "0d3qravjqy3yrdwh89sv4zwpqknmsv7mc6bs8lrhzxa4i0jzbsy4";
 
       };
       "github"."vscode-github-actions" = vscode-utils.extensionFromVscodeMarketplace {
@@ -68,8 +68,8 @@ merge
       "github"."vscode-pull-request-github" = vscode-utils.extensionFromVscodeMarketplace {
         name = "vscode-pull-request-github";
         publisher = "github";
-        version = "0.110.0";
-        sha256 = "09xc0bfbb64865ayzm18ijmn3f2h2qh4527243v85lv602xgm05f";
+        version = "0.112.0";
+        sha256 = "0gi9ib9cf5h7p3l1mxs1z4wjv69kwjxngw6fz071362q7215fp1g";
 
       };
       "gruntfuggly"."todo-tree" = vscode-utils.extensionFromVscodeMarketplace {
