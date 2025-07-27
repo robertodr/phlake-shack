@@ -271,6 +271,7 @@ in
       "man"
       "navi"
       "network-manager-applet"
+      "nh"
       "ripgrep"
       "ssh"
       "starship"
