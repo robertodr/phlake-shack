@@ -19,6 +19,11 @@
 
     impermanence.url = "github:nix-community/impermanence?rev=4b3e914cdf97a5b536a889e939fb2fd2b043a170";
 
+    nix4vscode = {
+      url = "github:nix-community/nix4vscode";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixos-hardware.url = "github:nixos/nixos-hardware";
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
@@ -32,7 +37,6 @@
       url = "github:danth/stylix/release-25.05";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
       };
     };
 
@@ -45,6 +49,7 @@
       firefox-addons,
       home-manager,
       impermanence,
+      nix4vscode,
       nixos-hardware,
       nixpkgs,
       sops-nix,
@@ -69,6 +74,7 @@
               {
                 # This enables unfree for the 'pkgs' (stable) set
                 nixpkgs.config.allowUnfree = true;
+                nixpkgs.overlays = [ nix4vscode.overlays.default ];
               }
             )
             ./systems/${system}/kellanved

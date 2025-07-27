@@ -1,14 +1,7 @@
 {
   pkgs,
-  lib,
   ...
 }:
-let
-  nix4vscode-extensions = (import ./nix4vscode-extensions.nix) {
-    pkgs = pkgs;
-    lib = lib;
-  };
-in
 {
   programs.vscode = {
     enable = true;
@@ -18,9 +11,25 @@ in
     profiles.default = {
       enableUpdateCheck = false;
       enableExtensionUpdateCheck = false;
-      extensions =
-        with lib;
-        lists.flatten (map attrsets.attrValues (attrsets.attrValues nix4vscode-extensions));
+      extensions = pkgs.nix4vscode.forVscode [
+        "Gruntfuggly.todo-tree"
+        "aaron-bond.better-comments"
+        "adpyke.codesnap"
+        "asvetliakov.vscode-neovim"
+        "eamodio.gitlens"
+        "github.copilot"
+        "github.copilot-chat"
+        "github.vscode-github-actions"
+        "github.vscode-pull-request-github"
+        "mkhl.direnv"
+        "ms-azuretools.vscode-docker"
+        "ms-vscode-remote.remote-containers"
+        "ms-vscode-remote.remote-ssh"
+        "ms-vscode.cpptools-extension-pack"
+        "ms-vsliveshare.vsliveshare"
+        "oderwat.indent-rainbow"
+        #"vscodevim.vim"
+      ];
 
       userSettings = {
         "editor.formatOnSave" = true;
