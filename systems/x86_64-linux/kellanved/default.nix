@@ -6,59 +6,58 @@
   ...
 }:
 {
-  imports =
+  imports = [
+    ./hardware-configuration.nix
+    ./disk-config.nix
+  ]
+  # users
+  ++ [
+    ../../../users/roberto
+  ]
+  # base
+  ++ map (x: ./../.. + ("/profiles/" + x)) (
     [
-      ./hardware-configuration.nix
-      ./disk-config.nix
+      "fonts"
+      "hardware/bluetooth"
+      "networking"
+      "nix"
+      "powerManagement"
+      "programs/_1password"
+      "programs/bash"
+      "programs/gnupg"
+      "programs/thunar"
+      "services/earlyoom"
+      "services/fwupd"
+      "services/geoclue2"
+      "services/gnome-keyring"
+      "services/hardware/bolt"
+      #"services/languagetool"
+      "services/openssh"
+      "services/power-profiles-daemon"
+      "services/udisks2"
+      "stylix"
+      "systemd"
+      "zsa"
     ]
-    # users
+    # window manager
     ++ [
-      ../../../users/roberto
+      "programs/dconf" # needed?
+      "services/blueman"
+      "services/dbus" # needed?
+      "services/greetd"
+      "services/upower"
+      "programs/hyprland"
     ]
-    # base
-    ++ map (x: ./../.. + ("/profiles/" + x)) (
-      [
-        "fonts"
-        "hardware/bluetooth"
-        "networking"
-        "nix"
-        "powerManagement"
-        "programs/_1password"
-        "programs/bash"
-        "programs/gnupg"
-        "programs/thunar"
-        "services/earlyoom"
-        "services/fwupd"
-        "services/geoclue2"
-        "services/gnome-keyring"
-        "services/hardware/bolt"
-        #"services/languagetool"
-        "services/openssh"
-        "services/power-profiles-daemon"
-        "services/udisks2"
-        "stylix"
-        "systemd"
-        "zsa"
-      ]
-      # window manager
-      ++ [
-        "programs/dconf" # needed?
-        "services/blueman"
-        "services/dbus" # needed?
-        "services/greetd"
-        "services/upower"
-        "programs/hyprland"
-      ]
-      # multimedia
-      ++ [
-        "services/pipewire"
-      ]
-      # virtualisation
-      ++ [
-        "virtualisation/docker"
-        "virtualisation/virtualbox"
-      ]
-    );
+    # multimedia
+    ++ [
+      "services/pipewire"
+    ]
+    # virtualisation
+    ++ [
+      "virtualisation/docker"
+      "virtualisation/virtualbox"
+    ]
+  );
 
   boot = {
     kernel = {
@@ -153,17 +152,15 @@
       themePackages = [
         (
           (pkgs.adi1090x-plymouth-themes.overrideAttrs (oldAttrs: {
-            installPhase =
-              (oldAttrs.installPhase or "")
-              + ''
-                for theme in ${config.boot.plymouth.theme}; do
-                  echo 'nixos_image = Image("header-image.png");' >> $out/share/plymouth/themes/$theme/$theme.script
-                  echo 'nixos_sprite = Sprite();' >> $out/share/plymouth/themes/$theme/$theme.script
-                  echo 'nixos_sprite.SetImage(nixos_image);' >> $out/share/plymouth/themes/$theme/$theme.script
-                  echo 'nixos_sprite.SetX(Window.GetX() + (Window.GetWidth() / 2 - nixos_image.GetWidth() / 2));' >> $out/share/plymouth/themes/$theme/$theme.script
-                  echo 'nixos_sprite.SetY(Window.GetHeight() - nixos_image.GetHeight() - 50);' >> $out/share/plymouth/themes/$theme/$theme.script
-                done
-              '';
+            installPhase = (oldAttrs.installPhase or "") + ''
+              for theme in ${config.boot.plymouth.theme}; do
+                echo 'nixos_image = Image("header-image.png");' >> $out/share/plymouth/themes/$theme/$theme.script
+                echo 'nixos_sprite = Sprite();' >> $out/share/plymouth/themes/$theme/$theme.script
+                echo 'nixos_sprite.SetImage(nixos_image);' >> $out/share/plymouth/themes/$theme/$theme.script
+                echo 'nixos_sprite.SetX(Window.GetX() + (Window.GetWidth() / 2 - nixos_image.GetWidth() / 2));' >> $out/share/plymouth/themes/$theme/$theme.script
+                echo 'nixos_sprite.SetY(Window.GetHeight() - nixos_image.GetHeight() - 50);' >> $out/share/plymouth/themes/$theme/$theme.script
+              done
+            '';
           })).override
           { selected_themes = [ config.boot.plymouth.theme ]; }
         )

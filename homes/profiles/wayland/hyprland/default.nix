@@ -135,64 +135,63 @@ in
           # s -> separate, will arbitrarily combine keys between each mod/key.
           # d -> has description, will allow you to write a description for your bind.
           # p -> bypasses the app's requests to inhibit keybinds.
-          bindd =
-            [
-              "SUPER, RETURN, Open kitty, exec, uwsm app -- kitty"
-              "SUPER, D, Open Fuzzel, exec, ${toggle "fuzzel"}"
-              "SUPER SHIFT, E, Open Thunar, exec, ${lib.getExe pkgs.xfce.thunar}"
-              "SUPER, L, Lock screen, exec, ${lib.getExe locker}"
-              "SUPER, ESCAPE, Logout menu, exec, ${toggle "wlogout"} -p layer-shell"
-              "ALT, L, Move current workspace to monitor on the left, movecurrentworkspacetomonitor, l"
-              "ALT, R, Move current workspace to monitor on the right, movecurrentworkspacetomonitor, r"
-              "ALT, U, Move current workspace to monitor up, movecurrentworkspacetomonitor, u"
-              "ALT, D, Move current workspace to monitor down, movecurrentworkspacetomonitor, d"
-              "SUPER SHIFT, Q, Close window, hy3:killactive"
-              "SUPER, F, Maximize focused window, fullscreen, 1"
-              "SUPER, V, Make a vertical split group, hy3:makegroup, h"
-              "SUPER, B, Make a horizontal split group, hy3:makegroup, v"
-              "SUPER, E, Toggle between horizontal/vertical group, hy3:changegroup, opposite"
-              "SUPER, W, Toggle tab status of group, hy3:changegroup, toggletab"
-              "SUPER SHIFT, SPACE, Toggle floating, togglefloating"
-              "SUPER, LEFT, Focus window left, hy3:movefocus, l"
-              "SUPER, DOWN, Focus window down, hy3:movefocus, d"
-              "SUPER, UP, Focus window up, hy3:movefocus, u"
-              "SUPER, RIGHT, Focus window right:, hy3:movefocus, r"
-              "SUPER SHIFT, LEFT, Move window left, hy3:movewindow, l, once"
-              "SUPER SHIFT, DOWN, Move window down, hy3:movewindow, d, once"
-              "SUPER SHIFT, UP, Move window up, hy3:movewindow, u, once"
-              "SUPER SHIFT, RIGHT, Move window right, hy3:movewindow, r, once"
-              "SUPER, C, Open clipse, exec, uwsm app -- kitty --class clipse -e ${lib.getExe config.programs.fish.package} -c 'clipse -fc $fish_pid'"
-              "SUPER, N, Open numbat, exec, uwsm app -- kitty --class numbat -e ${lib.getExe pkgs.numbat}"
-              "SUPER, Y, Open yazi, exec, uwsm app -- kitty --class yazi -e ${lib.getExe config.programs.yazi.package}"
-              "SUPER, TAB, Hyprspace workspace overview, overview:toggle"
-              # special  keys
-              ", Print, Screenshot area with grimblast, exec, ${runOnce "grimblast"} --notify copysave area"
-              "SUPER, Print, Screenshot area with grimblast and open editor, exec, ${runOnce "grimblast"} --notify edit area"
-              ", XF86AudioNext, Play next, exec, playerctl next"
-              ", XF86AudioPrev, Play previous, exec, playerctl previous"
-            ]
-            ++ (
-              # workspaces
-              # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
-              builtins.concatLists (
-                builtins.genList (
-                  x:
-                  let
-                    ws =
-                      let
-                        c = (x + 1) / 10;
-                      in
-                      builtins.toString (x + 1 - (c * 10));
-                  in
-                  [
-                    # go to workspace
-                    "SUPER, ${ws}, Go to workspace ${toString (x + 1)}, workspace, ${toString (x + 1)}"
-                    # move window to workspace, but don't go to workspace
-                    "SUPER SHIFT, ${ws}, Move window to worspace ${toString (x + 1)}, movetoworkspacesilent, ${toString (x + 1)}"
-                  ]
-                ) 10
-              )
-            );
+          bindd = [
+            "SUPER, RETURN, Open kitty, exec, uwsm app -- kitty"
+            "SUPER, D, Open Fuzzel, exec, ${toggle "fuzzel"}"
+            "SUPER SHIFT, E, Open Thunar, exec, ${lib.getExe pkgs.xfce.thunar}"
+            "SUPER, L, Lock screen, exec, ${lib.getExe locker}"
+            "SUPER, ESCAPE, Logout menu, exec, ${toggle "wlogout"} -p layer-shell"
+            "ALT, L, Move current workspace to monitor on the left, movecurrentworkspacetomonitor, l"
+            "ALT, R, Move current workspace to monitor on the right, movecurrentworkspacetomonitor, r"
+            "ALT, U, Move current workspace to monitor up, movecurrentworkspacetomonitor, u"
+            "ALT, D, Move current workspace to monitor down, movecurrentworkspacetomonitor, d"
+            "SUPER SHIFT, Q, Close window, hy3:killactive"
+            "SUPER, F, Maximize focused window, fullscreen, 1"
+            "SUPER, V, Make a vertical split group, hy3:makegroup, h"
+            "SUPER, B, Make a horizontal split group, hy3:makegroup, v"
+            "SUPER, E, Toggle between horizontal/vertical group, hy3:changegroup, opposite"
+            "SUPER, W, Toggle tab status of group, hy3:changegroup, toggletab"
+            "SUPER SHIFT, SPACE, Toggle floating, togglefloating"
+            "SUPER, LEFT, Focus window left, hy3:movefocus, l"
+            "SUPER, DOWN, Focus window down, hy3:movefocus, d"
+            "SUPER, UP, Focus window up, hy3:movefocus, u"
+            "SUPER, RIGHT, Focus window right:, hy3:movefocus, r"
+            "SUPER SHIFT, LEFT, Move window left, hy3:movewindow, l, once"
+            "SUPER SHIFT, DOWN, Move window down, hy3:movewindow, d, once"
+            "SUPER SHIFT, UP, Move window up, hy3:movewindow, u, once"
+            "SUPER SHIFT, RIGHT, Move window right, hy3:movewindow, r, once"
+            "SUPER, C, Open clipse, exec, uwsm app -- kitty --class clipse -e ${lib.getExe config.programs.fish.package} -c 'clipse -fc $fish_pid'"
+            "SUPER, N, Open numbat, exec, uwsm app -- kitty --class numbat -e ${lib.getExe pkgs.numbat}"
+            "SUPER, Y, Open yazi, exec, uwsm app -- kitty --class yazi -e ${lib.getExe config.programs.yazi.package}"
+            "SUPER, TAB, Hyprspace workspace overview, overview:toggle"
+            # special  keys
+            ", Print, Screenshot area with grimblast, exec, ${runOnce "grimblast"} --notify copysave area"
+            "SUPER, Print, Screenshot area with grimblast and open editor, exec, ${runOnce "grimblast"} --notify edit area"
+            ", XF86AudioNext, Play next, exec, playerctl next"
+            ", XF86AudioPrev, Play previous, exec, playerctl previous"
+          ]
+          ++ (
+            # workspaces
+            # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
+            builtins.concatLists (
+              builtins.genList (
+                x:
+                let
+                  ws =
+                    let
+                      c = (x + 1) / 10;
+                    in
+                    builtins.toString (x + 1 - (c * 10));
+                in
+                [
+                  # go to workspace
+                  "SUPER, ${ws}, Go to workspace ${toString (x + 1)}, workspace, ${toString (x + 1)}"
+                  # move window to workspace, but don't go to workspace
+                  "SUPER SHIFT, ${ws}, Move window to worspace ${toString (x + 1)}, movetoworkspacesilent, ${toString (x + 1)}"
+                ]
+              ) 10
+            )
+          );
           # repeat (will repeat when held)
           bindde = [
             ", XF86MonBrightnessUp, Increase laptop screen brightness, exec, brightnessctl --device=amdgpu_bl1 set 5%+"

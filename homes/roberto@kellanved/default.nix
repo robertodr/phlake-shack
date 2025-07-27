@@ -275,6 +275,7 @@ in
       "ssh"
       "starship"
       "tealdeer"
+      "visidata"
       "yazi"
       "zellij"
       "zoxide"
