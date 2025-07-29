@@ -51,10 +51,9 @@
           ];
         };
         "editor.fontFamily" = "'JuliaMono', 'Fira Code Retina', Consolas, 'Courier New', monospace";
-        # bring back when this is fixed: https://github.com/vscode-neovim/vscode-neovim/issues/2407
-        #"extensions.experimental.affinity" = {
-        #  "asvetliakov.vscode-neovim" = 1;
-        #};
+        "extensions.experimental.affinity" = {
+          "asvetliakov.vscode-neovim" = 1;
+        };
         "extensions.autoCheckUpdates" = false;
         "files.trimFinalNewlines" = true;
         "files.trimTrailingWhitespace" = true;

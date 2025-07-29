@@ -169,7 +169,7 @@ in
       vlc
       wordnet
       xournalpp
-      pkgsUnstable.zoom-us
+      zoom-us
     ];
   };
 
