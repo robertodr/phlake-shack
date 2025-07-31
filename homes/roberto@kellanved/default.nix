@@ -322,11 +322,9 @@ in
   sops = {
     age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
     secrets = {
-      "ibm-quantum/token" = {
-        sopsFile = ../../secrets/ibm-quantum.yaml;
-      };
       "ibm-cloud/token" = {
         sopsFile = ../../secrets/ibm-cloud.yaml;
+        path = "${config.xdg.configHome}/ibm-cloud.txt";
       };
     };
   };
