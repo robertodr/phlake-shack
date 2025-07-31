@@ -221,9 +221,6 @@ in
             "size 1200 600, class:(numbat)"
             "float, class:(yazi)"
             "size 1200 1200, class:(numbat)"
-            "float, title:(1Password)"
-            "size 1200 600, title:(1Password)"
-            "center, title:(1Password)"
           ];
         };
       };

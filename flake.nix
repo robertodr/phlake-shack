@@ -32,7 +32,7 @@
     #nixpkgsWorkingZoom.url = "github:nixos/nixpkgs?rev=9e609af83a70ece401de1f4180409b1324cc3dba";  # 6.4.10.2027
     #nixpkgsWorkingZoom.url = "github:nixos/nixpkgs?rev=218081ff608760b636fe39eb7df52c0d860d5173";  # 6.4.13.2309
     #nixpkgsWorkingZoom.url = "github:nixos/nixpkgs?rev=aa722e0a4d9213a4d02c0815e58dbae358a6625d";  # 6.5.1.2550
-    nixpkgsWorkingZoom.url = "github:nixos/nixpkgs?rev=c74638883aabd10cdd020ca8dad0435aaf967a8f";  # 6.5.3.2773
+    nixpkgsWorkingZoom.url = "github:nixos/nixpkgs?rev=c74638883aabd10cdd020ca8dad0435aaf967a8f"; # 6.5.3.2773
     #nixpkgsWorkingZoom.url = "github:nixos/nixpkgs?rev=5fbda4f2fc2e23b3d65d569f0499b1fb437dac47";  # 6.5.3.2773 + some QT cleanup <-- BROKEN!
 
     sops-nix = {
