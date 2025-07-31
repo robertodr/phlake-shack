@@ -1,6 +1,7 @@
 {
   pkgs,
   pkgsUnstable,
+  pkgsWorkingZoom,
   config,
   ...
 }:
@@ -169,7 +170,7 @@ in
       vlc
       wordnet
       xournalpp
-      zoom-us
+      pkgsWorkingZoom.zoom-us
     ];
   };
 

@@ -225,11 +225,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1753756211,
-        "narHash": "sha256-Y04298i2hkhmNEYutrInIjo2FJAy2PhYhSa0EeM2rEc=",
+        "lastModified": 1753928075,
+        "narHash": "sha256-GiYailXbRD+Mb42lC6ExUIbut6D+bK1rKp6WPR7No3o=",
         "owner": "nix-community",
         "repo": "nix4vscode",
-        "rev": "4271f7fa5f028ddd34a5163bfad945f0f761a50c",
+        "rev": "2eb803b3f2ef728a509559c7512b961f546cd077",
         "type": "github"
       },
       "original": {
@@ -255,17 +255,33 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1753489912,
-        "narHash": "sha256-uDCFHeXdRIgJpYmtcUxGEsZ+hYlLPBhR83fdU+vbC1s=",
+        "lastModified": 1753749649,
+        "narHash": "sha256-+jkEZxs7bfOKfBIk430K+tK9IvXlwzqQQnppC2ZKFj4=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "13e8d35b7d6028b7198f8186bc0347c6abaa2701",
+        "rev": "1f08a4df998e21f4e8be8fb6fbf61d11a1a5076a",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
         "ref": "nixos-25.05",
         "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgsWorkingZoom": {
+      "locked": {
+        "lastModified": 1753208591,
+        "narHash": "sha256-Q59vgdHkWK52mg5ZyC1e3J+4+MWSZtJg7YZUpipL9Qc=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "c74638883aabd10cdd020ca8dad0435aaf967a8f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "c74638883aabd10cdd020ca8dad0435aaf967a8f",
         "type": "github"
       }
     },
@@ -304,6 +320,7 @@
         "nix4vscode": "nix4vscode",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
+        "nixpkgsWorkingZoom": "nixpkgsWorkingZoom",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
         "unstable": "unstable"
@@ -350,11 +367,11 @@
         "tinted-zed": "tinted-zed"
       },
       "locked": {
-        "lastModified": 1753733105,
-        "narHash": "sha256-zxAiwoYqjesNbV46vGZe9ONvazQDPswnHfhsvvzqkU4=",
+        "lastModified": 1753921619,
+        "narHash": "sha256-XAXQZYm/Cyj2PYER+N6K0YlkZsBF5sPpYoylQLLE6d0=",
         "owner": "danth",
         "repo": "stylix",
-        "rev": "8340949b7cba126b6939ae588e6619f8e23bba9d",
+        "rev": "3e500983c46d88ab36aa2f971bca13cba966a011",
         "type": "github"
       },
       "original": {
