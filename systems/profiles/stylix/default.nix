@@ -73,6 +73,8 @@ in
   home-manager.users.roberto = {
     stylix.targets = {
       emacs.enable = false;
+      hyprland.enable = false;
+      hyprland.hyprpaper.enable = false;
       hyprlock.enable = false;
       hyprpaper.enable = lib.mkDefault false;
       vscode.enable = false;

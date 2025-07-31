@@ -77,6 +77,8 @@ in
     };
 
     # see: https://github.com/nix-community/home-manager/issues/3263#issuecomment-1505801395
+    # this was introduced in commit e2f952d4e8b56e6edabd21f22a8ce2e3fb322971 to
+    # get 1password commit signing up and running in vscode&emacs
     file.".profile".text = ''
       . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
     '';
