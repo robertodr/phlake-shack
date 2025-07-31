@@ -138,7 +138,7 @@ in
       nix-prefetch-scripts
       nix-tree
       nix-update
-      nixfmt-rfc-style
+      pkgsUnstable.nixfmt
       nixpkgs-lint
 
       python3

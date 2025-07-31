@@ -87,9 +87,6 @@
                                 "--completion-style=detailed"
                                 "--header-insertion=never"
                                 "--header-insertion-decorators=0"))
-;; Nix
-(setq lsp-nix-nil-auto-eval-inputs nil
-      lsp-nix-nil-formatter ["alejandra" "--quiet"]) ;; switch to nixfmt when stable
 
 (after! lsp-clangd (set-lsp-priority! 'clangd 2))
 

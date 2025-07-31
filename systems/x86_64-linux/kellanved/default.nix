@@ -265,7 +265,6 @@
       ] pkgs
       ++ [
         pkgsUnstable.neovim
-        pkgsUnstable.nixfmt-rfc-style
       ];
 
     # see here: https://github.com/NixOS/nixpkgs/issues/64965#issuecomment-991839786
