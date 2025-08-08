@@ -78,6 +78,7 @@
           c-c-search-extension
           darkreader
           decentraleyes
+          libkey-nomad
           #joplin-web-clipper
           privacy-badger
           redirector
@@ -85,7 +86,7 @@
           side-view
           #toggl-button-time-tracker
           ublock-origin
-          #unpaywall
+          unpaywall
 
           # unfree
           notion-web-clipper
