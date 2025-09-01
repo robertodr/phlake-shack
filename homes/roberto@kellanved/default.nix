@@ -116,14 +116,13 @@ in
       automake
       awscli2
       cachix
+      cdxgen
       clang-tools # TODO <- needed here?
       cmake-language-server
+      cyclonedx-cli
       delta # TODO <- this or difftastic?
       flamegraph
       git-extras
-      # not really using git-annex
-      #gitAndTools.git-annex
-      #gitAndTools.git-annex-remote-rclone
       global
       gnumake
       hotspot
@@ -143,6 +142,7 @@ in
 
       python3
       python3Packages.pip
+      python3Packages.keyring
       pkgsUnstable.uv
 
       asciinema
@@ -156,20 +156,17 @@ in
       imagemagick
       inkscape
       insync
-      joplin-desktop
       nomacs
       onlyoffice-bin
       pdf2svg
       pdftk
       pika-backup
-      pkgsUnstable.typst
       playerctl
       poppler
       spotify
       thunderbird
       vlc
       wordnet
-      xournalpp
       zoom-us
     ];
   };
@@ -277,7 +274,6 @@ in
       "kitty"
       "mako"
       "man"
-      "navi"
       "network-manager-applet"
       "nh"
       "ripgrep"
@@ -286,7 +282,6 @@ in
       "tealdeer"
       "visidata"
       "yazi"
-      "zellij"
       "zoxide"
     ]
     # development
@@ -306,7 +301,6 @@ in
     # office
     ++ [
       "newsboat"
-      "pandoc"
       # not really using latex locally, but I can keep the code to enable it
       "texlive"
     ]
