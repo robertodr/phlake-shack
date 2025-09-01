@@ -37,6 +37,7 @@
           80
           120
         ];
+        "editor.lineNumbers" = "relative";
         "editor.stickyScroll.enabled" = true;
         "editor.minimap.enabled" = true;
         "editor.minimap.showSlider" = "always";
