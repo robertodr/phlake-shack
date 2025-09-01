@@ -55,7 +55,7 @@
     # virtualisation
     ++ [
       "virtualisation/docker"
-      "virtualisation/virtualbox"
+      #"virtualisation/virtualbox"
     ]
   );
 
@@ -266,23 +266,6 @@
       ++ [
         pkgsUnstable.neovim
       ];
-
-    # see here: https://github.com/NixOS/nixpkgs/issues/64965#issuecomment-991839786
-    etc."ipsec.secrets".text = ''
-      include ipsec.d/ipsec.nm-l2tp.secrets
-    '';
-
-    # TODO review these aliases
-    shellAliases = {
-      # quick cd
-      ".." = "cd ..";
-      "..." = "cd ../..";
-      "...." = "cd ../../..";
-      "....." = "cd ../../../..";
-
-      # internet ip
-      myip = "${lib.getExe pkgs.dig} +short myip.opendns.com @208.67.222.222 2>&1";
-    };
   };
 
   system = {
@@ -303,7 +286,5 @@
     #
     # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
     stateVersion = "24.11"; # Did you read the comment?
-    rebuild.enableNg = true;
-    switch.enableNg = true;
   };
 }
