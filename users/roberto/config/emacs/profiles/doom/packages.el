@@ -9,7 +9,8 @@
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
 (package! magit-todos)
-(package! magit-annex)
+(package! jinja2-mode)
+;(package! magit-annex)
 ;(package! magit-delta)
 
 ;; To install a package directly from a remote git repo, you must specify a
