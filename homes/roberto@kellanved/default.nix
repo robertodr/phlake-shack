@@ -243,9 +243,7 @@ in
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk
         xdg-desktop-portal-hyprland
-        gnome-keyring
       ];
-      configPackages = with pkgs; [ gnome-keyring ];
       xdgOpenUsePortal = true;
     };
   };
@@ -267,7 +265,6 @@ in
       "fish"
       "fzf"
       "git"
-      "gnome-keyring"
       "gpg-agent"
       "htop"
       "jq"

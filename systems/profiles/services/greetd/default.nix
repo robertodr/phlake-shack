@@ -30,6 +30,7 @@ in
   };
 
   security.pam.services.greetd = {
+    enableGnomeKeyring = true;
     gnupg.enable = true;
   };
 }
