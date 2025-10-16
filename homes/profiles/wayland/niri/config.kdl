@@ -1,0 +1,349 @@
+input {
+    keyboard {
+        xkb {
+            model "pc104"
+            layout "it,no,se,us"
+            variant "us,,,colemak"
+            options "grp:alt_shift_toggle"
+        }
+        track-layout "global"
+    }
+
+    touchpad {
+        natural-scroll
+        scroll-method "two-finger"
+        tap
+        dwt
+        drag true
+        drag-lock
+        click-method "clickfinger"
+    }
+
+    mouse {
+        natural-scroll
+    }
+
+    workspace-auto-back-and-forth
+}
+
+cursor {
+    hide-when-typing
+    hide-after-inactive-ms 1000
+}
+
+// You can configure outputs by their name, which you can find
+// by running `niri msg outputs` while inside a niri instance.
+// The built-in laptop monitor is usually called "eDP-1".
+// Find more information on the wiki:
+// https://yalter.github.io/niri/Configuration:-Outputs
+// Remember to uncomment the node by removing "/-"!
+output "eDP-1" {
+    mode "2256x1504@60"
+    scale 1.175
+    transform "normal"
+    position x=3440 y=350
+}
+
+output "PNP(AOC) U34G2G4R3" {
+    mode "3440x1440@60"
+    scale 1.0
+    transform "normal"
+    position x=0 y=0
+    focus-at-startup
+}
+
+layout {
+    gaps 4
+    center-focused-column "never"
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+    default-column-width { proportion 0.5; }
+    focus-ring {
+        width 2
+        inactive-color "#505050"
+    }
+    border {
+        off
+    }
+}
+
+spawn-at-startup "kitty"
+spawn-at-startup "firefox"
+spawn-at-startup "ferdium"
+spawn-at-startup "udiskie" "--smart-tray"
+spawn-at-startup "1password" "--silent"
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+workspace "code" {
+    open-on-output "DP-7"
+}
+
+window-rule {
+    match at-startup=true app-id=r#"^kitty$"#
+    open-on-workspace "code"
+}
+
+workspace "browser" {
+    open-on-output "DP-7"
+}
+
+window-rule {
+    match at-startup=true app-id=r#"^firefox$"#
+    open-on-workspace "browser"
+}
+
+workspace "chat" {
+    open-on-output "DP-7"
+}
+
+window-rule {
+    match at-startup=true app-id=r#"^ferdium$"#
+    open-on-workspace "chat"
+}
+
+prefer-no-csd
+
+screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
+
+animations {
+    off
+}
+
+// Open the Firefox picture-in-picture player as floating by default.
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+// block 1Password from screen capture.
+window-rule {
+    match app-id=r#"^app\.onepassword\.OnePassword$"#
+    block-out-from "screen-capture"
+}
+
+// Floating utility terminals launched with custom app-ids from binds below.
+window-rule {
+    match app-id=r#"^clipse$"#
+    open-floating true
+    default-column-width { fixed 1200; }
+    default-window-height { fixed 600;  }
+}
+
+window-rule {
+    match app-id=r#"^numbat$"#
+    open-floating true
+    default-column-width { fixed 1200; }
+    default-window-height { fixed 600; }
+}
+
+window-rule {
+    match app-id=r#"^yazi$"#
+    open-floating true
+}
+
+binds {
+    // Keys consist of modifiers separated by + signs, followed by an XKB key name
+    // in the end. To find an XKB name for a particular key, you may use a program
+    // like wev.
+    //
+    // "Mod" is a special modifier equal to Super when running on a TTY, and to Alt
+    // when running as a winit window.
+    //
+    // Most actions that you can bind here can also be invoked programmatically with
+    // `niri msg action do-something`.
+
+    // Mod-Shift-/, which is usually the same as Mod-?,
+    // shows a list of important hotkeys.
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+    // Launchers
+    Super+Return hotkey-overlay-title="Open kitty" { spawn "kitty"; }
+    Super+D hotkey-overlay-title="Open fuzzel" { spawn "fuzzel"; }
+    Super+Shift+E hotkey-overlay-title="Open Thunar" { spawn "thunar"; }
+    Super+L hotkey-overlay-title="Lock screen" { spawn-sh "playerctl -a pause; pgrep hyprlock || hyprlock"; }
+    Super+Escape hotkey-overlay-title="Logout menu" { spawn "wlogout" "-p" "layer-shell"; }
+
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    Super+XF86AudioMute allow-when-locked=true { spawn "wpctl set-mute @DEFAULT_AUDIO_SOURCE@" "toggle"; }
+
+    XF86AudioPlay allow-when-locked=true { spawn "playerctl" "play-pause"; }
+    XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
+    XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
+
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%+"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%-"; }
+
+    // Open/close the Overview: a zoomed-out view of workspaces and windows.
+    // You can also move the mouse into the top-left hot corner,
+    // or do a four-finger swipe up on a touchpad.
+    Super+O repeat=false { toggle-overview; }
+
+    Super+Q repeat=false { close-window; }
+
+    Super+Left { focus-column-left; }
+    Super+Down { focus-window-down; }
+    Super+Up { focus-window-up; }
+    Super+Right { focus-column-right; }
+
+    Super+Shift+Left { move-column-left; }
+    Super+Shift+Down { move-window-down; }
+    Super+Shift+Up { move-window-up; }
+    Super+Shift+Right { move-column-right; }
+
+    Super+Home { focus-column-first; }
+    Super+End { focus-column-last; }
+    Super+Ctrl+Home { move-column-to-first; }
+    Super+Ctrl+End { move-column-to-last; }
+
+    Super+Shift+H { move-window-to-monitor-left; }
+    Super+Shift+L { move-window-to-monitor-right; }
+
+    Alt+Left { move-workspace-to-monitor-left; }
+    Alt+Right { move-workspace-to-monitor-right; }
+
+    Super+Page_Down      { focus-workspace-down; }
+    Super+Page_Up        { focus-workspace-up; }
+    Super+Ctrl+Page_Down { move-window-to-workspace-down; }
+    Super+Ctrl+Page_Up { move-window-to-workspace-up; }
+
+    Super+Shift+Page_Down { move-workspace-down; }
+    Super+Shift+Page_Up   { move-workspace-up; }
+
+    // You can refer to workspaces by index. However, keep in mind that
+    // niri is a dynamic workspace system, so these commands are kind of
+    // "best effort". Trying to refer to a workspace index bigger than
+    // the current workspace count will instead refer to the bottommost
+    // (empty) workspace.
+    //
+    // For example, with 2 workspaces + 1 empty, indices 3, 4, 5 and so on
+    // will all refer to the 3rd workspace.
+    Super+1 { focus-workspace 1; }
+    Super+2 { focus-workspace 2; }
+    Super+3 { focus-workspace 3; }
+    Super+4 { focus-workspace 4; }
+    Super+5 { focus-workspace 5; }
+    Super+6 { focus-workspace 6; }
+    Super+7 { focus-workspace 7; }
+    Super+8 { focus-workspace 8; }
+    Super+9 { focus-workspace 9; }
+    Super+Ctrl+1 { move-column-to-workspace 1; }
+    Super+Ctrl+2 { move-column-to-workspace 2; }
+    Super+Ctrl+3 { move-column-to-workspace 3; }
+    Super+Ctrl+4 { move-column-to-workspace 4; }
+    Super+Ctrl+5 { move-column-to-workspace 5; }
+    Super+Ctrl+6 { move-column-to-workspace 6; }
+    Super+Ctrl+7 { move-column-to-workspace 7; }
+    Super+Ctrl+8 { move-column-to-workspace 8; }
+    Super+Ctrl+9 { move-column-to-workspace 9; }
+
+    // Alternatively, there are commands to move just a single window:
+    Super+Shift+1 { move-window-to-workspace 1; }
+    Super+Shift+2 { move-window-to-workspace 2; }
+    Super+Shift+3 { move-window-to-workspace 3; }
+    Super+Shift+4 { move-window-to-workspace 4; }
+    Super+Shift+5 { move-window-to-workspace 5; }
+    Super+Shift+6 { move-window-to-workspace 6; }
+    Super+Shift+7 { move-window-to-workspace 7; }
+    Super+Shift+8 { move-window-to-workspace 8; }
+    Super+Shift+9 { move-window-to-workspace 9; }
+
+    // Switches focus between the current and the previous workspace.
+    Super+Tab { focus-workspace-previous; }
+
+    // The following binds move the focused window in and out of a column.
+    // If the window is alone, they will consume it into the nearby column to the side.
+    // If the window is already in a column, they will expel it out.
+    Super+BracketLeft  { consume-or-expel-window-left; }
+    Super+BracketRight { consume-or-expel-window-right; }
+
+    // Consume one window from the right to the bottom of the focused column.
+    Super+Comma  { consume-window-into-column; }
+    // Expel the bottom window from the focused column to the right.
+    Super+Period { expel-window-from-column; }
+
+    Super+R { switch-preset-column-width; }
+    // Cycling through the presets in reverse order is also possible.
+    // Super+R { switch-preset-column-width-back; }
+    Super+Shift+R { switch-preset-window-height; }
+    Super+Ctrl+R { reset-window-height; }
+    Super+F { maximize-column; }
+    Super+Shift+F { fullscreen-window; }
+
+    // Expand the focused column to space not taken up by other fully visible columns.
+    // Makes the column "fill the rest of the space".
+    Super+Ctrl+F { expand-column-to-available-width; }
+
+    Super+Shift+C { center-column; }
+
+    // Center all fully visible columns on screen.
+    Super+Ctrl+C { center-visible-columns; }
+
+    // Finer width adjustments.
+    // This command can also:
+    // * set width in pixels: "1000"
+    // * adjust width in pixels: "-5" or "+5"
+    // * set width as a percentage of screen width: "25%"
+    // * adjust width as a percentage of screen width: "-10%" or "+10%"
+    // Pixel sizes use logical, or scaled, pixels. I.e. on an output with scale 2.0,
+    // set-column-width "100" will make the column occupy 200 physical screen pixels.
+    Super+Minus { set-column-width "-10%"; }
+    Super+Equal { set-column-width "+10%"; }
+
+    // Finer height adjustments when in column with other windows.
+    Super+Shift+Minus { set-window-height "-10%"; }
+    Super+Shift+Equal { set-window-height "+10%"; }
+
+    // Move the focused window between the floating and the tiling layout.
+    Super+V       { toggle-window-floating; }
+    Super+Shift+V { switch-focus-between-floating-and-tiling; }
+
+    // Toggle tabbed column display mode.
+    // Windows in this column will appear as vertical tabs,
+    // rather than stacked on top of each other.
+    Super+W { toggle-column-tabbed-display; }
+
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+
+    // Applications such as remote-desktop clients and software KVM switches may
+    // request that niri stops processing the keyboard shortcuts defined here
+    // so they may, for example, forward the key presses as-is to a remote machine.
+    // It's a good idea to bind an escape hatch to toggle the inhibitor,
+    // so a buggy application can't hold your session hostage.
+    //
+    // The allow-inhibiting=false property can be applied to other binds as well,
+    // which ensures niri always processes them, even when an inhibitor is active.
+    Super+Shift+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+
+    // The quit action will show a confirmation dialog to avoid accidental exits.
+    Ctrl+Alt+Delete { quit; }
+
+    // Powers off the monitors. To turn them back on, do any input like
+    // moving the mouse or pressing any other key.
+    Super+Shift+P { power-off-monitors; }
+
+    // Utility terminals with custom app-ids so window rules can match:
+    Super+C hotkey-overlay-title="Open clipse" {
+        spawn "kitty" "--class" "clipse" "-e" "fish" "-c" "clipse -fc $fish_pid";
+    }
+    Super+N hotkey-overlay-title="Open numbat" {
+        spawn "kitty" "--class" "numbat" "-e" "numbat";
+    }
+    Super+Y hotkey-overlay-title="Open yazi" {
+        spawn "kitty" "--class" "yazi" "-e" "yazi";
+    }
+}
+
+switch-events {
+    lid-close { spawn "niri" "msg" "action" "power-off-monitors"; }
+    lid-open { spawn "niri" "msg" "action" "power-on-monitors";  }
+}

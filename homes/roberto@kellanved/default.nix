@@ -157,7 +157,6 @@ in
       inkscape
       insync
       nomacs
-      onlyoffice-bin
       pdf2svg
       pdftk
       pika-backup
@@ -298,7 +297,7 @@ in
     # office
     ++ [
       "newsboat"
-      # not really using latex locally, but I can keep the code to enable it
+      "onlyoffice"
       "texlive"
     ]
     # wm

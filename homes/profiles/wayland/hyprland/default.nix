@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  pkgsUnstable,
   ...
 }:
 let
@@ -26,7 +25,7 @@ in
     packages = [
       pkgs.drawing
       pkgs.grimblast
-      pkgsUnstable.waypipe
+      pkgs.waypipe
       pkgs.wl-clipboard
     ];
 
