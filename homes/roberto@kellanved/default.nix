@@ -146,8 +146,6 @@ in
       pkgsUnstable.uv
 
       asciinema
-      avogadro2
-      drawio
       evince
       ferdium
       ffmpeg
@@ -163,7 +161,6 @@ in
       playerctl
       poppler
       spotify
-      thunderbird
       vlc
       wordnet
       zoom-us
