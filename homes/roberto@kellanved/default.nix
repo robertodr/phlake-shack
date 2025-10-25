@@ -260,6 +260,7 @@ in
       "fastfetch"
       "fish"
       "fzf"
+      "ghostty"
       "git"
       "gpg-agent"
       "htop"
