@@ -16,19 +16,16 @@
         "aaron-bond.better-comments"
         "adpyke.codesnap"
         "asvetliakov.vscode-neovim"
-        "eamodio.gitlens"
         "github.copilot"
         "github.copilot-chat"
         "github.vscode-github-actions"
         "github.vscode-pull-request-github"
-        "mkhl.direnv"
         "ms-azuretools.vscode-docker"
         "ms-vscode-remote.remote-containers"
         "ms-vscode-remote.remote-ssh"
         "ms-vscode.cpptools-extension-pack"
         "ms-vsliveshare.vsliveshare"
         "oderwat.indent-rainbow"
-        #"vscodevim.vim"
       ];
 
       userSettings = {
