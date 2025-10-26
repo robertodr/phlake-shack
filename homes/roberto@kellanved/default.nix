@@ -200,47 +200,8 @@ in
       "electron-flags.conf".text = ''
         --enable-features=UseOzonePlatform
         --ozone-platform=wayland
+        --wayland-text-input-version=3
       '';
-      # see here: https://github.com/nix-community/home-manager/issues/7209
-      "uwsm/env".text = ''
-        source ${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh
-      '';
-    };
-    portal = {
-      enable = true;
-      config = {
-        hyprland = {
-          default = [
-            "hyprland"
-            "gtk"
-          ];
-          # Source: https://gitlab.archlinux.org/archlinux/packaging/packages/sway/-/commit/87acbcfcc8ea6a75e69ba7b0c976108d8e54855b
-          "org.freedesktop.impl.portal.Inhibit" = "none";
-          "org.freedesktop.impl.portal.ScreenCast" = "hyprland";
-          "org.freedesktop.impl.portal.Screenshot" = "hyprland";
-
-          # gnome-keyring interfaces
-          "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
-
-          # GTK interfaces
-          "org.freedesktop.impl.portal.FileChooser" = "gtk";
-          "org.freedesktop.impl.portal.AppChooser" = "gtk";
-          "org.freedesktop.impl.portal.Print" = "gtk";
-          "org.freedesktop.impl.portal.Notification" = "gtk";
-          "org.freedesktop.impl.portal.Access" = "gtk";
-          "org.freedesktop.impl.portal.Account" = "gtk";
-          "org.freedesktop.impl.portal.Email" = "gtk";
-          "org.freedesktop.impl.portal.DynamicLauncher" = "gtk";
-          "org.freedesktop.impl.portal.Lockdown" = "gtk";
-          "org.freedesktop.impl.portal.Settings" = "gtk";
-          "org.freedesktop.impl.portal.Wallpaper" = "gtk";
-        };
-      };
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-gtk
-        xdg-desktop-portal-hyprland
-      ];
-      xdgOpenUsePortal = true;
     };
   };
 
@@ -309,7 +270,7 @@ in
       "hyprpaper"
       "shikane"
       "waybar"
-      "wayland/hyprland"
+      "wayland/niri"
       "wlogout"
     ]
   );

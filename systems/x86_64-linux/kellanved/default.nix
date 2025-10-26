@@ -31,7 +31,6 @@
       "services/geoclue2"
       "services/gnome-keyring"
       "services/hardware/bolt"
-      #"services/languagetool"
       "services/openssh"
       "services/power-profiles-daemon"
       "services/udisks2"
@@ -46,7 +45,7 @@
       "services/dbus" # needed?
       "services/greetd"
       "services/upower"
-      "programs/hyprland"
+      "programs/niri"
     ]
     # multimedia
     ++ [
@@ -55,7 +54,6 @@
     # virtualisation
     ++ [
       "virtualisation/docker"
-      #"virtualisation/virtualbox"
     ]
   );
 

@@ -1,13 +1,18 @@
-{ lib, ... }:
+{ ... }:
+let
+  # avoid starting multiple hyprlock instances
+  lock_cmd = "playerctl -a pause; pidof hyprlock || hyprlock";
+  display = status: "niri msg action power-${status}-monitors";
+in
 {
   services.hypridle = {
     enable = true;
     settings = {
       general = {
-        # avoid starting multiple hyprlock instances
-        lock_cmd = "pidof hyprlock || hyprlock";
+        inherit lock_cmd;
+        before_sleep_cmd = lock_cmd;
         # to avoid having to press a key twice to turn on the display
-        after_sleep_cmd = "hyprctl dispatch dpms on";
+        after_sleep_cmd = display "on";
       };
 
       listener = [
@@ -20,7 +25,6 @@
           on-resume = "brightnessctl -r";
         }
 
-        # turn off keyboard backlight, comment out this section if you don't have a keyboard backlight
         {
           # 5min
           timeout = 300;
@@ -34,24 +38,24 @@
           # 6min
           timeout = 360;
           # lock screen when timeout has passed
-          on-timeout = "playerctl -a pause && loginctl lock-session";
+          on-timeout = lock_cmd;
         }
 
         {
           # 6.5min
           timeout = 390;
           # screen off when timeout has passed
-          on-timeout = "hyprctl dispatch dpms off";
+          on-timeout = display "off";
           # screen on when activity is detected after timeout has fired
-          on-resume = "hyprctl dispatch dpms on";
+          on-resume = display "on";
         }
 
-        #{
-        #  # 1hour
-        #  timeout = 3600;
-        #  # suspend pc
-        #  on-timeout = "systemctl suspend";
-        #}
+        {
+          # 1hour
+          timeout = 3600;
+          # suspend pc
+          on-timeout = "systemctl suspend";
+        }
       ];
     };
   };

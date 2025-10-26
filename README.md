@@ -11,7 +11,7 @@ This repository is home to the nix code that builds my systems.
 * Log in to atuin and sync
 * Ferdium: import data, uncheck "Launch Ferdium on start", "Always show Ferdium in system tray", and "Enable updates".
 * Import Thunderbird data
-* Zoom configuration according to https://wiki.archlinux.org/title/Zoom_Meetings
+* Zoom configuration according to https://github.com/YaLTeR/niri/discussions/1453#discussioncomment-13203310
 * `openconnect-sso` (from a fork) installed to a profile `nix profile install github:jacekszymanski/openconnect-sso`
 
 For sops-nix:

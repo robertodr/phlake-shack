@@ -9,7 +9,6 @@ let
   } (builtins.readFile ./wttr.py);
 in
 {
-  # TODO review styling, especially colors!
   programs.waybar = {
     enable = true;
 
@@ -22,13 +21,15 @@ in
         position = "top";
 
         # top|left|bottom|right
+        # TODO no spaces top and bottom
         margin = "5 2 5 2";
 
         modules-left = [
-          "hyprland/workspaces"
-          "hyprland/language"
-          "pulseaudio"
           "idle_inhibitor"
+          "niri/language"
+          "pulseaudio" # TODO wireplumber module instead
+          "niri/workspaces"
+          "niri/window"
         ];
 
         modules-center = [
@@ -37,19 +38,21 @@ in
         ];
 
         modules-right = [
-          "memory"
-          "cpu"
-          "battery"
+          "group/hardware"
           "tray"
         ];
 
-        "hyprland/workspaces" = {
-          disable-scroll = true;
-          format = "{name}";
+        idle_inhibitor = {
+          format = "{icon}";
+          format-icons = {
+            activated = "";
+            deactivated = "";
+          };
         };
 
-        "hyprland/language" = {
-          format = "{short} {variant} ";
+        "niri/language" = {
+          #format = "{short} {variant} ";
+          format = "{short} <sup>{variant}</sup>";
           tooltip = false;
         };
 
@@ -63,11 +66,6 @@ in
           format-source-muted = "";
           format-icons = {
             headphone = "";
-            hands-free = "";
-            headset = "";
-            phone = "";
-            portable = "";
-            car = "";
             default = [
               ""
               ""
@@ -78,12 +76,16 @@ in
           min-length = 13;
         };
 
-        idle_inhibitor = {
-          format = "{icon}";
+        "niri/workspaces" = {
+          format = "{icon} <sup>{value}</sup>";
           format-icons = {
-            activated = "";
-            deactivated = "";
+            active = "";
+            default = "";
           };
+        };
+
+        "niri/window" = {
+          icon = true;
         };
 
         clock = {
@@ -115,6 +117,28 @@ in
           interval = 1800;
           exec = "${lib.getExe wttr}";
           return-type = "json";
+        };
+
+        "group/hardware" = {
+          "orientation" = "vertical";
+          "drawer" = {
+            "click-to-reveal" = true;
+            "transition-duration" = 200;
+            "children-class" = "hardware-item";
+            "transition-left-to-right" = false;
+          };
+          "modules" = [
+            "custom/hardware-toggle"
+            "cpu"
+            "memory"
+            "battery"
+            "power-profiles-daemon"
+          ];
+        };
+
+        "custom/hardware-toggle" = {
+          "format" = "󰌢  HW";
+          "tooltip" = false;
         };
 
         memory = {
@@ -263,6 +287,37 @@ in
           transition: none;
           color: #ffffff;
           background: #383c4a;
+      }
+
+      /* Group container (gains #group-sysmenu id) */
+      #group-hardware {
+        padding: 0 8px;
+        border-radius: 10px;
+        background: #383c4a;
+      }
+
+      /* First child = the “leader” (toggle button) */
+      #custom-hardware-toggle {
+        padding: 4px 8px;
+        font-weight: 600;
+        background: #383c4a;
+      }
+
+      /* Dropdown items (those hidden until toggled) */
+      #group-hardware .hardware-item {
+        padding: 4px 10px;
+        margin: 2px 0;
+        border-radius: 8px;
+      }
+
+      /* Optional hover look for items */
+      #group-hardware .hardware-item:hover {
+        background: rgba(255,255,255,0.08);
+      }
+
+      /* Make the dropdown feel like a menu “below” the leader */
+      #group-hardware {
+        box-shadow: 0 6px 18px rgba(0,0,0,0.35);
       }
 
       #cpu,
