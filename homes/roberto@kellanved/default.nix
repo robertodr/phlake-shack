@@ -81,6 +81,11 @@ in
       . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
     '';
 
+    shell = {
+      enableBashIntegration = true;
+      enableFishIntegration = true;
+    };
+
     shellAliases = {
       xopen = "xdg-open";
       du = "dust";
@@ -226,7 +231,6 @@ in
       "gpg-agent"
       "htop"
       "jq"
-      "kitty"
       "mako"
       "man"
       "network-manager-applet"

@@ -70,7 +70,7 @@ layout {
     }
 }
 
-spawn-at-startup "kitty"
+spawn-at-startup "ghostty"
 spawn-at-startup "firefox"
 spawn-at-startup "ferdium"
 spawn-at-startup "udiskie" "--smart-tray"
@@ -85,7 +85,7 @@ workspace "code" {
 }
 
 window-rule {
-    match at-startup=true app-id=r#"^kitty$"#
+    match at-startup=true app-id=r#"^ghostty$"#
     open-on-workspace "code"
 }
 
@@ -129,22 +129,24 @@ window-rule {
 
 // Floating utility terminals launched with custom app-ids from binds below.
 window-rule {
-    match app-id=r#"^clipse$"#
+    match app-id=r#"clipse$"#
     open-floating true
     default-column-width { fixed 1200; }
     default-window-height { fixed 600;  }
 }
 
 window-rule {
-    match app-id=r#"^numbat$"#
+    match app-id=r#"numbat$"#
     open-floating true
     default-column-width { fixed 1200; }
     default-window-height { fixed 600; }
 }
 
 window-rule {
-    match app-id=r#"^yazi$"#
+    match app-id="Zoom Workplace" title=".*menu.*"
     open-floating true
+    min-width 250
+    open-focused true
 }
 
 binds {
@@ -163,7 +165,7 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     // Launchers
-    Super+Return hotkey-overlay-title="Open kitty" { spawn "kitty"; }
+    Super+Return hotkey-overlay-title="Open ghostty" { spawn "ghostty"; }
     Super+D hotkey-overlay-title="Open fuzzel" { spawn "fuzzel"; }
     Super+Shift+E hotkey-overlay-title="Open Thunar" { spawn "thunar"; }
     Super+L hotkey-overlay-title="Lock screen" { spawn-sh "playerctl -a pause; pgrep hyprlock || hyprlock"; }
@@ -333,13 +335,10 @@ binds {
 
     // Utility terminals with custom app-ids so window rules can match:
     Super+C hotkey-overlay-title="Open clipse" {
-        spawn "kitty" "--class" "clipse" "-e" "fish" "-c" "clipse -fc $fish_pid";
+        spawn "ghostty" "--class=com.roberto.clipse" "--title=clipse" "-e" "fish" "-c" "clipse -fc $fish_pid";
     }
     Super+N hotkey-overlay-title="Open numbat" {
-        spawn "kitty" "--class" "numbat" "-e" "numbat";
-    }
-    Super+Y hotkey-overlay-title="Open yazi" {
-        spawn "kitty" "--class" "yazi" "-e" "yazi";
+        spawn "ghostty" "--class=com.roberto.numbat" "--title=numbat" "-e" "numbat";
     }
 }
 
