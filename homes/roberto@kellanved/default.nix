@@ -12,8 +12,6 @@ let
     dataHome
     stateHome
     ;
-
-  mountDir = "${config.home.homeDirectory}/clouds/gdrive";
 in
 {
   lib.phlake-shack = rec {
@@ -172,34 +170,6 @@ in
     ];
   };
 
-  systemd.user = {
-    services = {
-      #paperpile-mount = import ./gdrive-rclone/paperpile.nix {inherit mountDir pkgs;};
-      #concepts-mount = import ./gdrive-rclone/concepts.nix {inherit mountDir pkgs;};
-      # needed to get 1password to use system authentication correctly:
-      # https://1password.community/discussion/comment/634787/#Comment_634787
-      polkit-gnome-authentication-agent-1 = {
-        Unit = {
-          After = [ "graphical-session-pre.target" ];
-          Description = "polkit-gnome-authentication-agent-1";
-          PartOf = [ "graphical-session.target" ];
-        };
-
-        Service = {
-          ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-          Restart = "on-failure";
-          RestartSec = 1;
-          TimeoutStopSec = 10;
-          Type = "simple";
-        };
-
-        Install = {
-          WantedBy = [ "graphical-session.target" ];
-        };
-      };
-    };
-  };
-
   xdg = {
     configFile = {
       "electron-flags.conf".text = ''
@@ -240,7 +210,6 @@ in
       "starship"
       "tealdeer"
       "visidata"
-      "yazi"
       "zoxide"
     ]
     # development
