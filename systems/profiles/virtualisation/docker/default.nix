@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgsUnstable, ... }:
 {
   virtualisation = {
     docker = {
@@ -13,4 +13,6 @@
     enable = true;
     enableSuid = true;
   };
+
+  environment.systemPackages = [ pkgsUnstable.oras ];
 }
