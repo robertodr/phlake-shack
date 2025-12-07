@@ -9,5 +9,6 @@
       gtk-tabs-location = "bottom";
       shell-integration-features = "ssh-terminfo,ssh-env";
     };
+    systemd.enable = true;
   };
 }

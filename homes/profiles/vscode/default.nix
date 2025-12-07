@@ -26,6 +26,7 @@
         "ms-vscode.cpptools-extension-pack"
         "ms-vsliveshare.vsliveshare"
         "oderwat.indent-rainbow"
+        "openai.chatgpt"
       ];
 
       userSettings = {
@@ -78,6 +79,7 @@
           "github.vscode-github-actions"
           "github.vscode-vscode-pull-request-github"
           "oderwat.indent-rainbow"
+          "openai.chatgpt"
         ];
         "cmake.pinnedCommands" = [
           "workbench.action.tasks.configureTaskRunner"

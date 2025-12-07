@@ -9,12 +9,19 @@ in
 {
   programs.ssh = {
     enable = true;
-    compression = false;
-    controlMaster = "auto";
-    controlPath = "~/.ssh/sockets/%r@%h-%p";
-    controlPersist = "600s";
-    serverAliveCountMax = 2;
-    serverAliveInterval = 300;
+    enableDefaultConfig = false;
+    matchBlocks."*" = {
+      forwardAgent = false;
+      addKeysToAgent = "no";
+      compression = false;
+      serverAliveInterval = 300;
+      serverAliveCountMax = 3;
+      hashKnownHosts = false;
+      userKnownHostsFile = "~/.ssh/known_hosts";
+      controlMaster = "auto";
+      controlPath = "~/.ssh/sockets/%r@%h-%p";
+      controlPersist = "600s";
+    };
     # read the host configurations from file
     extraConfig = ''
       Host * !*.cineca.it

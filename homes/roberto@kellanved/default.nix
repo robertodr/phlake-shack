@@ -100,7 +100,7 @@ in
     packages = with pkgs; [
       ## === Sysadmin ===
       brightnessctl
-      du-dust # <- Like du but more intuitive.
+      dust # <- Like du but more intuitive.
       procs # <- A modern replacement for ps.
 
       freerdp
@@ -130,7 +130,7 @@ in
       gnumake
       hotspot
       jless
-      linuxPackages.perf
+      perf
       meld
       perf-tools
       universal-ctags
@@ -149,7 +149,6 @@ in
       pkgsUnstable.uv
 
       asciinema
-      evince
       ferdium
       ffmpeg
       ghostscript
@@ -158,13 +157,14 @@ in
       inkscape
       insync
       nomacs
+      papers
       pdf2svg
       pdftk
       pika-backup
       playerctl
       poppler
+      showtime
       spotify
-      vlc
       wordnet
       zoom-us
     ];
@@ -206,6 +206,7 @@ in
       "network-manager-applet"
       "nh"
       "ripgrep"
+      "satty"
       "ssh"
       "starship"
       "tealdeer"

@@ -98,10 +98,8 @@ in
     ##: === lang/lsp ===
 
     #: docker
-    nodePackages.dockerfile-language-server-nodejs
+    dockerfile-language-server
     dockfmt
-    #: markdown
-    nodePackages.unified-language-server
     #: nix
     nil
     #: sh
