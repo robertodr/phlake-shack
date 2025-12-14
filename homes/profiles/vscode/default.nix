@@ -25,6 +25,7 @@
         "ms-vscode-remote.remote-ssh"
         "ms-vscode.cpptools-extension-pack"
         "ms-vsliveshare.vsliveshare"
+        "nefrob.vscode-just-syntax"
         "oderwat.indent-rainbow"
         "openai.chatgpt"
       ];
@@ -78,6 +79,7 @@
           "github.copilot-chat"
           "github.vscode-github-actions"
           "github.vscode-vscode-pull-request-github"
+          "nefrob.vscode-just-syntax"
           "oderwat.indent-rainbow"
           "openai.chatgpt"
         ];
