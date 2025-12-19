@@ -5,7 +5,8 @@
     extensions = with pkgs; [
       gh-dash
       gh-actions-cache
-      gh-copilot
     ];
   };
+
+  home.packages = [ pkgs.github-copilot-cli ];
 }
