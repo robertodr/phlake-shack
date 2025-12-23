@@ -236,13 +236,13 @@ in
     # wm
     ++ [
       "clipse"
-      "fuzzel"
       "gammastep"
       "gtk"
       "hypridle"
       "hyprlock"
       "hyprpaper"
       "shikane"
+      "vicinae"
       "waybar"
       "wayland/niri"
       "wlogout"

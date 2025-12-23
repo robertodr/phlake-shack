@@ -166,7 +166,7 @@ binds {
 
     // Launchers
     Super+Return hotkey-overlay-title="Open ghostty" { spawn "ghostty"; }
-    Super+D hotkey-overlay-title="Open fuzzel" { spawn "fuzzel"; }
+    Super+D hotkey-overlay-title="Open vicinae" { spawn "vicinae" "toggle"; }
     Super+Shift+E hotkey-overlay-title="Open Thunar" { spawn "thunar"; }
     Super+L hotkey-overlay-title="Lock screen" { spawn-sh "playerctl -a pause; pgrep hyprlock || hyprlock"; }
     Super+Escape hotkey-overlay-title="Logout menu" { spawn "wlogout" "-p" "layer-shell"; }
@@ -312,7 +312,7 @@ binds {
     // rather than stacked on top of each other.
     Super+W { toggle-column-tabbed-display; }
 
-    Print { screenshot; }
+    Print { spawn-sh "TAKE-SCREENSHOT"; }
     Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
 
