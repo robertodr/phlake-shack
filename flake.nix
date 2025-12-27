@@ -21,7 +21,7 @@
 
     nix4vscode = {
       url = "github:nix-community/nix4vscode";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "unstable";
     };
 
     nixos-hardware.url = "github:nixos/nixos-hardware";
