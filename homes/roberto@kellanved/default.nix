@@ -41,6 +41,16 @@ in
     manpages.enable = true;
   };
 
+  sops = {
+    age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
+    secrets = {
+      "ibm-cloud/token" = {
+        sopsFile = ../../secrets/ibm-cloud.yaml;
+        path = "%r/ibm-cloud.txt";
+      };
+    };
+  };
+
   home = {
     username = "roberto";
     homeDirectory = "/home/roberto";
@@ -249,13 +259,21 @@ in
     ]
   );
 
-  sops = {
-    age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
-    secrets = {
-      "ibm-cloud/token" = {
-        sopsFile = ../../secrets/ibm-cloud.yaml;
-        path = "${config.xdg.configHome}/ibm-cloud.txt";
-      };
+  systemd.user.services.lxqt-policykit-agent = {
+    Unit = {
+      Description = "lxqt-policykit-agent";
+      Wants = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.lxqt.lxqt-policykit}/bin/lxqt-policykit-agent";
+      Restart = "on-failure";
+      RestartSec = 1;
+      TimeoutStopSec = 10;
     };
   };
 }

@@ -194,7 +194,10 @@
     };
   };
 
-  security.polkit.enable = true;
+  security.polkit = {
+    enable = true;
+    debug = true;
+  };
 
   environment = {
     # impermanence set up
