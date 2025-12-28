@@ -16,10 +16,12 @@
         "aaron-bond.better-comments"
         "adpyke.codesnap"
         "asvetliakov.vscode-neovim"
+        "christian-kohler.path-intellisense"
         "github.copilot"
         "github.copilot-chat"
         "github.vscode-github-actions"
         "github.vscode-pull-request-github"
+        "jnoortheen.nix-ide"
         "ms-azuretools.vscode-docker"
         "ms-vscode-remote.remote-containers"
         "ms-vscode-remote.remote-ssh"
@@ -71,10 +73,10 @@
         "debug.toolBarLocation" = "commandCenter";
         # NOTE needed to get past an immediate crash after startup :(
         "window.titleBarStyle" = "custom";
-        "gitlens.plusFeatures.enabled" = false;
         "dev.containers.defaultExtensions" = [
           "Gruntfuggly.todo-tree"
           "aaron-bond.better-comments"
+          "christian-kohler.path-intellisense"
           "github.copilot"
           "github.copilot-chat"
           "github.vscode-github-actions"
@@ -83,23 +85,32 @@
           "oderwat.indent-rainbow"
           "openai.chatgpt"
         ];
-        "cmake.pinnedCommands" = [
-          "workbench.action.tasks.configureTaskRunner"
-          "workbench.action.tasks.runTask"
-        ];
-        "cmake.options.statusBarVisibility" = "hidden";
-        "cmake.options.advanced" = {
-          "build" = {
-            "statusBarVisibility" = "inherit";
-          };
-          "ctest" = {
-            "statusBarVisibility" = "icon";
-          };
-          "launch" = {
-            "statusBarVisibility" = "inherit";
-          };
-          "debug" = {
-            "statusBarVisibility" = "inherit";
+        #"cmake.pinnedCommands" = [
+        #  "workbench.action.tasks.configureTaskRunner"
+        #  "workbench.action.tasks.runTask"
+        #];
+        #"cmake.options.statusBarVisibility" = "hidden";
+        #"cmake.options.advanced" = {
+        #  "build" = {
+        #    "statusBarVisibility" = "inherit";
+        #  };
+        #  "ctest" = {
+        #    "statusBarVisibility" = "icon";
+        #  };
+        #  "launch" = {
+        #    "statusBarVisibility" = "inherit";
+        #  };
+        #  "debug" = {
+        #    "statusBarVisibility" = "inherit";
+        #  };
+        #};
+        "nix.enableLanguageServer" = true;
+        "nix.serverPath" = "nil";
+        "nix.serverSettings" = {
+          "nil" = {
+            "formatting" = {
+              "command" = [ "nixfmt" ];
+            };
           };
         };
       };
