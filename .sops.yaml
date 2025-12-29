@@ -4,7 +4,7 @@
 # for a more complex example.
 keys:
   - &roberto age1g8jkjqhy0wl6w2yj7uh0ptxmj4dukp8j3fcgegx840dcsluftuwshtdv35
-  - &kellanved age1ngrmafxe024pu7mwasa99kcc58tszlhncw4xn0gyg9ers2e4f38qcelvaq
+  - &kellanved age1fa08n0wk4f76ratr8t3hltpykagk2vygrvzcldelvfcfgpan539sz0y9sp
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
