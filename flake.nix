@@ -90,7 +90,6 @@
                 inherit pkgsUnstable;
                 firefox-addons-allowUnfree = pkgsUnstable.callPackage firefox-addons { };
               };
-              home-manager.sharedModules = [ inputs.sops-nix.homeManagerModules.sops ];
             }
             impermanence.nixosModules.impermanence
             nixos-hardware.nixosModules.framework-13-7040-amd

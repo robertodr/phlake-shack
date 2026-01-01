@@ -199,6 +199,16 @@
     debug = true;
   };
 
+  sops = {
+    age.sshKeyPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
+    secrets = {
+      "ibm-cloud/token" = {
+        sopsFile = ../../../secrets/ibm-cloud.yaml;
+        owner = config.users.users.roberto.name;
+      };
+    };
+  };
+
   environment = {
     # impermanence set up
     persistence."/persist" = {
