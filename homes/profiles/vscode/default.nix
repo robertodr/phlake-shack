@@ -11,7 +11,7 @@
     profiles.default = {
       enableUpdateCheck = false;
       enableExtensionUpdateCheck = false;
-      extensions = pkgs.nix4vscode.forVscode [
+      extensions = pkgs.nix4vscode.forVscodeVersion pkgs.vscode.version [
         "Gruntfuggly.todo-tree"
         "aaron-bond.better-comments"
         "adpyke.codesnap"
