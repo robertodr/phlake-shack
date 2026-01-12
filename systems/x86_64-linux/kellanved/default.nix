@@ -214,12 +214,14 @@
     persistence."/persist" = {
       hideMounts = true;
       directories = [
-        "/var/log"
-        "/var/lib/bluetooth"
-        "/var/lib/nixos"
-        "/var/lib/fprint"
-        "/var/lib/systemd/coredump"
         "/etc/NetworkManager/system-connections"
+        "/var/lib/bluetooth"
+        "/var/lib/docker"
+        "/var/lib/fprint"
+        "/var/lib/nixos"
+        "/var/lib/systemd/coredump"
+        "/var/lib/systemd/timers"
+        "/var/log"
         {
           directory = "/var/lib/colord";
           user = "colord";
