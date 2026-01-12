@@ -164,6 +164,7 @@ in
       poppler
       showtime
       spotify
+      winboat
       wordnet
       zoom-us
     ];
