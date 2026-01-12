@@ -39,7 +39,7 @@ cursor {
 // Remember to uncomment the node by removing "/-"!
 output "eDP-1" {
     mode "2256x1504@60"
-    scale 1.175
+    scale 1.0
     transform "normal"
     position x=3440 y=350
 }
