@@ -214,8 +214,9 @@ in
     ++ [
       "direnv"
       "emacs"
-      "tmpi"
       "gh"
+      "opencode"
+      #"tmpi"
       "vscode"
     ]
     # multimedia
