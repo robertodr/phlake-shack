@@ -105,26 +105,21 @@ in
       ncdu
 
       freerdp
-      hyperfine
       iputils
-      kooha
       numbat
       openconnect
       openvpn
       rclone
       step-cli
       tealdeer
-      tokei
 
       autoconf
       automake
       awscli2
       cachix
-      cdxgen
       clang-tools # TODO <- needed here?
       cmake-language-server
-      cyclonedx-cli
-      delta # TODO <- this or difftastic?
+      delta
       flamegraph
       git-extras
       global
@@ -233,7 +228,7 @@ in
     ++ [
       "newsboat"
       "onlyoffice"
-      "texlive"
+      #"texlive"
     ]
     # wm
     ++ [
