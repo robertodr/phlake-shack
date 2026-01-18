@@ -17,18 +17,22 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    impermanence.url = "github:nix-community/impermanence?rev=4b3e914cdf97a5b536a889e939fb2fd2b043a170";
+    impermanence = {
+      url = "github:nix-community/impermanence?rev=82e5bc4508cab9e8d5a136626276eb5bbce5e9c5";
+    };
 
     nix4vscode = {
       url = "github:nix-community/nix4vscode";
       inputs.nixpkgs.follows = "unstable";
     };
 
-    nixos-hardware.url = "github:nixos/nixos-hardware";
+    nixos-hardware = {
+      url = "github:nixos/nixos-hardware";
+    };
 
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
-
-    #nixpkgsWorkingZoom.url = "github:nixos/nixpkgs?rev=c74638883aabd10cdd020ca8dad0435aaf967a8f"; # 6.5.3.2773
+    nixpkgs = {
+      url = "github:nixos/nixpkgs/nixos-25.11";
+    };
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -42,7 +46,9 @@
       };
     };
 
-    unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    unstable = {
+      url = "github:nixos/nixpkgs/nixos-unstable";
+    };
   };
 
   outputs =
