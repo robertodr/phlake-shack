@@ -85,7 +85,8 @@ in
 
     shellAliases = {
       xopen = "xdg-open";
-      du = "dust";
+      df = "duf";
+      du = "ncdu";
       ps = "procs";
     };
 
@@ -99,8 +100,9 @@ in
     packages = with pkgs; [
       ## === Sysadmin ===
       brightnessctl
-      dust # <- Like du but more intuitive.
-      procs # <- A modern replacement for ps.
+      procs
+      duf
+      ncdu
 
       freerdp
       hyperfine
@@ -241,7 +243,7 @@ in
       "hypridle"
       "hyprlock"
       "hyprpaper"
-      "shikane"
+      #"shikane"
       "vicinae"
       "waybar"
       "wayland/niri"
