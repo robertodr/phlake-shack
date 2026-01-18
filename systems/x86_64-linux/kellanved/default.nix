@@ -29,7 +29,6 @@
       "services/earlyoom"
       "services/fwupd"
       "services/geoclue2"
-      "services/gnome-keyring"
       "services/hardware/bolt"
       "services/openssh"
       "services/power-profiles-daemon"
@@ -88,6 +87,8 @@
     initrd = {
       verbose = false;
       systemd = {
+        # CRITICAL: Required for pam_fde_boot_pw to work
+        # Stores the LUKS password in systemd so it can be retrieved later
         enable = true;
         # the rollback service is from: https://discourse.nixos.org/t/impermanence-vs-systemd-initrd-w-tpm-unlocking/25167/3
         services.root-roolback = {
