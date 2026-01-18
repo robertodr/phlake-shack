@@ -80,7 +80,7 @@
           "github.copilot"
           "github.copilot-chat"
           "github.vscode-github-actions"
-          "github.vscode-vscode-pull-request-github"
+          "github.vscode-pull-request-github"
           "nefrob.vscode-just-syntax"
           "oderwat.indent-rainbow"
           "openai.chatgpt"
