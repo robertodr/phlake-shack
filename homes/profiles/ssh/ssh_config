@@ -66,6 +66,10 @@ Host acc acc1 alogin1 alogin1.bsc.es
   User algo066442
 
 Host leonardo
-  HostName login.leonardo.cineca.it
   User rdiremig
-  StrictHostKeyChecking no
+  HostName login.leonardo.cineca.it
+  IdentityAgent "~/.1password/agent.sock"
+  IdentityFile ~/.ssh/leonardo_ed25519.pub
+  CertificateFile ~/.ssh/leonardo_ed25519-cert.pub
+  IdentitiesOnly yes
+
