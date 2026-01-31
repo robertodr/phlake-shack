@@ -18,6 +18,7 @@ in
 {
   home = {
     packages = [
+      pkgs.udiskie
       pkgs.waypipe
       pkgs.wl-clipboard
     ];
