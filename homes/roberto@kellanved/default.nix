@@ -65,7 +65,6 @@ in
     stateVersion = "24.11";
 
     sessionVariables = {
-      EDITOR = "nvim";
       LESSHISTFILE = "${stateHome}/lesshst";
       SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
       XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
@@ -196,6 +195,7 @@ in
       "ghostty"
       "git"
       "gpg-agent"
+      "helix"
       "htop"
       "jq"
       "mako"
