@@ -25,6 +25,7 @@
       "programs/_1password"
       "programs/bash"
       "programs/gnupg"
+      "programs/nix-ld"
       "programs/thunar"
       "services/earlyoom"
       "services/fwupd"
