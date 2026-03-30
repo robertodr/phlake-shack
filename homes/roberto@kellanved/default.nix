@@ -228,6 +228,7 @@ in
       "firefox"
       "mpris-proxy"
       "playerctld"
+      "vivaldi"
     ]
     # office
     ++ [

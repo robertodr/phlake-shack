@@ -71,7 +71,7 @@ layout {
 }
 
 spawn-at-startup "ghostty"
-spawn-at-startup "firefox"
+spawn-at-startup "vivaldi"
 spawn-at-startup "ferdium"
 spawn-at-startup "udiskie" "--smart-tray"
 spawn-at-startup "1password" "--silent"
@@ -94,7 +94,7 @@ workspace "browser" {
 }
 
 window-rule {
-    match at-startup=true app-id=r#"^firefox$"#
+    match at-startup=true app-id=r#"^vivaldi$"#
     open-on-workspace "browser"
 }
 
@@ -113,12 +113,6 @@ screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
 
 animations {
     off
-}
-
-// Open the Firefox picture-in-picture player as floating by default.
-window-rule {
-    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
-    open-floating true
 }
 
 // block 1Password from screen capture.

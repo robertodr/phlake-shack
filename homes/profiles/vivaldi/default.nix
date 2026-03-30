@@ -14,7 +14,7 @@
       # libkey-nomad
       { id = "lkoeejijapdihgbegpljiehpnlkadljb"; }
       # privacy badger
-      { id = "pkehgijcmpdhfbdbbnkijodmdjhbjlg"; }
+      { id = "pkehgijcmpdhfbdbbnkijodmdjhbjlgp"; }
       # rust search extension
       { id = "ennpfpdlaclocpomkiablnmbppdnlhoh"; }
       # unpaywall
