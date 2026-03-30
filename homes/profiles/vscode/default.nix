@@ -27,6 +27,7 @@
         "ms-vscode-remote.remote-ssh"
         "ms-vscode.cpptools-extension-pack"
         "ms-vsliveshare.vsliveshare"
+        "myriad-dreamin.tinymist"
         "nefrob.vscode-just-syntax"
         "oderwat.indent-rainbow"
         "openai.chatgpt"

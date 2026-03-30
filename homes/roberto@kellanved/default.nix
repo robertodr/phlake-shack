@@ -138,6 +138,10 @@ in
       pkgsUnstable.nixfmt
       nixpkgs-lint
 
+      pkgsUnstable.tinymist
+      pkgsUnstable.typst
+      pkgsUnstable.typstyle
+
       python3
       python3Packages.pip
       python3Packages.keyring
