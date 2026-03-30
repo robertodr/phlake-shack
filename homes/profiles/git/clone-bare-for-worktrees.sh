@@ -8,13 +8,13 @@
 #
 # Example targeted structure:
 # repo/
-# |- .bare
+# |- .git
 # |- main
 # |- new-awesome-feature
 # |- hotfix-bug-12
 # |- ...
 #
-# Script copied from:
+# Script adapted from:
 # https://morgan.cugerone.com/blog/workarounds-to-git-worktree-using-bare-repository-and-cannot-fetch-remote-branches/
 
 set -eu
@@ -26,12 +26,11 @@ name=${2:-${basename%.*}}
 mkdir "$name"
 cd "$name"
 
-# moves all the administrative git files (a.k.a $GIT_DIR) under .bare directory.
-git clone --bare "$url" .bare
-echo "gitdir: ./.bare" > .git
+# moves all the administrative git files (a.k.a $GIT_DIR) under .git directory.
+git clone --bare "$url" .git
 
 # explicitly sets the remote origin fetch so we can fetch remote branches
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 
-# gets all branches from origin
-git fetch origin
+# gets all branches and tags from origin
+git fetch --tags origin
