@@ -3,7 +3,7 @@
 
   inputs = {
     disko = {
-      url = "github:nix-community/disko/?ref=v1.11.0";
+      url = "github:nix-community/disko/?ref=v1.13.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -18,7 +18,7 @@
     };
 
     impermanence = {
-      url = "github:nix-community/impermanence?rev=82e5bc4508cab9e8d5a136626276eb5bbce5e9c5";
+      url = "github:nix-community/impermanence?rev=7b1d382faf603b6d264f58627330f9faa5cba149";
     };
 
     nix4vscode = {
