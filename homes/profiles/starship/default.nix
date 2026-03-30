@@ -25,6 +25,7 @@
         style = "#5fdfff";
         symbol = "";
         format = "$symbol[$branch]($style)";
+        ignore_bare_repo = true;
       };
       git_status = {
         format = "$ahead_behind|$staged$modified$untracked$deleted";
