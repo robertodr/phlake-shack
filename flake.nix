@@ -2,8 +2,13 @@
   description = "My NixOS systems and Home Manager configurations";
 
   inputs = {
+    bun2nix = {
+      url = "github:nix-community/bun2nix?tag=2.0.8";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     disko = {
-      url = "github:nix-community/disko/?ref=v1.13.0";
+      url = "github:nix-community/disko?tag=v1.13.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -53,6 +58,7 @@
 
   outputs =
     {
+      bun2nix,
       disko,
       firefox-addons,
       home-manager,
@@ -82,7 +88,15 @@
               {
                 # This enables unfree for the 'pkgs' (stable) set
                 nixpkgs.config.allowUnfree = true;
-                nixpkgs.overlays = [ nix4vscode.overlays.default ];
+                nixpkgs.overlays = [
+                  nix4vscode.overlays.default
+                  (final: prev: {
+                    middleman = final.callPackage ./pkgs/middleman {
+                      bun2nix = inputs.bun2nix.packages.${system}.default;
+
+                    };
+                  })
+                ];
               }
             )
             ./systems/${system}/kellanved

@@ -127,6 +127,7 @@ in
       jless
       perf
       meld
+      middleman
       perf-tools
       universal-ctags
 
@@ -164,7 +165,7 @@ in
       poppler
       showtime
       spotify
-      winboat
+      #winboat
       wordnet
       zoom-us
     ];
