@@ -63,7 +63,10 @@ jobs:
           BUN2NIX_TAG=$(grep -oP "bun2nix.*\?tag=\K[^\"']+" flake.nix)
           REPO_DIR="$PWD"
           pushd "$WORKDIR/middleman-${REV}"
-          nix run "github:nix-community/bun2nix/${BUN2NIX_TAG}" -- \
+          nix run \
+            --extra-substituters "https://nix-community.cachix.org" \
+            --extra-trusted-public-keys "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" \
+            "github:nix-community/bun2nix/${BUN2NIX_TAG}" -- \
             -o "$REPO_DIR/pkgs/middleman/bun.nix"
           popd
 
