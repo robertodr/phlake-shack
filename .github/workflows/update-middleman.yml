@@ -1,0 +1,131 @@
+name: Update middleman
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Every Monday at 06:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: update-middleman
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Check for updates
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LATEST=$(gh api repos/wesm/middleman/commits/HEAD)
+          REV=$(echo "$LATEST" | jq -r '.sha')
+          DATE=$(echo "$LATEST" | jq -r '.commit.committer.date' | cut -dT -f1)
+          CURRENT_REV=$(grep -oP 'rev = "\K[^"]+' pkgs/middleman/default.nix)
+
+          echo "rev=$REV" >> "$GITHUB_OUTPUT"
+          echo "date=$DATE" >> "$GITHUB_OUTPUT"
+
+          if [[ "$REV" == "$CURRENT_REV" ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prefetch source
+        if: steps.check.outputs.skip == 'false'
+        id: src
+        run: |
+          REV="${{ steps.check.outputs.rev }}"
+          HASH=$(nix-prefetch-url --type sha256 --unpack \
+            "https://github.com/wesm/middleman/archive/${REV}.tar.gz" 2>/dev/null)
+          SRI=$(nix hash to-sri --type sha256 "$HASH")
+          echo "hash=$SRI" >> "$GITHUB_OUTPUT"
+
+      - name: Regenerate bun.nix
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          REV="${{ steps.check.outputs.rev }}"
+          WORKDIR=$(mktemp -d)
+          curl -sL "https://github.com/wesm/middleman/archive/${REV}.tar.gz" \
+            | tar xz -C "$WORKDIR"
+
+          BUN2NIX_TAG=$(grep -oP "bun2nix.*\?tag=\K[^\"']+" flake.nix)
+          REPO_DIR="$PWD"
+          pushd "$WORKDIR/middleman-${REV}"
+          nix run "github:nix-community/bun2nix/${BUN2NIX_TAG}" -- \
+            -o "$REPO_DIR/pkgs/middleman/bun.nix"
+          popd
+
+      - name: Update derivation
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          DATE="${{ steps.check.outputs.date }}"
+          REV="${{ steps.check.outputs.rev }}"
+          SRC_HASH="${{ steps.src.outputs.hash }}"
+          FAKE_HASH="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+
+          cd pkgs/middleman
+          sed -i "s|version = \"unstable-[0-9-]*\"|version = \"unstable-${DATE}\"|" default.nix
+          sed -i "s|rev = \"[a-f0-9]*\"|rev = \"${REV}\"|" default.nix
+          sed -i "s|hash = \"sha256-[^\"]*\"|hash = \"${SRC_HASH}\"|" default.nix
+          sed -i "s|vendorHash = \"sha256-[^\"]*\"|vendorHash = \"${FAKE_HASH}\"|" default.nix
+
+      - name: Determine vendorHash
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          BUILD_EXPR="
+            let
+              self = builtins.getFlake \"path:$PWD\";
+              pkgs = import self.inputs.nixpkgs { system = \"x86_64-linux\"; };
+              bun2nix = self.inputs.bun2nix.packages.x86_64-linux.default;
+            in pkgs.callPackage $PWD/pkgs/middleman { inherit bun2nix; }
+          "
+
+          if OUTPUT=$(nix build --no-link --impure --expr "$BUILD_EXPR" 2>&1); then
+            echo "::error::Build unexpectedly succeeded with fake vendorHash"
+            exit 1
+          fi
+
+          VENDOR_HASH=$(echo "$OUTPUT" | grep -oP 'got:\s+\Ksha256-\S+' | head -1)
+          if [[ -z "$VENDOR_HASH" ]]; then
+            echo "::error::Failed to determine vendorHash from build output"
+            echo "$OUTPUT"
+            exit 1
+          fi
+
+          sed -i "s|vendorHash = \"sha256-[^\"]*\"|vendorHash = \"${VENDOR_HASH}\"|" \
+            pkgs/middleman/default.nix
+
+      - name: Verify build
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          BUILD_EXPR="
+            let
+              self = builtins.getFlake \"path:$PWD\";
+              pkgs = import self.inputs.nixpkgs { system = \"x86_64-linux\"; };
+              bun2nix = self.inputs.bun2nix.packages.x86_64-linux.default;
+            in pkgs.callPackage $PWD/pkgs/middleman { inherit bun2nix; }
+          "
+          nix build --no-link --impure --expr "$BUILD_EXPR"
+
+      - name: Create Pull Request
+        if: steps.check.outputs.skip == 'false'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore(deps): update middleman to unstable-${{ steps.check.outputs.date }}"
+          title: "chore(deps): update middleman to unstable-${{ steps.check.outputs.date }}"
+          body: |
+            Automated update of middleman to [`${{ steps.check.outputs.rev }}`](https://github.com/wesm/middleman/commit/${{ steps.check.outputs.rev }}).
+          branch: chore-deps-update-middleman
+          delete-branch: true
