@@ -1,17 +1,18 @@
 {
   pkgs,
+  pkgsUnstable,
   ...
 }:
 {
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode;
+    package = pkgsUnstable.vscode;
     mutableExtensionsDir = false;
 
     profiles.default = {
       enableUpdateCheck = false;
       enableExtensionUpdateCheck = false;
-      extensions = pkgs.nix4vscode.forVscodeVersion pkgs.vscode.version [
+      extensions = pkgs.nix4vscode.forVscodeVersion pkgsUnstable.vscode.version [
         "Gruntfuggly.todo-tree"
         "aaron-bond.better-comments"
         "adpyke.codesnap"
