@@ -127,7 +127,6 @@ in
       jless
       perf
       meld
-      middleman
       perf-tools
       universal-ctags
 
@@ -220,6 +219,7 @@ in
       "direnv"
       "emacs"
       "gh"
+      "middleman"
       "opencode"
       #"tmpi"
       "vscode"

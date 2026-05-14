@@ -105,6 +105,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
+              home-manager.sharedModules = [ ./homes/modules ];
               home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
               home-manager.extraSpecialArgs = {
                 inherit pkgsUnstable;

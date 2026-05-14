@@ -208,6 +208,11 @@
         sopsFile = ../../../secrets/ibm-cloud.yaml;
         owner = config.users.users.roberto.name;
       };
+      "middleman/env" = {
+        sopsFile = ../../../secrets/middleman.env;
+        format = "dotenv";
+        owner = config.users.users.roberto.name;
+      };
     };
   };
 
