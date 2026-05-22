@@ -125,9 +125,10 @@ in
       gnumake
       hotspot
       jless
-      perf
       meld
+      perf
       perf-tools
+      pkgsUnstable.gitbutler
       universal-ctags
 
       nix-prefetch
@@ -192,6 +193,7 @@ in
       "bat"
       "blueman-applet"
       "bottom"
+      "btop"
       "eza"
       "fastfetch"
       "fish"
