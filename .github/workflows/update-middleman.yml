@@ -111,7 +111,9 @@ jobs:
             pkgs/middleman/default.nix
 
       - name: Verify build
+        id: verify
         if: steps.check.outputs.skip == 'false'
+        continue-on-error: true
         run: |
           BUILD_EXPR="
             let
@@ -122,8 +124,13 @@ jobs:
           "
           nix build --no-link --impure --expr "$BUILD_EXPR"
 
+      - name: Skip PR on upstream build failure
+        if: steps.check.outputs.skip == 'false' && steps.verify.outcome != 'success'
+        run: |
+          echo "::warning::Skipping update PR because the upstream revision does not currently build in Nix."
+
       - name: Create Pull Request
-        if: steps.check.outputs.skip == 'false'
+        if: steps.check.outputs.skip == 'false' && steps.verify.outcome == 'success'
         uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "chore(deps): update middleman to unstable-${{ steps.check.outputs.date }}"
