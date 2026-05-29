@@ -228,7 +228,7 @@ in
     ]
     # multimedia
     ++ [
-      "firefox"
+      #"firefox"
       "mpris-proxy"
       "playerctld"
       "vivaldi"

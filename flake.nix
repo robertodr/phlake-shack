@@ -12,11 +12,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    firefox-addons = {
-      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -60,7 +55,6 @@
     {
       bun2nix,
       disko,
-      firefox-addons,
       home-manager,
       impermanence,
       nix4vscode,
@@ -109,7 +103,6 @@
               home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
               home-manager.extraSpecialArgs = {
                 inherit pkgsUnstable;
-                firefox-addons-allowUnfree = pkgsUnstable.callPackage firefox-addons { };
               };
             }
             impermanence.nixosModules.impermanence
