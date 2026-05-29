@@ -192,7 +192,6 @@ in
       "atuin"
       "bat"
       "blueman-applet"
-      "bottom"
       "btop"
       "eza"
       "fastfetch"
@@ -228,7 +227,6 @@ in
     ]
     # multimedia
     ++ [
-      #"firefox"
       "mpris-proxy"
       "playerctld"
       "vivaldi"
