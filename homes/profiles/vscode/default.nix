@@ -14,6 +14,7 @@
       enableExtensionUpdateCheck = false;
       extensions = pkgs.nix4vscode.forVscodeVersion pkgsUnstable.vscode.version [
         "Gruntfuggly.todo-tree"
+        "SonarSource.sonarlint-vscode"
         "aaron-bond.better-comments"
         "adpyke.codesnap"
         "asvetliakov.vscode-neovim"
@@ -77,6 +78,7 @@
         "window.titleBarStyle" = "custom";
         "dev.containers.defaultExtensions" = [
           "Gruntfuggly.todo-tree"
+          "SonarSource.sonarlint-vscode"
           "aaron-bond.better-comments"
           "christian-kohler.path-intellisense"
           "github.copilot"
@@ -106,6 +108,8 @@
         #    "statusBarVisibility" = "inherit";
         #  };
         #};
+        "chat.mcp.discovery.enabled" = true;
+        "chat.mcp.gallery.enabled" = true;
         "nix.enableLanguageServer" = true;
         "nix.serverPath" = "nil";
         "nix.serverSettings" = {
@@ -115,6 +119,13 @@
             };
           };
         };
+        "sonarlint.connectedMode.connections.sonarcloud" = [
+          {
+            "organizationKey" = "algorithmiq";
+            "connectionId" = "algorithmiq";
+            "region" = "EU";
+          }
+        ];
       };
     };
   };
