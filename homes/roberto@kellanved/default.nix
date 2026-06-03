@@ -233,7 +233,7 @@ in
     ]
     # office
     ++ [
-      "newsboat"
+      "feedr"
       "onlyoffice"
       #"texlive"
     ]
