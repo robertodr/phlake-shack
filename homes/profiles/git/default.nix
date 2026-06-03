@@ -88,13 +88,6 @@ in
 
       mergetool.prompt = false;
 
-      pager = {
-        diff = "delta";
-        log = "delta";
-        reflog = "delta";
-        show = "delta";
-      };
-
       pull.rebase = false;
 
       push.default = "current";

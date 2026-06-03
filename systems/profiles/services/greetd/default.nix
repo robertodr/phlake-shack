@@ -52,27 +52,26 @@ in
   programs.seahorse.enable = true;
 
   # PAM Configuration
-  # The key insight: greetd's initial_session (autologin) doesn't call PAM auth,
-  # so we inject the LUKS password during the session phase instead using pam_fde_boot_pw.
-  # See: https://lists.sr.ht/~kennylevinsen/greetd-devel/%3CCAOVAYzup8rEVtq1q4Bw5jZS=tf1WyeWwhHB0jgHvoZyhUuGZeg@mail.gmail.com%3E
-  security.pam.services.greetd = {
-    enableGnomeKeyring = true;
-    gnupg.enable = true;
-
-    # Add pam_fde_boot_pw rule BEFORE gnome_keyring in the session phase
-    # This ensures the LUKS password is injected before gnome-keyring tries to unlock
-    # Order 12600: gnome_keyring is typically at 12700, so this runs before it
-    rules.session.fde_boot_pw = {
-      order = 12600;
-      enable = true;
-      control = "optional";
-      modulePath = "${pam_fde_boot_pw}/lib/security/pam_fde_boot_pw.so";
-      args = [ "inject_for=gkr" ];
-    };
-  };
-
-  # Enable gnome-keyring for other PAM services
   security.pam.services = {
+    # The key insight: greetd's initial_session (autologin) doesn't call PAM auth,
+    # so we inject the LUKS password during the session phase instead using pam_fde_boot_pw.
+    # See: https://lists.sr.ht/~kennylevinsen/greetd-devel/%3CCAOVAYzup8rEVtq1q4Bw5jZS=tf1WyeWwhHB0jgHvoZyhUuGZeg@mail.gmail.com%3E
+    greetd = {
+      enableGnomeKeyring = true;
+      gnupg.enable = true;
+
+      # Add pam_fde_boot_pw rule BEFORE gnome_keyring in the session phase
+      # This ensures the LUKS password is injected before gnome-keyring tries to unlock
+      # Order 12500 (gnome_keyring appears to be 12600, so this runs before it)
+      rules.session.fde_boot_pw = {
+        order = 12500;
+        enable = true;
+        control = "optional";
+        modulePath = "${pam_fde_boot_pw}/lib/security/pam_fde_boot_pw.so";
+        args = [ "inject_for=gkr" ];
+      };
+    };
+    # Enable gnome-keyring for other PAM services
     greetd-password.enableGnomeKeyring = true;
     login.enableGnomeKeyring = true;
     gdm-password.enableGnomeKeyring = true;

@@ -176,7 +176,7 @@
     enable = true;
     man = {
       enable = true;
-      generateCaches = true;
+      cache.enable = true;
     };
     doc.enable = true;
     dev.enable = true;

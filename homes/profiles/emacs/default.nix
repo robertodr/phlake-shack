@@ -103,11 +103,11 @@ in
     #: nix
     nil
     #: sh
-    nodePackages.bash-language-server
+    pkgs.bash-language-server
     shfmt
 
     html-tidy
-    nodePackages.js-beautify
+    pkgs.js-beautify
     pyright
     python3.pkgs.black
     python3.pkgs.isort
