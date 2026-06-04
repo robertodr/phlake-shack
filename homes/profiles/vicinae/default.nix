@@ -4,8 +4,8 @@
   ...
 }:
 let
-  rev = "d12bcb134d45dedad1a28a18e1cd8807353338d0";
-  sha256 = "sha256-/Yx97SOwvJXPxvv6e81j+ID87J9DQGq0QGYnmsWKoz8=";
+  rev = "2c12a0b15f33fa9b6e2a29f91f7b1da3e7a80c3b";
+  sha256 = "sha256-p0nK1I0H4Zb/ExHnEC1wgpJJhC0RpgxWUsuwQetNM+Q=";
   mkExt =
     name:
     config.lib.vicinae.mkExtension {
