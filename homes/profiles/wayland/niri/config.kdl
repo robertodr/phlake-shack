@@ -85,7 +85,7 @@ workspace "code" {
 }
 
 window-rule {
-    match at-startup=true app-id=r#"^ghostty$"#
+    match at-startup=true app-id=r#".*ghostty.*"#
     open-on-workspace "code"
 }
 
@@ -94,7 +94,7 @@ workspace "browser" {
 }
 
 window-rule {
-    match at-startup=true app-id=r#"^vivaldi$"#
+    match at-startup=true app-id=r#".*vivaldi.*"#
     open-on-workspace "browser"
 }
 
@@ -103,7 +103,7 @@ workspace "chat" {
 }
 
 window-rule {
-    match at-startup=true app-id=r#"^ferdium$"#
+    match at-startup=true app-id=r#".*ferdium.*"#
     open-on-workspace "chat"
 }
 
