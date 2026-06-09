@@ -32,7 +32,7 @@
       "services/geoclue2"
       "services/hardware/bolt"
       "services/openssh"
-      "services/power-profiles-daemon"
+      "services/tuned"
       "services/udisks2"
       "stylix"
       "systemd"
