@@ -94,7 +94,7 @@ workspace "browser" {
 }
 
 window-rule {
-    match at-startup=true app-id=r#".*vivaldi.*"#
+    match at-startup=true app-id=r#"^vivaldi(-stable)?$"#
     open-on-workspace "browser"
 }
 
