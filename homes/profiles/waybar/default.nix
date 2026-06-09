@@ -132,7 +132,6 @@ in
             "cpu"
             "memory"
             "battery"
-            "power-profiles-daemon"
           ];
         };
 
