@@ -28,6 +28,13 @@ in
     '';
   };
 
+  sshAuthSock = {
+    initialization = {
+      bash = "export SSH_AUTH_SOCK=$HOME/.1password/agent.sock";
+      fish = "set -x SSH_AUTH_SOCK $HOME/.1password/agent.sock";
+    };
+  };
+
   # create ~/.ssh/sockets if it doesn't already exist
   home.activation.createSshSocketsDir = entryAfter [ "writeBoundary" ] ''
     if [[ ! -d "$HOME/.ssh/sockets" ]]; then
