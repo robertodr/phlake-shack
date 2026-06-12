@@ -108,8 +108,13 @@
         #    "statusBarVisibility" = "inherit";
         #  };
         #};
-        "chat.mcp.discovery.enabled" = true;
         "chat.mcp.gallery.enabled" = true;
+        "chat.mcp.discovery.enabled" = {
+          "claude-desktop" = true;
+          "windsurf" = false;
+          "cursor-global" = false;
+          "cursor-workspace" = false;
+        };
         "nix.enableLanguageServer" = true;
         "nix.serverPath" = "nil";
         "nix.serverSettings" = {
