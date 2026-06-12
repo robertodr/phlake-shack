@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   pkgsUnstable,
   ...
@@ -131,6 +132,7 @@
             "region" = "EU";
           }
         ];
+        "todo-tree.ripgrep.ripgrep" = lib.getExe pkgs.ripgrep;
       };
     };
   };
