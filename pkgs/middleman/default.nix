@@ -2,6 +2,7 @@
   fetchFromGitHub,
   buildGo126Module,
   runCommand,
+  cacert,
   lib,
   bun,
   nodejs,
@@ -39,6 +40,7 @@ buildGo126Module {
   nativeBuildInputs = [
     bun
     nodejs
+    cacert
   ];
 
   preBuild = ''
@@ -47,6 +49,9 @@ buildGo126Module {
     cp -r ${bunDeps}/share/bun-cache/. "$BUN_INSTALL_CACHE_DIR"
     export HOME=$(mktemp -d)
 
+    # Vite+ needs a real CA bundle in this Nix build environment.
+    export SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt
+
     # Install node_modules from cache (no network needed)
     bun install --frozen-lockfile --ignore-scripts
 
@@ -54,8 +59,8 @@ buildGo126Module {
     cd frontend && bun run build && cd ..
 
     # Copy into embed directory
-    mkdir -p internal/web/dist
     rm -rf internal/web/dist
+    mkdir -p internal/web
     cp -r frontend/dist internal/web/dist
     printf 'ok\n' > internal/web/dist/stub.html
   '';
