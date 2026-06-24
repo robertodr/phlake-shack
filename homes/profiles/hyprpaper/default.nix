@@ -18,13 +18,16 @@ in
     enable = lib.mkForce true;
 
     settings = {
-      preload = [
-        "${wallpaper}"
-        "${wallpaperLaptop}"
-      ];
+      ipc = false;
       wallpaper = [
-        ", ${wallpaper}"
-        "eDP-1, ${wallpaperLaptop}"
+        {
+          monitor = "eDP-1";
+          path = "${wallpaperLaptop}";
+        }
+        {
+          monitor = "";
+          path = "${wallpaper}";
+        }
       ];
     };
   };

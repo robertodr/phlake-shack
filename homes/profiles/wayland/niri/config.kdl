@@ -44,7 +44,7 @@ output "eDP-1" {
     position x=3440 y=350
 }
 
-output "PNP(AOC) U34G2G4R3" {
+output "PNP(AOC) U34G2G4R3 0x00000E8B" {
     mode "3440x1440@60"
     scale 1.0
     transform "normal"
@@ -81,7 +81,7 @@ hotkey-overlay {
 }
 
 workspace "code" {
-    open-on-output "DP-7"
+    open-on-output "PNP(AOC) U34G2G4R3 0x00000E8B"
 }
 
 window-rule {
@@ -90,7 +90,7 @@ window-rule {
 }
 
 workspace "browser" {
-    open-on-output "DP-7"
+    open-on-output "PNP(AOC) U34G2G4R3 0x00000E8B"
 }
 
 window-rule {
@@ -99,7 +99,7 @@ window-rule {
 }
 
 workspace "chat" {
-    open-on-output "DP-7"
+    open-on-output "PNP(AOC) U34G2G4R3 0x00000E8B"
 }
 
 window-rule {

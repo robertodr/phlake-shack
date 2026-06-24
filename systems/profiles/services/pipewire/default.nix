@@ -8,7 +8,7 @@
     enable = true;
     alsa = {
       enable = true;
-      support32Bit = true;
+      support32Bit = false;
     };
     pulse.enable = true;
     wireplumber.enable = true;

@@ -223,6 +223,7 @@ in
       "opencode"
       #"tmpi"
       "vscode"
+      "zed"
     ]
     # multimedia
     ++ [
