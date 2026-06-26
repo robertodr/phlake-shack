@@ -66,6 +66,7 @@ in
 
     sessionVariables = {
       LESSHISTFILE = "${stateHome}/lesshst";
+      SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
       XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
     };
 
@@ -248,6 +249,7 @@ in
       #"shikane"
       "vicinae"
       "waybar"
+      #"noctalia-shell"
       "wayland/niri"
       "wlogout"
     ]
