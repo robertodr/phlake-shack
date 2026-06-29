@@ -10,13 +10,13 @@
 }:
 
 let
-  version = "unstable-2026-06-08";
+  version = "unstable-2026-06-29";
 
   src = fetchFromGitHub {
     owner = "wesm";
     repo = "middleman";
-    rev = "33a08abec398ee22e1aa9005dfabd2a5da4d4408";
-    hash = "sha256-f0ZJ4b+oBpNunKFstxQCJygdSMd61UE29c8RvQ/Osvk=";
+    rev = "f1043691fe5863f8926f3714eb6e777982920915";
+    hash = "sha256-untxiFCVt07h3I2jZN9KChJLHIOpRsEB6+I//4rNQjU=";
   };
 
   patchedSrc = runCommand "middleman-src-with-bun-nix" { } ''
@@ -35,7 +35,7 @@ buildGo126Module {
 
   inherit src version;
 
-  vendorHash = "sha256-jp9aKSPh01ZEEIK9NU2P5uubhbG5mfXx/CPMeOzX4dA=";
+  vendorHash = "sha256-/RrIU+pALRnmuOoc1ZfarkEKayEom9KMg5LFNcFevgY=";
 
   nativeBuildInputs = [
     bun
