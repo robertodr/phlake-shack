@@ -60,15 +60,138 @@ jobs:
           curl -sL "https://github.com/wesm/middleman/archive/${REV}.tar.gz" \
             | tar xz -C "$WORKDIR"
 
-          BUN2NIX_TAG=$(grep -oP "bun2nix.*\?tag=\K[^\"']+" flake.nix)
+          # Use the locked bun2nix rev for consistency with the Nix build steps
+          BUN2NIX_REV=$(python3 -c "import json; d=json.load(open('flake.lock')); print(d['nodes']['bun2nix']['locked']['rev'])")
           REPO_DIR="$PWD"
           pushd "$WORKDIR/middleman-${REV}"
           nix run \
             --extra-substituters "https://nix-community.cachix.org" \
             --extra-trusted-public-keys "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" \
-            "github:nix-community/bun2nix/${BUN2NIX_TAG}" -- \
+            "github:nix-community/bun2nix/${BUN2NIX_REV}" -- \
             -o "$REPO_DIR/pkgs/middleman/bun.nix"
           popd
+
+          # Persist paths for the next step
+          echo "MIDDLEMAN_WORKDIR=$WORKDIR" >> "$GITHUB_ENV"
+          echo "MIDDLEMAN_REV=$REV" >> "$GITHUB_ENV"
+
+      - name: Fix GitHub dependency URLs in bun.nix
+        if: steps.check.outputs.skip == 'false'
+        shell: python
+        run: |
+          import json, os, re, sys
+
+          bun_lock_path = os.path.join(
+              os.environ['MIDDLEMAN_WORKDIR'],
+              'middleman-' + os.environ['MIDDLEMAN_REV'],
+              'bun.lock',
+          )
+          bun_nix_path = os.path.join(
+              os.environ['GITHUB_WORKSPACE'],
+              'pkgs', 'middleman', 'bun.nix',
+          )
+
+          def load_jsonc(path):
+              with open(path) as f:
+                  content = f.read()
+              # Strip JSONC trailing commas before } or ]
+              return json.loads(re.sub(r',(\s*[}\]])', r'\1', content))
+
+          lock = load_jsonc(bun_lock_path)
+
+          # Collect full GitHub commit SHAs from workspace dependency declarations.
+          # bun.lock stores the full SHA in workspace deps but only a short SHA
+          # in the packages section identifier used as the bun.nix key.
+          github_full_shas = {}  # "owner/repo" -> "full_sha"
+          for workspace in lock.get('workspaces', {}).values():
+              for deps in [workspace.get('dependencies', {}),
+                           workspace.get('devDependencies', {})]:
+                  for _pkg, ver in deps.items():
+                      if isinstance(ver, str) and ver.startswith('github:'):
+                          spec = ver[len('github:'):]
+                          if '#' in spec:
+                              repo_path, full_sha = spec.split('#', 1)
+                              github_full_shas[repo_path] = full_sha
+
+          # Find GitHub-spec entries in the packages section that use 4-element
+          # format.  bun2nix treats these as npm packages and generates incorrect
+          # registry URLs instead of codeload.github.com tarball URLs.
+          packages = lock.get('packages', {})
+          fixes = {}  # broken_url -> correct_url
+
+          def compute_broken_npm_url(identifier):
+              """Reconstruct the broken npm URL bun2nix generates for this identifier."""
+              registry = 'https://registry.npmjs.org/'
+              slash = identifier.find('/')
+              if slash < 0:
+                  at = identifier.find('@')
+                  if at < 0:
+                      return None
+                  name, ver = identifier[:at], identifier[at + 1:]
+                  return f'{registry}{name}/-/{name}-{ver}.tgz'
+              user = identifier[:slash]
+              name_ver = identifier[slash + 1:]
+              at = name_ver.find('@')
+              if at < 0:
+                  return None
+              name, ver = name_ver[:at], name_ver[at + 1:]
+              return f'{registry}{user}/{name}/-/{name}-{ver}.tgz'
+
+          for _pkg_key, pkg_data in packages.items():
+              if not isinstance(pkg_data, list) or len(pkg_data) != 4:
+                  continue
+              identifier = pkg_data[0]
+
+              # Locate the @ separator between package name and version specifier,
+              # skipping the leading @ for scoped packages.
+              start = 1 if identifier.startswith('@') else 0
+              at = identifier.find('@', start)
+              if at < 0:
+                  continue
+              specifier = identifier[at + 1:]
+              if not specifier.startswith('github:'):
+                  continue
+
+              github_spec = specifier[len('github:'):]  # "owner/repo#short_rev"
+              if '#' not in github_spec:
+                  continue
+              repo_path, short_rev = github_spec.split('#', 1)
+
+              full_sha = github_full_shas.get(repo_path)
+              if not full_sha:
+                  print(f'WARNING: no full SHA found for {repo_path}', file=sys.stderr)
+                  continue
+              if not full_sha.startswith(short_rev):
+                  print(
+                      f'WARNING: full SHA {full_sha!r} does not start with {short_rev!r}',
+                      file=sys.stderr,
+                  )
+                  continue
+
+              broken_url = compute_broken_npm_url(identifier)
+              if not broken_url:
+                  continue
+              correct_url = f'https://codeload.github.com/{repo_path}/tar.gz/{full_sha}'
+              fixes[broken_url] = correct_url
+              print(f'Queued fix for {identifier}')
+
+          if not fixes:
+              print('No GitHub dependency fixes needed in bun.nix')
+              sys.exit(0)
+
+          with open(bun_nix_path) as f:
+              content = f.read()
+
+          for broken, correct in fixes.items():
+              if broken in content:
+                  content = content.replace(broken, correct)
+                  print(f'Fixed: {broken[:70]}...')
+              else:
+                  print(f'WARNING: URL not found in bun.nix: {broken}', file=sys.stderr)
+
+          with open(bun_nix_path, 'w') as f:
+              f.write(content)
+          print('bun.nix GitHub dependency fix complete')
 
       - name: Update derivation
         if: steps.check.outputs.skip == 'false'
