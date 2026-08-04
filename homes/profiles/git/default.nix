@@ -86,7 +86,10 @@ in
 
       merge.tool = "meld";
 
-      mergetool.prompt = false;
+      mergetool = {
+        prompt = false;
+        keepBackup = false;
+      };
 
       pull.rebase = false;
 
