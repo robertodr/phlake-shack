@@ -235,7 +235,6 @@ in
     # office
     ++ [
       "feedr"
-      "onlyoffice"
       #"texlive"
     ]
     # wm
