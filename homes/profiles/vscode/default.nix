@@ -17,7 +17,7 @@
         "Gruntfuggly.todo-tree"
         "SonarSource.sonarlint-vscode"
         "aaron-bond.better-comments"
-        "adpyke.codesnap"
+        "anthropic.claude-code"
         "asvetliakov.vscode-neovim"
         "christian-kohler.path-intellisense"
         "github.copilot"
@@ -33,7 +33,6 @@
         "myriad-dreamin.tinymist"
         "nefrob.vscode-just-syntax"
         "oderwat.indent-rainbow"
-        "openai.chatgpt"
       ];
 
       userSettings = {
@@ -81,6 +80,7 @@
           "Gruntfuggly.todo-tree"
           "SonarSource.sonarlint-vscode"
           "aaron-bond.better-comments"
+          "anthropic.claude-code"
           "christian-kohler.path-intellisense"
           "github.copilot"
           "github.copilot-chat"
@@ -88,7 +88,6 @@
           "github.vscode-pull-request-github"
           "nefrob.vscode-just-syntax"
           "oderwat.indent-rainbow"
-          "openai.chatgpt"
         ];
         #"cmake.pinnedCommands" = [
         #  "workbench.action.tasks.configureTaskRunner"

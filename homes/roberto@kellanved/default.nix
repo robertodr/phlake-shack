@@ -217,6 +217,7 @@ in
     ]
     # development
     ++ [
+      "claude-code"
       "direnv"
       "emacs"
       "gh"
