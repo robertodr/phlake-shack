@@ -221,7 +221,6 @@ in
       "emacs"
       "gh"
       "middleman"
-      "opencode"
       #"tmpi"
       "vscode"
       "zed"
