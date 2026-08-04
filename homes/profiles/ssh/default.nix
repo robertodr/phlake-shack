@@ -10,6 +10,7 @@ in
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
+    includes = [ "~/.ssh/1Password/config" ];
     settings."*" = {
       forwardAgent = false;
       addKeysToAgent = "no";
