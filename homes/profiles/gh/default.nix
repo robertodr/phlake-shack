@@ -1,10 +1,11 @@
-{ pkgs, ... }:
+{ pkgs, pkgsUnstable, ... }:
 {
   programs.gh = {
     enable = true;
-    extensions = with pkgs; [
-      gh-dash
-      gh-actions-cache
+    extensions = [
+      pkgs.gh-actions-cache
+      pkgs.gh-dash
+      pkgsUnstable.gh-stack
     ];
   };
 
