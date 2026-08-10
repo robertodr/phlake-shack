@@ -73,3 +73,10 @@ Host leonardo
   CertificateFile ~/.ssh/leonardo_ed25519-cert.pub
   IdentitiesOnly yes
 
+Host deucalion
+  User roberto.eikaas
+  HostName login.deucalion.macc.fccn.pt
+  IdentityAgent "~/.1password/agent.sock"
+  IdentityFile ~/.ssh/id_EFP.pub
+  CertificateFile ~/.ssh/id_login.deucalion.macc.fccn.pt-cert.pub
+  IdentitiesOnly yes

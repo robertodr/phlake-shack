@@ -22,6 +22,7 @@
       "networking"
       "nix"
       "powerManagement"
+      #"powerManagement/tuning"
       "programs/_1password"
       "programs/bash"
       "programs/gnupg"
@@ -194,6 +195,11 @@
     extraLocaleSettings = {
       LC_TIME = "it_IT.UTF-8";
     };
+  };
+
+  programs.ssh.knownHosts = {
+    "sshca.my-eurohpc.eu".publicKey =
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBlPFxv2xhvg2Jlyt7TE8cTuVbk27LpFJmILWpXm/7xz";
   };
 
   security.polkit = {
