@@ -1,4 +1,4 @@
-name: Update middleman
+name: Update kenn-forge
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: update-middleman
+  group: update-kenn-forge
   cancel-in-progress: true
 
 permissions:
@@ -28,10 +28,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          LATEST=$(gh api repos/wesm/middleman/commits/HEAD)
+          set -euo pipefail
+          LATEST=$(gh api repos/kenn-io/forge/commits/HEAD)
           REV=$(echo "$LATEST" | jq -r '.sha')
           DATE=$(echo "$LATEST" | jq -r '.commit.committer.date' | cut -dT -f1)
-          CURRENT_REV=$(grep -oP 'rev = "\K[^"]+' pkgs/middleman/default.nix)
+          CURRENT_REV=$(grep -oP 'rev = "\K[^"]+' pkgs/kenn-forge/default.nix)
 
           echo "rev=$REV" >> "$GITHUB_OUTPUT"
           echo "date=$DATE" >> "$GITHUB_OUTPUT"
@@ -46,49 +47,47 @@ jobs:
         if: steps.check.outputs.skip == 'false'
         id: src
         run: |
+          set -euo pipefail
           REV="${{ steps.check.outputs.rev }}"
           HASH=$(nix-prefetch-url --type sha256 --unpack \
-            "https://github.com/wesm/middleman/archive/${REV}.tar.gz" 2>/dev/null)
+            "https://github.com/kenn-io/forge/archive/${REV}.tar.gz" 2>/dev/null)
           SRI=$(nix hash to-sri --type sha256 "$HASH")
           echo "hash=$SRI" >> "$GITHUB_OUTPUT"
 
       - name: Regenerate bun.nix
         if: steps.check.outputs.skip == 'false'
         run: |
+          set -euo pipefail
           REV="${{ steps.check.outputs.rev }}"
           WORKDIR=$(mktemp -d)
-          curl -sL "https://github.com/wesm/middleman/archive/${REV}.tar.gz" \
-            | tar xz -C "$WORKDIR"
+          curl -fsSL "https://github.com/kenn-io/forge/archive/${REV}.tar.gz" \
+            | tar xz -C "$WORKDIR" --strip-components=1
 
           # Use the locked bun2nix rev for consistency with the Nix build steps
           BUN2NIX_REV=$(python3 -c "import json; d=json.load(open('flake.lock')); print(d['nodes']['bun2nix']['locked']['rev'])")
           REPO_DIR="$PWD"
-          pushd "$WORKDIR/middleman-${REV}"
+          pushd "$WORKDIR"
           nix run \
             --extra-substituters "https://nix-community.cachix.org" \
             --extra-trusted-public-keys "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" \
             "github:nix-community/bun2nix/${BUN2NIX_REV}" -- \
-            -o "$REPO_DIR/pkgs/middleman/bun.nix"
+            -o "$REPO_DIR/pkgs/kenn-forge/bun.nix"
           popd
 
           # Persist paths for the next step
-          echo "MIDDLEMAN_WORKDIR=$WORKDIR" >> "$GITHUB_ENV"
-          echo "MIDDLEMAN_REV=$REV" >> "$GITHUB_ENV"
+          echo "FORGE_WORKDIR=$WORKDIR" >> "$GITHUB_ENV"
+          echo "FORGE_REV=$REV" >> "$GITHUB_ENV"
 
       - name: Fix GitHub dependency URLs in bun.nix
         if: steps.check.outputs.skip == 'false'
         shell: python
         run: |
-          import json, os, re, sys
+          import json, os, re, subprocess, sys
 
-          bun_lock_path = os.path.join(
-              os.environ['MIDDLEMAN_WORKDIR'],
-              'middleman-' + os.environ['MIDDLEMAN_REV'],
-              'bun.lock',
-          )
+          bun_lock_path = os.path.join(os.environ['FORGE_WORKDIR'], 'bun.lock')
           bun_nix_path = os.path.join(
               os.environ['GITHUB_WORKSPACE'],
-              'pkgs', 'middleman', 'bun.nix',
+              'pkgs', 'kenn-forge', 'bun.nix',
           )
 
           def load_jsonc(path):
@@ -172,7 +171,14 @@ jobs:
               if not broken_url:
                   continue
               correct_url = f'https://codeload.github.com/{repo_path}/tar.gz/{full_sha}'
-              fixes[broken_url] = correct_url
+              # extract-bun-package (bun2nix's runtime helper) only unpacks
+              # fetched files whose store-path name ends in `.tgz`; a codeload
+              # tarball URL's basename is just the commit SHA, so give the
+              # fetchurl entry an explicit `name` ending in `.tgz`, or it falls
+              # through to a plain `cp -r` that fails on a non-directory.
+              repo_name = repo_path.rsplit('/', 1)[-1]
+              tgz_name = f'{repo_name}-{full_sha}.tgz'
+              fixes[broken_url] = (correct_url, tgz_name)
               print(f'Queued fix for {identifier}')
 
           if not fixes:
@@ -182,12 +188,38 @@ jobs:
           with open(bun_nix_path) as f:
               content = f.read()
 
-          for broken, correct in fixes.items():
-              if broken in content:
-                  content = content.replace(broken, correct)
-                  print(f'Fixed: {broken[:70]}...')
-              else:
+          for broken, (correct, tgz_name) in fixes.items():
+              if broken not in content:
                   print(f'WARNING: URL not found in bun.nix: {broken}', file=sys.stderr)
+                  continue
+
+              # bun2nix also mismatches the hash for github: specs, since it
+              # hashes whatever it thinks the (bogus) npm tarball is. Recompute
+              # the hash for the real codeload.github.com tarball, and insert a
+              # `name` attribute so the fetched store path ends in `.tgz` (see
+              # above). Replace the url line and the immediately-following
+              # hash line: entries are uniformly
+              #   "<name>@<ver>" = fetchurl { url = "..."; hash = "sha512-..."; };
+              result = subprocess.run(
+                  ['nix', 'store', 'prefetch-file', '--json', '--hash-type', 'sha512', correct],
+                  capture_output=True, text=True, check=True,
+              )
+              new_hash = json.loads(result.stdout)['hash']
+
+              pattern = re.compile(
+                  r'url = "' + re.escape(broken) + r'";(\s*\n\s*)hash = "sha512-[^"]*";'
+              )
+              replacement = (
+                  f'url = "{correct}";'
+                  r'\g<1>' + f'name = "{tgz_name}";'
+                  r'\g<1>' + f'hash = "{new_hash}";'
+              )
+              new_content, n = pattern.subn(replacement, content)
+              if n == 0:
+                  print(f'WARNING: could not locate hash line following {broken}', file=sys.stderr)
+                  continue
+              content = new_content
+              print(f'Fixed: {broken[:70]}... -> {correct[:70]}...')
 
           with open(bun_nix_path, 'w') as f:
               f.write(content)
@@ -196,12 +228,13 @@ jobs:
       - name: Update derivation
         if: steps.check.outputs.skip == 'false'
         run: |
+          set -euo pipefail
           DATE="${{ steps.check.outputs.date }}"
           REV="${{ steps.check.outputs.rev }}"
           SRC_HASH="${{ steps.src.outputs.hash }}"
           FAKE_HASH="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 
-          cd pkgs/middleman
+          cd pkgs/kenn-forge
           sed -i "s|version = \"unstable-[0-9-]*\"|version = \"unstable-${DATE}\"|" default.nix
           sed -i "s|rev = \"[a-f0-9]*\"|rev = \"${REV}\"|" default.nix
           sed -i "s|hash = \"sha256-[^\"]*\"|hash = \"${SRC_HASH}\"|" default.nix
@@ -210,12 +243,13 @@ jobs:
       - name: Determine vendorHash
         if: steps.check.outputs.skip == 'false'
         run: |
+          set -euo pipefail
           BUILD_EXPR="
             let
               self = builtins.getFlake \"path:$PWD\";
               pkgs = import self.inputs.nixpkgs { system = \"x86_64-linux\"; };
               bun2nix = self.inputs.bun2nix.packages.x86_64-linux.default;
-            in pkgs.callPackage $PWD/pkgs/middleman { inherit bun2nix; }
+            in (pkgs.callPackage $PWD/pkgs/kenn-forge { inherit bun2nix; }).goModules
           "
 
           if OUTPUT=$(nix build --no-link --impure --expr "$BUILD_EXPR" 2>&1); then
@@ -231,27 +265,35 @@ jobs:
           fi
 
           sed -i "s|vendorHash = \"sha256-[^\"]*\"|vendorHash = \"${VENDOR_HASH}\"|" \
-            pkgs/middleman/default.nix
+            pkgs/kenn-forge/default.nix
 
       - name: Verify build
+        id: verify
         if: steps.check.outputs.skip == 'false'
+        continue-on-error: true
         run: |
+          set -euo pipefail
           BUILD_EXPR="
             let
               self = builtins.getFlake \"path:$PWD\";
               pkgs = import self.inputs.nixpkgs { system = \"x86_64-linux\"; };
               bun2nix = self.inputs.bun2nix.packages.x86_64-linux.default;
-            in pkgs.callPackage $PWD/pkgs/middleman { inherit bun2nix; }
+            in pkgs.callPackage $PWD/pkgs/kenn-forge { inherit bun2nix; }
           "
           nix build --no-link --impure --expr "$BUILD_EXPR"
 
+      - name: Warn on failed build
+        if: steps.check.outputs.skip == 'false' && steps.verify.outcome != 'success'
+        run: |
+          echo "::warning::kenn-forge build failed for rev ${{ steps.check.outputs.rev }}; skipping PR creation. See the 'Verify build' step log for details."
+
       - name: Create Pull Request
-        if: steps.check.outputs.skip == 'false'
+        if: steps.check.outputs.skip == 'false' && steps.verify.outcome == 'success'
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: "chore(deps): update middleman to unstable-${{ steps.check.outputs.date }}"
-          title: "chore(deps): update middleman to unstable-${{ steps.check.outputs.date }}"
+          commit-message: "chore(deps): update kenn-forge to unstable-${{ steps.check.outputs.date }}"
+          title: "chore(deps): update kenn-forge to unstable-${{ steps.check.outputs.date }}"
           body: |
-            Automated update of middleman to [`${{ steps.check.outputs.rev }}`](https://github.com/wesm/middleman/commit/${{ steps.check.outputs.rev }}).
-          branch: chore-deps-update-middleman
+            Automated update of kenn-forge to [`${{ steps.check.outputs.rev }}`](https://github.com/kenn-io/forge/commit/${{ steps.check.outputs.rev }}).
+          branch: chore-deps-update-kenn-forge
           delete-branch: true

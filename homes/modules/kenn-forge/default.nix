@@ -5,14 +5,14 @@
   ...
 }:
 let
-  cfg = config.services.middleman;
+  cfg = config.services.kenn-forge;
   tomlFormat = pkgs.formats.toml { };
 in
 {
-  options.services.middleman = {
-    enable = lib.mkEnableOption "middleman";
+  options.services.kenn-forge = {
+    enable = lib.mkEnableOption "kenn-forge";
 
-    package = lib.mkPackageOption pkgs "middleman" { };
+    package = lib.mkPackageOption pkgs "kenn-forge" { };
 
     settings = lib.mkOption {
       type = lib.types.submodule {
@@ -27,7 +27,7 @@ in
 
           github_token_env = lib.mkOption {
             type = lib.types.str;
-            default = "MIDDLEMAN_GITHUB_TOKEN";
+            default = "KENN_FORGE_GITHUB_TOKEN";
             description = "Environment variable holding the default GitHub token.";
           };
 
@@ -57,8 +57,16 @@ in
 
           data_dir = lib.mkOption {
             type = lib.types.str;
-            default = "~/.config/middleman";
-            description = "Directory for the SQLite database.";
+            default = "${config.home.homeDirectory}/.kenn/forge";
+            defaultText = lib.literalExpression ''"''${config.home.homeDirectory}/.kenn/forge"'';
+            description = ''
+              Directory for the SQLite database.
+
+              Must be an absolute path: kenn-forge resolves `data_dir` with
+              `filepath.Abs` and never expands `~`, so a leading tilde would
+              create a directory literally named `~` under the working
+              directory.
+            '';
           };
 
           repos = lib.mkOption {
@@ -210,8 +218,8 @@ in
       };
       default = { };
       description = ''
-        Configuration for middleman. Generates ~/.config/middleman/config.toml.
-        See https://github.com/wesm/middleman#configuration for all options.
+        Configuration for kenn-forge. Generates ~/.kenn/forge/config.toml.
+        See https://github.com/kenn-io/forge/blob/main/docs/configuration.md for all options.
       '';
     };
 
@@ -219,7 +227,7 @@ in
       type = lib.types.nullOr lib.types.path;
       default = null;
       description = ''
-        Path to an environment file containing secrets (e.g. MIDDLEMAN_GITHUB_TOKEN=ghp_...).
+        Path to an environment file containing secrets (e.g. KENN_FORGE_GITHUB_TOKEN=ghp_...).
         Loaded by the systemd service via EnvironmentFile.
       '';
     };
@@ -228,7 +236,7 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [ cfg.package ];
 
-    xdg.configFile."middleman/config.toml".source =
+    home.file.".kenn/forge/config.toml".source =
       let
         removeNulls = lib.filterAttrs (_: v: v != null);
         settings = cfg.settings // {
@@ -236,11 +244,11 @@ in
           platforms = map removeNulls cfg.settings.platforms;
         };
       in
-      tomlFormat.generate "middleman-config.toml" settings;
+      tomlFormat.generate "kenn-forge-config.toml" settings;
 
-    systemd.user.services.middleman = {
+    systemd.user.services.kenn-forge = {
       Unit = {
-        Description = "Middleman - local GitHub dashboard";
+        Description = "Kenn Forge - local-first maintainer console";
         After = [ "network-online.target" ];
       };
       Install = {

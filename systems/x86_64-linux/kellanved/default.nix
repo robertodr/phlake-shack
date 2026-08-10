@@ -214,8 +214,8 @@
         sopsFile = ../../../secrets/ibm-cloud.yaml;
         owner = config.users.users.roberto.name;
       };
-      "middleman/env" = {
-        sopsFile = ../../../secrets/middleman.env;
+      "kenn-forge/env" = {
+        sopsFile = ../../../secrets/kenn-forge.env;
         format = "dotenv";
         owner = config.users.users.roberto.name;
       };

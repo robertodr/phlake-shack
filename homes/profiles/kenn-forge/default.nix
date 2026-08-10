@@ -6,9 +6,9 @@ let
   };
 in
 {
-  services.middleman = {
+  services.kenn-forge = {
     enable = true;
-    environmentFile = "/run/secrets/middleman/env";
+    environmentFile = "/run/secrets/kenn-forge/env";
     settings = {
       sync_budget_per_hour = 0;
       sync_interval = "15m";

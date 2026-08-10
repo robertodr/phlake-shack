@@ -3,7 +3,7 @@
 
   inputs = {
     bun2nix = {
-      url = "github:nix-community/bun2nix?tag=2.0.8";
+      url = "github:nix-community/bun2nix?ref=2.0.8";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -85,9 +85,9 @@
                 nixpkgs.overlays = [
                   nix4vscode.overlays.default
                   (final: prev: {
-                    middleman = final.callPackage ./pkgs/middleman {
+                    ccstatusline = final.callPackage ./pkgs/ccstatusline { };
+                    kenn-forge = final.callPackage ./pkgs/kenn-forge {
                       bun2nix = inputs.bun2nix.packages.${system}.default;
-
                     };
                   })
                 ];
@@ -100,7 +100,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.sharedModules = [ ./homes/modules ];
-              home-manager.users.${user} = import (./. + "/homes/${user}@kellanved");
+              home-manager.users.${user} = import (./. + "/homes/${user}-at-kellanved");
               home-manager.extraSpecialArgs = {
                 inherit pkgsUnstable;
               };

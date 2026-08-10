@@ -6,8 +6,8 @@ keys:
   - &roberto age1g8jkjqhy0wl6w2yj7uh0ptxmj4dukp8j3fcgegx840dcsluftuwshtdv35
   - &kellanved age1hrs2sxscrlhn690psz04w455hg38u7awrmu3ehk6fh2gm2g92qzs7aaylr
 creation_rules:
-  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+  - path_regex: ^secrets/.*\.(yaml|json|env|ini)$
     key_groups:
-    - age:
-      - *roberto
-      - *kellanved
+      - age:
+        - *roberto
+        - *kellanved
