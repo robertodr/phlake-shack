@@ -63,8 +63,9 @@ jobs:
           curl -fsSL "https://github.com/kenn-io/forge/archive/${REV}.tar.gz" \
             | tar xz -C "$WORKDIR" --strip-components=1
 
-          # Use the locked bun2nix rev for consistency with the Nix build steps
-          BUN2NIX_REV=$(python3 -c "import json; d=json.load(open('flake.lock')); print(d['nodes']['bun2nix']['locked']['rev'])")
+          # Use the newest locked bun2nix rev. The older 2.0.8 rev fails to parse
+          # newer bun.lock package identifiers.
+          BUN2NIX_REV=$(python3 -c "import json; d=json.load(open('flake.lock')); c=[(n.get('locked', {}).get('lastModified', 0), n['locked']['rev']) for n in d['nodes'].values() if n.get('locked', {}).get('owner') == 'nix-community' and n.get('locked', {}).get('repo') == 'bun2nix']; print(max(c)[1])")
           REPO_DIR="$PWD"
           pushd "$WORKDIR"
           nix run \
