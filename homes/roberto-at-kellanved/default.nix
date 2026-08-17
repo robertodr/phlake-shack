@@ -128,7 +128,8 @@ in
       meld
       perf
       perf-tools
-      pkgsUnstable.gitbutler
+      pkgs.llm-agents.but
+      pkgs.llm-agents.gitbutler
       universal-ctags
 
       nix-prefetch
@@ -152,7 +153,7 @@ in
       ferdium
       ffmpeg
       ghostscript
-      gimp
+      #gimp
       imagemagick
       inkscape
       insync

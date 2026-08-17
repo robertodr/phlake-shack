@@ -73,6 +73,7 @@ in
   home-manager.users.roberto = {
     stylix.targets = {
       emacs.enable = false;
+      gtksourceview.enable = false;
       hyprland.enable = false;
       hyprland.hyprpaper.enable = false;
       hyprlock.enable = false;

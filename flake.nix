@@ -4,21 +4,23 @@
   inputs = {
     bun2nix = {
       url = "github:nix-community/bun2nix?ref=2.0.8";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     disko = {
       url = "github:nix-community/disko?tag=v1.13.0";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     impermanence = {
       url = "github:nix-community/impermanence?rev=7b1d382faf603b6d264f58627330f9faa5cba149";
+    };
+
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "unstable";
     };
 
     nix4vscode = {
@@ -36,14 +38,10 @@
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     stylix = {
       url = "github:nix-community/stylix/release-26.05";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
     };
 
     unstable = {
@@ -57,6 +55,7 @@
       disko,
       home-manager,
       impermanence,
+      llm-agents,
       nix4vscode,
       nixos-hardware,
       nixpkgs,
@@ -83,9 +82,9 @@
                 # This enables unfree for the 'pkgs' (stable) set
                 nixpkgs.config.allowUnfree = true;
                 nixpkgs.overlays = [
+                  llm-agents.overlays.shared-nixpkgs
                   nix4vscode.overlays.default
                   (final: prev: {
-                    ccstatusline = final.callPackage ./pkgs/ccstatusline { };
                     kenn-forge = final.callPackage ./pkgs/kenn-forge {
                       bun2nix = inputs.bun2nix.packages.${system}.default;
                     };

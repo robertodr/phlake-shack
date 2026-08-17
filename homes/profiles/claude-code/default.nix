@@ -1,16 +1,15 @@
 {
   pkgs,
-  pkgsUnstable,
   lib,
   ...
 }:
 {
   programs.claude-code = {
     enable = true;
-    package = pkgsUnstable.claude-code;
+    package = pkgs.llm-agents.claude-code;
     settings.statusLine = {
       type = "command";
-      command = lib.getExe pkgs.ccstatusline;
+      command = lib.getExe pkgs.llm-agents.ccstatusline;
       padding = 0;
       refreshInterval = 10;
     };

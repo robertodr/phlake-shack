@@ -1,8 +1,8 @@
-{ pkgsUnstable, ... }:
+{ pkgs, ... }:
 {
   programs.herdr = {
     enable = true;
-    package = pkgsUnstable.herdr;
+    package = pkgs.llm-agents.herdr;
     settings = {
       onboarding = false;
       keys.prefix = "ctrl+b";
