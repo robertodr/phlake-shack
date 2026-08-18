@@ -53,8 +53,9 @@ in
         {
           # 1hour
           timeout = 3600;
-          # suspend pc
-          on-timeout = "systemctl suspend";
+          # suspend pc, then hibernate after HibernateDelaySec (see the
+          # powerManagement system profile) so an idle machine stops draining
+          on-timeout = "systemctl suspend-then-hibernate";
         }
       ];
     };

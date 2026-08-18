@@ -156,7 +156,6 @@ in
       #gimp
       imagemagick
       inkscape
-      insync
       nomacs
       papers
       pdf2svg
@@ -203,6 +202,7 @@ in
       "gpg-agent"
       "helix"
       "htop"
+      "insync"
       "jq"
       "mako"
       "man"
