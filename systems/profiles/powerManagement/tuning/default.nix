@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   # Stage two of the mt7921e investigation. mt792x_pm_wake_work is the single
   # largest line in the powertop report: 1059 ms/s of work from only 1.3
@@ -45,8 +50,108 @@ in
     # so this only hits usb_device nodes: usb_interface nodes have no
     # idVendor, and a missing attribute makes the != test succeed, which
     # would let the fingerprint reader's interfaces through the exclusion.
-    ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", TEST=="power/control", ATTR{idVendor}!="27c6", ATTR{power/control}="auto"
+    #
+    # This is the battery setting; usb-autosuspend-power-source.service flips
+    # it back to "on" while the charger is in. The rule still sets "auto"
+    # unconditionally so a device plugged in on battery is tuned immediately
+    # rather than waiting for the service, and it nudges the service from here
+    # so a device plugged in on AC does not keep the autosuspend it just got.
+    ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", TEST=="power/control", ATTR{idVendor}!="27c6", ATTR{power/control}="auto", RUN+="${config.systemd.package}/bin/systemctl --no-block restart usb-autosuspend-power-source.service"
+
+    # The charger emits a change uevent on both plug and unplug.
+    ACTION=="change", SUBSYSTEM=="power_supply", KERNEL=="ACAD", RUN+="${config.systemd.package}/bin/systemctl --no-block restart usb-autosuspend-power-source.service bluetooth-power-source.service"
   '';
+
+  # Autosuspend costs latency on wake and upsets some peripherals (hubs,
+  # docks, audio interfaces), and the power it saves only matters off the
+  # charger. So keep it on battery and switch it off on AC, following the
+  # power-source handling in the tuned profile.
+  systemd.services.usb-autosuspend-power-source = {
+    description = "Set USB autosuspend to match the current power source";
+    wantedBy = [
+      "multi-user.target"
+      "post-resume.target"
+    ];
+    after = [ "post-resume.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "usb-autosuspend-power-source" ''
+        set -u
+
+        # Default to treating the machine as plugged in: that is the setting
+        # that cannot make a device misbehave.
+        if [ "$(cat /sys/class/power_supply/ACAD/online 2>/dev/null || echo 1)" = "1" ]; then
+          want=on
+        else
+          want=auto
+        fi
+
+        for dev in /sys/bus/usb/devices/*; do
+          # Only usb_device nodes carry idVendor, so this skips usb_interface
+          # nodes, and it leaves the Goodix fingerprint reader alone exactly
+          # as the udev rule above does.
+          [ -r "$dev/idVendor" ] || continue
+          [ "$(cat "$dev/idVendor")" = "27c6" ] && continue
+          [ -w "$dev/power/control" ] || continue
+          echo "$want" > "$dev/power/control" || true
+        done
+
+        echo "usb autosuspend: $want"
+      '';
+    };
+  };
+
+  # Bluetooth is powerOnBoot = false in the bluetooth profile so the radio does
+  # not idle at 100% utilisation on battery. On AC there is nothing to save, so
+  # power the adapter up and skip the "powers up on first use" wait. Coming off
+  # AC powers it back down, but only when nothing is connected: unplugging
+  # should not drop headphones or a mouse mid-use.
+  systemd.services.bluetooth-power-source = {
+    description = "Power the Bluetooth adapter to match the current power source";
+    wantedBy = [
+      "multi-user.target"
+      "post-resume.target"
+    ];
+    after = [
+      "bluetooth.service"
+      "post-resume.target"
+    ];
+    wants = [ "bluetooth.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "bluetooth-power-source" ''
+        set -u
+        bluetoothctl=${config.hardware.bluetooth.package}/bin/bluetoothctl
+
+        # The controller registers with bluetoothd asynchronously, and on
+        # resume it is re-added after the daemon is already up.
+        for _ in $(seq 50); do
+          [ -n "$($bluetoothctl list)" ] && break
+          sleep 0.1
+        done
+        if [ -z "$($bluetoothctl list)" ]; then
+          echo "bluetooth: no controller, nothing to do"
+          exit 0
+        fi
+
+        if [ "$(cat /sys/class/power_supply/ACAD/online 2>/dev/null || echo 1)" = "1" ]; then
+          $bluetoothctl power on
+          echo "bluetooth: powered on (AC)"
+          exit 0
+        fi
+
+        if [ -n "$($bluetoothctl devices Connected)" ]; then
+          echo "bluetooth: left powered, device still connected"
+          exit 0
+        fi
+
+        $bluetoothctl power off
+        echo "bluetooth: powered off (battery, idle)"
+      '';
+    };
+  };
 
   # WiFi (MediaTek MT7922/mt7921e) power saving. The radio is a top-5 power
   # consumer in the powertop report, so leave the driver's power save on.
