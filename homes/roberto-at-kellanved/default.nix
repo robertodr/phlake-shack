@@ -153,7 +153,6 @@ in
       ferdium
       ffmpeg
       ghostscript
-      #gimp
       imagemagick
       inkscape
       nomacs
@@ -165,7 +164,6 @@ in
       poppler
       showtime
       spotify
-      #winboat
       wordnet
       zoom-us
     ];
