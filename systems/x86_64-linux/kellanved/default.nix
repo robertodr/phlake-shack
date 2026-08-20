@@ -69,34 +69,34 @@
 
     kernelPackages = pkgs.linuxPackages_latest;
 
-    kernelParams = lib.mkMerge [
-      [
-        "quiet"
-        "splash"
-        "intremap=on"
-        "boot.shell_on_fail"
-        "udev.log_priority=3"
-        "rd.systemd.show_status=auto"
-        "resume_offset=533760"
-        # Adaptive backlight modulation. The panel backlight is the largest
-        # single consumer in the powertop report (26.6% utilisation). Levels are
-        # 0-4; ABM dims the backlight and compensates in the pixel data, so
-        # higher levels are increasingly visible on gradients and unsuitable for
-        # colour-critical work. Drop to 1 or remove if the shifts are noticeable.
-        "amdgpu.abmlevel=2"
-      ]
-      # Re-enable panel self refresh. nixos-hardware's framework-13-7040-amd
-      # module passes amdgpu.dcdebugmask=0x10, which is DC_DISABLE_PSR, a
-      # workaround for the eDP flicker bugs of the 6.x days. PSR lets the
-      # display pipeline and the memory controller idle whenever the screen is
-      # static, which on this panel is worth more than ABM.
+    kernelParams = [
+      "quiet"
+      "splash"
+      "intremap=on"
+      "boot.shell_on_fail"
+      "udev.log_priority=3"
+      "rd.systemd.show_status=auto"
+      "resume_offset=533760"
+      # Adaptive backlight modulation. The panel backlight is the largest
+      # single consumer in the powertop report (26.6% utilisation). Levels are
+      # 0-4; ABM dims the backlight and compensates in the pixel data, so
+      # higher levels are increasingly visible on gradients and unsuitable for
+      # colour-critical work. Drop to 1 or remove if the shifts are noticeable.
+      "amdgpu.abmlevel=2"
+      # Do NOT re-enable panel self refresh here. nixos-hardware's
+      # framework-13-7040-amd module passes amdgpu.dcdebugmask=0x10
+      # (DC_DISABLE_PSR); leave it alone. Overriding it with a mkAfter
+      # "amdgpu.dcdebugmask=0x0" was tried on 2026-08-18 and hard-hung the
+      # display twice in two days: DMCUB faults, then endless
+      # "[CRTC:369:crtc-0] flip_done timed out", so niri can never present
+      # another frame. The machine keeps running and stays reachable over ssh,
+      # but the screen is dead until a power-button reset. Both hangs began
+      # after a long static-screen idle, which is exactly when PSR engages.
       #
-      # kernelParams is a list, so nixos-hardware's value cannot be removed;
-      # mkAfter instead orders this assignment after it, and the kernel applies
-      # module parameters in command line order, so the last one wins. Confirm
-      # with /sys/module/amdgpu/parameters/dcdebugmask after a reboot, and drop
-      # this if flicker or black flashes reappear.
-      (lib.mkAfter [ "amdgpu.dcdebugmask=0x0" ])
+      # If it ever seems worth retrying, amdgpu.dcdebugmask=0x200
+      # (DC_DISABLE_PSR_SU) keeps PSR1 while disabling selective update, where
+      # most of the DMCUB bugs live. Note dcdebugmask is read-only at runtime,
+      # so any such experiment costs a rebuild and a reboot to test.
     ];
 
     resumeDevice = "/dev/disk/by-uuid/625de4d8-3972-4017-b0aa-de227f2cdf03";
