@@ -208,6 +208,7 @@ in
       "man"
       "network-manager-applet"
       "nh"
+      "obsidian"
       "ripgrep"
       "satty"
       "ssh"

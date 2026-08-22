@@ -27,6 +27,8 @@
       { id = "knheggckgoiihginacbkhaalnibhilkk"; }
       # paperpile
       { id = "bomfdkbfpdhijjbeoicnfhjbdhncfhig"; }
+      # obsidian web clipper
+      { id = "cnjifjpddelmedmihgijeibhnjfabmlf"; }
     ];
   };
 }
