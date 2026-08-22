@@ -220,7 +220,7 @@ in
     ++ [
       "claude-code"
       "direnv"
-      "emacs"
+      #"emacs"
       "gh"
       "herdr"
       "kenn-forge"
