@@ -222,9 +222,9 @@ in
       "gh"
       "herdr"
       "kenn-forge"
-      #"tmpi"
+      "pi-coding-agent"
       "vscode"
-      "zed"
+      #"tmpi"
     ]
     # multimedia
     ++ [
