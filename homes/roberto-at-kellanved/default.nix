@@ -129,7 +129,9 @@ in
       perf
       perf-tools
       pkgs.llm-agents.but
+      pkgs.llm-agents.codegraph
       pkgs.llm-agents.gitbutler
+      pkgs.llm-agents.skills
       universal-ctags
 
       nix-prefetch
