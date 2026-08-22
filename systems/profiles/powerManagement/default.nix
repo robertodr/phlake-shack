@@ -9,7 +9,15 @@
   # lid-close costs nothing. Needs boot.resumeDevice + resume_offset, which
   # kellanved already sets for its swapfile.
   services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
-  systemd.sleep.settings.Sleep.HibernateDelaySec = "30min";
+  systemd.sleep.settings.Sleep = {
+    HibernateDelaySec = "30min";
+    # ...but only off the charger. On AC there is nothing to save, and
+    # hibernating costs a full resume boot on a machine that was going to stay
+    # plugged in anyway. This keeps the system suspended while AC is connected
+    # and only starts the HibernateDelaySec countdown once it is unplugged, so
+    # a lid-close at the desk resumes instantly.
+    HibernateOnACPower = false;
+  };
 
   # Stop charging at 80%. The Framework EC exposes the threshold through
   # cros-charge-control; the attribute only appears once that driver has
