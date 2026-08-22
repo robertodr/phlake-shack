@@ -1,5 +1,5 @@
 {
-  programs.obsidan = {
+  programs.obsidian = {
     enable = true;
     cli.enable = true;
     defaultSettings = {
