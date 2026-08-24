@@ -112,35 +112,56 @@ in
       step-cli
       tealdeer
 
+      (aspellWithDicts (
+        ds: with ds; [
+          en
+          en-computers
+          en-science
+          it
+          nb
+          nn
+          sv
+        ]
+      ))
+
       autoconf
       automake
       awscli2
+      bash-language-server
       cachix
       clang-tools # TODO <- needed here?
+      cmake
       cmake-language-server
       delta
+      editorconfig-core-c
+      enchant
       flamegraph
+      gcc
       git-extras
       global
       gnumake
+      graphviz
       hotspot
       jless
       meld
       perf
       perf-tools
-      pkgs.llm-agents.but
-      pkgs.llm-agents.codegraph
-      pkgs.llm-agents.gitbutler
-      pkgs.llm-agents.skills
+      llm-agents.but
+      llm-agents.codegraph
+      llm-agents.gitbutler
+      llm-agents.skills
+      shellcheck
+      shfmt
       universal-ctags
 
+      nil
       nix-prefetch
       nix-prefetch-github
       nix-prefetch-scripts
       nix-tree
       nix-update
-      pkgsUnstable.nixfmt
       nixpkgs-lint
+      pkgsUnstable.nixfmt
 
       pkgsUnstable.tinymist
       pkgsUnstable.typst
