@@ -129,9 +129,8 @@ in
       awscli2
       bash-language-server
       cachix
-      clang-tools # TODO <- needed here?
+      clang-tools
       cmake
-      cmake-language-server
       delta
       editorconfig-core-c
       enchant
@@ -143,13 +142,15 @@ in
       graphviz
       hotspot
       jless
-      meld
-      perf
-      perf-tools
       llm-agents.but
       llm-agents.codegraph
       llm-agents.gitbutler
       llm-agents.skills
+      meld
+      perf
+      perf-tools
+      pkgsUnstable.gitu
+      pkgsUnstable.neocmakelsp
       shellcheck
       shfmt
       universal-ctags
