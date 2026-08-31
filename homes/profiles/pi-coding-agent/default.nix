@@ -15,5 +15,20 @@
       Prefix PR descriptions and comments on PRs with the line ":robot: _AI text
       below_ :robot:" to indicate you are an agent speaking on a user's behalf.
     '';
+    extraPackages = [
+      pkgs.nodejs
+      pkgs.bun
+    ];
+    settings = {
+      packages = [
+        "npm:@narumitw/pi-starship"
+        "npm:@termdraw/pi"
+        "npm:pi-diff-review"
+        "npm:pi-mcp-adapter"
+      ];
+      defaultModel = "gpt-5.6-sol";
+      defaultProvider = "openai-codex";
+      defaultThinkingLevel = "medium";
+    };
   };
 }
