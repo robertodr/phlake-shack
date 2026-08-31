@@ -96,12 +96,15 @@
             disko.nixosModules.disko
             home-manager.nixosModules.home-manager
             {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.sharedModules = [ ./homes/modules ];
-              home-manager.users.${user} = import (./. + "/homes/${user}-at-kellanved");
-              home-manager.extraSpecialArgs = {
-                inherit pkgsUnstable;
+              home-manager = {
+                backupFileExtension = "bak";
+                extraSpecialArgs = {
+                  inherit pkgsUnstable;
+                };
+                sharedModules = [ ./homes/modules ];
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.${user} = import (./. + "/homes/${user}-at-kellanved");
               };
             }
             impermanence.nixosModules.impermanence
