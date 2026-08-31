@@ -63,6 +63,49 @@ jobs:
           curl -fsSL "https://github.com/kenn-io/forge/archive/${REV}.tar.gz" \
             | tar xz -C "$WORKDIR" --strip-components=1
 
+          # bun2nix interprets 4-element package tuples as npm packages. Bun can
+          # record an aliased GitHub dependency using the repository name rather
+          # than the declared package name, which makes bun2nix's npm URL parser
+          # mistake the repository slash for an npm scope separator. Normalize
+          # those identifiers before generation; the next step replaces the
+          # resulting placeholder npm fetch with the real GitHub tarball.
+          python3 - "$WORKDIR/bun.lock" <<'PY'
+          import json, re, sys
+
+          path = sys.argv[1]
+          with open(path) as f:
+              content = f.read()
+          lock = json.loads(re.sub(r',(\s*[}\]])', r'\1', content))
+
+          github_packages = {}
+          for workspace in lock.get('workspaces', {}).values():
+              for section in ('dependencies', 'devDependencies'):
+                  for package, version in workspace.get(section, {}).items():
+                      if isinstance(version, str) and version.startswith('github:'):
+                          repo = version[len('github:'):].split('#', 1)[0]
+                          github_packages[repo] = package
+
+          for package_data in lock.get('packages', {}).values():
+              if not isinstance(package_data, list) or len(package_data) != 4:
+                  continue
+              identifier = package_data[0]
+              if not isinstance(identifier, str):
+                  continue
+              marker_at = identifier.find('@github:', 1 if identifier.startswith('@') else 0)
+              if marker_at < 0:
+                  continue
+              repo = identifier[marker_at + len('@github:'):].split('#', 1)[0]
+              declared_package = github_packages.get(repo)
+              if declared_package and identifier[:marker_at] != declared_package:
+                  normalized = declared_package + identifier[marker_at:]
+                  print(f'Normalized GitHub package identifier: {identifier} -> {normalized}')
+                  package_data[0] = normalized
+
+          with open(path, 'w') as f:
+              json.dump(lock, f, indent=2)
+              f.write('\n')
+          PY
+
           # Use the locked bun2nix rev for consistency with the Nix build steps
           BUN2NIX_REV=$(python3 -c "import json; d=json.load(open('flake.lock')); print(d['nodes']['bun2nix']['locked']['rev'])")
           REPO_DIR="$PWD"
@@ -81,6 +124,8 @@ jobs:
       - name: Fix GitHub dependency URLs in bun.nix
         if: steps.check.outputs.skip == 'false'
         shell: python
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           import json, os, re, subprocess, sys
 
@@ -98,10 +143,10 @@ jobs:
 
           lock = load_jsonc(bun_lock_path)
 
-          # Collect full GitHub commit SHAs from workspace dependency declarations.
-          # bun.lock stores the full SHA in workspace deps but only a short SHA
-          # in the packages section identifier used as the bun.nix key.
-          github_full_shas = {}  # "owner/repo" -> "full_sha"
+          # Collect GitHub refs from workspace dependency declarations. bun.lock
+          # usually stores a full SHA here, but may retain a tag while using a
+          # short resolved SHA in the packages section.
+          github_declared_refs = {}  # "owner/repo" -> "sha_or_tag"
           for workspace in lock.get('workspaces', {}).values():
               for deps in [workspace.get('dependencies', {}),
                            workspace.get('devDependencies', {})]:
@@ -109,8 +154,8 @@ jobs:
                       if isinstance(ver, str) and ver.startswith('github:'):
                           spec = ver[len('github:'):]
                           if '#' in spec:
-                              repo_path, full_sha = spec.split('#', 1)
-                              github_full_shas[repo_path] = full_sha
+                              repo_path, declared_ref = spec.split('#', 1)
+                              github_declared_refs[repo_path] = declared_ref
 
           # Find GitHub-spec entries in the packages section that use 4-element
           # format.  bun2nix treats these as npm packages and generates incorrect
@@ -156,16 +201,41 @@ jobs:
                   continue
               repo_path, short_rev = github_spec.split('#', 1)
 
-              full_sha = github_full_shas.get(repo_path)
-              if not full_sha:
-                  print(f'WARNING: no full SHA found for {repo_path}', file=sys.stderr)
+              declared_ref = github_declared_refs.get(repo_path)
+              if not declared_ref:
+                  print(f'WARNING: no declared ref found for {repo_path}', file=sys.stderr)
                   continue
-              if not full_sha.startswith(short_rev):
-                  print(
-                      f'WARNING: full SHA {full_sha!r} does not start with {short_rev!r}',
-                      file=sys.stderr,
-                  )
-                  continue
+
+              if declared_ref.startswith(short_rev):
+                  full_sha = declared_ref
+              else:
+                  # The tuple may identify an annotated tag object rather than
+                  # its target commit. Try the declared tag first, then a commit
+                  # lookup, and validate the result against Bun's short SHA.
+                  lookups = [
+                      (f'repos/{repo_path}/git/ref/tags/{declared_ref}', '.object.sha'),
+                      (f'repos/{repo_path}/commits/{declared_ref}', '.sha'),
+                  ]
+                  full_sha = None
+                  errors = []
+                  for endpoint, query in lookups:
+                      result = subprocess.run(
+                          ['gh', 'api', endpoint, '--jq', query],
+                          capture_output=True, text=True,
+                      )
+                      resolved = result.stdout.strip()
+                      if result.returncode == 0 and resolved.startswith(short_rev):
+                          full_sha = resolved
+                          break
+                      if result.stderr.strip():
+                          errors.append(result.stderr.strip())
+                  if not full_sha:
+                      print(
+                          f'WARNING: could not resolve {repo_path}#{short_rev}: '
+                          + '; '.join(errors),
+                          file=sys.stderr,
+                      )
+                      continue
 
               broken_url = compute_broken_npm_url(identifier)
               if not broken_url:

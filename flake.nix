@@ -3,7 +3,7 @@
 
   inputs = {
     bun2nix = {
-      url = "github:nix-community/bun2nix?ref=2.0.8";
+      url = "github:nix-community/bun2nix?ref=2.1.2";
     };
 
     disko = {
