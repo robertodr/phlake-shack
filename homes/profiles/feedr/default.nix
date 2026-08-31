@@ -4,15 +4,15 @@
     settings = {
       default_feeds = [
         {
-          url = "https://arxiv.org/rss/physics.chem-ph";
+          url = "https://export.arxiv.org/rss/physics.chem-ph";
           category = "Science";
         }
         {
-          url = "https://arxiv.org/rss/physics.comp-ph";
+          url = "https://export.arxiv.org/rss/physics.comp-ph";
           category = "Science";
         }
         {
-          url = "https://arxiv.org/rss/cond-mat.str-el";
+          url = "https://export.arxiv.org/rss/cond-mat.str-el";
           category = "Science";
         }
         {
@@ -24,35 +24,35 @@
           category = "Science";
         }
         {
-          url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=achre4";
+          url = "https://pubs.acs.org/rss/achre4/asap.xml";
           category = "Science";
         }
         {
-          url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=chreay";
+          url = "https://pubs.acs.org/rss/chreay/asap.xml";
           category = "Science";
         }
         {
-          url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jctcce";
+          url = "https://pubs.acs.org/rss/jctcce/asap.xml";
           category = "Science";
         }
         {
-          url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jceda8";
+          url = "https://pubs.acs.org/rss/jceda8/asap.xml";
           category = "Science";
         }
         {
-          url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jpcafh";
+          url = "https://pubs.acs.org/rss/jpcafh/asap.xml";
           category = "Science";
         }
         {
-          url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jpcbfk";
+          url = "https://pubs.acs.org/rss/jpcbfk/asap.xml";
           category = "Science";
         }
         {
-          url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jpccck";
+          url = "https://pubs.acs.org/rss/jpccck/asap.xml";
           category = "Science";
         }
         {
-          url = "https://pubs.acs.org/action/showFeed?type=axatoc&feed=rss&jc=jpclcd";
+          url = "https://pubs.acs.org/rss/jpclcd/asap.xml";
           category = "Science";
         }
         {
@@ -77,6 +77,10 @@
         }
         {
           url = "https://rss.sciencedirect.com/publication/science/00104655";
+          category = "Science";
+        }
+        {
+          url = "https://news.google.com/rss/search?q=site%3Achemrxiv.org+%22Theoretical+and+Computational+Chemistry%22&hl=en-US&gl=US&ceid=US%3Aen";
           category = "Science";
         }
         {
