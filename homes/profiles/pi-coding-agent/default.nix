@@ -1,7 +1,11 @@
 {
+  config,
   pkgs,
   ...
 }:
+let
+  tomlFormat = pkgs.formats.toml { };
+in
 {
   programs.pi-coding-agent = {
     enable = true;
@@ -31,4 +35,68 @@
       defaultThinkingLevel = "medium";
     };
   };
+
+  home.file."${config.programs.pi-coding-agent.configDir}/pi-starship.toml".source =
+    tomlFormat.generate "pi-starship.toml"
+      {
+        format = "$brand$model$thinking$directory$git_branch$git_status$activity$context$time";
+
+        model = {
+          format = "[ $symbol$model ]($style)";
+          symbol = "◆ ";
+          style = "bold blue";
+          truncation_length = 36;
+          truncation_symbol = "…";
+          truncation_direction = "middle";
+        };
+
+        directory.style = "cyan bold";
+        git_branch.style = "bold purple";
+
+        context = {
+          format = "[$symbol $percentage/$window ]($style)";
+          display = [
+            {
+              threshold = 0;
+              style = "bold green";
+              hidden = true;
+            }
+            {
+              threshold = 30;
+              style = "bold green";
+              hidden = false;
+            }
+            {
+              threshold = 60;
+              style = "bold yellow";
+              hidden = false;
+            }
+            {
+              threshold = 80;
+              style = "bold red";
+              hidden = false;
+            }
+          ];
+        };
+
+        git_metrics = {
+          added_style = "bold green";
+          deleted_style = "bold red";
+          disabled = false;
+        };
+
+        username = {
+          style_user = "yellow bold";
+          style_root = "red bold";
+        };
+
+        extension_status = {
+          format = "([$statuses ]($style))";
+          icons = {
+            "foo:*" = "🧪";
+            "third_party/key" = "◎";
+            fallback = "•";
+          };
+        };
+      };
 }
