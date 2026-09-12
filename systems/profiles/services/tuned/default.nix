@@ -11,7 +11,24 @@
   services.tuned = {
     enable = true;
     ppdSupport = true;
+    package = pkgs.tuned.overrideAttrs (old: {
+      patches = (old.patches or [ ]) ++ [ ./patches/systemd-sysctl-reapply.patch ];
+      postPatch = (old.postPatch or "") + ''
+        substituteInPlace tuned/plugins/plugin_sysctl.py \
+          --replace-fail '@systemd_sysctl@' '${config.systemd.package}/lib/systemd/systemd-sysctl'
+
+        # NetworkManager owns Wi-Fi power saving. The legacy iwpriv commands
+        # used here are unsupported by mt7921e; retain the USB actions.
+        substituteInPlace profiles/powersave/script.sh \
+          --replace-fail '    enable_wifi_powersave' '    # Wi-Fi power saving is managed by NetworkManager.' \
+          --replace-fail '    disable_wifi_powersave' '    # Wi-Fi power saving is managed by NetworkManager.'
+      '';
+    });
   };
+
+  # virt-what uses `which` to find its bundled CPUID helper. Without it the
+  # error misleadingly reports the helper itself as missing.
+  systemd.services.tuned.path = [ pkgs.which ];
 
   # Nothing drops the machine into the power-saver tier when the charger comes
   # out: that is normally the desktop environment's job, and niri has no such
@@ -59,6 +76,12 @@
       '';
     };
   };
+
+  # Recheck the power source after wake even if no charger uevent arrives.
+  # Queue a restart: this oneshot remains active after its first invocation.
+  powerManagement.resumeCommands = ''
+    ${config.systemd.package}/bin/systemctl --no-block restart tuned-power-source.service
+  '';
 
   # The charger emits a change uevent on both plug and unplug.
   services.udev.extraRules = ''

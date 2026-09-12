@@ -1,0 +1,34 @@
+Subject: [PATCH] sysctl: delegate system configuration to systemd-sysctl
+
+Use systemd's parser for sysctl.d precedence, globs, exclusions and
+ignore-failure prefixes. Leave profile application and rollback unchanged.
+Retain the legacy parser when TuneD-specific exclusions or /etc/sysctl.conf
+are in use, rather than silently discarding those semantics.
+
+--- a/tuned/plugins/plugin_sysctl.py
++++ b/tuned/plugins/plugin_sysctl.py
+@@ -113,6 +113,24 @@
+ 		return False
+ 
+ 	def _apply_system_sysctl(self, instance_sysctl):
++		exclusions = self._global_cfg.get_list(
++			consts.CFG_REAPPLY_SYSCTL_EXCLUDE,
++			consts.CFG_DEF_REAPPLY_SYSCTL_EXCLUDE
++		)
++		if exclusions or os.path.exists("/etc/sysctl.conf"):
++			log.warning("Using legacy sysctl parser because TuneD exclusions or /etc/sysctl.conf are present")
++			return self._apply_system_sysctl_legacy(instance_sysctl)
++
++		# Apply system settings after profile settings, using the same parser
++		# and configuration precedence as the boot-time systemd service.
++		log.info("Reapplying system sysctl with systemd-sysctl")
++		ret, output = self._cmd.execute(["@systemd_sysctl@"])
++		if ret != 0:
++			# commands.execute also logs stderr. Do not silently fall back and
++			# risk applying a different subset of the system configuration.
++			log.error("systemd-sysctl failed with exit status %s", ret)
++
++	def _apply_system_sysctl_legacy(self, instance_sysctl):
+ 		files = {}
+ 		for d in SYSCTL_CONFIG_DIRS:
+ 			try:
