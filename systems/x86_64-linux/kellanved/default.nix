@@ -198,7 +198,7 @@
               done
             '';
           })).override
-          { selected_themes = [ config.boot.plymouth.theme ]; }
+            { selected_themes = [ config.boot.plymouth.theme ]; }
         )
         (pkgs.runCommand "add-logos" { inherit (config.boot.plymouth) logo theme; } ''
           mkdir -p $out/share/plymouth/themes/$theme
@@ -236,6 +236,11 @@
     "sshca.my-eurohpc.eu".publicKey =
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBlPFxv2xhvg2Jlyt7TE8cTuVbk27LpFJmILWpXm/7xz";
   };
+
+  # Hyprlock uses native fingerprint authentication (configured in Home
+  # Manager), independently of password-only PAM. Do not have both paths
+  # compete for the reader. Fingerprint auth for sudo/login is unchanged.
+  security.pam.services.hyprlock.fprintAuth = false;
 
   security.polkit = {
     enable = true;

@@ -13,6 +13,16 @@ in
   programs.hyprlock = {
     enable = true;
     settings = {
+      # Run fingerprint authentication independently of password-only PAM.
+      # Keep security.pam.services.hyprlock.fprintAuth disabled on this host.
+      auth = {
+        pam = {
+          enabled = true;
+          module = "hyprlock";
+        };
+        fingerprint.enabled = true;
+      };
+
       general = {
         hide_cursor = true;
       };
