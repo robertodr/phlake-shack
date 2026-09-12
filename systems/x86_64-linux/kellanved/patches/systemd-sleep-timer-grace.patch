@@ -1,0 +1,27 @@
+Subject: [PATCH] sleep: allow a short grace period for wake timer readiness
+
+Local workaround for https://github.com/systemd/systemd/issues/38193.
+An RTC wake can precede timerfd readiness, causing a timed wake to be
+mistaken for a manual wake. Wait at most 500ms in both suspend-to-hibernate
+paths. This can delay manual wake processing by up to 500ms.
+
+--- a/src/sleep/sleep.c
++++ b/src/sleep/sleep.c
+@@ -460,7 +460,7 @@
+                 if (r < 0)
+                         return r;
+ 
+-                r = fd_wait_for_event(tfd, POLLIN, 0);
++                r = fd_wait_for_event(tfd, POLLIN, 500 * USEC_PER_MSEC);
+                 if (r < 0)
+                         return log_error_errno(r, "Error polling timerfd: %m");
+                 /* Store fd_wait status */
+@@ -574,7 +574,7 @@
+ 
+                         if (tfd >= 0) {
+                                 /* Check if our HibernateDelaySec timer fired */
+-                                r = fd_wait_for_event(tfd, POLLIN, 0);
++                                r = fd_wait_for_event(tfd, POLLIN, 500 * USEC_PER_MSEC);
+                                 if (r < 0)
+                                         return log_error_errno(r, "Error polling timerfd: %m");
+                                 if (FLAGS_SET(r, POLLIN)) {

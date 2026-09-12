@@ -58,6 +58,13 @@
     ]
   );
 
+  # Temporary workaround for timed wakes being mistaken for manual wakes.
+  # https://github.com/systemd/systemd/issues/38193
+  # Remove this override once upstream fixes the timer-readiness race.
+  systemd.package = pkgs.systemd.overrideAttrs (old: {
+    patches = (old.patches or [ ]) ++ [ ./patches/systemd-sleep-timer-grace.patch ];
+  });
+
   boot = {
     kernel = {
       sysctl = {
