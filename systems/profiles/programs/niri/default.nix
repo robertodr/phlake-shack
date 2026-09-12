@@ -3,9 +3,7 @@
 {
   programs.niri = {
     enable = true;
-    package = pkgs.niri.overrideAttrs (old: {
-      patches = (old.patches or [ ]) ++ [ ./patches/session-environment-allowlist.patch ];
-    });
+    package = pkgs.niri;
     # Thunar owns file management; the GTK portal handles file selection.
     # Avoid also advertising Nautilus as org.freedesktop.FileManager1.
     useNautilus = false;
