@@ -14,10 +14,7 @@ in
     enable = true;
     settings = {
       general = {
-        disable_loading_bar = true;
         hide_cursor = true;
-        no_fade_in = true;
-        no_fade_out = true;
       };
 
       background = [
@@ -84,7 +81,6 @@ in
           check_color = "rgb(${config.lib.stylix.colors.base0B})";
           fail_color = "rgb(${config.lib.stylix.colors.base08})"; # if authentication failed, changes outer_color and fail message color
           fail_text = "<i>$FAIL <b>($ATTEMPTS)</b></i>"; # can be set to empty
-          fail_transition = 300; # transition time in ms between normal outer_color and fail_color
           capslock_color = -1;
           numlock_color = -1;
           bothlock_color = -1; # when both locks are active. -1 means don't change outer color (same for above)
