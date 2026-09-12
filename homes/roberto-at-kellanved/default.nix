@@ -249,6 +249,7 @@ in
       "gh"
       "herdr"
       "kenn-forge"
+      "mcp"
       "pi-coding-agent"
       "vscode"
       #"tmpi"
