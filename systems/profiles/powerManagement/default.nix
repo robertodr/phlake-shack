@@ -1,4 +1,42 @@
 { pkgs, ... }:
+let
+  setChargeThreshold = pkgs.writeShellApplication {
+    name = "set-charge-threshold";
+    runtimeInputs = [
+      pkgs.sudo
+      pkgs.systemd
+    ];
+    text = ''
+      if [[ $# -ne 1 || ! $1 =~ ^([1-9]|[1-9][0-9]|100)$ ]]; then
+        echo "Usage: set-charge-threshold <1-100>" >&2
+        exit 2
+      fi
+
+      if [[ $EUID -ne 0 ]]; then
+        exec sudo "$0" "$@"
+      fi
+
+      shopt -s nullglob
+      attributes=(/sys/class/power_supply/BAT?/charge_control_end_threshold)
+      if [[ ''${#attributes[@]} -eq 0 ]]; then
+        echo "No battery charge threshold control found" >&2
+        exit 1
+      fi
+
+      # Override the declarative 80% rule for subsequent battery change events.
+      # /run is ephemeral, so rebooting restores the configured default.
+      mkdir -p /run/udev/rules.d
+      rule=/run/udev/rules.d/zz-charge-threshold.rules
+      printf 'ACTION=="add|change", SUBSYSTEM=="power_supply", KERNEL=="BAT?", ATTR{charge_control_end_threshold}="%s"\n' "$1" > "$rule"
+      udevadm control --reload
+
+      for attribute in "''${attributes[@]}"; do
+        printf '%s\n' "$1" > "$attribute"
+        echo "Charge threshold for ''${attribute%/*} set to $1% (until reboot)"
+      done
+    '';
+  };
+in
 {
   # Do nothing when the lid is closed while docked (external display connected)
   services.logind.settings.Login.HandleLidSwitchDocked = "ignore";
@@ -42,6 +80,9 @@
   };
 
   environment = {
-    systemPackages = [ pkgs.powertop ];
+    systemPackages = [
+      pkgs.powertop
+      setChargeThreshold
+    ];
   };
 }
