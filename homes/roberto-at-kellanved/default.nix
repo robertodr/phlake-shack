@@ -155,14 +155,14 @@ in
       shfmt
       universal-ctags
 
-      nil
+      nixd
       nix-prefetch
       nix-prefetch-github
       nix-prefetch-scripts
       nix-tree
       nix-update
       nixpkgs-lint
-      pkgsUnstable.nixfmt
+      nixfmt
 
       pkgsUnstable.tinymist
       pkgsUnstable.typst

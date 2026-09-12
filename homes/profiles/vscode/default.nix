@@ -116,9 +116,9 @@
           "cursor-workspace" = false;
         };
         "nix.enableLanguageServer" = true;
-        "nix.serverPath" = "nil";
+        "nix.serverPath" = "nixd";
         "nix.serverSettings" = {
-          "nil" = {
+          "nixd" = {
             "formatting" = {
               "command" = [ "nixfmt" ];
             };

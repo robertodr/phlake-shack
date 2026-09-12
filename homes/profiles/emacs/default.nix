@@ -101,7 +101,7 @@ in
     dockerfile-language-server
     dockfmt
     #: nix
-    nil
+    nixd
     #: sh
     pkgs.bash-language-server
     shfmt
