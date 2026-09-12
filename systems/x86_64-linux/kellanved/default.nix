@@ -271,6 +271,7 @@
         }
       ];
       files = [
+        "/etc/machine-id"
         {
           file = "/var/keys/secret_file";
           parentDirectory = {
