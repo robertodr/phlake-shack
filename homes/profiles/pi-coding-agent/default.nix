@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }:
@@ -25,7 +26,7 @@ in
     ];
     settings = {
       packages = [
-        "npm:@narumitw/pi-starship"
+        "npm:@narumitw/pi-starship@0.54.0"
         "npm:@termdraw/pi"
         "npm:pi-diff-review"
         "npm:pi-mcp-adapter"
@@ -36,14 +37,48 @@ in
     };
   };
 
+  # pi is a Bun-compiled executable. Bun cannot resolve pi-starship's lazy
+  # createRequire("smol-toml") call even though npm installed the dependency.
+  # Replace it with a regular ESM import, which Pi's extension loader resolves.
+  home.activation.patchPiStarship = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    starship_chunks="${config.programs.pi-coding-agent.configDir}/npm/node_modules/@narumitw/pi-starship/dist/chunks"
+    if [ -d "$starship_chunks" ]; then
+      ${pkgs.python3}/bin/python3 - "$starship_chunks" <<'PY'
+    import pathlib
+    import sys
+
+    chunks = pathlib.Path(sys.argv[1])
+    old_import = 'import { createRequire } from "node:module";'
+    new_import = 'import { parse as parseSmolToml } from "smol-toml";'
+    old_parser = """var require2 = createRequire(import.meta.url);
+    var parseTomlImplementation;
+    function parseToml(document) {
+      parseTomlImplementation ??= require2("smol-toml").parse;
+      return parseTomlImplementation(document);
+    }"""
+    new_parser = """function parseToml(document) {
+      return parseSmolToml(document);
+    }"""
+
+    for path in chunks.glob("*.js"):
+        source = path.read_text()
+        if old_parser not in source:
+            continue
+        path.write_text(source.replace(old_import, new_import).replace(old_parser, new_parser))
+        break
+    PY
+    fi
+  '';
+
   home.file."${config.programs.pi-coding-agent.configDir}/pi-starship.toml".source =
     tomlFormat.generate "pi-starship.toml"
       {
-        format = "$brand$model$thinking$directory$git_branch$git_status$activity$context$time";
+        format = "$brand$turn$activity$context$tokens$cost$time$provider$model$thinking$directory$git_branch$git_status";
+
+        provider.format = "[ $provider ]($style)";
 
         model = {
-          format = "[ $symbol$model ]($style)";
-          symbol = "◆ ";
+          format = "[ $model ]($style)";
           style = "bold blue";
           truncation_length = 36;
           truncation_symbol = "…";
@@ -59,7 +94,7 @@ in
             {
               threshold = 0;
               style = "bold green";
-              hidden = true;
+              hidden = false;
             }
             {
               threshold = 30;

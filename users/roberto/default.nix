@@ -48,8 +48,7 @@
         # * https://fzakaria.com/2024/07/17/fish-the-bash-way.html
         # * https://wiki.nixos.org/wiki/Fish#Setting_fish_as_your_shell
         shell = pkgs.bash;
-        #hashedPassword = "$y$j9T$9CT7imGp.njKexGkzwsTh/$7y/T3A6cPIvy7CFKEBOJzil4sJmof0IaFR9BlJr2b15";
-        hashedPassword = "$y$j9T$kY8/oDUBOKl1KW7z4.Ek31$.XlVT1EL35Y74RyUekzI7E.MXqn6reWST4sJtOilhv4";
+        hashedPassword = "$y$j9T$6AnZ6Q546y3GhlVbYSBWP0$StEws34Od01nqa8HqFUEFWO3F6nzntztW0Tn/zB4l5D";
       };
     };
   };

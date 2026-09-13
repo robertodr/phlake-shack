@@ -62,17 +62,24 @@ in
     ACTION=="change", SUBSYSTEM=="power_supply", KERNEL=="ACAD", RUN+="${config.systemd.package}/bin/systemctl --no-block restart usb-autosuspend-power-source.service bluetooth-power-source.service"
   '';
 
+  # NixOS runs resumeCommands when sleep-actions.service stops after wake.
+  # Explicitly restart these RemainAfterExit services so they run every time;
+  # starting an already-active service would do nothing. Queue the jobs without
+  # blocking the sleep transaction on services with normal target ordering.
+  powerManagement.resumeCommands = ''
+    ${config.systemd.package}/bin/systemctl --no-block restart usb-autosuspend-power-source.service bluetooth-power-source.service
+    ${lib.optionalString disableWifiDeepSleep ''
+      ${config.systemd.package}/bin/systemctl --no-block restart mt76-no-deep-sleep.service
+    ''}
+  '';
+
   # Autosuspend costs latency on wake and upsets some peripherals (hubs,
   # docks, audio interfaces), and the power it saves only matters off the
   # charger. So keep it on battery and switch it off on AC, following the
   # power-source handling in the tuned profile.
   systemd.services.usb-autosuspend-power-source = {
     description = "Set USB autosuspend to match the current power source";
-    wantedBy = [
-      "multi-user.target"
-      "post-resume.target"
-    ];
-    after = [ "post-resume.target" ];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
@@ -102,21 +109,44 @@ in
     };
   };
 
-  # Bluetooth is powerOnBoot = false in the bluetooth profile so the radio does
-  # not idle at 100% utilisation on battery. On AC there is nothing to save, so
-  # power the adapter up and skip the "powers up on first use" wait. Coming off
-  # AC powers it back down, but only when nothing is connected: unplugging
-  # should not drop headphones or a mouse mid-use.
-  systemd.services.bluetooth-power-source = {
-    description = "Power the Bluetooth adapter to match the current power source";
-    wantedBy = [
-      "multi-user.target"
-      "post-resume.target"
-    ];
+  # Disconnect Bluetooth before every suspend/hibernate, not after waking.
+  # StopWhenUnneeded resets this oneshot after sleep.target stops, so the
+  # next sleep runs it again. Bound failures so BlueZ cannot block sleep.
+  systemd.services.bluetooth-sleep = {
+    description = "Power off Bluetooth before sleep";
+    wantedBy = [ "sleep.target" ];
+    before = [ "sleep.target" ];
     after = [
       "bluetooth.service"
-      "post-resume.target"
+      "bluetooth-power-source.service"
     ];
+    unitConfig.StopWhenUnneeded = true;
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      if ! ${config.systemd.package}/bin/systemctl is-active --quiet bluetooth.service; then
+        echo "bluetooth: daemon inactive, nothing to power off"
+        exit 0
+      fi
+
+      if ${pkgs.coreutils}/bin/timeout 5s ${config.hardware.bluetooth.package}/bin/bluetoothctl power off; then
+        echo "bluetooth: powered off before sleep"
+      else
+        echo "bluetooth: could not power off before sleep; continuing" >&2
+      fi
+    '';
+  };
+
+  # Bluetooth starts off at boot (powerOnBoot = false), and bluetooth-sleep
+  # turns it off before sleeping. Enable it on AC; on battery leave it off
+  # after wake until the user enables it. Preserve manual changes on battery
+  # rather than interrupting connections whenever a charger uevent arrives.
+  systemd.services.bluetooth-power-source = {
+    description = "Power the Bluetooth adapter to match the current power source";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "bluetooth.service" ];
     wants = [ "bluetooth.service" ];
     serviceConfig = {
       Type = "oneshot";
@@ -124,6 +154,13 @@ in
       ExecStart = pkgs.writeShellScript "bluetooth-power-source" ''
         set -u
         bluetoothctl=${config.hardware.bluetooth.package}/bin/bluetoothctl
+
+        # Ignore charger events during sleep (including the intermediate
+        # suspend-to-hibernate wake). The resume hook retries after sleep.
+        if ${config.systemd.package}/bin/systemctl is-active --quiet sleep.target; then
+          echo "bluetooth: sleep in progress, leaving adapter off"
+          exit 0
+        fi
 
         # The controller registers with bluetoothd asynchronously, and on
         # resume it is re-added after the daemon is already up.
@@ -142,13 +179,7 @@ in
           exit 0
         fi
 
-        if [ -n "$($bluetoothctl devices Connected)" ]; then
-          echo "bluetooth: left powered, device still connected"
-          exit 0
-        fi
-
-        $bluetoothctl power off
-        echo "bluetooth: powered off (battery, idle)"
+        echo "bluetooth: preserving adapter power state (battery)"
       '';
     };
   };
@@ -163,11 +194,7 @@ in
   # reapplied on resume because debugfs state does not survive the reset.
   systemd.services.mt76-no-deep-sleep = lib.mkIf disableWifiDeepSleep {
     description = "Disable mt76 deep sleep (keeps 802.11 power save on)";
-    wantedBy = [
-      "multi-user.target"
-      "post-resume.target"
-    ];
-    after = [ "post-resume.target" ];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;

@@ -144,7 +144,9 @@ in
       jless
       llm-agents.but
       llm-agents.codegraph
+      llm-agents.coderabbit-cli
       llm-agents.gitbutler
+      llm-agents.qmd
       llm-agents.skills
       meld
       perf
@@ -247,6 +249,7 @@ in
       "gh"
       "herdr"
       "kenn-forge"
+      "mcp"
       "pi-coding-agent"
       "vscode"
       #"tmpi"

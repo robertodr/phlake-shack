@@ -27,11 +27,13 @@ let
       # /run is ephemeral, so rebooting restores the configured default.
       mkdir -p /run/udev/rules.d
       rule=/run/udev/rules.d/zz-charge-threshold.rules
-      printf 'ACTION=="add|change", SUBSYSTEM=="power_supply", KERNEL=="BAT?", ATTR{charge_control_end_threshold}="%s"\n' "$1" > "$rule"
+      printf 'ACTION=="add|change", SUBSYSTEM=="power_supply", KERNEL=="BAT?", ATTR{charge_control_end_threshold}=="?*", ATTR{charge_control_end_threshold}!="%s", ATTR{charge_control_end_threshold}="%s"\n' "$1" "$1" > "$rule"
       udevadm control --reload
 
       for attribute in "''${attributes[@]}"; do
-        printf '%s\n' "$1" > "$attribute"
+        if [[ $(< "$attribute") != "$1" ]]; then
+          printf '%s\n' "$1" > "$attribute"
+        fi
         echo "Charge threshold for ''${attribute%/*} set to $1% (until reboot)"
       done
     '';
@@ -60,9 +62,13 @@ in
   # Stop charging at 80%. The Framework EC exposes the threshold through
   # cros-charge-control; the attribute only appears once that driver has
   # probed, hence the change action alongside add. Raise to 100 before a trip
-  # where the extra fifth of the pack matters.
+  # where the extra fifth of the pack matters. Skip redundant EC writes as a
+  # mitigation experiment for https://github.com/FrameworkComputer/SoftwareFirmwareIssueTracker/issues/107
+  # (a causal link to TSC instability is not established). When a temporary
+  # override exists, leave it in charge rather than writing 80 then its value
+  # on every event. The attribute-existence check still guards driver probing.
   services.udev.extraRules = ''
-    ACTION=="add|change", SUBSYSTEM=="power_supply", KERNEL=="BAT?", ATTR{charge_control_end_threshold}=="?*", ATTR{charge_control_end_threshold}="80"
+    ACTION=="add|change", SUBSYSTEM=="power_supply", KERNEL=="BAT?", TEST!="/run/udev/rules.d/zz-charge-threshold.rules", ATTR{charge_control_end_threshold}=="?*", ATTR{charge_control_end_threshold}!="80", ATTR{charge_control_end_threshold}="80"
   '';
 
   powerManagement = {
