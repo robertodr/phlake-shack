@@ -275,8 +275,7 @@ in
       "hyprpaper"
       #"shikane"
       "vicinae"
-      "waybar"
-      #"noctalia-shell"
+      "noctalia-shell"
       "wayland/niri"
       "wlogout"
     ]

@@ -32,6 +32,11 @@
       url = "github:nixos/nixos-hardware";
     };
 
+    noctalia = {
+      # Track the latest revision already built by Noctalia's binary cache.
+      url = "github:noctalia-dev/noctalia/cachix";
+    };
+
     nixpkgs = {
       url = "github:nixos/nixpkgs/nixos-26.05";
     };
@@ -58,6 +63,7 @@
       llm-agents,
       nix4vscode,
       nixos-hardware,
+      noctalia,
       nixpkgs,
       sops-nix,
       stylix,
@@ -101,7 +107,10 @@
                 extraSpecialArgs = {
                   inherit pkgsUnstable;
                 };
-                sharedModules = [ ./homes/modules ];
+                sharedModules = [
+                  ./homes/modules
+                  noctalia.homeModules.default
+                ];
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.${user} = import (./. + "/homes/${user}-at-kellanved");
