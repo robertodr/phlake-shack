@@ -74,7 +74,7 @@ spawn-at-startup "ghostty"
 spawn-at-startup "vivaldi"
 spawn-at-startup "ferdium"
 spawn-at-startup "udiskie" "--smart-tray"
-spawn-at-startup "1password" "--silent"
+spawn-at-startup "start-1password-after-tray"
 
 hotkey-overlay {
     skip-at-startup
