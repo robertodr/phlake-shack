@@ -264,8 +264,6 @@ in
     # wm
     ++ [
       "gtk"
-      "hypridle"
-      "hyprlock"
       #"shikane"
       "noctalia-shell"
       "wayland/niri"

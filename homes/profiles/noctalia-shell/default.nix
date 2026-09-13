@@ -65,16 +65,42 @@ in
         allow_empty_password = false;
         wallpaper = "";
       };
-      idle.behavior = {
-        lock = {
-          timeout = 0;
-          action = "lock";
-          enabled = false;
-        };
-        "screen-off" = {
-          timeout = 0;
-          action = "screen_off";
-          enabled = false;
+      idle = {
+        behavior_order = [
+          "display-dim"
+          "keyboard-backlight-off"
+          "lock"
+          "screen-off"
+          "suspend"
+        ];
+        pre_action_fade_seconds = 0.0;
+
+        behavior = {
+          "display-dim" = {
+            timeout = 300;
+            action = "command";
+            command = "${lib.getExe pkgs.brightnessctl} -s set 10";
+            resume_command = "${lib.getExe pkgs.brightnessctl} -r";
+          };
+          "keyboard-backlight-off" = {
+            timeout = 300;
+            action = "command";
+            command = "${lib.getExe pkgs.brightnessctl} -sd '*::kbd_backlight' set 0";
+            resume_command = "${lib.getExe pkgs.brightnessctl} -rd '*::kbd_backlight'";
+          };
+          lock = {
+            timeout = 360;
+            action = "lock";
+          };
+          "screen-off" = {
+            timeout = 390;
+            action = "screen_off";
+          };
+          suspend = {
+            timeout = 3600;
+            action = "command";
+            command = "systemctl suspend-then-hibernate";
+          };
         };
       };
       dock.enabled = false;
