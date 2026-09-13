@@ -1,7 +1,7 @@
 { ... }:
 let
-  # avoid starting multiple hyprlock instances
-  lock_cmd = "playerctl -a pause; pidof hyprlock || hyprlock";
+  # Keep Hypridle's proven timers during the Noctalia lock-screen trial.
+  lock_cmd = "playerctl -a pause; noctalia msg session lock";
   display = status: "niri msg action power-${status}-monitors";
 in
 {

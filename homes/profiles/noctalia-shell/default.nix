@@ -50,12 +50,33 @@ in
         transition_on_startup = false;
         default.path = "${wallpaper}";
       };
-      hooks.started = [
-        "noctalia msg wallpaper-set '${wallpaper}'"
-        "noctalia msg wallpaper-set eDP-1 '${wallpaperLaptop}'"
-      ];
+      hooks = {
+        started = [
+          "noctalia msg wallpaper-set '${wallpaper}'"
+          "noctalia msg wallpaper-set eDP-1 '${wallpaperLaptop}'"
+        ];
+        session_locked = "playerctl -a pause";
+      };
       notification.enable_daemon = true;
-      lockscreen.enabled = false;
+      lockscreen = {
+        enabled = true;
+        lock_before_suspend = true;
+        fingerprint = true;
+        allow_empty_password = false;
+        wallpaper = "";
+      };
+      idle.behavior = {
+        lock = {
+          timeout = 0;
+          action = "lock";
+          enabled = false;
+        };
+        "screen-off" = {
+          timeout = 0;
+          action = "screen_off";
+          enabled = false;
+        };
+      };
       dock.enabled = false;
 
       osd.enabled = true;

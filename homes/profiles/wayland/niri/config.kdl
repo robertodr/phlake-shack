@@ -158,7 +158,7 @@ binds {
     }
     Super+Shift+E hotkey-overlay-title="Open Thunar" { spawn "thunar"; }
     Super+L hotkey-overlay-title="Lock screen" {
-        spawn-sh "playerctl -a pause; pgrep hyprlock || hyprlock";
+        spawn "noctalia" "msg" "session" "lock";
     }
     Super+Escape hotkey-overlay-title="Session menu" {
         spawn "noctalia" "msg" "panel-toggle" "session";

@@ -237,10 +237,14 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBlPFxv2xhvg2Jlyt7TE8cTuVbk27LpFJmILWpXm/7xz";
   };
 
-  # Hyprlock uses native fingerprint authentication (configured in Home
-  # Manager), independently of password-only PAM. Do not have both paths
-  # compete for the reader. Fingerprint auth for sudo/login is unchanged.
-  security.pam.services.hyprlock.fprintAuth = false;
+  # Hyprlock and Noctalia both drive fprintd directly. Keep fingerprint out of
+  # their password PAM transactions so password submission reaches pam_unix
+  # immediately instead of waiting for another fingerprint scan. Fingerprint
+  # authentication for sudo remains unchanged; text-console login does not need it.
+  security.pam.services = {
+    hyprlock.fprintAuth = false;
+    login.fprintAuth = false;
+  };
 
   security.polkit = {
     enable = true;
