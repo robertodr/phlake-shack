@@ -121,14 +121,7 @@ window-rule {
     block-out-from "screen-capture"
 }
 
-// Floating utility terminals launched with custom app-ids from binds below.
-window-rule {
-    match app-id=r#"clipse$"#
-    open-floating true
-    default-column-width { fixed 1200; }
-    default-window-height { fixed 600;  }
-}
-
+// Floating utility terminal launched with a custom app-id from a bind below.
 window-rule {
     match app-id=r#"numbat$"#
     open-floating true
@@ -312,7 +305,7 @@ binds {
     // rather than stacked on top of each other.
     Super+W { toggle-column-tabbed-display; }
 
-    Print { spawn-sh "TAKE-SCREENSHOT"; }
+    Print { spawn "noctalia" "msg" "screenshot-region"; }
     Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
 
@@ -333,10 +326,11 @@ binds {
     // moving the mouse or pressing any other key.
     Super+Shift+P { power-off-monitors; }
 
-    // Utility terminals with custom app-ids so window rules can match:
-    Super+C hotkey-overlay-title="Open clipse" {
-        spawn "ghostty" "--class=com.roberto.clipse" "--title=clipse" "-e" "fish" "-c" "clipse -fc $fish_pid";
+    Super+C hotkey-overlay-title="Open clipboard history" {
+        spawn "noctalia" "msg" "panel-toggle" "clipboard";
     }
+
+    // Utility terminal with a custom app-id so the window rule can match.
     Super+N hotkey-overlay-title="Open numbat" {
         spawn "ghostty" "--class=com.roberto.numbat" "--title=numbat" "-e" "numbat";
     }

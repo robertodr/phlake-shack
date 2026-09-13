@@ -231,7 +231,6 @@ in
       "nh"
       "obsidian"
       "ripgrep"
-      "satty"
       "ssh"
       "starship"
       "tealdeer"
@@ -264,11 +263,9 @@ in
     ]
     # wm
     ++ [
-      "clipse"
       "gtk"
       "hypridle"
       "hyprlock"
-      "hyprpaper"
       #"shikane"
       "noctalia-shell"
       "wayland/niri"

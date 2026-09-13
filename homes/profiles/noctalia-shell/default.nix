@@ -1,4 +1,19 @@
-{ pkgs, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  wallpaperLaptop = pkgs.fetchurl {
+    url = "https://w.wallhaven.cc/full/nm/wallhaven-nmeo81.png";
+    sha256 = "sha256-HhUXLU+QqYYY07LdxVF6bAKevSzPaJXbAYm6qf4g7rc=";
+  };
+  wallpaper = pkgs.fetchurl {
+    url = "https://w.wallhaven.cc/full/1p/wallhaven-1pewy3.png";
+    sha256 = "sha256-nk2IoRxKa4Y7k5PsrfqrH4sIoPk+h3WnIp25rABzQPg=";
+  };
+in
 {
   programs.noctalia = {
     enable = true;
@@ -7,11 +22,38 @@
     settings = {
       shell = {
         font_family = "M PLUS 2";
-        clipboard_enabled = false;
+        clipboard_enabled = true;
+        clipboard_keep_from_closed_apps = true;
+        clipboard_history_max_entries = 100;
+        clipboard_confirm_clear_history = true;
+        clipboard_auto_paste = "auto";
         launch_apps_as_systemd_services = true;
         polkit_agent = true;
+
+        screenshot = {
+          save_to_file = true;
+          directory = "${config.xdg.userDirs.pictures}/Screenshots";
+          filename_pattern = "Screenshot_%Y-%m-%d_%H-%M-%S";
+          copy_to_clipboard = true;
+          freeze_screen = true;
+          confirm_region = false;
+          remember_last_region = false;
+          show_cursor = false;
+          annotate = true;
+          close_on_copy = true;
+          pipe_to_command = false;
+        };
       };
-      wallpaper.enabled = false;
+      wallpaper = {
+        enabled = true;
+        fill_mode = "crop";
+        transition_on_startup = false;
+        default.path = "${wallpaper}";
+      };
+      hooks.started = [
+        "noctalia msg wallpaper-set '${wallpaper}'"
+        "noctalia msg wallpaper-set eDP-1 '${wallpaperLaptop}'"
+      ];
       notification.enable_daemon = true;
       lockscreen.enabled = false;
       dock.enabled = false;
