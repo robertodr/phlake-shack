@@ -5,29 +5,38 @@
     systemd.enable = true;
 
     settings = {
-      # Noctalia is replacing Waybar only. Keep the existing Mako, Hyprpaper,
-      # Hyprlock, Clipse, and compositor idle setup in charge of their surfaces.
       shell = {
         font_family = "M PLUS 2";
         clipboard_enabled = false;
         launch_apps_as_systemd_services = true;
+        polkit_agent = true;
       };
       wallpaper.enabled = false;
-      notification.enable_daemon = false;
+      notification.enable_daemon = true;
       lockscreen.enabled = false;
       dock.enabled = false;
 
-      osd.enabled = false;
+      osd.enabled = true;
 
-      # This replaces wttr.py: Open-Meteo provides the current conditions and
-      # forecast, while IP geolocation preserves the old automatic location.
+      # Open-Meteo provides weather while the shared fixed location also drives
+      # the night-light schedule formerly managed by Gammastep.
       weather = {
         enabled = true;
         refresh_minutes = 30;
         unit = "metric";
         effects = false;
       };
-      location.auto_locate = true;
+      location = {
+        auto_locate = false;
+        latitude = 59.96869229547849;
+        longitude = 10.867898284676471;
+      };
+      nightlight = {
+        enabled = true;
+        force = false;
+        temperature_day = 5500;
+        temperature_night = 3700;
+      };
 
       system.monitor = {
         enabled = true;
@@ -71,6 +80,9 @@
           center = [ "group:clock-weather" ];
           end = [
             "group:hardware"
+            "network"
+            "bluetooth"
+            "notifications"
             "tray"
           ];
 
@@ -248,6 +260,10 @@
           hide_when_full = false;
           warning_color = "#f53c3c";
         };
+
+        network.type = "network";
+        bluetooth.type = "bluetooth";
+        notifications.type = "notifications";
 
         tray = {
           hide_passive = false;

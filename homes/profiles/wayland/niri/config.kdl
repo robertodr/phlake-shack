@@ -160,19 +160,25 @@ binds {
 
     // Launchers
     Super+Return hotkey-overlay-title="Open ghostty" { spawn "ghostty"; }
-    Super+D hotkey-overlay-title="Open vicinae" { spawn "vicinae" "toggle"; }
+    Super+D hotkey-overlay-title="Open application launcher" {
+        spawn "noctalia" "msg" "panel-toggle" "launcher";
+    }
     Super+Shift+E hotkey-overlay-title="Open Thunar" { spawn "thunar"; }
-    Super+L hotkey-overlay-title="Lock screen" { spawn-sh "playerctl -a pause; pgrep hyprlock || hyprlock"; }
-    Super+Escape hotkey-overlay-title="Logout menu" { spawn "wlogout" "-p" "layer-shell"; }
+    Super+L hotkey-overlay-title="Lock screen" {
+        spawn-sh "playerctl -a pause; pgrep hyprlock || hyprlock";
+    }
+    Super+Escape hotkey-overlay-title="Session menu" {
+        spawn "noctalia" "msg" "panel-toggle" "session";
+    }
 
     XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
     XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
     Super+XF86AudioMute allow-when-locked=true { spawn "wpctl set-mute @DEFAULT_AUDIO_SOURCE@" "toggle"; }
 
-    XF86AudioPlay allow-when-locked=true { spawn "playerctl" "play-pause"; }
-    XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
-    XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
+    XF86AudioPlay allow-when-locked=true { spawn "noctalia" "msg" "media" "toggle"; }
+    XF86AudioPrev allow-when-locked=true { spawn "noctalia" "msg" "media" "previous"; }
+    XF86AudioNext allow-when-locked=true { spawn "noctalia" "msg" "media" "next"; }
 
     XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%+"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%-"; }
