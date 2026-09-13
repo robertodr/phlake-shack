@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   ...
 }:
 let
@@ -75,11 +74,7 @@ in
       emacs.enable = false;
       gtksourceview.enable = false;
       hyprland.enable = false;
-      hyprland.hyprpaper.enable = false;
-      hyprlock.enable = false;
-      hyprpaper.enable = lib.mkDefault false;
       vscode.enable = false;
-      waybar.enable = false;
       firefox.enable = false;
     };
   };

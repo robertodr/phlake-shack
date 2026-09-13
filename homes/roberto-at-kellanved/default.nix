@@ -253,7 +253,6 @@ in
     # multimedia
     ++ [
       "mpris-proxy"
-      "playerctld"
       "vivaldi"
     ]
     # office

@@ -55,8 +55,5 @@
     };
   };
 
-  # hyprlock needs PAM access to authenticate, else it fallbacks to su
-  # hyprlock and hypridle are installed/configured through home-manager
-  security.pam.services.hyprlock = { };
   security.pam.services.niri.enableGnomeKeyring = true;
 }

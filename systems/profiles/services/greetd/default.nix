@@ -118,7 +118,6 @@ in
 
   # greetd systemd service configuration
   # CRITICAL for autologin to work properly
-  # https://www.reddit.com/r/NixOS/comments/u0cdpi/tuigreet_with_xmonad_how/
   systemd.services.greetd.serviceConfig = {
     Type = "idle"; # DO NOT CHANGE - "simple" breaks autologin!
     StandardInput = "tty";
