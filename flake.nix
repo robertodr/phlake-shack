@@ -37,6 +37,11 @@
       url = "github:noctalia-dev/noctalia/cachix";
     };
 
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixpkgs = {
       url = "github:nixos/nixpkgs/nixos-26.05";
     };
@@ -64,6 +69,7 @@
       nix4vscode,
       nixos-hardware,
       noctalia,
+      noctalia-greeter,
       nixpkgs,
       sops-nix,
       stylix,
@@ -118,6 +124,7 @@
             }
             impermanence.nixosModules.impermanence
             nixos-hardware.nixosModules.framework-13-7040-amd
+            noctalia-greeter.nixosModules.default
             sops-nix.nixosModules.sops
             stylix.nixosModules.stylix
           ];

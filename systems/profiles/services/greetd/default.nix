@@ -5,15 +5,8 @@
   ...
 }:
 let
-  tuigreet = lib.getExe pkgs.tuigreet;
   username = "roberto";
   session = "niri-session";
-
-  # Theme colors and spacing
-  containerColor = "darkgray";
-  borderColor = "lightblue";
-  containerPadding = "3";
-  timeFormat = "'%_H:%M • %A • %B, %d %Y'";
 
   # Package for pam_fde_boot_pw - retrieves LUKS password from systemd
   # https://git.sr.ht/~kennylevinsen/pam_fde_boot_pw
@@ -60,6 +53,10 @@ in
       enableGnomeKeyring = true;
       gnupg.enable = true;
 
+      # Check the supplied password before falling back to the fingerprint
+      # reader. Otherwise pam_fprintd delays every password login.
+      rules.auth.fprintd.order = 13000;
+
       # Add pam_fde_boot_pw rule BEFORE gnome_keyring in the session phase
       # This ensures the LUKS password is injected before gnome-keyring tries to unlock
       # Order 12500 (gnome_keyring appears to be 12600, so this runs before it)
@@ -77,20 +74,45 @@ in
     gdm-password.enableGnomeKeyring = true;
   };
 
-  # greetd configuration
+  services.displayManager.noctalia-greeter = {
+    enable = true;
+    passwordless-sync-users = [ username ];
+
+    settings = {
+      session.default = "Niri";
+      user.default = username;
+
+      appearance = {
+        scheme = "Synced";
+        password_style = "default";
+      };
+
+      idle.timeout = 300;
+
+      keyboard = {
+        layout = "it,no,se,us";
+        variant = "us,,,colemak";
+        options = "grp:alt_shift_toggle";
+        numlock = true;
+      };
+
+      auth = {
+        allow_empty_password = false;
+        request_timeout = 60;
+      };
+    };
+  };
+
+  # Keep automatic login as greetd's initial session. The Noctalia Greeter
+  # module supplies default_session.command for interactive login after logout.
   services.greetd = {
     enable = true;
     settings = {
-      # initial_session is used for autologin
       initial_session = {
-        command = "${session}";
-        user = "${username}";
+        command = session;
+        user = username;
       };
-      # default_session is used for manual login
-      default_session = {
-        command = "${tuigreet} --remember --asterisks --container-padding ${containerPadding} --time --time-format ${timeFormat} --cmd '${session}' --theme 'container=${containerColor};border=${borderColor}'";
-        user = "greeter";
-      };
+      default_session.user = "greeter";
     };
   };
 

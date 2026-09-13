@@ -30,6 +30,11 @@ in
         launch_apps_as_systemd_services = true;
         polkit_agent = true;
 
+        greeter_sync = {
+          auto_sync = true;
+          privilege_command = "";
+        };
+
         screenshot = {
           save_to_file = true;
           directory = "${config.xdg.userDirs.pictures}/Screenshots";
@@ -367,5 +372,13 @@ in
         };
       };
     };
+  };
+
+  # pam_systemd can activate graphical-session.target before Niri has created
+  # its Wayland socket during an interactive greetd login. Tie Noctalia to the
+  # compositor service so it starts only after Niri reports readiness.
+  systemd.user.services.noctalia = {
+    Unit.After = lib.mkForce [ "niri.service" ];
+    Install.WantedBy = lib.mkForce [ "niri.service" ];
   };
 }
