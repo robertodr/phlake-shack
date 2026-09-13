@@ -1,28 +1,37 @@
-{
-  pkgs,
-  lib,
-  ...
-}:
+{ pkgs, ... }:
 let
-  take-screenshot = pkgs.writeShellScriptBin "take-screenshot.sh" ''
-    ${lib.getExe pkgs.wayfreeze} & PID=$!; sleep .1; ${lib.getExe pkgs.grim} -t ppm -g "$(${lib.getExe pkgs.slurp} -o -d -F monospace)" - | wl-copy; kill $PID;
+  start1PasswordAfterTray = pkgs.writeShellApplication {
+    name = "start-1password-after-tray";
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.systemd
+    ];
+    text = ''
+      # 1Password does not retry tray registration if it starts before a
+      # StatusNotifier watcher. Wait up to 30 seconds for Noctalia to own it.
+      for _attempt in {1..300}; do
+        if busctl --user get-property \
+          org.kde.StatusNotifierWatcher \
+          /StatusNotifierWatcher \
+          org.kde.StatusNotifierWatcher \
+          IsStatusNotifierHostRegistered >/dev/null 2>&1
+        then
+          exec 1password --silent
+        fi
+        sleep 0.1
+      done
 
-    wl-paste | satty --filename - --copy-command="wl-copy" --annotation-size-factor 0.5 --output-filename="$XDG_SCREENSHOTS_DIR/Screenshot_%Y-%m-%d_%H:%M:%S.png" --actions-on-enter="save-to-clipboard,exit" --brush-smooth-history-size 2 --disable-notifications
-  '';
-  configKdl = builtins.readFile ./config.kdl;
-  # substitute the placeholder with the actual store path
-  configKdlPatched =
-    builtins.replaceStrings [ "TAKE-SCREENSHOT" ] [ "${lib.getExe take-screenshot}" ]
-      configKdl;
+      exec 1password --silent
+    '';
+  };
 in
 {
-  home = {
-    packages = [
-      pkgs.udiskie
-      pkgs.waypipe
-      pkgs.wl-clipboard
-    ];
-  };
+  home.packages = [
+    pkgs.udiskie
+    pkgs.waypipe
+    pkgs.wl-clipboard
+    start1PasswordAfterTray
+  ];
 
-  xdg.configFile."niri/config.kdl".text = configKdlPatched;
+  xdg.configFile."niri/config.kdl".text = builtins.readFile ./config.kdl;
 }

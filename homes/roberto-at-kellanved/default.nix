@@ -215,7 +215,6 @@ in
     [
       "atuin"
       "bat"
-      "blueman-applet"
       "btop"
       "eza"
       "fastfetch"
@@ -228,13 +227,10 @@ in
       "htop"
       "insync"
       "jq"
-      "mako"
       "man"
-      "network-manager-applet"
       "nh"
       "obsidian"
       "ripgrep"
-      "satty"
       "ssh"
       "starship"
       "tealdeer"
@@ -257,7 +253,6 @@ in
     # multimedia
     ++ [
       "mpris-proxy"
-      "playerctld"
       "vivaldi"
     ]
     # office
@@ -267,36 +262,10 @@ in
     ]
     # wm
     ++ [
-      "clipse"
-      "gammastep"
       "gtk"
-      "hypridle"
-      "hyprlock"
-      "hyprpaper"
       #"shikane"
-      "vicinae"
-      "waybar"
-      #"noctalia-shell"
+      "noctalia-shell"
       "wayland/niri"
-      "wlogout"
     ]
   );
-
-  systemd.user.services.lxqt-policykit-agent = {
-    Unit = {
-      Description = "lxqt-policykit-agent";
-      Wants = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" ];
-    };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${pkgs.lxqt.lxqt-policykit}/bin/lxqt-policykit-agent";
-      Restart = "on-failure";
-      RestartSec = 1;
-      TimeoutStopSec = 10;
-    };
-  };
 }

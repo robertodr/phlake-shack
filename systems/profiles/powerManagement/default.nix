@@ -74,8 +74,8 @@ in
   powerManagement = {
     enable = true;
     powertop.enable = false;
-    # use in place of hypridle's before_sleep_cmd, since systemd does not wait
-    # for it to complete
+    # Keep a system-level lock fallback before sleep; systemd does not wait for
+    # asynchronous user-session hooks to complete.
     powerDownCommands = ''
       # Lock all sessions
       loginctl lock-sessions

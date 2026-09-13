@@ -74,7 +74,7 @@ spawn-at-startup "ghostty"
 spawn-at-startup "vivaldi"
 spawn-at-startup "ferdium"
 spawn-at-startup "udiskie" "--smart-tray"
-spawn-at-startup "1password" "--silent"
+spawn-at-startup "start-1password-after-tray"
 
 hotkey-overlay {
     skip-at-startup
@@ -121,14 +121,7 @@ window-rule {
     block-out-from "screen-capture"
 }
 
-// Floating utility terminals launched with custom app-ids from binds below.
-window-rule {
-    match app-id=r#"clipse$"#
-    open-floating true
-    default-column-width { fixed 1200; }
-    default-window-height { fixed 600;  }
-}
-
+// Floating utility terminal launched with a custom app-id from a bind below.
 window-rule {
     match app-id=r#"numbat$"#
     open-floating true
@@ -160,19 +153,25 @@ binds {
 
     // Launchers
     Super+Return hotkey-overlay-title="Open ghostty" { spawn "ghostty"; }
-    Super+D hotkey-overlay-title="Open vicinae" { spawn "vicinae" "toggle"; }
+    Super+D hotkey-overlay-title="Open application launcher" {
+        spawn "noctalia" "msg" "panel-toggle" "launcher";
+    }
     Super+Shift+E hotkey-overlay-title="Open Thunar" { spawn "thunar"; }
-    Super+L hotkey-overlay-title="Lock screen" { spawn-sh "playerctl -a pause; pgrep hyprlock || hyprlock"; }
-    Super+Escape hotkey-overlay-title="Logout menu" { spawn "wlogout" "-p" "layer-shell"; }
+    Super+L hotkey-overlay-title="Lock screen" {
+        spawn "noctalia" "msg" "session" "lock";
+    }
+    Super+Escape hotkey-overlay-title="Session menu" {
+        spawn "noctalia" "msg" "panel-toggle" "session";
+    }
 
     XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
     XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
     Super+XF86AudioMute allow-when-locked=true { spawn "wpctl set-mute @DEFAULT_AUDIO_SOURCE@" "toggle"; }
 
-    XF86AudioPlay allow-when-locked=true { spawn "playerctl" "play-pause"; }
-    XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
-    XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
+    XF86AudioPlay allow-when-locked=true { spawn "noctalia" "msg" "media" "toggle"; }
+    XF86AudioPrev allow-when-locked=true { spawn "noctalia" "msg" "media" "previous"; }
+    XF86AudioNext allow-when-locked=true { spawn "noctalia" "msg" "media" "next"; }
 
     XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%+"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%-"; }
@@ -306,7 +305,7 @@ binds {
     // rather than stacked on top of each other.
     Super+W { toggle-column-tabbed-display; }
 
-    Print { spawn-sh "TAKE-SCREENSHOT"; }
+    Print { spawn "noctalia" "msg" "screenshot-region"; }
     Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
 
@@ -327,10 +326,11 @@ binds {
     // moving the mouse or pressing any other key.
     Super+Shift+P { power-off-monitors; }
 
-    // Utility terminals with custom app-ids so window rules can match:
-    Super+C hotkey-overlay-title="Open clipse" {
-        spawn "ghostty" "--class=com.roberto.clipse" "--title=clipse" "-e" "fish" "-c" "clipse -fc $fish_pid";
+    Super+C hotkey-overlay-title="Open clipboard history" {
+        spawn "noctalia" "msg" "panel-toggle" "clipboard";
     }
+
+    // Utility terminal with a custom app-id so the window rule can match.
     Super+N hotkey-overlay-title="Open numbat" {
         spawn "ghostty" "--class=com.roberto.numbat" "--title=numbat" "-e" "numbat";
     }
