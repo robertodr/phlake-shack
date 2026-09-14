@@ -4,7 +4,7 @@
     clean = {
       enable = true;
       dates = "weekly";
-      extraArgs = "--delete-older-than 7d";
+      extraArgs = "--keep-since 7d --no-direnv";
     };
   };
 }
