@@ -210,7 +210,6 @@ in
             {
               id = "hardware";
               members = [
-                "hardware-toggle"
                 "cpu"
                 "memory"
                 "battery"
@@ -316,13 +315,6 @@ in
           max_length = 160.0;
           show_condition = false;
           show_temperature = true;
-        };
-
-        "hardware-toggle" = {
-          type = "custom_button";
-          glyph = "device-desktop";
-          label = "HW";
-          interactive = false;
         };
 
         cpu = {
