@@ -1,0 +1,14 @@
+id = "robertodr/numbat"
+name = "Numbat"
+version = "1.0.0"
+plugin_api = 28
+author = "robertodr"
+license = "MIT"
+icon = "calculator"
+description = "An attached, session-aware Numbat calculator panel."
+dependencies = ["numbat"]
+tags = ["bar", "panel", "utility", "calculator"]
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"
