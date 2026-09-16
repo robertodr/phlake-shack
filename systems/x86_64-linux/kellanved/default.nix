@@ -42,7 +42,6 @@
     # window manager
     ++ [
       "programs/dconf" # needed?
-      "services/blueman"
       "services/dbus" # needed?
       "services/greetd"
       "services/upower"
