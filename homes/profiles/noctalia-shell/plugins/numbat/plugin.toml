@@ -12,3 +12,13 @@ tags = ["bar", "panel", "utility", "calculator"]
 [[widget]]
 id = "bar"
 entry = "bar.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 520
+height = 560
+placement = "attached"
+position = "auto"
+open_near_click = true
+capture_keys = ["up", "down"]
