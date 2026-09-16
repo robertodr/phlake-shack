@@ -49,6 +49,30 @@ in
           pipe_to_command = false;
         };
       };
+      plugins = {
+        enabled = [ "robertodr/numbat" ];
+        auto_update = "all";
+        source = [
+          {
+            name = "official";
+            kind = "git";
+            location = "https://github.com/noctalia-dev/official-plugins";
+            enabled = true;
+          }
+          {
+            name = "community";
+            kind = "git";
+            location = "https://github.com/noctalia-dev/community-plugins";
+            enabled = true;
+          }
+          {
+            name = "phlake-shack";
+            kind = "path";
+            location = toString ./plugins;
+            enabled = true;
+          }
+        ];
+      };
       wallpaper = {
         enabled = true;
         fill_mode = "crop";
@@ -176,6 +200,7 @@ in
             "group:hardware"
             "network"
             "bluetooth"
+            "robertodr/numbat:bar"
             "notifications"
             "tray"
           ];
