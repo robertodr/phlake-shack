@@ -101,7 +101,7 @@ local function render()
         variant = "ghost",
         controlSize = "sm",
         tooltip = "Clear session",
-        enabled = not isEvaluating and #history > 0,
+        enabled = not isEvaluating,
         onClick = "onClear",
       }),
       ui.button({
@@ -109,7 +109,7 @@ local function render()
         variant = "ghost",
         controlSize = "sm",
         tooltip = "Close",
-        onClick = "onClose",
+        onClick = "onCloseClicked",
       }),
     }),
     ui.scroll({
@@ -153,11 +153,20 @@ local function commandFor(expr)
   return command
 end
 
+local function finishEvaluation()
+  currentInput = ""
+  historyIndex = nil
+  draftInput = ""
+  inputGeneration += 1
+  isEvaluating = false
+  render()
+end
+
 local function evaluate(expr)
   isEvaluating = true
   render()
 
-  noctalia.runAsync(commandFor(expr), function(result)
+  local accepted = noctalia.runAsync(commandFor(expr), function(result)
     if result.exitCode == 0 then
       local lines = outputLines(result.stdout)
       local newLines = {}
@@ -181,13 +190,13 @@ local function evaluate(expr)
       appendHistory(expr, output, true, false)
     end
 
-    currentInput = ""
-    historyIndex = nil
-    draftInput = ""
-    inputGeneration += 1
-    isEvaluating = false
-    render()
+    finishEvaluation()
   end)
+
+  if not accepted then
+    appendHistory(expr, "Could not start Numbat", true, false)
+    finishEvaluation()
+  end
 end
 
 local function stepHistory(chord)
@@ -260,8 +269,14 @@ function onCopyResult(index)
   noctalia.copyToClipboard(item.result, "text/plain")
 end
 
-function onClose()
+function onCloseClicked()
   panel.close()
+end
+
+function onClose()
+  heldChord = nil
+  heldElapsedMs = 0
+  panel.setNeedsFrameTick(false)
 end
 
 function onOpen(_context)
