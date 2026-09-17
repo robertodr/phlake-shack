@@ -107,6 +107,16 @@ window-rule {
     open-on-workspace "chat"
 }
 
+// Parking workspace for the persistent Numbat scratchpad terminal.
+workspace "__numbat_scratchpad" {}
+
+window-rule {
+    match app-id=r#"^com\.roberto\.numbat$"#
+    open-floating true
+    default-column-width { fixed 1200; }
+    default-window-height { fixed 600; }
+}
+
 prefer-no-csd
 
 screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
@@ -322,8 +332,8 @@ binds {
         spawn "noctalia" "msg" "panel-toggle" "clipboard";
     }
 
-    Super+N hotkey-overlay-title="Open Numbat" {
-        spawn "noctalia" "msg" "panel-toggle" "robertodr/numbat:panel";
+    Super+N hotkey-overlay-title="Toggle Numbat terminal" {
+        spawn "numbat-terminal";
     }
 }
 

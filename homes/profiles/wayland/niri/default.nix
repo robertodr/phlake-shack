@@ -24,6 +24,18 @@ let
       exec 1password --silent
     '';
   };
+
+  numbatTerminal = pkgs.writeShellApplication {
+    name = "numbat-terminal";
+    runtimeInputs = [
+      pkgs.ghostty
+      pkgs.jq
+      pkgs.niri
+      pkgs.numbat
+      pkgs.util-linux
+    ];
+    text = builtins.readFile ./numbat-terminal.sh;
+  };
 in
 {
   home.packages = [
@@ -31,6 +43,7 @@ in
     pkgs.waypipe
     pkgs.wl-clipboard
     start1PasswordAfterTray
+    numbatTerminal
   ];
 
   xdg.configFile."niri/config.kdl".text = builtins.readFile ./config.kdl;
