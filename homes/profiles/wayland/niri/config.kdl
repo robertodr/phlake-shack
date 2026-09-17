@@ -107,6 +107,16 @@ window-rule {
     open-on-workspace "chat"
 }
 
+// Parking workspace for the persistent Numbat scratchpad terminal.
+workspace "__numbat_scratchpad" {}
+
+window-rule {
+    match app-id=r#"^com\.roberto\.numbat$"#
+    open-floating true
+    default-column-width { fixed 1200; }
+    default-window-height { fixed 600; }
+}
+
 prefer-no-csd
 
 screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
@@ -119,14 +129,6 @@ animations {
 window-rule {
     match app-id=r#"^app\.onepassword\.OnePassword$"#
     block-out-from "screen-capture"
-}
-
-// Floating utility terminal launched with a custom app-id from a bind below.
-window-rule {
-    match app-id=r#"numbat$"#
-    open-floating true
-    default-column-width { fixed 1200; }
-    default-window-height { fixed 600; }
 }
 
 window-rule {
@@ -330,9 +332,8 @@ binds {
         spawn "noctalia" "msg" "panel-toggle" "clipboard";
     }
 
-    // Utility terminal with a custom app-id so the window rule can match.
-    Super+N hotkey-overlay-title="Open numbat" {
-        spawn "ghostty" "--class=com.roberto.numbat" "--title=numbat" "-e" "numbat";
+    Super+N hotkey-overlay-title="Toggle Numbat terminal" {
+        spawn "numbat-terminal";
     }
 }
 
