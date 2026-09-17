@@ -6,7 +6,6 @@ local currentInput = ""
 local inputGeneration = 0
 local historyIndex = nil
 local draftInput = ""
-local previousOutputLineCount = 0
 local scrollRevision = 0
 local isEvaluating = false
 local heldChord = nil
@@ -14,6 +13,8 @@ local heldElapsedMs = 0
 
 local REPEAT_DELAY_MS = 400
 local REPEAT_INTERVAL_MS = 120
+local OUTPUT_START_SENTINEL = "__NOCTALIA_NUMBAT_START_6f07d925__"
+local OUTPUT_END_SENTINEL = "__NOCTALIA_NUMBAT_END_6f07d925__"
 
 local function trimmed(value)
   return noctalia.string.trim(value or "")
@@ -28,6 +29,23 @@ local function outputLines(value)
     end
   end
   return lines
+end
+
+local function capturedOutput(value)
+  local output = {}
+  local isCapturing = false
+
+  for _, line in ipairs(outputLines(value)) do
+    if line == OUTPUT_START_SENTINEL then
+      isCapturing = true
+    elseif line == OUTPUT_END_SENTINEL then
+      isCapturing = false
+    elseif isCapturing then
+      table.insert(output, line)
+    end
+  end
+
+  return trimmed(table.concat(output, "\n"))
 end
 
 local function appendHistory(expr, result, isError, copyable)
@@ -64,7 +82,7 @@ local function historyRows()
       key = "history-" .. index,
       gap = 4,
       padding = 10,
-      fill = item.isError and "error/0.10" or "surface_container",
+      fill = item.isError and "#330000" or "#101010",
       radius = 10,
     }, {
       ui.label({
@@ -86,7 +104,7 @@ local function historyRows()
 end
 
 local function render()
-  panel.render(ui.column({ gap = 12, padding = 14, height = 560 }, {
+  panel.render(ui.column({ gap = 12, padding = 14, fill = "#000000" }, {
     ui.row({ gap = 8, align = "center" }, {
       ui.glyph({ name = "calculator", size = 18, color = "primary" }),
       ui.label({
@@ -137,7 +155,7 @@ local function render()
   }))
 end
 
-local function commandFor(expr)
+local function markedCommand(expr)
   local command = {
     "numbat",
     "--pretty-print=never",
@@ -149,8 +167,20 @@ local function commandFor(expr)
     table.insert(command, prior)
   end
   table.insert(command, "-e")
+  table.insert(command, string.format('print("%s")', OUTPUT_START_SENTINEL))
+  table.insert(command, "-e")
   table.insert(command, expr)
+  table.insert(command, "-e")
+  table.insert(command, string.format('print("%s")', OUTPUT_END_SENTINEL))
   return command
+end
+
+local function expressionCommandFor(expr)
+  return markedCommand(string.format("print(\n%s\n)", expr))
+end
+
+local function statementCommandFor(expr)
+  return markedCommand(expr)
 end
 
 local function finishEvaluation()
@@ -162,35 +192,51 @@ local function finishEvaluation()
   render()
 end
 
+local function finishSuccessfulEvaluation(expr, stdout)
+  local output = capturedOutput(stdout)
+  local hasOutput = output ~= ""
+  appendHistory(expr, hasOutput and output or "Defined", false, hasOutput)
+  table.insert(sessionExprs, expr)
+  finishEvaluation()
+end
+
+local function finishFailedEvaluation(expr, result)
+  local output = trimmed(result.stderr)
+  if output == "" then
+    output = trimmed(result.stdout)
+  end
+  if output == "" then
+    output = "Numbat evaluation failed"
+  end
+  appendHistory(expr, output, true, false)
+  finishEvaluation()
+end
+
+local function runAsStatement(expr)
+  local accepted = noctalia.runAsync(statementCommandFor(expr), function(result)
+    if result.exitCode == 0 then
+      finishSuccessfulEvaluation(expr, result.stdout)
+    else
+      finishFailedEvaluation(expr, result)
+    end
+  end)
+
+  if not accepted then
+    appendHistory(expr, "Could not start Numbat", true, false)
+    finishEvaluation()
+  end
+end
+
 local function evaluate(expr)
   isEvaluating = true
   render()
 
-  local accepted = noctalia.runAsync(commandFor(expr), function(result)
+  local accepted = noctalia.runAsync(expressionCommandFor(expr), function(result)
     if result.exitCode == 0 then
-      local lines = outputLines(result.stdout)
-      local newLines = {}
-      for index = previousOutputLineCount + 1, #lines do
-        table.insert(newLines, lines[index])
-      end
-
-      local output = trimmed(table.concat(newLines, "\n"))
-      local hasOutput = output ~= ""
-      appendHistory(expr, hasOutput and output or "Defined", false, hasOutput)
-      table.insert(sessionExprs, expr)
-      previousOutputLineCount = #lines
+      finishSuccessfulEvaluation(expr, result.stdout)
     else
-      local output = trimmed(result.stderr)
-      if output == "" then
-        output = trimmed(result.stdout)
-      end
-      if output == "" then
-        output = "Numbat evaluation failed"
-      end
-      appendHistory(expr, output, true, false)
+      runAsStatement(expr)
     end
-
-    finishEvaluation()
   end)
 
   if not accepted then
@@ -255,7 +301,6 @@ function onClear()
   currentInput = ""
   historyIndex = nil
   draftInput = ""
-  previousOutputLineCount = 0
   scrollRevision += 1
   inputGeneration += 1
   render()

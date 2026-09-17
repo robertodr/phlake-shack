@@ -16,7 +16,7 @@ entry = "bar.luau"
 [[panel]]
 id = "panel"
 entry = "panel.luau"
-width = 520
+width = 1040
 height = 560
 placement = "attached"
 position = "auto"
