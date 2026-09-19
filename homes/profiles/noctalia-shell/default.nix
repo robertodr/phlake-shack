@@ -110,7 +110,10 @@ in
       };
       dock.enabled = false;
 
-      osd.enabled = true;
+      osd = {
+        enabled = true;
+        kinds.volume_input = false;
+      };
 
       # Open-Meteo provides weather while the shared fixed location also drives
       # the night-light schedule formerly managed by Gammastep.
@@ -211,7 +214,6 @@ in
               id = "hardware";
               members = [
                 "cpu"
-                "memory"
                 "battery"
               ];
               fill = "#383c4a";
@@ -219,8 +221,6 @@ in
               padding = 8.0;
               radius = 10.0;
               opacity = 1.0;
-              accordion = true;
-              accordion_direction = "start";
               widget_spacing = 8;
             }
           ];
@@ -322,16 +322,6 @@ in
           stat = "cpu_usage";
           visualization = "gauge";
           show_value = false;
-          show_glyph = true;
-          highlight_color = "#dd532e";
-        };
-
-        memory = {
-          type = "sysmon";
-          stat = "ram_pct";
-          visualization = "none";
-          show_value = true;
-          label_show_units = true;
           show_glyph = true;
           highlight_color = "#dd532e";
         };
