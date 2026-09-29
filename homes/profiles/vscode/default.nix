@@ -4,7 +4,20 @@
   pkgsUnstable,
   ...
 }:
+let
+  codeWithQiskitToken = pkgs.writeShellScript "code-with-qiskit-token" ''
+    QISKIT_IBM_TOKEN="$(${pkgs.coreutils}/bin/cat /run/secrets/ibm-cloud/token)" || exit 1
+    export QISKIT_IBM_TOKEN
+    exec ${pkgsUnstable.vscode}/bin/code "$@"
+  '';
+in
 {
+  # Override the application launcher, including its New Empty Window action.
+  # Keep the token out of the Nix store: the wrapper reads it only at launch.
+  xdg.dataFile."applications/code.desktop".text =
+    builtins.replaceStrings [ "Exec=code " ] [ "Exec=${codeWithQiskitToken} " ]
+      (builtins.readFile "${pkgsUnstable.vscode}/share/applications/code.desktop");
+
   programs.vscode = {
     enable = true;
     package = pkgsUnstable.vscode;
