@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   tomlFormat = pkgs.formats.toml { };
 in
@@ -21,17 +26,29 @@ in
     ];
     settings = {
       packages = [
-        "npm:@narumitw/pi-starship@0.56.1"
+        "npm:@narumitw/pi-starship"
         "npm:@termdraw/pi"
         "npm:pi-diff-review"
         "npm:pi-mcp-adapter"
         "npm:pi-subagents"
+        "npm:pi-toggle-skills"
+        "npm:pi-web-access"
       ];
-      defaultModel = "gpt-5.6-sol";
+      defaultModel = "gpt-6-sol";
       defaultProvider = "openai-codex";
       defaultThinkingLevel = "medium";
     };
   };
+
+  # Pi packages live in mutable npm state outside the Nix store. Refresh them
+  # after settings.json has been linked, but keep offline activations usable.
+  home.activation.updatePiExtensions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if ! run env PATH=${lib.makeBinPath config.programs.pi-coding-agent.extraPackages}:$PATH \
+      ${lib.getExe config.programs.pi-coding-agent.package} update --extensions
+    then
+      echo "warning: could not update Pi extensions; keeping installed versions" >&2
+    fi
+  '';
 
   home.file."${config.programs.pi-coding-agent.configDir}/pi-starship.toml".source =
     tomlFormat.generate "pi-starship.toml"
