@@ -10,6 +10,10 @@
       url = "github:nix-community/disko?tag=v1.13.0";
     };
 
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
     };
@@ -63,6 +67,7 @@
     {
       bun2nix,
       disko,
+      git-hooks,
       home-manager,
       impermanence,
       llm-agents,
@@ -83,8 +88,20 @@
         inherit system;
         config.allowUnfree = true;
       };
+
+      preCommitCheck = inputs.git-hooks.lib.${system}.run {
+        src = ./.;
+        package = nixpkgs.prek;
+        hooks = {
+          deadnix.enable = true;
+          nixfmt.enable = true;
+          statix.enable = true;
+        };
+      };
     in
     {
+      checks.${system}.pre-commit = preCommitCheck;
+
       nixosConfigurations = {
         kellanved = nixpkgs.lib.nixosSystem {
           modules = [
@@ -133,5 +150,6 @@
           };
         };
       };
+
     };
 }
