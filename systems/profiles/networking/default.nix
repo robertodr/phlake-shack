@@ -8,14 +8,14 @@
       enable = true;
       dhcp = "internal";
       plugins = with pkgs; [
-        networkmanager-fortisslvpn
+        #networkmanager-fortisslvpn
         networkmanager-iodine
         networkmanager-l2tp
         networkmanager-openconnect
         networkmanager-openvpn
-        networkmanager-sstp
+        #networkmanager-sstp
         networkmanager-strongswan
-        networkmanager-vpnc
+        #networkmanager-vpnc
       ];
     };
     useDHCP = lib.mkDefault false;
