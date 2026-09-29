@@ -73,7 +73,7 @@
       };
     };
 
-    kernelPackages = pkgs.linuxPackages;
+    kernelPackages = pkgs.linuxPackages_latest;
 
     kernelParams = [
       "quiet"
