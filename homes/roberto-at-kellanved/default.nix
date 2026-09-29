@@ -147,6 +147,7 @@ in
       llm-agents.coderabbit-cli
       llm-agents.gitbutler
       llm-agents.qmd
+      llm-agents.rtk
       llm-agents.skills
       meld
       perf
@@ -170,10 +171,11 @@ in
       pkgsUnstable.typst
       pkgsUnstable.typstyle
 
-      python3
-      python3Packages.pip
-      python3Packages.keyring
       pkgsUnstable.uv
+      python3
+      python3Packages.euporie
+      python3Packages.keyring
+      python3Packages.pip
 
       asciinema
       ferdium
