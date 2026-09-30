@@ -4,7 +4,6 @@
   ...
 }:
 let
-  inherit (config.xdg) configHome;
   inherit (config.lib.dag) entryAfter;
 
   localBin = "$HOME/.local/bin";

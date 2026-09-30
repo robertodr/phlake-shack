@@ -40,15 +40,33 @@ let
   };
 in
 {
-  # Do nothing when the lid is closed while docked (external display connected)
-  services.logind.settings.Login.HandleLidSwitchDocked = "ignore";
+  services = {
+    logind.settings.Login = {
+      # Do nothing when the lid is closed while docked (external display connected)
+      HandleLidSwitchDocked = "ignore";
 
-  # s2idle is the only sleep state this machine offers (/sys/power/mem_sleep
-  # has no "deep"), and it keeps draining a few percent an hour. Hand over to
-  # hibernation once the suspend has lasted half an hour, so an overnight
-  # lid-close costs nothing. Needs boot.resumeDevice + resume_offset, which
-  # kellanved already sets for its swapfile.
-  services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
+      # s2idle is the only sleep state this machine offers (/sys/power/mem_sleep
+      # has no "deep"), and it keeps draining a few percent an hour. Hand over to
+      # hibernation once the suspend has lasted half an hour, so an overnight
+      # lid-close costs nothing. Needs boot.resumeDevice + resume_offset, which
+      # kellanved already sets for its swapfile.
+      HandleLidSwitch = "suspend-then-hibernate";
+    };
+
+    # Stop charging at 80%. The Framework EC exposes the threshold through
+    # cros-charge-control; the attribute only appears once that driver has
+    # probed, hence the change action alongside add. Raise to 100 before a trip
+    # where the extra fifth of the pack matters. Skip redundant EC writes as a
+    # mitigation experiment for https://github.com/FrameworkComputer/SoftwareFirmwareIssueTracker/issues/107
+    # (a causal link to TSC instability is not established). When a temporary
+    # override exists, leave it in charge rather than writing 80 then its value
+    # on every event. The attribute-existence check still guards driver probing.
+    udev.extraRules = ''
+      ACTION=="add|change", SUBSYSTEM=="power_supply", KERNEL=="BAT?", TEST!="/run/udev/rules.d/zz-charge-threshold.rules", ATTR{charge_control_end_threshold}=="?*", ATTR{charge_control_end_threshold}!="80", ATTR{charge_control_end_threshold}="80"
+    '';
+
+  };
+
   systemd.sleep.settings.Sleep = {
     HibernateDelaySec = "30min";
     # ...but only off the charger. On AC there is nothing to save, and
@@ -58,18 +76,6 @@ in
     # a lid-close at the desk resumes instantly.
     HibernateOnACPower = false;
   };
-
-  # Stop charging at 80%. The Framework EC exposes the threshold through
-  # cros-charge-control; the attribute only appears once that driver has
-  # probed, hence the change action alongside add. Raise to 100 before a trip
-  # where the extra fifth of the pack matters. Skip redundant EC writes as a
-  # mitigation experiment for https://github.com/FrameworkComputer/SoftwareFirmwareIssueTracker/issues/107
-  # (a causal link to TSC instability is not established). When a temporary
-  # override exists, leave it in charge rather than writing 80 then its value
-  # on every event. The attribute-existence check still guards driver probing.
-  services.udev.extraRules = ''
-    ACTION=="add|change", SUBSYSTEM=="power_supply", KERNEL=="BAT?", TEST!="/run/udev/rules.d/zz-charge-threshold.rules", ATTR{charge_control_end_threshold}=="?*", ATTR{charge_control_end_threshold}!="80", ATTR{charge_control_end_threshold}="80"
-  '';
 
   powerManagement = {
     enable = true;

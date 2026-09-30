@@ -65,9 +65,7 @@
 
   outputs =
     {
-      bun2nix,
       disko,
-      git-hooks,
       home-manager,
       impermanence,
       llm-agents,
@@ -91,7 +89,7 @@
 
       preCommitCheck = inputs.git-hooks.lib.${system}.run {
         src = ./.;
-        package = nixpkgs.prek;
+        package = nixpkgs.legacyPackages.${system}.prek;
         hooks = {
           deadnix.enable = true;
           nixfmt.enable = true;
@@ -105,22 +103,19 @@
       nixosConfigurations = {
         kellanved = nixpkgs.lib.nixosSystem {
           modules = [
-            (
-              { config, ... }:
-              {
-                # This enables unfree for the 'pkgs' (stable) set
-                nixpkgs.config.allowUnfree = true;
-                nixpkgs.overlays = [
-                  llm-agents.overlays.shared-nixpkgs
-                  nix4vscode.overlays.default
-                  (final: prev: {
-                    kenn-forge = final.callPackage ./pkgs/kenn-forge {
-                      bun2nix = inputs.bun2nix.packages.${system}.default;
-                    };
-                  })
-                ];
-              }
-            )
+            (_: {
+              # This enables unfree for the 'pkgs' (stable) set
+              nixpkgs.config.allowUnfree = true;
+              nixpkgs.overlays = [
+                llm-agents.overlays.shared-nixpkgs
+                nix4vscode.overlays.default
+                (final: _prev: {
+                  kenn-forge = final.callPackage ./pkgs/kenn-forge {
+                    bun2nix = inputs.bun2nix.packages.${system}.default;
+                  };
+                })
+              ];
+            })
             ./systems/${system}/kellanved
             disko.nixosModules.disko
             home-manager.nixosModules.home-manager

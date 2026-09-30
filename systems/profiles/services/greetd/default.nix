@@ -38,9 +38,6 @@ in
     libgnome-keyring
   ];
 
-  # Enable gnome-keyring service
-  services.gnome.gnome-keyring.enable = true;
-
   # Enable the graphical frontend for managing keyring
   programs.seahorse.enable = true;
 
@@ -74,64 +71,72 @@ in
     gdm-password.enableGnomeKeyring = true;
   };
 
-  services.displayManager.noctalia-greeter = {
-    enable = true;
-    passwordless-sync-users = [ username ];
+  services = {
+    # Enable gnome-keyring service
+    gnome.gnome-keyring.enable = true;
 
-    settings = {
-      session.default = "Niri";
-      user.default = username;
+    displayManager.noctalia-greeter = {
+      enable = true;
+      passwordless-sync-users = [ username ];
 
-      appearance = {
-        scheme = "Synced";
-        password_style = "default";
-      };
+      settings = {
+        session.default = "Niri";
+        user.default = username;
 
-      idle.timeout = 300;
+        appearance = {
+          scheme = "Synced";
+          password_style = "default";
+        };
 
-      keyboard = {
-        layout = "it,no,se,us";
-        variant = "us,,,colemak";
-        options = "grp:alt_shift_toggle";
-        numlock = true;
-      };
+        idle.timeout = 300;
 
-      auth = {
-        allow_empty_password = false;
-        request_timeout = 60;
+        keyboard = {
+          layout = "it,no,se,us";
+          variant = "us,,,colemak";
+          options = "grp:alt_shift_toggle";
+          numlock = true;
+        };
+
+        auth = {
+          allow_empty_password = false;
+          request_timeout = 60;
+        };
       };
     };
-  };
 
-  # Keep automatic login as greetd's initial session. The Noctalia Greeter
-  # module supplies default_session.command for interactive login after logout.
-  services.greetd = {
-    enable = true;
-    settings = {
-      initial_session = {
-        command = session;
-        user = username;
+    # Keep automatic login as greetd's initial session. The Noctalia Greeter
+    # module supplies default_session.command for interactive login after logout.
+    greetd = {
+      enable = true;
+      settings = {
+        initial_session = {
+          command = session;
+          user = username;
+        };
+        default_session.user = "greeter";
       };
-      default_session.user = "greeter";
     };
+
   };
 
   # greetd systemd service configuration
   # CRITICAL for autologin to work properly
-  systemd.services.greetd.serviceConfig = {
-    Type = "idle"; # DO NOT CHANGE - "simple" breaks autologin!
-    StandardInput = "tty";
-    StandardOutput = "tty";
-    StandardError = "journal"; # without this errors will spam on screen
-    # without the following bootlogs will spam on screen
-    TTYReset = true;
-    TTYVHangup = true;
-    TTYVTDisallocate = true;
-    KeyringMode = lib.mkForce "inherit";
-  };
+  systemd.services = {
+    greetd.serviceConfig = {
+      Type = "idle"; # DO NOT CHANGE - "simple" breaks autologin!
+      StandardInput = "tty";
+      StandardOutput = "tty";
+      StandardError = "journal"; # without this errors will spam on screen
+      # without the following bootlogs will spam on screen
+      TTYReset = true;
+      TTYVHangup = true;
+      TTYVTDisallocate = true;
+      KeyringMode = lib.mkForce "inherit";
+    };
 
-  # Disable getty@tty1 to prevent TTY interference
-  # https://github.com/NixOS/nixpkgs/issues/103746
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
+    # Disable getty@tty1 to prevent TTY interference
+    # https://github.com/NixOS/nixpkgs/issues/103746
+    "getty@tty1".enable = false;
+    "autovt@tty1".enable = false;
+  };
 }

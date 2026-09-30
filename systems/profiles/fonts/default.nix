@@ -35,8 +35,8 @@
         "xits-math"
       ] pkgs
       ++ [
-        (pkgs.mplus-outline-fonts.githubRelease)
-        (pkgs.nerd-fonts.fira-code)
+        pkgs.mplus-outline-fonts.githubRelease
+        pkgs.nerd-fonts.fira-code
       ];
 
     fontconfig = {

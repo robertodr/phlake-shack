@@ -8,40 +8,93 @@ let
   inherit (config.xdg) configHome;
   inherit (config.lib.dag) entryAfter;
   inherit (config.lib.file) mkOutOfStoreSymlink;
-  inherit (config.lib.phlake-shack.emacs) profilesBase profilesPath;
+  inherit (config.lib.phlake-shack.emacs) profilesPath;
 
   doomRepoUrl = "https://github.com/doomemacs/doomemacs";
   emacsDir = "${configHome}/emacs";
 in
 {
-  home.sessionVariables = {
-    EMACSDIR = emacsDir;
+  home = {
+    sessionVariables = {
+      EMACSDIR = emacsDir;
 
-    DOOMDIR = "${configHome}/doom";
+      DOOMDIR = "${configHome}/doom";
 
-    # lsp: use plists instead of hashtables for performance improvement
-    # https://emacs-lsp.github.io/lsp-mode/page/performance/#use-plists-for-deserialization
-    LSP_USE_PLISTS = "true";
+      # lsp: use plists instead of hashtables for performance improvement
+      # https://emacs-lsp.github.io/lsp-mode/page/performance/#use-plists-for-deserialization
+      LSP_USE_PLISTS = "true";
+    };
+
+    sessionPath = [
+      "${configHome}/emacs/bin"
+      "$PATH"
+    ];
+
+    # Install Doom imperatively to make use of its CLI.
+    activation.installDoomEmacs =
+      let
+        git = "$DRY_RUN_CMD ${pkgs.git}/bin/git";
+      in
+      entryAfter [ "writeBoundary" ] ''
+        if [[ ! -f "${emacsDir}/README.md" ]]; then
+          ${git} clone --depth 1 ${doomRepoUrl} ${emacsDir}
+        fi
+      '';
+
+    packages = with pkgs; [
+      gnutls
+
+      imagemagick # for image-dired
+      zstd # for undo-fu-session/undo-tree compression
+
+      #: org
+      graphviz
+
+      # FIXME: do I need these three here?
+      cmake
+      gcc
+      sqlite
+
+      editorconfig-core-c
+
+      ##: === writing ===
+
+      (aspellWithDicts (
+        ds: with ds; [
+          en
+          en-computers
+          en-science
+          it
+          nb
+          nn
+          sv
+        ]
+      ))
+      enchant
+
+      ##: === lang/lsp ===
+
+      #: docker
+      dockerfile-language-server
+      dockfmt
+      #: nix
+      nixd
+      #: sh
+      pkgs.bash-language-server
+      shfmt
+
+      html-tidy
+      pkgs.js-beautify
+      pyright
+      python3.pkgs.black
+      python3.pkgs.isort
+      shellcheck
+      fortls
+    ];
   };
-
-  home.sessionPath = [
-    "${configHome}/emacs/bin"
-    "$PATH"
-  ];
 
   # symlink doom configuration
   xdg.configFile."doom".source = mkOutOfStoreSymlink "${profilesPath}/doom";
-
-  # Install Doom imperatively to make use of its CLI.
-  home.activation.installDoomEmacs =
-    let
-      git = "$DRY_RUN_CMD ${pkgs.git}/bin/git";
-    in
-    entryAfter [ "writeBoundary" ] ''
-      if [[ ! -f "${emacsDir}/README.md" ]]; then
-        ${git} clone --depth 1 ${doomRepoUrl} ${emacsDir}
-      fi
-    '';
 
   programs.emacs = {
     enable = true;
@@ -64,54 +117,4 @@ in
     };
   };
 
-  home.packages = with pkgs; [
-    gnutls
-
-    imagemagick # for image-dired
-    zstd # for undo-fu-session/undo-tree compression
-
-    #: org
-    graphviz
-
-    # FIXME: do I need these three here?
-    cmake
-    gcc
-    sqlite
-
-    editorconfig-core-c
-
-    ##: === writing ===
-
-    (aspellWithDicts (
-      ds: with ds; [
-        en
-        en-computers
-        en-science
-        it
-        nb
-        nn
-        sv
-      ]
-    ))
-    enchant
-
-    ##: === lang/lsp ===
-
-    #: docker
-    dockerfile-language-server
-    dockfmt
-    #: nix
-    nixd
-    #: sh
-    pkgs.bash-language-server
-    shfmt
-
-    html-tidy
-    pkgs.js-beautify
-    pyright
-    python3.pkgs.black
-    python3.pkgs.isort
-    shellcheck
-    fortls
-  ];
 }

@@ -197,7 +197,7 @@
               done
             '';
           })).override
-            { selected_themes = [ config.boot.plymouth.theme ]; }
+          { selected_themes = [ config.boot.plymouth.theme ]; }
         )
         (pkgs.runCommand "add-logos" { inherit (config.boot.plymouth) logo theme; } ''
           mkdir -p $out/share/plymouth/themes/$theme

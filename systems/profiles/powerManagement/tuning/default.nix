@@ -77,138 +77,141 @@ in
   # docks, audio interfaces), and the power it saves only matters off the
   # charger. So keep it on battery and switch it off on AC, following the
   # power-source handling in the tuned profile.
-  systemd.services.usb-autosuspend-power-source = {
-    description = "Set USB autosuspend to match the current power source";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = pkgs.writeShellScript "usb-autosuspend-power-source" ''
-        set -u
-
-        # Default to treating the machine as plugged in: that is the setting
-        # that cannot make a device misbehave.
-        if [ "$(cat /sys/class/power_supply/ACAD/online 2>/dev/null || echo 1)" = "1" ]; then
-          want=on
-        else
-          want=auto
-        fi
-
-        for dev in /sys/bus/usb/devices/*; do
-          # Only usb_device nodes carry idVendor, so this skips usb_interface
-          # nodes, and it leaves the Goodix fingerprint reader alone exactly
-          # as the udev rule above does.
-          [ -r "$dev/idVendor" ] || continue
-          [ "$(cat "$dev/idVendor")" = "27c6" ] && continue
-          [ -w "$dev/power/control" ] || continue
-          echo "$want" > "$dev/power/control" || true
-        done
-
-        echo "usb autosuspend: $want"
-      '';
-    };
-  };
-
-  # Disconnect Bluetooth before every suspend/hibernate, not after waking.
-  # StopWhenUnneeded resets this oneshot after sleep.target stops, so the
-  # next sleep runs it again. Bound failures so BlueZ cannot block sleep.
-  systemd.services.bluetooth-sleep = {
-    description = "Power off Bluetooth before sleep";
-    wantedBy = [ "sleep.target" ];
-    before = [ "sleep.target" ];
-    after = [
-      "bluetooth.service"
-      "bluetooth-power-source.service"
-    ];
-    unitConfig.StopWhenUnneeded = true;
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      if ! ${config.systemd.package}/bin/systemctl is-active --quiet bluetooth.service; then
-        echo "bluetooth: daemon inactive, nothing to power off"
-        exit 0
-      fi
-
-      if ${pkgs.coreutils}/bin/timeout 5s ${config.hardware.bluetooth.package}/bin/bluetoothctl power off; then
-        echo "bluetooth: powered off before sleep"
-      else
-        echo "bluetooth: could not power off before sleep; continuing" >&2
-      fi
-    '';
-  };
-
-  # Bluetooth starts off at boot (powerOnBoot = false), and bluetooth-sleep
-  # turns it off before sleeping. Enable it on AC; on battery leave it off
-  # after wake until the user enables it. Preserve manual changes on battery
-  # rather than interrupting connections whenever a charger uevent arrives.
-  systemd.services.bluetooth-power-source = {
-    description = "Power the Bluetooth adapter to match the current power source";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "bluetooth.service" ];
-    wants = [ "bluetooth.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = pkgs.writeShellScript "bluetooth-power-source" ''
-        set -u
-        bluetoothctl=${config.hardware.bluetooth.package}/bin/bluetoothctl
-
-        # Ignore charger events during sleep (including the intermediate
-        # suspend-to-hibernate wake). The resume hook retries after sleep.
-        if ${config.systemd.package}/bin/systemctl is-active --quiet sleep.target; then
-          echo "bluetooth: sleep in progress, leaving adapter off"
-          exit 0
-        fi
-
-        # The controller registers with bluetoothd asynchronously, and on
-        # resume it is re-added after the daemon is already up.
-        for _ in $(seq 50); do
-          [ -n "$($bluetoothctl list)" ] && break
-          sleep 0.1
-        done
-        if [ -z "$($bluetoothctl list)" ]; then
-          echo "bluetooth: no controller, nothing to do"
-          exit 0
-        fi
-
-        if [ "$(cat /sys/class/power_supply/ACAD/online 2>/dev/null || echo 1)" = "1" ]; then
-          $bluetoothctl power on
-          echo "bluetooth: powered on (AC)"
-          exit 0
-        fi
-
-        echo "bluetooth: preserving adapter power state (battery)"
-      '';
-    };
-  };
-
   # WiFi (MediaTek MT7922/mt7921e) power saving. The radio is a top-5 power
   # consumer in the powertop report, so leave the driver's power save on.
   # Set this to false if the resulting latency spikes become a problem.
   networking.networkmanager.wifi.powersave = true;
 
-  # The knob lives in debugfs, which udev cannot write to, so it needs a unit.
-  # It has to run after the mt7921e module has created the phy, and has to be
-  # reapplied on resume because debugfs state does not survive the reset.
-  systemd.services.mt76-no-deep-sleep = lib.mkIf disableWifiDeepSleep {
-    description = "Disable mt76 deep sleep (keeps 802.11 power save on)";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = pkgs.writeShellScript "mt76-no-deep-sleep" ''
-        knob=/sys/kernel/debug/ieee80211/phy0/mt76/deep_sleep
-        # The phy shows up asynchronously after the module loads.
-        for _ in $(seq 50); do
-          [ -e "$knob" ] && break
-          sleep 0.1
-        done
-        [ -e "$knob" ] || exit 0
-        echo 0 > "$knob"
+  systemd.services = {
+    usb-autosuspend-power-source = {
+      description = "Set USB autosuspend to match the current power source";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = pkgs.writeShellScript "usb-autosuspend-power-source" ''
+          set -u
+
+          # Default to treating the machine as plugged in: that is the setting
+          # that cannot make a device misbehave.
+          if [ "$(cat /sys/class/power_supply/ACAD/online 2>/dev/null || echo 1)" = "1" ]; then
+            want=on
+          else
+            want=auto
+          fi
+
+          for dev in /sys/bus/usb/devices/*; do
+            # Only usb_device nodes carry idVendor, so this skips usb_interface
+            # nodes, and it leaves the Goodix fingerprint reader alone exactly
+            # as the udev rule above does.
+            [ -r "$dev/idVendor" ] || continue
+            [ "$(cat "$dev/idVendor")" = "27c6" ] && continue
+            [ -w "$dev/power/control" ] || continue
+            echo "$want" > "$dev/power/control" || true
+          done
+
+          echo "usb autosuspend: $want"
+        '';
+      };
+    };
+
+    # Disconnect Bluetooth before every suspend/hibernate, not after waking.
+    # StopWhenUnneeded resets this oneshot after sleep.target stops, so the
+    # next sleep runs it again. Bound failures so BlueZ cannot block sleep.
+    bluetooth-sleep = {
+      description = "Power off Bluetooth before sleep";
+      wantedBy = [ "sleep.target" ];
+      before = [ "sleep.target" ];
+      after = [
+        "bluetooth.service"
+        "bluetooth-power-source.service"
+      ];
+      unitConfig.StopWhenUnneeded = true;
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        if ! ${config.systemd.package}/bin/systemctl is-active --quiet bluetooth.service; then
+          echo "bluetooth: daemon inactive, nothing to power off"
+          exit 0
+        fi
+
+        if ${pkgs.coreutils}/bin/timeout 5s ${config.hardware.bluetooth.package}/bin/bluetoothctl power off; then
+          echo "bluetooth: powered off before sleep"
+        else
+          echo "bluetooth: could not power off before sleep; continuing" >&2
+        fi
       '';
     };
+
+    # Bluetooth starts off at boot (powerOnBoot = false), and bluetooth-sleep
+    # turns it off before sleeping. Enable it on AC; on battery leave it off
+    # after wake until the user enables it. Preserve manual changes on battery
+    # rather than interrupting connections whenever a charger uevent arrives.
+    bluetooth-power-source = {
+      description = "Power the Bluetooth adapter to match the current power source";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "bluetooth.service" ];
+      wants = [ "bluetooth.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = pkgs.writeShellScript "bluetooth-power-source" ''
+          set -u
+          bluetoothctl=${config.hardware.bluetooth.package}/bin/bluetoothctl
+
+          # Ignore charger events during sleep (including the intermediate
+          # suspend-to-hibernate wake). The resume hook retries after sleep.
+          if ${config.systemd.package}/bin/systemctl is-active --quiet sleep.target; then
+            echo "bluetooth: sleep in progress, leaving adapter off"
+            exit 0
+          fi
+
+          # The controller registers with bluetoothd asynchronously, and on
+          # resume it is re-added after the daemon is already up.
+          for _ in $(seq 50); do
+            [ -n "$($bluetoothctl list)" ] && break
+            sleep 0.1
+          done
+          if [ -z "$($bluetoothctl list)" ]; then
+            echo "bluetooth: no controller, nothing to do"
+            exit 0
+          fi
+
+          if [ "$(cat /sys/class/power_supply/ACAD/online 2>/dev/null || echo 1)" = "1" ]; then
+            $bluetoothctl power on
+            echo "bluetooth: powered on (AC)"
+            exit 0
+          fi
+
+          echo "bluetooth: preserving adapter power state (battery)"
+        '';
+      };
+    };
+
+    # The knob lives in debugfs, which udev cannot write to, so it needs a unit.
+    # It has to run after the mt7921e module has created the phy, and has to be
+    # reapplied on resume because debugfs state does not survive the reset.
+    mt76-no-deep-sleep = lib.mkIf disableWifiDeepSleep {
+      description = "Disable mt76 deep sleep (keeps 802.11 power save on)";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = pkgs.writeShellScript "mt76-no-deep-sleep" ''
+          knob=/sys/kernel/debug/ieee80211/phy0/mt76/deep_sleep
+          # The phy shows up asynchronously after the module loads.
+          for _ in $(seq 50); do
+            [ -e "$knob" ] && break
+            sleep 0.1
+          done
+          [ -e "$knob" ] || exit 0
+          echo 0 > "$knob"
+        '';
+      };
+    };
+
   };
 
   # Use periodic TRIM instead of continuous discard to reduce background work.

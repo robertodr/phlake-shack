@@ -6,10 +6,7 @@
 }:
 let
   inherit (config.home) username;
-  inherit (config.lib.file) mkOutOfStoreSymlink;
   inherit (config.xdg)
-    configHome
-    dataHome
     stateHome
     ;
 in

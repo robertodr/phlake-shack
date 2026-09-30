@@ -1,4 +1,4 @@
-{ ... }:
+_:
 let
   algorithmiq = name: {
     owner = "algorithmiq";

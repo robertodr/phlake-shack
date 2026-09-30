@@ -189,13 +189,12 @@ in
           };
 
           startup =
-            [ ]
-            ++ builtins.map (command: {
-              command = command;
+            builtins.map (command: {
+              inherit command;
               always = true;
             }) alwaysRun
             ++ builtins.map (command: {
-              command = command;
+              inherit command;
             }) run;
         };
       };

@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   # systemd-oomd is enabled by default, but all three of its slice options
   # default to false, so out of the box it runs without monitoring anything.
   # These are what make it actually act; without them, dropping earlyoom would
