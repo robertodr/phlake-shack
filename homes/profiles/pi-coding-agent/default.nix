@@ -5,6 +5,7 @@
   ...
 }:
 let
+  jsonFormat = pkgs.formats.json { };
   tomlFormat = pkgs.formats.toml { };
 in
 {
@@ -23,22 +24,42 @@ in
     extraPackages = [
       pkgs.nodejs
       pkgs.bun
+      pkgs.llm-agents.rtk
+      pkgs.llm-agents.codegraph
     ];
     settings = {
+      defaultTools = [ "+codemode" ];
       packages = [
         "npm:@narumitw/pi-starship"
         "npm:@termdraw/pi"
         "npm:pi-diff-review"
-        "npm:pi-mcp-adapter"
         "npm:pi-subagents"
         "npm:pi-toggle-skills"
         "npm:pi-web-access"
       ];
-      defaultModel = "gpt-6-sol";
+      defaultModel = "gpt-6.1-sol";
       defaultProvider = "openai-codex";
       defaultThinkingLevel = "medium";
     };
   };
+
+  # Reuse the shared MCP servers with Pi's built-in MCP support. Omit unset
+  # optional fields: Home Manager represents them as null, which Pi rejects.
+  home.file."${config.programs.pi-coding-agent.configDir}/mcp.json" =
+    lib.mkIf config.programs.mcp.enable
+      {
+        source = jsonFormat.generate "pi-mcp.json" {
+          mcpServers = lib.mapAttrs (_: server: lib.filterAttrs (_: value: value != null) server) (
+            config.programs.mcp.servers
+          );
+        };
+      };
+
+  # RTK ships the Pi extension itself; keep rewrite rules in the installed RTK
+  # version rather than maintaining a separate command-rewriting implementation.
+  home.activation.installPiRtk = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run ${lib.getExe pkgs.llm-agents.rtk} init --agent pi --global
+  '';
 
   # Pi packages live in mutable npm state outside the Nix store. Refresh them
   # after settings.json has been linked, but keep offline activations usable.
