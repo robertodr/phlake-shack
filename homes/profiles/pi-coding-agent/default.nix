@@ -30,6 +30,7 @@ in
     settings = {
       defaultTools = [ "+codemode" ];
       packages = [
+        "npm:@gotgenes/pi-anthropic-auth"
         "npm:@monotykamary/pi-math"
         "npm:@narumitw/pi-starship"
         "npm:@termdraw/pi"
