@@ -65,6 +65,8 @@ in
         enable = true;
         useWallpaper = true;
       };
+      # User-level schemes preserve syntax colors without rebuilding GTK apps.
+      gtksourceview.enable = false;
       plymouth.enable = false;
     };
   };
@@ -72,7 +74,7 @@ in
   home-manager.users.roberto = {
     stylix.targets = {
       emacs.enable = false;
-      gtksourceview.enable = false;
+      gtksourceview.enable = true;
       hyprland.enable = false;
       vscode.enable = false;
       firefox.enable = false;

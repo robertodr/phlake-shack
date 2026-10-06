@@ -10,9 +10,12 @@ identities.
 
 The desktop GitButler and shared `but` CLI now come directly from
 `llm-agents.packages.x86_64-linux`. Other shared-overlay selections remain in
-place. The upstream CI nixpkgs pin is explicit: when updating `llm-agents`, update
-that pin together with it. Local host invariants check it against the input's own
-lock file. Existing host input revisions were not upgraded for this fix.
+place. There is no nested nixpkgs override in the input declaration: upstream's
+own lock supplies its CI dependency, recorded in our `flake.lock`. Local host
+invariants check both the revision and inherited input declaration against
+upstream. During migration from the old `follows`, only the nested input's
+`original` metadata needed correction; its locked revision stayed unchanged.
+Existing host input revisions were not upgraded for this fix.
 
 Numtide's cache and published signature-verification key are configured in the
 shared Nix profile. NAR signature checking remains enabled. Reference:
@@ -20,15 +23,15 @@ shared Nix profile. NAR signature checking remains enabled. Reference:
 
 ## Inkscape and Stylix
 
-Inkscape comes from the unmodified, same-pinned stable nixpkgs package set.
-Stylix's global GtkSourceView override previously changed Inkscape's dependency
-hash and turned it into a custom source build.
+Inkscape uses ordinary `pkgs.inkscape`, with no special package argument or
+application patch. Stylix has no Inkscape-specific target; its global GtkSourceView
+overlay previously changed the dependency hash and caused a custom source build.
 
-The existing Stylix syntax XML is additionally linked into the user's
-`~/.local/share/gtksourceview-4/styles/stylix.xml`, where stock GtkSourceView can
-find it. The existing GTK theme and global GtkSourceView configuration are not
-disabled. A theme change can still rebuild the small customized GtkSourceView
-package, but no longer changes Inkscape's derivation through that dependency.
+The NixOS GtkSourceView target is now disabled, preventing package overrides.
+The Home Manager GtkSourceView target is enabled instead: Stylix generates
+user-level syntax XML for GtkSourceView 2, 3, 4 and 5 without changing application
+packages. The GTK theme and syntax palette are retained. Theme changes regenerate
+small XML files rather than rebuilding GtkSourceView or Inkscape.
 
 ## First build and verification
 

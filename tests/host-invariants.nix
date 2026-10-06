@@ -14,10 +14,15 @@ let
   luks = disk.content.partitions.luks.content;
   subvolumes = luks.content.subvolumes;
   dancerHomePackageNames = map lib.getName h.home.packages;
-  frameworkHome = self.nixosConfigurations.kellanved.config.home-manager.users.roberto;
+  frameworkConfig = self.nixosConfigurations.kellanved.config;
+  frameworkHome = frameworkConfig.home-manager.users.roberto;
   selectedPackage = home: name: lib.findFirst (p: lib.getName p == name) null home.home.packages;
   upstreamLock = builtins.fromJSON (builtins.readFile "${self.inputs.llm-agents}/flake.lock");
-  upstreamNixpkgsRevision = upstreamLock.nodes.${upstreamLock.nodes.root.inputs.nixpkgs}.locked.rev;
+  upstreamNixpkgs = upstreamLock.nodes.${upstreamLock.nodes.root.inputs.nixpkgs};
+  upstreamNixpkgsRevision = upstreamNixpkgs.locked.rev;
+  rootLock = builtins.fromJSON (builtins.readFile "${self}/flake.lock");
+  llmNode = rootLock.nodes.${rootLock.nodes.root.inputs.llm-agents};
+  ciNode = llmNode.inputs.nixpkgs;
   dancerSshAuthSock = h.home.sessionVariables.SSH_AUTH_SOCK or "";
   dancerSshInitializationRaw = h.sshAuthSock.initialization or null;
   dancerSshInitialization =
@@ -34,6 +39,23 @@ let
     message = "kellanved ${key} changed from the preserved baseline";
   };
   assertions = [
+    {
+      assertion =
+        builtins.isString ciNode && rootLock.nodes.${ciNode}.original == upstreamNixpkgs.original;
+      message = "llm-agents nixpkgs must inherit upstream's input declaration rather than duplicate a hardcoded revision";
+    }
+    {
+      assertion = !frameworkConfig.stylix.targets.gtksourceview.enable;
+      message = "Framework must not apply Stylix's global GtkSourceView package overlay";
+    }
+    {
+      assertion = frameworkHome.stylix.targets.gtksourceview.enable;
+      message = "Framework must retain syntax styling through the Home Manager GtkSourceView target";
+    }
+    {
+      assertion = self.nixosConfigurations.kellanved.pkgs.inkscape.outPath == pkgs.inkscape.outPath;
+      message = "ordinary Framework pkgs.inkscape must be cache-compatible without a separate package argument";
+    }
     {
       assertion = self.inputs.llm-agents.inputs.nixpkgs.rev == upstreamNixpkgsRevision;
       message = "llm-agents must retain its upstream CI nixpkgs pin for cached GitButler packages";
