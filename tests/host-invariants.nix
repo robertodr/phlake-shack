@@ -40,6 +40,19 @@ let
   };
   assertions = [
     {
+      assertion = lib.versionAtLeast c.services.fwupd.package.version "2.1.6";
+      message = "Dancer fwupd must include the fix for Lenovo's KEK JCat catalog size";
+    }
+    {
+      assertion =
+        c.services.fwupd.package.outPath == self.inputs.unstable.legacyPackages.x86_64-linux.fwupd.outPath;
+      message = "Dancer fwupd must use the existing pinned unstable package without input upgrades";
+    }
+    {
+      assertion = lib.any (p: p.outPath == c.services.fwupd.package.outPath) c.environment.systemPackages;
+      message = "Dancer must install the matching fwupd client alongside the daemon";
+    }
+    {
       assertion =
         builtins.isString ciNode && rootLock.nodes.${ciNode}.original == upstreamNixpkgs.original;
       message = "llm-agents nixpkgs must inherit upstream's input declaration rather than duplicate a hardcoded revision";

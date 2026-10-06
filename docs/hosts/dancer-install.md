@@ -26,6 +26,21 @@ already-installed host requires a fresh reviewed Dancer-only bundle and a
 human-operated rebuild/activation. Do not repeat Disko, formatting, installation
 or password/Wi-Fi provisioning for this configuration update.
 
+### Firmware updater follow-up (V5)
+
+Dancer selects fwupd 2.1.6 from the existing pinned unstable input; Framework
+continues using stable fwupd. This fixes the JCat catalog entry limit that caused
+Lenovo's KEK 2011-to-2023 update to fail with `too many items in array, limit was
+100` ([upstream fix](https://github.com/fwupd/fwupd/pull/10479)). No flake input
+upgrade or automatic firmware operation is involved.
+
+This is included in the new sanitized V5 update bundle, not V3 or V4. After
+human-operated `nh os switch`, check `fwupdmgr --version` on Dancer: both compile
+and runtime `org.freedesktop.fwupd` must show 2.1.6 before retrying any firmware
+update. Firmware operations remain human-only with AC connected. Do not bypass
+signature verification or enable Secure Boot before its signed boot chain is
+prepared. Firmware changes must be settled before TPM enrollment.
+
 ## Prerequisite checklist
 
 On the current laptop:

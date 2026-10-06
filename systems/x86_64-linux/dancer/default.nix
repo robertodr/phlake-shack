@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgsUnstable, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -22,6 +22,9 @@
   networking.hostName = "dancer";
 
   services = {
+    # 2.1.6 fixes the JCat entry limit for Lenovo's KEK 2011 -> 2023 update.
+    # Select both daemon and client from our existing unstable pin.
+    fwupd.package = pkgsUnstable.fwupd;
     logind.settings.Login = {
       HandleLidSwitch = "ignore";
       HandleLidSwitchExternalPower = "ignore";
