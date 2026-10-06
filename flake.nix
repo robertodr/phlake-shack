@@ -96,12 +96,15 @@
           statix.enable = true;
         };
       };
-    in
-    {
-      checks.${system}.pre-commit = preCommitCheck;
 
-      nixosConfigurations = {
-        kellanved = nixpkgs.lib.nixosSystem {
+      mkHost =
+        {
+          name,
+          hardwareModule,
+          homeModule,
+          extraModules ? [ ],
+        }:
+        nixpkgs.lib.nixosSystem {
           modules = [
             (_: {
               # This enables unfree for the 'pkgs' (stable) set
@@ -116,7 +119,7 @@
                 })
               ];
             })
-            ./systems/${system}/kellanved
+            (./. + "/systems/${system}/${name}")
             disko.nixosModules.disko
             home-manager.nixosModules.home-manager
             {
@@ -131,18 +134,48 @@
                 ];
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                users.${user} = import (./. + "/homes/${user}-at-kellanved");
+                users.${user} = import homeModule;
               };
             }
             impermanence.nixosModules.impermanence
-            nixos-hardware.nixosModules.framework-13-7040-amd
+            hardwareModule
             noctalia-greeter.nixosModules.default
             sops-nix.nixosModules.sops
             stylix.nixosModules.stylix
-          ];
+          ]
+          ++ extraModules;
           specialArgs = {
             inherit pkgsUnstable;
           };
+        };
+    in
+    {
+      checks.${system} = {
+        pre-commit = preCommitCheck;
+        host-invariants = import ./tests/host-invariants.nix {
+          self = inputs.self or (throw "self input unavailable");
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
+        ssh-lan = import ./tests/ssh-lan.nix {
+          inherit pkgsUnstable;
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
+        impermanence = import ./tests/impermanence.nix {
+          inherit disko impermanence;
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
+      };
+
+      nixosConfigurations = {
+        kellanved = mkHost {
+          name = "kellanved";
+          hardwareModule = nixos-hardware.nixosModules.framework-13-7040-amd;
+          homeModule = ./homes/roberto-at-kellanved;
+        };
+        dancer = mkHost {
+          name = "dancer";
+          hardwareModule = nixos-hardware.nixosModules.lenovo-thinkpad-x1;
+          homeModule = ./homes/roberto-at-dancer;
         };
       };
 

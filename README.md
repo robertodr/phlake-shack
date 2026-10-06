@@ -3,6 +3,15 @@ This repository is home to the nix code that builds my systems.
 
 [_The simpler, the better_](https://discourse.nixos.org/t/how-do-i-modularize-configuration-snippets-to-modules/37512/3)
 
+## Hosts and installation runbooks
+
+| Host | Profile | Hardware / role | Runbook |
+| --- | --- | --- | --- |
+| `kellanved` | `nixosConfigurations.kellanved`, `homes/roberto-at-kellanved` | Framework 13 AMD daily-driver laptop | Existing local workflow |
+| `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon Stage A headless/mobile host | [`docs/hosts/dancer-install.md`](docs/hosts/dancer-install.md) |
+
+`dancer` installation is a human-only attended procedure. First boot still requires the local LUKS passphrase; Stage A does not configure initrd SSH or TPM auto-unlock. The reviewed transfer artifact is the Dancer-only `dancer-stage-a-install-only-v3.tar.zst` configuration bundle, not the full two-host repository and not an installer ISO.
+
 ## imperative actions
 * Activate the SSH agent in 1password
 * Enable system authentication in 1password
