@@ -157,6 +157,11 @@
           self = inputs.self or (throw "self input unavailable");
           pkgs = nixpkgs.legacyPackages.${system};
         };
+        fwupd-efi = import ./tests/fwupd-efi.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
+          fwupdTmpfilesRules = inputs.self.nixosConfigurations.dancer.config.systemd.tmpfiles.rules;
+        };
         ssh-lan = import ./tests/ssh-lan.nix {
           inherit pkgsUnstable;
           pkgs = nixpkgs.legacyPackages.${system};

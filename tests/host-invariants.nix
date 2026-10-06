@@ -40,6 +40,10 @@ let
   };
   assertions = [
     {
+      assertion = lib.elem "C+ /run/fwupd-efi - - - - ${c.services.fwupd.package.fwupd-efi}/libexec/fwupd/efi" c.systemd.tmpfiles.rules;
+      message = "Dancer must populate the matching fwupd EFI helper at boot and activation";
+    }
+    {
       assertion = lib.versionAtLeast c.services.fwupd.package.version "2.1.6";
       message = "Dancer fwupd must include the fix for Lenovo's KEK JCat catalog size";
     }

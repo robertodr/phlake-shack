@@ -1,4 +1,9 @@
-{ lib, pkgsUnstable, ... }:
+{
+  config,
+  lib,
+  pkgsUnstable,
+  ...
+}:
 {
   imports = [
     ./hardware-configuration.nix
@@ -34,6 +39,11 @@
   };
 
   systemd = {
+    # Backport the runtime integration required by unstable fwupd 2.1.6.
+    # C+ populates the volatile helper directory without deleting signed siblings.
+    tmpfiles.rules = [
+      "C+ /run/fwupd-efi - - - - ${config.services.fwupd.package.fwupd-efi}/libexec/fwupd/efi"
+    ];
     sleep.settings.Sleep = {
       AllowSuspend = false;
       AllowHibernation = false;
