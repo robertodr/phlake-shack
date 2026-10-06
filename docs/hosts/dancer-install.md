@@ -26,6 +26,19 @@ already-installed host requires a fresh reviewed Dancer-only bundle and a
 human-operated rebuild/activation. Do not repeat Disko, formatting, installation
 or password/Wi-Fi provisioning for this configuration update.
 
+### Boot activation follow-up (V7)
+
+Dancer disables the shared `updatePiExtensions` activation hook. Previously,
+`pi update --extensions` performed mutable network/npm updates at every boot and
+blocked console login; the captured journal attributed about 18 seconds to this
+step. Framework retains its original hook. Installed extensions are not removed.
+Run `pi update --extensions` explicitly as `roberto` after login when updates are
+wanted; do not blindly apply npm audit fixes.
+
+V7 includes the V6 EFI-helper correction below. Source/build checks verify that
+the generated activation script has no extension-update command, but actual
+boot-time improvement must be measured after human-operated activation/reboot.
+
 ### Firmware updater follow-up (V6)
 
 Dancer selects fwupd 2.1.6 from the existing pinned unstable input; Framework

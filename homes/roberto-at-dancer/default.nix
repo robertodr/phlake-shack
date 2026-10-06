@@ -15,6 +15,9 @@
     homeDirectory = "/home/roberto";
     stateVersion = "26.05";
     packages = [ pkgs.tmux ];
+    # Activation gates console login; do not fetch mutable npm updates at boot.
+    # Update explicitly after login with: pi update --extensions
+    activation.updatePiExtensions = lib.mkForce (lib.hm.dag.entryAfter [ "writeBoundary" ] "");
   };
 
   services.ssh-agent.enable = true;
