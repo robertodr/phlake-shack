@@ -12,6 +12,13 @@ This repository is home to the nix code that builds my systems.
 
 `dancer` installation is a human-only attended procedure. First boot still requires the local LUKS passphrase; Stage A does not configure initrd SSH or TPM auto-unlock. The reviewed transfer artifact is the Dancer-only `dancer-stage-a-install-only-v3.tar.zst` configuration bundle, not the full two-host repository and not an installer ISO.
 
+Dancer's follow-up configuration excludes Docker and Emacs and uses a cyan/blue
+prompt without the Framework nickname. These follow-up changes are **not** in the
+previously reviewed V3 installation archive; updating an installed host requires
+new reviewed Dancer-only source and human-operated activation, never reformatting.
+See [binary-cache packaging notes](docs/development/binary-cache.md) for GitButler
+and Inkscape.
+
 ## imperative actions
 * Activate the SSH agent in 1password
 * Enable system authentication in 1password

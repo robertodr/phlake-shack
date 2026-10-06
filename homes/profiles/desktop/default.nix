@@ -1,4 +1,10 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  gitbutlerPackage,
+  cachedInkscape,
+  ...
+}:
 {
   fonts.fontconfig.enable = true;
 
@@ -13,10 +19,10 @@
       brightnessctl
       freerdp
       hotspot
-      llm-agents.gitbutler
+      gitbutlerPackage
       meld
       ferdium
-      inkscape
+      cachedInkscape
       nomacs
       papers
       pika-backup
@@ -25,6 +31,11 @@
       zoom-us
     ];
   };
+
+  # Keep the existing syntax palette available to stock cached Inkscape without
+  # rebuilding Inkscape against Stylix's customized GtkSourceView dependency.
+  xdg.dataFile."gtksourceview-4/styles/stylix.xml".source =
+    "${pkgs.gtksourceview4}/share/gtksourceview-4/styles/stylix.xml";
 
   xdg.configFile."electron-flags.conf".text = ''
     --enable-features=UseOzonePlatform

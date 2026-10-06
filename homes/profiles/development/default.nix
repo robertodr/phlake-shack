@@ -1,4 +1,9 @@
-{ pkgs, pkgsUnstable, ... }:
+{
+  pkgs,
+  pkgsUnstable,
+  gitbutlerCli,
+  ...
+}:
 {
   home.packages = with pkgs; [
     autoconf
@@ -15,7 +20,7 @@
     global
     gnumake
     graphviz
-    llm-agents.but
+    gitbutlerCli
     llm-agents.codegraph
     llm-agents.coderabbit-cli
     llm-agents.qmd

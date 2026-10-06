@@ -24,7 +24,9 @@
 
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "unstable";
+      # Match this llm-agents revision's own flake.lock, not our host unstable.
+      # Update this pin together with llm-agents; host-invariants checks the match.
+      inputs.nixpkgs.url = "github:NixOS/nixpkgs/f45c6f04c2f013f004bf94e284e95d72898d9393";
     };
 
     nix4vscode = {
@@ -127,6 +129,9 @@
                 backupFileExtension = "bak";
                 extraSpecialArgs = {
                   inherit pkgsUnstable;
+                  gitbutlerPackage = llm-agents.packages.${system}.gitbutler;
+                  gitbutlerCli = llm-agents.packages.${system}.but;
+                  cachedInkscape = nixpkgs.legacyPackages.${system}.inkscape;
                 };
                 sharedModules = [
                   ./homes/modules

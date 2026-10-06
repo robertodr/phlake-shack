@@ -13,6 +13,19 @@ This is a human-only handoff for installing the `dancer` NixOS host on the Think
 - Production SSH is LAN-only: IPv4 `192.168.68.0/22`; no inbound IPv6 SSH; root, password, and keyboard-interactive login disabled.
 - Ethernet is recommended for installation and first checks. Wi-Fi uses NetworkManager profiles that must remain out of Git and out of the Nix store.
 
+## Post-install follow-up configuration
+
+The current repository follow-up excludes Docker (daemon, user group and state
+bind mount) and Emacs, and gives Dancer a cyan/blue prompt without the Framework
+nickname. Existing `/persist/var/lib/docker` data must not be deleted as part of
+the update. Framework retains Docker and its original prompt.
+
+These changes and the [binary-cache fixes](../development/binary-cache.md) are
+**not included in the historical V3 archive** described below. Updating the
+already-installed host requires a fresh reviewed Dancer-only bundle and a
+human-operated rebuild/activation. Do not repeat Disko, formatting, installation
+or password/Wi-Fi provisioning for this configuration update.
+
 ## Prerequisite checklist
 
 On the current laptop:
@@ -36,7 +49,7 @@ At the ThinkPad live installer local console:
 
 Run on the current laptop. Use `dancer-stage-a-install-only-v3.tar.zst`, not the superseded full-source archive, not the v1/v2 Dancer bundles, and not a fresh clone of `HEAD`. The bundle is a normal Nix flake source tree for the Dancer configuration; it is not a bootable installer ISO. Boot the ordinary NixOS live USB separately, then copy and extract this bundle inside the live environment.
 
-The original full repository and Framework configuration remain unchanged in the development worktree. The installation bundle intentionally exposes only `nixosConfigurations.dancer`, omits Framework personal configuration, omits repo-development checks that depend on Git/private baselines, and carries no encrypted secret blobs or private credential files. Until a separate Git workflow is approved, future source updates for this host should use a newly reviewed Dancer-only bundle rather than cloning the full repository on `dancer`.
+The original full repository and Framework configuration remain unchanged in the development worktree. The installation bundle intentionally exposes only `nixosConfigurations.dancer`, omits Framework personal configuration, omits repo-development checks that depend on Git/private baselines, and carries no encrypted secret blobs or private credential files. Publication of the source PR does not make the full repository a credential-free Dancer bundle. Future source updates for this host should still use a newly reviewed Dancer-only bundle rather than copying Framework credential material to `dancer`.
 
 Example transfer over the local network, replacing the address and destination with the live installer's actual values:
 

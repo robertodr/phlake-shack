@@ -11,6 +11,7 @@
     ../../../users/roberto
     ../../profiles/base
     ../../profiles/development
+    ../../profiles/virtualisation/docker
     ../../profiles/desktop
     ../../profiles/impermanence
     ../../profiles/powerManagement

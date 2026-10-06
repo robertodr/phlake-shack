@@ -14,6 +14,10 @@ let
   luks = disk.content.partitions.luks.content;
   subvolumes = luks.content.subvolumes;
   dancerHomePackageNames = map lib.getName h.home.packages;
+  frameworkHome = self.nixosConfigurations.kellanved.config.home-manager.users.roberto;
+  selectedPackage = home: name: lib.findFirst (p: lib.getName p == name) null home.home.packages;
+  upstreamLock = builtins.fromJSON (builtins.readFile "${self.inputs.llm-agents}/flake.lock");
+  upstreamNixpkgsRevision = upstreamLock.nodes.${upstreamLock.nodes.root.inputs.nixpkgs}.locked.rev;
   dancerSshAuthSock = h.home.sessionVariables.SSH_AUTH_SOCK or "";
   dancerSshInitializationRaw = h.sshAuthSock.initialization or null;
   dancerSshInitialization =
@@ -30,6 +34,68 @@ let
     message = "kellanved ${key} changed from the preserved baseline";
   };
   assertions = [
+    {
+      assertion = self.inputs.llm-agents.inputs.nixpkgs.rev == upstreamNixpkgsRevision;
+      message = "llm-agents must retain its upstream CI nixpkgs pin for cached GitButler packages";
+    }
+    {
+      assertion =
+        (selectedPackage frameworkHome "gitbutler").outPath
+        == self.inputs.llm-agents.packages.x86_64-linux.gitbutler.outPath;
+      message = "Framework GitButler must use the upstream CI package, not the shared overlay build";
+    }
+    {
+      assertion =
+        (selectedPackage h "but").outPath == self.inputs.llm-agents.packages.x86_64-linux.but.outPath;
+      message = "Dancer GitButler CLI must use the upstream CI package";
+    }
+    {
+      assertion = (selectedPackage frameworkHome "inkscape").outPath == pkgs.inkscape.outPath;
+      message = "Framework Inkscape must use the stock nixpkgs build, not a globally themed dependency";
+    }
+    {
+      assertion =
+        lib.elem "https://cache.numtide.com" c.nix.settings.substituters
+        && lib.elem "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" c.nix.settings.trusted-public-keys;
+      message = "Numtide cache must be configured with its published signature verification key";
+    }
+    {
+      assertion = !c.virtualisation.docker.enable && !(c.systemd.services ? docker);
+      message = "dancer must not enable the Docker daemon";
+    }
+    {
+      assertion = !(lib.elem "docker" c.users.users.roberto.extraGroups);
+      message = "dancer must not grant Docker group access";
+    }
+    {
+      assertion =
+        !(lib.elem "/var/lib/docker" (
+          map (entry: entry.directory) c.environment.persistence."/persist".directories
+        ));
+      message = "dancer must not bind Docker state into the rolled-back root";
+    }
+    {
+      assertion =
+        !h.programs.emacs.enable
+        && !(builtins.any (name: lib.hasPrefix "emacs" name) (
+          map lib.getName (c.environment.systemPackages ++ h.home.packages)
+        ));
+      message = "dancer must not enable or install Emacs";
+    }
+    {
+      assertion = !(contains "美男象" h.programs.starship.settings.format);
+      message = "dancer prompt must not include the Framework Chinese nickname";
+    }
+    {
+      assertion =
+        h.programs.starship.settings.hostname.ssh_only == false
+        && contains "cyan" h.programs.starship.settings.hostname.format;
+      message = "dancer prompt must always identify its host using cyan";
+    }
+    {
+      assertion = h.programs.starship.settings.directory.style == "bold #5fafff";
+      message = "dancer prompt directory must use its distinct blue palette";
+    }
     {
       assertion = self.nixosConfigurations ? dancer;
       message = "flake must define nixosConfigurations.dancer";

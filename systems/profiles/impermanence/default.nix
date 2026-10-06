@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ config, lib, ... }:
 {
   boot.initrd.systemd.services.root-roolback = {
     description = "Rollback BTRFS root subvolume to a pristine state";
@@ -80,11 +80,11 @@
         "/etc/ssh/ssh_host_rsa_key.pub"
       ];
     }
-    {
+    (lib.mkIf config.virtualisation.docker.enable {
       directories = [
         "/var/lib/docker"
       ];
-    }
+    })
     {
       directories = lib.mkAfter [
         "/var/lib/nixos"

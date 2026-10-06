@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   users = {
     groups = {
@@ -20,8 +25,7 @@
         home = "/home/roberto";
         createHome = true;
         uid = 1000;
-        extraGroups = [
-          "docker"
+        extraGroups = lib.optional config.virtualisation.docker.enable "docker" ++ [
           "input"
           "networkmanager"
           "users"
