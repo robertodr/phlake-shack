@@ -1,7 +1,7 @@
 # Dancer Secure Boot and signed-PCR unlocking
 
 Date: 2026-10-06
-Status: design for owner review; implementation and physical enrollment are not authorized by this document.
+Status: architectural design approved by the owner; implementation planning authorized. Physical rollout and enrollment still require separate approval.
 
 ## 1. Decisions and scope
 
@@ -123,7 +123,8 @@ impermanence persistence, records retained closure/image identities and committe
 state in a versioned, rollback-compatible manifest. A generation is known-good
 only after a confirmed boot into its UKI, successful unlock and working system;
 activation success alone is not a boot confirmation. Preserve the last confirmed
-boot generation when staging repeated updates without intervening reboots. TPM unlocking must not depend on reading it before decryption: the needed
+boot generation when staging repeated updates without intervening reboots.
+TPM unlocking must not depend on reading it before decryption: the needed
 public key/signatures are in the boot image and enrollment token, not solely in
 `/persist`. GC roots for retained boot closures survive root rollback and prevent
 ESP entries referring to garbage-collected init paths.
@@ -132,7 +133,8 @@ ESP entries referring to garbage-collected init paths.
 
 Persist the complete Secure Boot key/certificate database at `/var/lib/sbctl`,
 not merely one key file, and the separate PCR-signing key under
-`/var/lib/secure-uki/pcr-signing`. Back both locations with encrypted persistence. Use string references to target-local paths,
+`/var/lib/secure-uki/pcr-signing`. Back both locations with encrypted persistence.
+Use string references to target-local paths,
 root-only directories and restrictive file modes. Missing keys fail closed;
 activation never silently regenerates them. Human-generated production keys and
 sensitive LUKS header backups require protected off-host backups. Do not commit
@@ -288,4 +290,5 @@ TPM release, automatic NV/PCRLock enrollment or a weaker boot path.
   `nixos/modules/system/boot/loader/systemd-boot/systemd-boot.nix` were read:
   UKI construction exists; post-install commands follow the stock builder.
 
-Implementation planning begins only after the owner reviews this written spec.
+The owner approved this written spec and authorized implementation planning.
+See `dancer-secure-uki-implementation-plan.md` for the staged tasks and gates.
