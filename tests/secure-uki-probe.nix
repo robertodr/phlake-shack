@@ -1,8 +1,9 @@
 { pkgs }:
 let
   inherit (pkgs) lib;
+  secureUki = pkgs.callPackage ../pkgs/secure-uki { };
   ukify = pkgs.writeShellScriptBin "ukify" ''
-    exec ${pkgs.systemdUkify}/lib/systemd/ukify "$@"
+    exec ${pkgs.systemdUkify}/lib/systemd/ukify --stub=${pkgs.systemd}/lib/systemd/boot/efi/linuxx64.efi.stub "$@"
   '';
 in
 pkgs.testers.runNixOSTest {
@@ -43,6 +44,8 @@ pkgs.testers.runNixOSTest {
       pkgs.python3
       pkgs.tpm2-tools
     ];
+    # A single-profile bootstrap UKI, separate from the parent fixture's menu.
+    specialisation.boot-base.configuration = { };
     specialisation.boot-luks.configuration = {
       boot.initrd.luks.devices = lib.mkVMOverride {
         cryptroot = {
@@ -59,7 +62,8 @@ pkgs.testers.runNixOSTest {
           crypttabExtraOpts = [ "tpm2-device=auto" ];
         };
       };
-      boot.initrd.systemd.contents."/etc/probe-updated-initrd".source = pkgs.writeText "probe-updated-initrd" "updated\n";
+      boot.initrd.systemd.contents."/etc/probe-updated-initrd".source =
+        pkgs.writeText "probe-updated-initrd" "updated\n";
       virtualisation.rootDevice = "/dev/mapper/cryptroot";
     };
   };
@@ -91,12 +95,13 @@ pkgs.testers.runNixOSTest {
   testScript =
     { nodes, ... }:
     let
-      base = nodes.machine.system.build.toplevel;
+      base = nodes.machine.specialisation.boot-base.configuration.system.build.toplevel;
       unsignedBase = nodes.unsigned.system.build.toplevel;
       luks = nodes.machine.specialisation.boot-luks.configuration.system.build.toplevel;
       updated = nodes.machine.specialisation.boot-luks-updated.configuration.system.build.toplevel;
     in
     ''
+      SECURE_UKI_PYTHONPATH = "${secureUki}/${pkgs.python3.sitePackages}"
       ${builtins.readFile ./secure-uki-vm-helpers.py}
 
       machine.start(allow_reboot=True)
@@ -117,6 +122,15 @@ pkgs.testers.runNixOSTest {
       machine.succeed("sbctl enroll-keys --yes-this-might-brick-my-machine")
       cold_restart(machine)
       verify_uki_boot(machine, "base", "${base}")
+      make_test_keys(machine, "/var/lib/test-pcr-wrong")
+      esp_before_failure = machine.succeed("find /boot -type f -exec sha256sum {} + | sort")
+      entries_before_failure = machine.succeed("bootctl list --json=short")
+      build_guest_uki(machine, "${base}", "/var/lib/test-pcr",
+                      "/var/lib/probe-images/probe-refused.efi",
+                      expected_key_mismatch="/var/lib/test-pcr-wrong/public.pem")
+      machine.succeed("test ! -e /var/lib/probe-images/probe-refused.efi")
+      assert machine.succeed("find /boot -type f -exec sha256sum {} + | sort") == esp_before_failure
+      assert machine.succeed("bootctl list --json=short") == entries_before_failure
 
       # VM fixture only: prepare a fresh disposable disk with independent recovery.
       build_guest_uki(machine, "${luks}", "/var/lib/test-pcr",

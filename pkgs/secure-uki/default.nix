@@ -1,4 +1,8 @@
-{ lib, python3Packages }:
+{
+  lib,
+  python3Packages,
+  openssl,
+}:
 python3Packages.buildPythonApplication {
   pname = "secure-uki";
   version = "0.1.0";
@@ -6,6 +10,13 @@ python3Packages.buildPythonApplication {
   src = lib.cleanSource ./.;
   build-system = [ python3Packages.setuptools ];
   strictDeps = true;
+  nativeCheckInputs = [ openssl ];
+  # All other signing tools use absolute Tools paths; OpenSSL is pinned here.
+  makeWrapperArgs = [
+    "--set"
+    "PATH"
+    (lib.makeBinPath [ openssl ])
+  ];
 
   doCheck = true;
   checkPhase = ''
@@ -20,7 +31,10 @@ python3Packages.buildPythonApplication {
     printf '%s\n' "$output" | grep -F 'installation is disabled'
     runHook postCheck
   '';
-  pythonImportsCheck = [ "secure_uki.metadata" ];
+  pythonImportsCheck = [
+    "secure_uki.metadata"
+    "secure_uki.prepare"
+  ];
 
   meta = {
     description = "Target-local signed UKI installer primitives (publication disabled)";

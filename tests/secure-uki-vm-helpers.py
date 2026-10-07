@@ -23,8 +23,41 @@ def make_test_keys(machine, directory):
     guest_command(machine, ["chmod", "0600", f"{directory}/private.pem"])
 
 
-def build_guest_uki(machine, closure, directory, output, *, sign=True, marker="base"):
-    """Use actual Bootspec components, PCR policy and final UEFI signing."""
+def build_guest_uki(machine, closure, directory, output, *, sign=True, marker="base",
+                    expected_key_mismatch=None):
+    """Signed fixtures use the production preparer; unsigned refusal stays raw."""
+    if sign:
+        script = """
+import pathlib,shutil,subprocess,sys
+from secure_uki.metadata import Keys,Tools,read_generation
+from secure_uki.prepare import prepare_image
+closure,directory,output = map(pathlib.Path,sys.argv[1:4])
+wrong_public = pathlib.Path(sys.argv[4]) if sys.argv[4] else None
+def run(argv):
+    return subprocess.run(argv,check=True,capture_output=True,text=True).stdout
+tools=Tools(pathlib.Path(shutil.which('ukify')),
+            pathlib.Path('/run/current-system/systemd/lib/systemd/systemd-measure'),
+            pathlib.Path(shutil.which('sbsign')),pathlib.Path(shutil.which('sbverify')),
+            pathlib.Path(shutil.which('bootctl')),pathlib.Path('/unused-nix-store'))
+keys=Keys(pathlib.Path('/var/lib/sbctl/keys/db/db.key'),
+          pathlib.Path('/var/lib/sbctl/keys/db/db.pem'),directory/'private.pem',
+          wrong_public or directory/'public.pem')
+try:
+    image=prepare_image(read_generation(closure),output.parent,tools,keys,run)
+except ValueError as error:
+    if wrong_public and 'keypair/certificate does not match' in str(error):
+        print('Expected keypair mismatch refused before image construction')
+        sys.exit(0)
+    raise
+if wrong_public:
+    raise AssertionError('Wrong public key was not refused')
+shutil.copyfile(image.path,output)
+shutil.rmtree(image.path.parent)
+"""
+        guest_command(machine, ["env", f"PYTHONPATH={SECURE_UKI_PYTHONPATH}",
+                                "python3", "-c", script, closure, directory, output,
+                                expected_key_mismatch or ""] )
+        return output
     spec = json.loads(guest_command(machine, [
         "python3", "-c", "import pathlib,sys; print(pathlib.Path(sys.argv[1]).read_text())",
         f"{closure}/boot.json",
@@ -42,13 +75,7 @@ def build_guest_uki(machine, closure, directory, output, *, sign=True, marker="b
         f"--pcr-private-key={directory}/private.pem", f"--pcr-public-key={directory}/public.pem",
         "--pcr-banks=sha256", "--phases=enter-initrd", f"--output={unsigned}",
     ])
-    if sign:
-        guest_command(machine, [
-            "sbsign", "--key", "/var/lib/sbctl/keys/db/db.key", "--cert",
-            "/var/lib/sbctl/keys/db/db.pem", "--output", output, unsigned,
-        ])
-    else:
-        guest_command(machine, ["cp", unsigned, output])
+    guest_command(machine, ["cp", unsigned, output])
     return output
 
 
@@ -74,7 +101,7 @@ def verify_uki_boot(machine, marker, closure):
     status = machine.succeed("bootctl status --no-pager")
     assert "Secure Boot: enabled" in status, status
     assert "systemd-stub" in status, status
-    assert f"probe_image={marker}" in machine.succeed("python3 -c \"print(open('/proc/cmdline').read())\"")
+    assert machine.succeed("bootctl --print-stub-path").strip().endswith(f"/probe-{marker}.efi")
     assert machine.succeed("readlink -f /run/booted-system").strip() == closure
 
 
