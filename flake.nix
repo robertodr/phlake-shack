@@ -157,6 +157,9 @@
           self = inputs.self or (throw "self input unavailable");
           pkgs = nixpkgs.legacyPackages.${system};
         };
+        secure-uki-probe = import ./tests/secure-uki-probe.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
         fwupd-efi = import ./tests/fwupd-efi.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
