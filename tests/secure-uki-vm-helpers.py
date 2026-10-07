@@ -105,13 +105,17 @@ def verify_uki_boot(machine, marker, closure):
     assert machine.succeed("readlink -f /run/booted-system").strip() == closure
 
 
-def recover_at_console(machine):
+def recover_at_console(machine, *, mapper="cryptroot"):
     # The driver resets the full log on start. Its timeout-enabled queue reader
     # consumes only one line per retry, so inspect the current boot's full log.
     def recovery_prompt(_last_try):
         console = machine.get_console_log()
         console = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", console)
-        return "Please enter passphrase for disk cryptroot" in console
+        # Production Disko exposes a partition label followed by '(encrypted)',
+        # while the minimal probe names cryptroot directly. Require the selected
+        # mapper in a real prompt before supplying the synthetic recovery secret.
+        return re.search(r"Please enter passphrase for disk[^\r\n]*\b" +
+                         re.escape(mapper) + r"\b", console) is not None
 
     driver_retry(recovery_prompt, 90)
     machine.send_console(RECOVERY_PASSPHRASE + "\n")

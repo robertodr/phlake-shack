@@ -158,6 +158,10 @@
           pkgs = nixpkgs.legacyPackages.${system};
         };
         secure-uki-unit = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/secure-uki { };
+        secure-uki = import ./tests/secure-uki.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit disko impermanence;
+        };
         secure-uki-module = import ./tests/secure-uki-module.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           impermanenceModule = impermanence.nixosModules.impermanence;
