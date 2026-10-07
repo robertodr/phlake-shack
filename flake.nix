@@ -158,6 +158,17 @@
           pkgs = nixpkgs.legacyPackages.${system};
         };
         secure-uki-unit = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/secure-uki { };
+        secure-uki-module = import ./tests/secure-uki-module.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          impermanenceModule = impermanence.nixosModules.impermanence;
+          fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
+        };
+        secure-uki-module-eval = import ./tests/secure-uki-module-eval.nix {
+          dancer = inputs.self.nixosConfigurations.dancer;
+          pkgs = nixpkgs.legacyPackages.${system};
+          impermanenceModule = impermanence.nixosModules.impermanence;
+          fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
+        };
         secure-uki-publish = import ./tests/secure-uki-publish.nix {
           pkgs = nixpkgs.legacyPackages.${system};
         };

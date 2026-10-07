@@ -29,6 +29,11 @@ python3Packages.buildPythonApplication {
       exit 1
     fi
     printf '%s\n' "$output" | grep -F 'root is required'
+    if output=$("$out/bin/secure-uki-fwupd" /nonexistent-helper 2>&1); then
+      echo "Unprivileged helper signer incorrectly reported success" >&2
+      exit 1
+    fi
+    printf '%s\n' "$output" | grep -F 'root is required'
     runHook postCheck
   '';
   pythonImportsCheck = [
@@ -36,6 +41,7 @@ python3Packages.buildPythonApplication {
     "secure_uki.prepare"
     "secure_uki.publish"
     "secure_uki.cli"
+    "secure_uki.fwupd"
   ];
 
   meta = {

@@ -11,6 +11,7 @@ dependencies = []
 
 [project.scripts]
 secure-uki = "secure_uki.cli:main"
+secure-uki-fwupd = "secure_uki.fwupd:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
