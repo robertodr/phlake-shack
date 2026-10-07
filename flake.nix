@@ -157,6 +157,7 @@
           self = inputs.self or (throw "self input unavailable");
           pkgs = nixpkgs.legacyPackages.${system};
         };
+        secure-uki-unit = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/secure-uki { };
         secure-uki-probe = import ./tests/secure-uki-probe.nix {
           pkgs = nixpkgs.legacyPackages.${system};
         };
