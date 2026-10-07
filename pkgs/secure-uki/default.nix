@@ -25,19 +25,21 @@ python3Packages.buildPythonApplication {
       ${python3Packages.python.interpreter} -m unittest discover -s tests -v
     # The pinned Python builder maps checkPhase to installCheckPhase.
     if output=$("$out/bin/secure-uki" install /nonexistent-system 2>&1); then
-      echo "Unfinished secure-uki CLI incorrectly reported success" >&2
+      echo "Unprivileged secure-uki CLI incorrectly reported success" >&2
       exit 1
     fi
-    printf '%s\n' "$output" | grep -F 'installation is disabled'
+    printf '%s\n' "$output" | grep -F 'root is required'
     runHook postCheck
   '';
   pythonImportsCheck = [
     "secure_uki.metadata"
     "secure_uki.prepare"
+    "secure_uki.publish"
+    "secure_uki.cli"
   ];
 
   meta = {
-    description = "Target-local signed UKI installer primitives (publication disabled)";
+    description = "Target-local signed UKI installer with recoverable publication";
     mainProgram = "secure-uki";
     platforms = [ "x86_64-linux" ];
   };

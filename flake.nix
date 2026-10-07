@@ -158,6 +158,9 @@
           pkgs = nixpkgs.legacyPackages.${system};
         };
         secure-uki-unit = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/secure-uki { };
+        secure-uki-publish = import ./tests/secure-uki-publish.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
         secure-uki-probe = import ./tests/secure-uki-probe.nix {
           pkgs = nixpkgs.legacyPackages.${system};
         };
