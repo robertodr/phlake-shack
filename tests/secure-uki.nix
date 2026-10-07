@@ -3,6 +3,8 @@
   disko,
   impermanence,
   disableRollback ? false,
+  enableTpm ? false,
+  extraPcrScript ? "",
 }:
 let
   inherit (pkgs) lib;
@@ -47,6 +49,35 @@ let
           system.stateVersion = "26.05";
           boot.secureUki.enable = true;
           boot.initrd.systemd.enable = true;
+          boot.initrd.luks.devices.encrypted.crypttabExtraOpts = lib.optionals enableTpm [
+            "tpm2-device=auto"
+          ];
+          boot.initrd.availableKernelModules = lib.optionals enableTpm [
+            "tpm_tis"
+            "tpm_crb"
+          ];
+          boot.initrd.systemd.services.vm-pcr-observer = lib.mkIf enableTpm {
+            requiredBy = [ "systemd-cryptsetup@encrypted.service" ];
+            # Observe the real cryptsetup barrier; do NOT add an ordering edge
+            # to pcrphase itself that could conceal missing production ordering.
+            after = [ "cryptsetup-pre.target" ];
+            before = [ "systemd-cryptsetup@encrypted.service" ];
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+            };
+            script = ''
+              systemctl is-active --quiet systemd-pcrphase-initrd.service
+              if test -s /vm-update-marker; then echo VM_CHANGED_INITRD; fi
+              if test -s /.extra/tpm2-pcr-signature.json && test -s /.extra/tpm2-pcr-public-key.pem; then
+                mkdir -p /run/vm-initrd-evidence
+                cp /.extra/tpm2-pcr-signature.json /.extra/tpm2-pcr-public-key.pem /run/vm-initrd-evidence/
+                echo VM_PCR_HANDOFF_AFTER_ENTER_INITRD
+              else
+                echo VM_PCR_HANDOFF_MISSING
+              fi
+            '';
+          };
           boot.initrd.systemd.services.root-roolback.wantedBy = lib.mkIf disableRollback (lib.mkForce [ ]);
           boot.loader.efi.canTouchEfiVariables = true;
           fileSystems."/persist".neededForBoot = true;
@@ -61,6 +92,12 @@ let
             pkgs.util-linux
             pkgs.btrfs-progs
             pkgs.sbsigntool
+          ]
+          ++ lib.optionals enableTpm [
+            pkgs.tpm2-tools
+            pkgs.efitools
+            pkgs.binutils
+            pkgs.e2fsprogs
           ];
         }
         extra
@@ -91,6 +128,18 @@ let
     boot.loader.systemd-boot.enable = true;
     system.nixos.label = "vm-stock-unsafe";
   };
+  c = evaluate {
+    boot.secureUki.bootstrapLabel = "vm-pcr-update";
+    boot.initrd.systemd.contents."/vm-update-marker".source =
+      pkgs.writeText "vm-update-marker" "VM ONLY initrd update";
+  };
+  cTop = c.config.system.build.toplevel;
+  fixtures = [
+    aTop
+    bTop
+    stockTop
+  ]
+  ++ lib.optional enableTpm cTop;
   aTop = a.config.system.build.toplevel;
   bTop = b.config.system.build.toplevel;
   stockTop = stock.config.system.build.toplevel;
@@ -126,17 +175,16 @@ diskoLib.testLib.makeDiskoTest {
     machine.succeed("rm /run/vm-recovery.key")
     machine.succeed("nix-store --load-db < ${
       pkgs.closureInfo {
-        rootPaths = [
-          aTop
-          bTop
-          stockTop
-        ];
+        rootPaths = fixtures;
       }
     }/registration")
     # Locally built, unsigned NAR test fixtures only; this does NOT bypass any
     # EFI/capsule signature, change production caches or trust remote content.
-    machine.succeed("nix --extra-experimental-features nix-command copy --no-check-sigs --to 'local?root=/mnt' ${aTop} ${bTop} ${stockTop}")
+    machine.succeed("nix --extra-experimental-features nix-command copy --no-check-sigs --to 'local?root=/mnt' ${lib.concatStringsSep " " (map toString fixtures)}")
     machine.succeed("mkdir -p /mnt/etc /mnt/nix/var/nix/profiles; touch /mnt/etc/NIXOS; nix-env -p /mnt/nix/var/nix/profiles/system --set ${aTop}")
+    ${lib.optionalString enableTpm ''
+      machine.succeed("ln -s ${cTop} /mnt/nix/var/nix/gcroots/vm-fixture-c")
+    ''}
     machine.succeed("nixos-enter --root /mnt -- ${aTop}/activate")
     machine.succeed("mkdir -p /mnt/persist/var/lib/sbctl /mnt/persist/var/lib/secure-uki /mnt/var/lib/sbctl /mnt/var/lib/secure-uki; chmod 700 /mnt/persist/var/lib/{sbctl,secure-uki}; mount --bind /mnt/persist/var/lib/sbctl /mnt/var/lib/sbctl; mount --bind /mnt/persist/var/lib/secure-uki /mnt/var/lib/secure-uki")
     esp_before_keys = machine.succeed("find /mnt/boot -type f -exec sha256sum {} + | sort")
@@ -171,9 +219,27 @@ diskoLib.testLib.makeDiskoTest {
     command += ["-m", "3072", "-drive", "file=" + str(installer.state_dir / "empty0.qcow2") + ",if=virtio,format=qcow2",
                 "-drive", "if=pflash,format=raw,unit=0,readonly=on,file=${ovmf}/FV/OVMF_CODE.fd",
                 "-drive", "if=pflash,format=raw,unit=1,file=" + str(variables)]
-    machine = create_machine(start_command=shlex.join(command), name="signed_root")
+    tpm_start = []
+    ${lib.optionalString enableTpm ''
+      tpm_directory = installer.state_dir / "signed-root-tpm"
+      tpm_directory.mkdir()
+      tpm_start = ["${pkgs.swtpm}/bin/swtpm", "socket", "--tpm2", "--tpmstate", "dir=" + str(tpm_directory),
+                   "--ctrl", "type=unixio,path=" + str(tpm_directory / "socket.ctrl"),
+                   "--flags", "not-need-init", "--daemon"]
+      command += ["-chardev", "socket,id=chrtpm,path=" + str(tpm_directory / "socket.ctrl"),
+                  "-tpmdev", "emulator,id=tpm0,chardev=chrtpm", "-device", "tpm-tis,tpmdev=tpm0"]
+    ''}
+    # QEMU disconnect terminates swtpm: restart its process on every cold boot,
+    # retaining the SAME emulator state directory (never clear/reprovision).
+    start_command = (shlex.join(tpm_start) + " && exec " if tpm_start else "") + shlex.join(command)
+    machine = create_machine(start_command=start_command, name="signed_root")
     driver.machines_qemu.append(machine)
-    machine.start()
+    try:
+        machine.start()
+    except BaseException:
+        if machine.process and machine.process.stdout:
+            print(machine.process.stdout.read().decode(errors="replace"))
+        raise
     recover_at_console(machine)
     machine.succeed("test $(readlink -f /run/booted-system) = ${aTop}")
     machine.succeed("findmnt -T /nix/store -n -o SOURCE,FSTYPE | grep -F /dev/mapper/encrypted | grep -F btrfs")
@@ -278,5 +344,16 @@ diskoLib.testLib.makeDiskoTest {
     header_after = json.loads(machine.succeed("cryptsetup luksDump --dump-json-metadata /dev/vda2"))
     assert not header_after["tokens"] and header_after["keyslots"] == header["keyslots"]
     print("Production encrypted root rollback, manual signed boot, persistence, activation recovery, GC and isolated refusal/recovery passed")
+    ${lib.optionalString enableTpm ''
+      A_CLOSURE = "${aTop}"
+      B_CLOSURE = "${bTop}"
+      C_CLOSURE = "${cTop}"
+      ${extraPcrScript}
+      # QEMU owns swtpm's single control connection. Closing that connection
+      # stops the daemon; a second ioctl client while QEMU is live would block.
+      machine.shutdown()
+      machine.wait_for_shutdown()
+      driver_retry(lambda _last_try: not (tpm_directory / "socket.ctrl").exists(), 30)
+    ''}
   '';
 }
