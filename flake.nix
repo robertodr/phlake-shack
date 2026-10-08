@@ -24,7 +24,6 @@
 
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "unstable";
     };
 
     nix4vscode = {
@@ -96,12 +95,15 @@
           statix.enable = true;
         };
       };
-    in
-    {
-      checks.${system}.pre-commit = preCommitCheck;
 
-      nixosConfigurations = {
-        kellanved = nixpkgs.lib.nixosSystem {
+      mkHost =
+        {
+          name,
+          hardwareModule,
+          homeModule,
+          extraModules ? [ ],
+        }:
+        nixpkgs.lib.nixosSystem {
           modules = [
             (_: {
               # This enables unfree for the 'pkgs' (stable) set
@@ -116,7 +118,7 @@
                 })
               ];
             })
-            ./systems/${system}/kellanved
+            (./. + "/systems/${system}/${name}")
             disko.nixosModules.disko
             home-manager.nixosModules.home-manager
             {
@@ -124,6 +126,8 @@
                 backupFileExtension = "bak";
                 extraSpecialArgs = {
                   inherit pkgsUnstable;
+                  gitbutlerPackage = llm-agents.packages.${system}.gitbutler;
+                  gitbutlerCli = llm-agents.packages.${system}.but;
                 };
                 sharedModules = [
                   ./homes/modules
@@ -131,18 +135,88 @@
                 ];
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                users.${user} = import (./. + "/homes/${user}-at-kellanved");
+                users.${user} = import homeModule;
               };
             }
             impermanence.nixosModules.impermanence
-            nixos-hardware.nixosModules.framework-13-7040-amd
+            hardwareModule
             noctalia-greeter.nixosModules.default
             sops-nix.nixosModules.sops
             stylix.nixosModules.stylix
-          ];
+          ]
+          ++ extraModules;
           specialArgs = {
             inherit pkgsUnstable;
           };
+        };
+    in
+    {
+      checks.${system} = {
+        pre-commit = preCommitCheck;
+        host-invariants = import ./tests/host-invariants.nix {
+          self = inputs.self or (throw "self input unavailable");
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
+        secure-uki-unit = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/secure-uki { };
+        secure-uki-pcr = import ./tests/secure-uki-pcr.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit disko impermanence;
+        };
+        secure-uki = import ./tests/secure-uki.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit disko impermanence;
+        };
+        secure-uki-delivery-eval = import ./tests/secure-uki-delivery-eval.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs.self.nixosConfigurations) dancer kellanved;
+        };
+        secure-uki-bootstrap = import ./tests/secure-uki.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit disko impermanence;
+          bootstrapBridge = true;
+        };
+        secure-uki-module = import ./tests/secure-uki-module.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          impermanenceModule = impermanence.nixosModules.impermanence;
+          fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
+        };
+        secure-uki-module-eval = import ./tests/secure-uki-module-eval.nix {
+          dancer = inputs.self.nixosConfigurations.dancer;
+          pkgs = nixpkgs.legacyPackages.${system};
+          impermanenceModule = impermanence.nixosModules.impermanence;
+          fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
+        };
+        secure-uki-publish = import ./tests/secure-uki-publish.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
+        secure-uki-probe = import ./tests/secure-uki-probe.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
+        fwupd-efi = import ./tests/fwupd-efi.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
+          fwupdTmpfilesRules = inputs.self.nixosConfigurations.dancer.config.systemd.tmpfiles.rules;
+        };
+        ssh-lan = import ./tests/ssh-lan.nix {
+          inherit pkgsUnstable;
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
+        impermanence = import ./tests/impermanence.nix {
+          inherit disko impermanence;
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
+      };
+
+      nixosConfigurations = {
+        kellanved = mkHost {
+          name = "kellanved";
+          hardwareModule = nixos-hardware.nixosModules.framework-13-7040-amd;
+          homeModule = ./homes/roberto-at-kellanved;
+        };
+        dancer = mkHost {
+          name = "dancer";
+          hardwareModule = nixos-hardware.nixosModules.lenovo-thinkpad-x1;
+          homeModule = ./homes/roberto-at-dancer;
         };
       };
 

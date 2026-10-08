@@ -2,60 +2,23 @@
   config,
   lib,
   pkgs,
-  pkgsUnstable,
   ...
 }:
 {
   imports = [
     ./hardware-configuration.nix
     ./disk-config.nix
-  ]
-  # users
-  ++ [
     ../../../users/roberto
-  ]
-  # base
-  ++ map (x: ./../.. + ("/profiles/" + x)) (
-    [
-      "fonts"
-      "hardware/bluetooth"
-      "networking"
-      "nix"
-      "powerManagement"
-      "powerManagement/tuning"
-      "programs/_1password"
-      "programs/bash"
-      "programs/gnupg"
-      "programs/nix-ld"
-      "programs/thunar"
-      "services/fwupd"
-      "services/geoclue2"
-      "services/hardware/bolt"
-      "services/oomd"
-      "services/openssh"
-      "services/tuned"
-      "services/udisks2"
-      "stylix"
-      "systemd"
-      "zsa"
-    ]
-    # window manager
-    ++ [
-      "programs/dconf" # needed?
-      "services/dbus" # needed?
-      "services/greetd"
-      "services/upower"
-      "programs/niri"
-    ]
-    # multimedia
-    ++ [
-      "services/pipewire"
-    ]
-    # virtualisation
-    ++ [
-      "virtualisation/docker"
-    ]
-  );
+    ../../profiles/base
+    ../../profiles/development
+    ../../profiles/virtualisation/docker
+    ../../profiles/desktop
+    ../../profiles/impermanence
+    ../../profiles/powerManagement
+    ../../profiles/powerManagement/tuning
+    ../../profiles/services/openssh
+    ../../profiles/services/tuned
+  ];
 
   # Temporary workaround for timed wakes being mistaken for manual wakes.
   # https://github.com/systemd/systemd/issues/38193
@@ -118,64 +81,6 @@
         # CRITICAL: Required for pam_fde_boot_pw to work
         # Stores the LUKS password in systemd so it can be retrieved later
         enable = true;
-        # the rollback service is from: https://discourse.nixos.org/t/impermanence-vs-systemd-initrd-w-tpm-unlocking/25167/3
-        services.root-roolback = {
-          description = "Rollback BTRFS root subvolume to a pristine state";
-          wantedBy = [
-            "initrd.target"
-          ];
-          after = [
-            # LUKS/TPM process
-            "systemd-cryptsetup@encrypted.service"
-            # Now that suspend-then-hibernate is in use, the rollback must not
-            # get a chance to run on a resume boot: the resumed image's page
-            # cache still refers to the /root subvolume this service deletes.
-            # There is no explicit ordering otherwise, so it is a race. Placing
-            # the rollback after the resume attempt settles it, because a
-            # successful resume never returns to the initrd, while an ordinary
-            # boot has systemd-hibernate-resume exit immediately.
-            "systemd-hibernate-resume.service"
-          ];
-          before = [
-            "sysroot.mount"
-          ];
-          unitConfig.DefaultDependencies = "no";
-          serviceConfig.Type = "oneshot";
-          script = ''
-            mkdir -p /mnt
-            # We first mount the btrfs root to /mnt
-            # so we can manipulate btrfs subvolumes.
-            mount -o subvol=/ /dev/mapper/encrypted /mnt
-            # While we're tempted to just delete /root and create
-            # a new snapshot from /root-blank, /root is already
-            # populated at this point with a number of subvolumes,
-            # which makes `btrfs subvolume delete` fail.
-            # So, we remove them first.
-            #
-            # /root contains subvolumes:
-            # - /root/var/lib/portables
-            # - /root/var/lib/machines
-            #
-            # I suspect these are related to systemd-nspawn, but
-            # since I don't use it I'm not 100% sure.
-            # Anyhow, deleting these subvolumes hasn't resulted
-            # in any issues so far, except for fairly
-            # benign-looking errors from systemd-tmpfiles.
-            btrfs subvolume list -o /mnt/root |
-              cut -f9 -d' ' |
-              while read subvolume; do
-                echo "deleting /$subvolume subvolume..."
-                btrfs subvolume delete "/mnt/$subvolume"
-              done &&
-              echo "deleting /root subvolume..." &&
-              btrfs subvolume delete /mnt/root
-            echo "restoring blank /root subvolume..."
-            btrfs subvolume snapshot /mnt/root-blank /mnt/root
-            # Once we're done rolling back to a blank snapshot,
-            # we can unmount /mnt and continue on the boot process.
-            umount /mnt
-          '';
-        };
       };
     };
 
@@ -207,34 +112,29 @@
     };
   };
 
-  documentation = {
-    enable = true;
-    man = {
-      enable = true;
-      cache.enable = true;
-    };
-    doc.enable = true;
-    dev.enable = true;
-    info.enable = true;
-    nixos.enable = true;
-  };
-
-  fileSystems."/persist".neededForBoot = true;
-
-  time.timeZone = lib.mkDefault "Europe/Oslo";
-  services.automatic-timezoned.enable = true;
-
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-    extraLocaleSettings = {
-      LC_TIME = "it_IT.UTF-8";
-    };
-  };
+  networking.hostName = "kellanved";
 
   programs.ssh.knownHosts = {
     "sshca.my-eurohpc.eu".publicKey =
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBlPFxv2xhvg2Jlyt7TE8cTuVbk27LpFJmILWpXm/7xz";
   };
+
+  environment.persistence."/persist".directories = lib.mkMerge [
+    [
+      "/var/lib/bluetooth"
+    ]
+    (lib.mkAfter [
+      "/var/lib/fprint"
+    ])
+    (lib.mkOrder 1600 [
+      {
+        directory = "/var/lib/colord";
+        user = "colord";
+        group = "colord";
+        mode = "u=rwx,g=rx,o=";
+      }
+    ])
+  ];
 
   # Noctalia drives fprintd directly. Keep fingerprint out of its password PAM
   # transaction so password submission reaches pam_unix immediately. Fingerprint
@@ -259,83 +159,6 @@
         owner = config.users.users.roberto.name;
       };
     };
-  };
-
-  environment = {
-    # impermanence set up
-    persistence."/persist" = {
-      hideMounts = true;
-      directories = [
-        "/etc/NetworkManager/system-connections"
-        "/var/lib/bluetooth"
-        "/var/lib/docker"
-        "/var/lib/fprint"
-        "/var/lib/nixos"
-        "/var/lib/systemd/coredump"
-        "/var/lib/systemd/timers"
-        "/var/log"
-        {
-          directory = "/var/lib/colord";
-          user = "colord";
-          group = "colord";
-          mode = "u=rwx,g=rx,o=";
-        }
-      ];
-      files = [
-        "/etc/machine-id"
-        {
-          file = "/var/keys/secret_file";
-          parentDirectory = {
-            mode = "u=rwx,g=,o=";
-          };
-        }
-        "/etc/ssh/ssh_host_ed25519_key"
-        "/etc/ssh/ssh_host_ed25519_key.pub"
-        "/etc/ssh/ssh_host_rsa_key"
-        "/etc/ssh/ssh_host_rsa_key.pub"
-      ];
-    };
-
-    # TODO review which packages should be here and which in user profiles
-    systemPackages =
-      lib.attrVals [
-        "acpi" # show battery status and other ACPI information
-        "age"
-        "atool" # archive command line helper
-        "binutils" # tools for manipulating binaries (linker, assembler, etc.)
-        "cacert" # a bundle of X.509 certificates of public Certificate Authorities (CA)
-        "coreutils" # the basic file, shell and text manipulation utilities of the GNU operating system
-        "curl" # a command line tool for transferring files with URL syntax
-        "dmidecode" # a tool that reads information about your system's hardware from the BIOS according to the SMBIOS/DMI standard
-        "dosfstools" # utilities for creating and checking FAT and VFAT file systems
-        "efibootmgr" # a Linux user-space application to modify the Intel Extensible Firmware Interface (EFI) Boot Manager
-        "fd"
-        "file" # a program that shows the type of files
-        "findutils" # GNU Find Utilities, the basic directory searching utilities of the GNU operating system
-        "gnupg"
-        "gptfdisk" # set of text-mode partitioning tools for Globally Unique Identifier (GUID) Partition Table (GPT) disks
-        "libseccomp" # high level library for the Linux Kernel seccomp filter
-        "lm_sensors"
-        "nix-index"
-        "pciutils" # a collection of programs for inspecting and manipulating configuration of PCI devices
-        "psmisc" # a set of small useful utilities that use the proc filesystem (such as fuser, killall and pstree)
-        "rsync" # a fast incremental file transfer utility
-        "sops"
-        "ssh-to-age"
-        "tree" # command to produce a depth indented directory listing
-        "unrar" # utility for RAR archives
-        "unzip" # an extraction utility for archives compressed in .zip format
-        "usbutils" # tools for working with USB devices, such as lsusb
-        "util-linux"
-        "wget" # tool for retrieving files using HTTP, HTTPS, and FTP
-        "which" # shows the full path of (shell) commands
-        "xdg-utils" # a set of command line tools that assist applications with a variety of desktop integration tasks
-        "sshfs"
-        "zip" # compressor/archiver for creating and modifying zipfiles
-      ] pkgs
-      ++ [
-        pkgsUnstable.neovim
-      ];
   };
 
   system = {
