@@ -68,6 +68,9 @@ let
             };
             script = ''
               systemctl is-active --quiet systemd-pcrphase-initrd.service
+              test "$(systemctl is-enabled systemd-tpm2-setup-early.service)" = masked
+              test "$(systemctl is-enabled systemd-tpm2-setup.service)" = masked
+              echo VM_SRK_SETUP_MASKED_INITRD
               if test -s /vm-update-marker; then echo VM_CHANGED_INITRD; fi
               if test -s /.extra/tpm2-pcr-signature.json && test -s /.extra/tpm2-pcr-public-key.pem; then
                 mkdir -p /run/vm-initrd-evidence
@@ -242,6 +245,17 @@ diskoLib.testLib.makeDiskoTest {
         raise
     recover_at_console(machine)
     machine.succeed("test $(readlink -f /run/booted-system) = ${aTop}")
+    ${lib.optionalString enableTpm ''
+      # Fresh emulator, real measured UKI/manual unlock, no cryptenroll call.
+      # Capability reads are non-mutating; setup must not have created an SRK.
+      assert not machine.succeed("tpm2_getcap handles-persistent").strip(), "automatic SRK provisioning occurred before any TPM enrollment"
+      for unit in ("systemd-tpm2-setup-early", "systemd-tpm2-setup"):
+          status, output = machine.execute("systemctl is-enabled " + unit + ".service")
+          assert status != 0 and output.strip() == "masked", "userspace TPM setup is not masked"
+          machine.fail("systemctl start " + unit + ".service")
+      assert "VM_SRK_SETUP_MASKED_INITRD" in machine.get_console_log()
+      assert not machine.succeed("tpm2_getcap handles-persistent").strip(), "explicit setup activation bypassed mask"
+    ''}
     machine.succeed("findmnt -T /nix/store -n -o SOURCE,FSTYPE | grep -F /dev/mapper/encrypted | grep -F btrfs")
     # Actual stock rollback installs an unsigned manager even with signed UKIs
     # present. Observe hazard while Secure Boot is still disabled, then restore.

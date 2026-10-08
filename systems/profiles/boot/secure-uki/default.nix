@@ -94,6 +94,19 @@ in
       };
     };
     systemd.tpm2.pcrphases.enable = true;
+    # Measured boot enables the upstream generator's SRK setup jobs even without
+    # a LUKS TPM token. They can create a persistent parent and silently fall back
+    # from ECC to RSA. Mask BOTH entrypoints in BOTH stages, not just wantedBy:
+    # PCR measurement/authorized unlock remain available, key provisioning does
+    # not. Any future physical ECC provisioning needs separate explicit approval.
+    boot.initrd.systemd.services = {
+      systemd-tpm2-setup-early.enable = lib.mkForce false;
+      systemd-tpm2-setup.enable = lib.mkForce false;
+    };
+    systemd.services = {
+      systemd-tpm2-setup-early.enable = lib.mkForce false;
+      systemd-tpm2-setup.enable = lib.mkForce false;
+    };
     system.nixos.label = lib.mkIf (cfg.bootstrapLabel != null) cfg.bootstrapLabel;
     environment.systemPackages = [ package ];
     environment.etc."secure-uki.json".text = builtins.toJSON runtime;

@@ -45,6 +45,14 @@ let
         bootstrapLabel = "dancer-uki-bootstrap";
       };
     }).config;
+  setupUnits = [
+    "systemd-tpm2-setup-early"
+    "systemd-tpm2-setup"
+  ];
+  setupEnabled = config: {
+    initrd = map (name: config.boot.initrd.systemd.services.${name}.enable or true) setupUnits;
+    userspace = map (name: config.systemd.services.${name}.enable or true) setupUnits;
+  };
   snapshot = config: {
     external = config.boot.loader.external.enable;
     stock = config.boot.loader.systemd-boot.enable;
@@ -52,6 +60,7 @@ let
     etc = builtins.hasAttr "secure-uki.json" config.environment.etc;
     signer = builtins.hasAttr "secure-uki-fwupd-sign" config.systemd.services;
     confirm = builtins.hasAttr "secure-uki-confirm" config.systemd.services;
+    setup = setupEnabled config;
   };
   persistence = enabled.environment.persistence."/persist".directories or [ ];
   runtime = builtins.fromJSON (
@@ -91,6 +100,20 @@ let
         && enabled.boot.initrd.systemd.tpm2.enable
         && enabled.boot.initrd.systemd.tpm2.pcrphases.enable
         && enabled.systemd.tpm2.pcrphases.enable;
+    }
+    {
+      name = "no-automatic-srk-provisioning-in-either-stage";
+      pass =
+        setupEnabled enabled == {
+          initrd = [
+            false
+            false
+          ];
+          userspace = [
+            false
+            false
+          ];
+        };
     }
     {
       name = "bootstrap-label";

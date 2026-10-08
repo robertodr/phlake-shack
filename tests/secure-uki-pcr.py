@@ -2,6 +2,9 @@
 # machine/driver/shared helpers and closure constants come from the fixture.
 import base64
 
+# Repeated signed/manual boots, including Secure Boot enabled, must still not
+# provision any parent. Only the explicit synthetic enrollment below may do so.
+assert not machine.succeed("tpm2_getcap handles-persistent").strip(), "manual Secure Boot unexpectedly provisioned a TPM parent"
 runtime = json.loads(machine.succeed("cat /etc/secure-uki.json"))
 tools = runtime["tools"]
 policy_dir = "/var/lib/secure-uki/pcr-signing"
