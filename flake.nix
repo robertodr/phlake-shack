@@ -166,6 +166,15 @@
           pkgs = nixpkgs.legacyPackages.${system};
           inherit disko impermanence;
         };
+        secure-uki-delivery-eval = import ./tests/secure-uki-delivery-eval.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs.self.nixosConfigurations) dancer kellanved;
+        };
+        secure-uki-bootstrap = import ./tests/secure-uki.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit disko impermanence;
+          bootstrapBridge = true;
+        };
         secure-uki-module = import ./tests/secure-uki-module.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           impermanenceModule = impermanence.nixosModules.impermanence;

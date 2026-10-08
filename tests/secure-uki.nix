@@ -4,6 +4,7 @@
   impermanence,
   disableRollback ? false,
   enableTpm ? false,
+  bootstrapBridge ? false,
   extraPcrScript ? "",
 }:
 let
@@ -47,42 +48,50 @@ let
           nixpkgs.pkgs = pkgs;
           networking.hostName = "dancer-vm";
           system.stateVersion = "26.05";
-          boot.secureUki.enable = true;
-          boot.initrd.systemd.enable = true;
-          boot.initrd.luks.devices.encrypted.crypttabExtraOpts = lib.optionals enableTpm [
-            "tpm2-device=auto"
-          ];
-          boot.initrd.availableKernelModules = lib.optionals enableTpm [
-            "tpm_tis"
-            "tpm_crb"
-          ];
-          boot.initrd.systemd.services.vm-pcr-observer = lib.mkIf enableTpm {
-            requiredBy = [ "systemd-cryptsetup@encrypted.service" ];
-            # Observe the real cryptsetup barrier; do NOT add an ordering edge
-            # to pcrphase itself that could conceal missing production ordering.
-            after = [ "cryptsetup-pre.target" ];
-            before = [ "systemd-cryptsetup@encrypted.service" ];
-            serviceConfig = {
-              Type = "oneshot";
-              RemainAfterExit = true;
+          boot = {
+            secureUki.enable = true;
+            loader.efi.canTouchEfiVariables = true;
+            initrd = {
+              luks.devices.encrypted.crypttabExtraOpts = lib.optionals enableTpm [
+                "tpm2-device=auto"
+              ];
+              availableKernelModules = lib.optionals enableTpm [
+                "tpm_tis"
+                "tpm_crb"
+              ];
+              systemd = {
+                enable = true;
+                services = {
+                  vm-pcr-observer = lib.mkIf enableTpm {
+                    requiredBy = [ "systemd-cryptsetup@encrypted.service" ];
+                    # Observe the real cryptsetup barrier; do NOT add an ordering edge
+                    # to pcrphase itself that could conceal missing production ordering.
+                    after = [ "cryptsetup-pre.target" ];
+                    before = [ "systemd-cryptsetup@encrypted.service" ];
+                    serviceConfig = {
+                      Type = "oneshot";
+                      RemainAfterExit = true;
+                    };
+                    script = ''
+                      systemctl is-active --quiet systemd-pcrphase-initrd.service
+                      test "$(systemctl is-enabled systemd-tpm2-setup-early.service)" = masked
+                      test "$(systemctl is-enabled systemd-tpm2-setup.service)" = masked
+                      echo VM_SRK_SETUP_MASKED_INITRD
+                      if test -s /vm-update-marker; then echo VM_CHANGED_INITRD; fi
+                      if test -s /.extra/tpm2-pcr-signature.json && test -s /.extra/tpm2-pcr-public-key.pem; then
+                        mkdir -p /run/vm-initrd-evidence
+                        cp /.extra/tpm2-pcr-signature.json /.extra/tpm2-pcr-public-key.pem /run/vm-initrd-evidence/
+                        echo VM_PCR_HANDOFF_AFTER_ENTER_INITRD
+                      else
+                        echo VM_PCR_HANDOFF_MISSING
+                      fi
+                    '';
+                  };
+                  root-roolback.wantedBy = lib.mkIf disableRollback (lib.mkForce [ ]);
+                };
+              };
             };
-            script = ''
-              systemctl is-active --quiet systemd-pcrphase-initrd.service
-              test "$(systemctl is-enabled systemd-tpm2-setup-early.service)" = masked
-              test "$(systemctl is-enabled systemd-tpm2-setup.service)" = masked
-              echo VM_SRK_SETUP_MASKED_INITRD
-              if test -s /vm-update-marker; then echo VM_CHANGED_INITRD; fi
-              if test -s /.extra/tpm2-pcr-signature.json && test -s /.extra/tpm2-pcr-public-key.pem; then
-                mkdir -p /run/vm-initrd-evidence
-                cp /.extra/tpm2-pcr-signature.json /.extra/tpm2-pcr-public-key.pem /run/vm-initrd-evidence/
-                echo VM_PCR_HANDOFF_AFTER_ENTER_INITRD
-              else
-                echo VM_PCR_HANDOFF_MISSING
-              fi
-            '';
           };
-          boot.initrd.systemd.services.root-roolback.wantedBy = lib.mkIf disableRollback (lib.mkForce [ ]);
-          boot.loader.efi.canTouchEfiVariables = true;
           fileSystems."/persist".neededForBoot = true;
           services.openssh.enable = true;
           documentation.enable = false;
@@ -184,19 +193,28 @@ diskoLib.testLib.makeDiskoTest {
     # Locally built, unsigned NAR test fixtures only; this does NOT bypass any
     # EFI/capsule signature, change production caches or trust remote content.
     machine.succeed("nix --extra-experimental-features nix-command copy --no-check-sigs --to 'local?root=/mnt' ${lib.concatStringsSep " " (map toString fixtures)}")
-    machine.succeed("mkdir -p /mnt/etc /mnt/nix/var/nix/profiles; touch /mnt/etc/NIXOS; nix-env -p /mnt/nix/var/nix/profiles/system --set ${aTop}")
+    machine.succeed("mkdir -p /mnt/etc /mnt/nix/var/nix/profiles; touch /mnt/etc/NIXOS; nix-env -p /mnt/nix/var/nix/profiles/system --set ${
+      if bootstrapBridge then stockTop else aTop
+    }")
     ${lib.optionalString enableTpm ''
       machine.succeed("ln -s ${cTop} /mnt/nix/var/nix/gcroots/vm-fixture-c")
     ''}
-    machine.succeed("nixos-enter --root /mnt -- ${aTop}/activate")
-    machine.succeed("mkdir -p /mnt/persist/var/lib/sbctl /mnt/persist/var/lib/secure-uki /mnt/var/lib/sbctl /mnt/var/lib/secure-uki; chmod 700 /mnt/persist/var/lib/{sbctl,secure-uki}; mount --bind /mnt/persist/var/lib/sbctl /mnt/var/lib/sbctl; mount --bind /mnt/persist/var/lib/secure-uki /mnt/var/lib/secure-uki")
-    esp_before_keys = machine.succeed("find /mnt/boot -type f -exec sha256sum {} + | sort")
-    machine.fail("NIXOS_INSTALL_BOOTLOADER=1 nixos-enter --root /mnt -- ${aTop}/bin/switch-to-configuration boot")
-    assert machine.succeed("find /mnt/boot -type f -exec sha256sum {} + | sort") == esp_before_keys
-    machine.succeed("test ! -e /mnt/var/lib/secure-uki/manifest.json")
-    machine.succeed("nixos-enter --root /mnt -- sbctl create-keys")
-    machine.succeed("nixos-enter --root /mnt -- sh -c 'install -d -m 0700 /var/lib/secure-uki/pcr-signing; openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out /var/lib/secure-uki/pcr-signing/private.pem; chmod 600 /var/lib/secure-uki/pcr-signing/private.pem; openssl pkey -in /var/lib/secure-uki/pcr-signing/private.pem -pubout -out /var/lib/secure-uki/pcr-signing/public.pem'")
-    machine.succeed("NIXOS_INSTALL_BOOTLOADER=1 nixos-enter --root /mnt -- ${aTop}/bin/switch-to-configuration boot")
+    ${lib.optionalString bootstrapBridge ''
+      machine.succeed("nixos-enter --root /mnt -- ${stockTop}/activate")
+      machine.succeed("NIXOS_INSTALL_BOOTLOADER=1 nixos-enter --root /mnt -- ${stockTop}/bin/switch-to-configuration boot")
+      machine.succeed("test ! -e /mnt/etc/secure-uki.json; test ! -e /mnt/var/lib/secure-uki/manifest.json")
+    ''}
+    ${lib.optionalString (!bootstrapBridge) ''
+      machine.succeed("nixos-enter --root /mnt -- ${aTop}/activate")
+      machine.succeed("mkdir -p /mnt/persist/var/lib/sbctl /mnt/persist/var/lib/secure-uki /mnt/var/lib/sbctl /mnt/var/lib/secure-uki; chmod 700 /mnt/persist/var/lib/{sbctl,secure-uki}; mount --bind /mnt/persist/var/lib/sbctl /mnt/var/lib/sbctl; mount --bind /mnt/persist/var/lib/secure-uki /mnt/var/lib/secure-uki")
+      esp_before_keys = machine.succeed("find /mnt/boot -type f -exec sha256sum {} + | sort")
+      machine.fail("NIXOS_INSTALL_BOOTLOADER=1 nixos-enter --root /mnt -- ${aTop}/bin/switch-to-configuration boot")
+      assert machine.succeed("find /mnt/boot -type f -exec sha256sum {} + | sort") == esp_before_keys
+      machine.succeed("test ! -e /mnt/var/lib/secure-uki/manifest.json")
+      machine.succeed("nixos-enter --root /mnt -- sbctl create-keys")
+      machine.succeed("nixos-enter --root /mnt -- sh -c 'install -d -m 0700 /var/lib/secure-uki/pcr-signing; openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out /var/lib/secure-uki/pcr-signing/private.pem; chmod 600 /var/lib/secure-uki/pcr-signing/private.pem; openssl pkey -in /var/lib/secure-uki/pcr-signing/private.pem -pubout -out /var/lib/secure-uki/pcr-signing/public.pem'")
+      machine.succeed("NIXOS_INSTALL_BOOTLOADER=1 nixos-enter --root /mnt -- ${aTop}/bin/switch-to-configuration boot")
+    ''}
     machine.succeed("sync")
   '';
   extraTestScript = ''
@@ -243,6 +261,41 @@ diskoLib.testLib.makeDiskoTest {
         if machine.process and machine.process.stdout:
             print(machine.process.stdout.read().decode(errors="replace"))
         raise
+    ${lib.optionalString bootstrapBridge ''
+      root_recovery(machine)
+      machine.succeed("test $(readlink -f /run/booted-system) = ${stockTop}; test $(readlink -f /run/current-system) = ${stockTop}")
+      machine.succeed("test ! -e /etc/secure-uki.json; test ! -e /var/lib/secure-uki/manifest.json")
+      esp_before_bridge = machine.succeed("find /boot -type f -exec sha256sum {} + | sort")
+      header_before_bridge = json.loads(machine.succeed("cryptsetup luksDump --dump-json-metadata /dev/vda2"))
+      ssh_before_bridge = machine.succeed("cat /etc/ssh/ssh_host_ed25519_key.pub")
+      machine.fail("${aTop}/bin/switch-to-configuration switch")
+      assert machine.succeed("find /boot -type f -exec sha256sum {} + | sort") == esp_before_bridge, "missing runtime configuration changed ESP"
+      machine.succeed("test $(readlink -f /run/current-system) = ${stockTop}; test ! -e /var/lib/secure-uki/manifest.json")
+      # Human-reviewed bootstrap bridge, synthetic VM keys only. No activation:
+      # expose exactly the new immutable public config and encrypted bind mounts.
+      machine.succeed("ln -s ${aTop}/etc/secure-uki.json /etc/secure-uki.json")
+      machine.fail("${aTop}/bin/switch-to-configuration switch")
+      assert machine.succeed("find /boot -type f -exec sha256sum {} + | sort") == esp_before_bridge, "missing state mounts changed ESP"
+      machine.succeed("install -d -m 0700 /persist/var/lib/sbctl /persist/var/lib/secure-uki /var/lib/sbctl /var/lib/secure-uki; mount --bind /persist/var/lib/sbctl /var/lib/sbctl; mount --bind /persist/var/lib/secure-uki /var/lib/secure-uki")
+      machine.fail("${aTop}/bin/switch-to-configuration switch")
+      assert machine.succeed("find /boot -type f -exec sha256sum {} + | sort") == esp_before_bridge, "missing signing keys changed ESP"
+      machine.succeed("sbctl create-keys")
+      machine.succeed("umask 077; install -d -m 0700 /var/lib/secure-uki/pcr-signing; openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out /var/lib/secure-uki/pcr-signing/private.pem; openssl pkey -in /var/lib/secure-uki/pcr-signing/private.pem -pubout -out /var/lib/secure-uki/pcr-signing/public.pem")
+      status, output = machine.execute("${aTop}/bin/switch-to-configuration switch")
+      assert status == 0, "ordinary-to-UKI switch failed before activation; missing bootstrap bridge"
+      machine.succeed("nix-env -p /nix/var/nix/profiles/system --set ${aTop}")
+      assert machine.succeed("readlink -f /run/booted-system").strip() == "${stockTop}", "activation falsely claimed a new boot"
+      machine.succeed("test $(readlink -f /run/current-system) = ${aTop}")
+      first_manifest = json.loads(machine.succeed("cat /var/lib/secure-uki/manifest.json"))
+      assert first_manifest["known_good"] is None, "unbooted bootstrap was confirmed"
+      machine.succeed("test $(systemctl show secure-uki-confirm -p ConditionResult --value) = no; systemctl is-system-running --quiet")
+      assert machine.succeed("find /boot -type f -exec sha256sum {} + | sort") != esp_before_bridge
+      header_after_bridge = json.loads(machine.succeed("cryptsetup luksDump --dump-json-metadata /dev/vda2"))
+      assert not header_after_bridge["tokens"] and header_after_bridge["keyslots"] == header_before_bridge["keyslots"], "migration altered LUKS recovery metadata"
+      assert machine.succeed("cat /etc/ssh/ssh_host_ed25519_key.pub") == ssh_before_bridge, "migration changed SSH identity"
+      print("Ordinary-to-UKI native switch published without false boot confirmation")
+      cold_restart(machine)
+    ''}
     recover_at_console(machine)
     machine.succeed("test $(readlink -f /run/booted-system) = ${aTop}")
     ${lib.optionalString enableTpm ''

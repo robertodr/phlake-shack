@@ -15,18 +15,20 @@ let
         {
           system.stateVersion = "26.05";
           boot.loader.systemd-boot.enable = true;
-          fileSystems."/" = {
-            device = "none";
-            fsType = "tmpfs";
-          };
-          fileSystems."/boot" = {
-            device = "/dev/vda1";
-            fsType = "vfat";
-          };
-          fileSystems."/persist" = {
-            device = "/dev/mapper/encrypted";
-            fsType = "btrfs";
-            neededForBoot = true;
+          fileSystems = {
+            "/" = {
+              device = "none";
+              fsType = "tmpfs";
+            };
+            "/boot" = {
+              device = "/dev/vda1";
+              fsType = "vfat";
+            };
+            "/persist" = {
+              device = "/dev/mapper/encrypted";
+              fsType = "btrfs";
+              neededForBoot = true;
+            };
           };
           services.fwupd = {
             enable = true;

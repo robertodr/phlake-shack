@@ -29,22 +29,25 @@ let
     };
   });
   enabled = {
-    boot.secureUki.enable = true;
     virtualisation.fileSystems."/persist" = {
       device = "/dev/mapper/encrypted";
       fsType = "btrfs";
       neededForBoot = true;
     };
-    # VM ONLY: compiled synthetic key unlocks AUXILIARY state, not production root.
-    # The VM module deliberately clears host LUKS settings at priority 10.
-    boot.initrd.luks.devices = lib.mkOverride 0 {
-      encrypted = {
-        device = "/dev/vdb";
-        keyFile = "/vm-only-state.key";
+    boot = {
+      secureUki.enable = true;
+      initrd = {
+        # VM ONLY: compiled synthetic key unlocks AUXILIARY state, not production root.
+        # The VM module deliberately clears host LUKS settings at priority 10.
+        luks.devices = lib.mkOverride 0 {
+          encrypted = {
+            device = "/dev/vdb";
+            keyFile = "/vm-only-state.key";
+          };
+        };
+        systemd.contents."/vm-only-state.key".source = pkgs.writeText "vm-only-state-key" "vm-state-only";
       };
     };
-    boot.initrd.systemd.contents."/vm-only-state.key".source =
-      pkgs.writeText "vm-only-state-key" "vm-state-only";
     services.fwupd = {
       enable = true;
       package = fwupdPackage;
@@ -71,15 +74,19 @@ pkgs.testers.runNixOSTest {
       memorySize = 3072;
       tpm.enable = true;
     };
-    boot.bootspec.enable = true;
-    boot.loader.systemd-boot.enable = true; # Guest-only initial stock bootstrap.
-    boot.loader.efi.canTouchEfiVariables = true;
-    boot.initrd.systemd.enable = true;
+    boot = {
+      bootspec.enable = true;
+      loader = {
+        systemd-boot.enable = true; # Guest-only initial stock bootstrap.
+        efi.canTouchEfiVariables = true;
+      };
+      initrd.systemd.enable = true;
+    };
     system.switch.enable = true;
     specialisation.image-a.configuration = enabled // {
       boot = lib.recursiveUpdate enabled.boot { secureUki.bootstrapLabel = "dancer-uki-bootstrap"; };
     };
-    specialisation.image-b.configuration = { ... }: {
+    specialisation.image-b.configuration = _: {
       config = lib.mkMerge [
         enabled
         {

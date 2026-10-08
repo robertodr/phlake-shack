@@ -1,6 +1,5 @@
 { pkgs }:
 let
-  inherit (pkgs) lib;
   package = pkgs.callPackage ../pkgs/secure-uki { };
   ukify = pkgs.writeShellScriptBin "ukify" ''
     exec ${pkgs.systemdUkify}/lib/systemd/ukify --stub=${pkgs.systemd}/lib/systemd/boot/efi/linuxx64.efi.stub "$@"
@@ -42,10 +41,14 @@ pkgs.testers.runNixOSTest {
       mountHostNixStore = true;
       memorySize = 3072;
     };
-    boot.bootspec.enable = true;
-    boot.loader.systemd-boot.enable = true; # Test bootstrap only, not integration module.
-    boot.loader.efi.canTouchEfiVariables = true;
-    boot.initrd.systemd.enable = true;
+    boot = {
+      bootspec.enable = true;
+      loader = {
+        systemd-boot.enable = true; # Test bootstrap only, not integration module.
+        efi.canTouchEfiVariables = true;
+      };
+      initrd.systemd.enable = true;
+    };
     system.switch.enable = true;
     specialisation.image-a.configuration = { };
     specialisation.image-b.configuration.boot.kernelParams = [ "publication_fixture=updated" ];

@@ -45,26 +45,30 @@ pkgs.testers.runNixOSTest {
       pkgs.tpm2-tools
     ];
     # A single-profile bootstrap UKI, separate from the parent fixture's menu.
-    specialisation.boot-base.configuration = { };
-    specialisation.boot-luks.configuration = {
-      boot.initrd.luks.devices = lib.mkVMOverride {
-        cryptroot = {
-          device = "/dev/vdb";
-          crypttabExtraOpts = [ "tpm2-device=auto" ];
+    specialisation = {
+      boot-base.configuration = { };
+      boot-luks.configuration = {
+        boot.initrd.luks.devices = lib.mkVMOverride {
+          cryptroot = {
+            device = "/dev/vdb";
+            crypttabExtraOpts = [ "tpm2-device=auto" ];
+          };
         };
+        virtualisation.rootDevice = "/dev/mapper/cryptroot";
       };
-      virtualisation.rootDevice = "/dev/mapper/cryptroot";
-    };
-    specialisation.boot-luks-updated.configuration = {
-      boot.initrd.luks.devices = lib.mkVMOverride {
-        cryptroot = {
-          device = "/dev/vdb";
-          crypttabExtraOpts = [ "tpm2-device=auto" ];
+      boot-luks-updated.configuration = {
+        boot.initrd = {
+          luks.devices = lib.mkVMOverride {
+            cryptroot = {
+              device = "/dev/vdb";
+              crypttabExtraOpts = [ "tpm2-device=auto" ];
+            };
+          };
+          systemd.contents."/etc/probe-updated-initrd".source =
+            pkgs.writeText "probe-updated-initrd" "updated\n";
         };
+        virtualisation.rootDevice = "/dev/mapper/cryptroot";
       };
-      boot.initrd.systemd.contents."/etc/probe-updated-initrd".source =
-        pkgs.writeText "probe-updated-initrd" "updated\n";
-      virtualisation.rootDevice = "/dev/mapper/cryptroot";
     };
   };
   # Separate negative-control guest: firmware refusal leaves no running OS.

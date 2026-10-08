@@ -531,8 +531,13 @@ encrypted layout. **Produces:** candidate-policy acceptance report.
 
 ## Task 8: Dancer opt-in, regression checks and human-only Stage A delivery
 
-**Files:** modify `systems/x86_64-linux/dancer/default.nix`,
-`tests/host-invariants.nix`; create `docs/hosts/dancer-secure-uki-operations.md`.
+**Preparation-only refinement:** keep the repository's ordinary Dancer source
+opted out until separately approved physical rollout. Evaluate distinct opt-in
+Dancer copies (`tests/secure-uki-delivery-eval.nix`) and generate bootstrap/ready
+sources privately; do not enable Framework or the ordinary source merely to
+prepare delivery. Preserve the existing private host-invariants gate. Add a real
+ordinary-to-UKI migration check and create
+`docs/hosts/dancer-secure-uki-operations.md`.
 Use the existing private delivery generator for new sanitized bundle versions;
 do not commit it or overwrite prior archives.
 
@@ -543,7 +548,7 @@ do not commit it or overwrite prior archives.
   disabled stock backend, TPM phase plumbing, key/state persistence and fwupd
   signing service. Preserve all Framework baseline comparisons and original
   root-roolback spelling/order.
-- [ ] Enable only Dancer; apply `bootstrapLabel` to the bootstrap source and
+- [ ] Enable only the generated Dancer delivery copies; apply `bootstrapLabel` to the bootstrap source and
   `dancer-uki-ready` to its distinct second source. Never modify the disk layout,
   account passwords, Wi-Fi, SSH restrictions, Docker/Emacs/Pi preferences or
   unrelated lock nodes. These deliveries do not enroll a TPM token.
