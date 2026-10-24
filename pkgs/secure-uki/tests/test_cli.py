@@ -2,6 +2,7 @@
 
 import copy
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -31,6 +32,32 @@ class GuardedCLITests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("root", result.stderr)
         self.assertNotIn("Traceback", result.stderr)
+
+    def test_parent_commands_use_separate_dispatch_and_no_command_line_tool_or_slot_override(self):
+        import secure_uki.parent_maintenance as parent
+        closure = '/nix/store/' + 'a' * 32 + '-maintenance'
+        arm = ['parent-arm', closure, '--handle', '0x81000042',
+               '--manual-unlock-attested', '--recovery-backup-attested',
+               '--firmware-risk-accepted', '--trusted-enrollment-attested', '--hardware-primitives-attested']
+        for argv in (arm, ['parent-provision']):
+            with self.subTest(command=argv[0]), \
+                    patch('secure_uki.cli.os.geteuid', return_value=0), \
+                    patch('secure_uki.cli.os.umask'), \
+                    patch('secure_uki.cli.load_config', return_value=runtime_config()), \
+                    patch.object(parent, 'dispatch') as dispatch, \
+                    patch('secure_uki.cli.check_mounts', side_effect=AssertionError('ordinary writer path used')):
+                try:
+                    cli.main(argv)
+                except SystemExit as error:
+                    self.fail(f'separate parent CLI did not dispatch: {error}')
+                self.assertEqual(dispatch.call_count, 1)
+                args = dispatch.call_args.args[0]
+                self.assertEqual(args.command, argv[0])
+                if args.command == 'parent-arm':
+                    self.assertEqual(args.handle, 0x81000042)  # Synthetic only.
+                    self.assertEqual(args.closure, Path(closure))
+                else:
+                    self.assertFalse(hasattr(args, 'handle'))
 
     def test_root_guard_precedes_configuration_loading(self):
         with patch("secure_uki.cli.os.geteuid", return_value=1000), \
@@ -115,6 +142,48 @@ class GuardedCLITests(unittest.TestCase):
             self.assertFalse((state / ".install-old").exists())
             self.assertTrue((state / "pcr-signing/keep-or-clean").exists())
             self.assertTrue((state / "owner-directory/keep-or-clean").exists())
+
+    def test_pending_migration_blocks_cleanup_and_preserves_staging(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            state = Path(tmp)
+            (state / "migrations/issuer").mkdir(mode=0o700, parents=True)
+            (state / "migrations").chmod(0o700)
+            staging = state / ".prepare-call-preserve"
+            staging.mkdir(mode=0o700)
+            sentinel = staging / "sentinel"
+            sentinel.write_bytes(b"interrupted private staging")
+            with self.assertRaises(ValueError):
+                cli.cleanup_staging(state)
+            self.assertEqual(sentinel.read_bytes(), b"interrupted private staging")
+
+    def test_install_barrier_precedes_signing_metadata_and_generation_access(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            state = Path(tmp)
+            (state / "migrations").mkdir(mode=0o700)
+            (state / "migrations/issuer").mkdir(mode=0o700)
+            cfg = {**runtime_config(), "state_dir": str(state)}
+            with patch("secure_uki.cli.os", wraps=os) as cli_os, \
+                 patch("secure_uki.cli.load_config", return_value=cfg), \
+                 patch("secure_uki.cli.check_mounts"), \
+                 patch("secure_uki.cli.read_generation") as generation, \
+                 patch("secure_uki.cli._private_file") as private_file:
+                cli_os.geteuid.return_value = 0
+                with self.assertRaises(SystemExit) as result:
+                    cli.main(["install", "/unused-system"])
+                self.assertIn("migration", str(result.exception))
+                generation.assert_not_called()
+                private_file.assert_not_called()
+
+    def test_maintenance_commands_are_default_disabled_before_signing_or_cleanup(self):
+        for command in ('issuer-prepare','issuer-commit','issuer-accept'):
+            argv=[command]+(['--manual-unlock-attested'] if command=='issuer-accept' else [])
+            with self.subTest(command=command), patch('secure_uki.cli.os.geteuid',return_value=0), \
+                    patch('secure_uki.cli.load_config',return_value=runtime_config()), \
+                    patch('secure_uki.maintenance.hostname',return_value='dancer'), \
+                    patch('secure_uki.maintenance.load_settings',side_effect=ValueError('maintenance disabled')), \
+                    patch('secure_uki.cli._private_file',side_effect=AssertionError('key read before opt-in')):
+                with self.assertRaises(SystemExit) as result: cli.main(argv)
+                self.assertIn('maintenance disabled',str(result.exception))
 
     def test_initrd_secret_append_is_not_silently_omitted(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -12,6 +12,7 @@ import re
 import shutil
 import tempfile
 
+from .migration_state import recovery_records, require_confirmation_binding, require_publication_allowed, require_writer_allowed
 from .metadata import PreparedImage
 from .prepare import _key_consistency, _verified_sections
 
@@ -193,11 +194,18 @@ def _publish_file(source, destination, tools, keys, run, *, immutable=False):
         temporary.unlink(missing_ok=True)
 
 
+def _protected_entries(manifest, state_dir):
+    records = recovery_records(state_dir)
+    if any(manifest["images"].get(entry) != record for entry, record in records.items()):
+        raise ValueError("protected recovery record changed or disappeared")
+    return set(records)
+
+
 def _pin(manifest, state_dir, tools, run):
     directory = state_dir / "gc-roots"
     directory.mkdir(mode=0o700, exist_ok=True)
     _private_directory(directory)
-    for entry in {manifest["default"], manifest["known_good"]} - {None}:
+    for entry in ({manifest["default"], manifest["known_good"]} - {None}) | _protected_entries(manifest, state_dir):
         root = directory / entry
         closure = manifest["images"][entry]["closure"]
         if ((root.exists() or root.is_symlink())
@@ -254,8 +262,9 @@ def _restore_manager(manifest, esp, tools, keys, run):
         _publish_file(backup, destination, tools, keys, run)
 
 
-def _verify_retained(manifest, esp, tools, keys, run):
-    for entry in {manifest["default"], manifest["known_good"]} - {None}:
+def _verify_retained(manifest, esp, tools, keys, run, state_dir=None):
+    protected = _protected_entries(manifest, state_dir) if state_dir is not None else set()
+    for entry in ({manifest["default"], manifest["known_good"]} - {None}) | protected:
         path = esp / "EFI/Linux" / entry
         if _image_hash(path) != manifest["images"][entry]["sha256"]:
             raise ValueError("retained image identity is unavailable")
@@ -270,9 +279,17 @@ def _prune(manifest, esp, state_dir):
     installs or signed-byte changes can otherwise leak unindexed images/roots.
     Never touch unrelated owner files or historical archives outside this namespace.
     """
+    require_writer_allowed(state_dir, "prune")
     if (state_dir / "journal.json").exists():
         raise ValueError("cannot prune during ambiguous publication")
-    keep = {manifest["default"], manifest["known_good"]} - {None}
+    keep = ({manifest["default"], manifest["known_good"]} - {None}) | _protected_entries(manifest, state_dir)
+    for entry in _protected_entries(manifest, state_dir):
+        if _image_hash(esp / "EFI/Linux" / entry) != manifest["images"][entry]["sha256"]:
+            raise ValueError("protected recovery image changed")
+        _manager_backup(manifest["images"][entry], esp)
+        root = state_dir / "gc-roots" / entry
+        if not root.is_symlink() or str(root.readlink()) != manifest["images"][entry]["closure"]:
+            raise ValueError("protected recovery closure root changed")
     for image in (esp / "EFI/Linux").iterdir():
         if ENTRY.fullmatch(image.name) and image.name not in keep:
             if image.is_symlink() or not image.is_file():
@@ -299,6 +316,7 @@ def _prune(manifest, esp, state_dir):
 
 
 def _reconcile(esp, state_dir, tools, keys, run):
+    require_writer_allowed(state_dir, "reconcile")
     path = state_dir / "journal.json"
     if not path.exists() and not path.is_symlink():
         return
@@ -337,7 +355,7 @@ def _reconcile(esp, state_dir, tools, keys, run):
             return
         if current["default"] != after["default"] or current["known_good"] is not None:
             raise ValueError("ambiguous first-install recovery; refusing to discard state")
-    _verify_retained(recover, esp, tools, keys, run)
+    _verify_retained(recover, esp, tools, keys, run, state_dir)
     _pin(recover, state_dir, tools, run)
     _restore_manager(recover, esp, tools, keys, run)
     _select(recover["default"], esp, tools, run)
@@ -354,7 +372,8 @@ def install(candidate, esp, state_dir, tools, keys, run) -> dict:
         return _install_locked(candidate, esp, state_dir, tools, keys, run)
 
 
-def _install_locked(candidate, esp, state_dir, tools, keys, run):
+def _install_locked(candidate, esp, state_dir, tools, keys, run, *, maintenance=None):
+    require_publication_allowed(state_dir, candidate, maintenance)
     # CLI holds this same lock across preparation too; public install acquires it
     # for API callers. Neither entry point creates a second lock domain.
     if not isinstance(candidate, PreparedImage) or _entry_digest(candidate.entry_id) != candidate.image_sha256:
@@ -368,9 +387,12 @@ def _install_locked(candidate, esp, state_dir, tools, keys, run):
             raise ValueError("prepared image uses a different policy key")
         _verify_pe(candidate.path, tools, keys, run)
         _verified_sections(candidate.path, candidate.generation, keys, scratch, tools, fingerprint, run)
-        _reconcile(esp, state_dir, tools, keys, run)
+        if maintenance is None:
+            _reconcile(esp, state_dir, tools, keys, run)
+        elif (state_dir / "journal.json").exists() or (state_dir / "journal.json").is_symlink():
+            raise ValueError("maintenance publication cannot reconcile or replay a journal")
         before = load_manifest(state_dir)
-        _verify_retained(before, esp, tools, keys, run)
+        _verify_retained(before, esp, tools, keys, run, state_dir)
         source = tools.bootctl.resolve().parent.parent / "lib/systemd/boot/efi/systemd-bootx64.efi"
         manager = scratch / "systemd-boot.efi"
         run([str(tools.sbsign), "--key", str(keys.db_key), "--cert", str(keys.db_cert),
@@ -414,12 +436,15 @@ def _install_locked(candidate, esp, state_dir, tools, keys, run):
         write_manifest(state_dir, after)
         (state_dir / "journal.json").unlink()
         _flush_directory(state_dir)
-        _prune(after, esp, state_dir)
+        if maintenance is None:
+            _prune(after, esp, state_dir)
+        # One-shot issuer publication retains its entire pre-rotation superset.
+        # Ordinary later updates prune only after respecting permanent recovery pins.
         write_manifest(state_dir, after)
         return after
 
 
-def confirm_boot(booted_closure, esp, state_dir, run) -> dict:
+def confirm_boot(booted_closure, esp, state_dir, run, *, guard=None) -> dict:
     """Confirm actual loaded identity, never the activated/current-system link.
 
     CLI supplies the resolved /run/booted-system path and a fixed-tool runner.
@@ -431,8 +456,11 @@ def confirm_boot(booted_closure, esp, state_dir, run) -> dict:
         journal = state_dir / "journal.json"
         if journal.exists() or journal.is_symlink():
             raise ValueError("pending publication cannot be confirmed")
+        if guard is not None:
+            guard('confirm')
         manifest = load_manifest(state_dir)
         loaded = Path(run(["bootctl", f"--esp-path={esp}", "--print-stub-path"]).strip())
+        require_writer_allowed(state_dir, "confirm-boot", loaded.name)
         _entry_digest(loaded.name)
         if loaded != esp / "EFI/Linux" / loaded.name or loaded.is_symlink():
             raise ValueError("loaded UKI is not on the expected ESP")
@@ -441,9 +469,12 @@ def confirm_boot(booted_closure, esp, state_dir, run) -> dict:
             raise ValueError("loaded image and booted closure do not match retained state")
         if _image_hash(loaded) != record["sha256"]:
             raise ValueError("loaded image identity cannot be verified")
+        require_confirmation_binding(state_dir, loaded.name, record)
         if (run(["systemctl", "is-active", "multi-user.target"]).strip() != "active"
                 or run(["systemctl", "is-system-running"]).strip() != "running"):
             raise ValueError("system is not ready for boot confirmation")
+        if guard is not None:
+            guard('confirm')
         manifest["known_good"] = loaded.name
         write_manifest(state_dir, manifest)
         return manifest

@@ -44,6 +44,9 @@ in
 {
   options.boot.secureUki = {
     enable = lib.mkEnableOption "target-local signed UKI boot installation";
+    issuerMaintenance = lib.mkEnableOption "default-disabled HUMAN-approved Dancer software issuer maintenance";
+    parentMaintenance = lib.mkEnableOption "default-disabled separately HUMAN-approved explicit ECC parent provisioning";
+    enrollmentMaintenance = lib.mkEnableOption "default-disabled separately HUMAN-approved measured native LUKS enrollment";
     bootstrapLabel = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
@@ -52,6 +55,21 @@ in
   };
   config = lib.mkIf cfg.enable {
     assertions = [
+      {
+        assertion =
+          !cfg.enrollmentMaintenance
+          || (cfg.parentMaintenance && cfg.issuerMaintenance && config.networking.hostName == "dancer");
+        message = "enrollment maintenance requires the separately approved Dancer parent/issuer-maintenance generation";
+      }
+      {
+        assertion =
+          !cfg.parentMaintenance || (cfg.issuerMaintenance && config.networking.hostName == "dancer");
+        message = "parent maintenance requires the separately approved Dancer issuer-maintenance generation";
+      }
+      {
+        assertion = !cfg.issuerMaintenance || config.networking.hostName == "dancer";
+        message = "issuer maintenance is restricted to the separately approved Dancer maintenance generation";
+      }
       {
         assertion = config.boot.loader.efi.efiSysMountPoint == "/boot";
         message = "secure UKIs require the fixed /boot ESP";
@@ -175,8 +193,34 @@ in
     };
     system.nixos.label = lib.mkIf (cfg.bootstrapLabel != null) cfg.bootstrapLabel;
     environment = {
-      systemPackages = [ package ];
-      etc."secure-uki.json".text = builtins.toJSON runtime;
+      systemPackages = [ package ] ++ lib.optionals cfg.issuerMaintenance [ package.tpmTools ];
+      etc = {
+        "secure-uki.json".text = builtins.toJSON runtime;
+        "secure-uki-maintenance.json" = lib.mkIf cfg.issuerMaintenance {
+          text = builtins.toJSON {
+            version = 1;
+            host = "dancer";
+            luks_device = "/dev/nvme0n1p2";
+            esp_device = "/dev/nvme0n1p1";
+            lsattr = "${pkgs.e2fsprogs}/bin/lsattr";
+          };
+        };
+        "secure-uki-parent-maintenance.json" = lib.mkIf cfg.parentMaintenance {
+          text = builtins.toJSON {
+            version = 1;
+            host = "dancer";
+            tpm_device = "/dev/tpmrm0";
+            tpm_tools = "${package.tpmTools}/bin";
+          };
+        };
+        "secure-uki-enrollment-maintenance.json" = lib.mkIf cfg.enrollmentMaintenance {
+          text = builtins.toJSON {
+            version = 1;
+            host = "dancer";
+            systemd = "${pkgs.systemd}";
+          };
+        };
+      };
       persistence."/persist".directories = [
         {
           directory = "/var/lib/sbctl";

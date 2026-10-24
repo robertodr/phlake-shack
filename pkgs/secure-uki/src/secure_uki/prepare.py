@@ -113,12 +113,13 @@ def _verified_sections(image: Path, generation: Generation, keys: Keys,
 
 
 def prepare_image(generation: Generation, destination: Path, tools: Tools,
-                  keys: Keys, run: Run) -> PreparedImage:
+                  keys: Keys, run: Run, *, retain_failed: bool = False) -> PreparedImage:
     """Produce one verified, privately staged UKI. The caller owns publication.
 
     Run must execute argument arrays without a shell and raise on nonzero exit.
     The ukify wrapper supplies the pinned stub; no live enrollment signature is
-    generated. Errors clean only this invocation's new staging directory.
+    generated. Ordinary errors clean only this invocation's new staging directory;
+    one-shot maintenance explicitly retains it for protected diagnosis.
     """
     tokens = generation.cmdline.split()
     if (not tokens or tokens[0] != f"init={generation.init}"
@@ -162,5 +163,6 @@ def prepare_image(generation: Generation, destination: Path, tools: Tools,
                 path.unlink()
         return PreparedImage(generation, final, digest, fingerprint, entry_id)
     except BaseException:
-        shutil.rmtree(stage)
+        if not retain_failed:
+            shutil.rmtree(stage)
         raise

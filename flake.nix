@@ -149,6 +149,14 @@
             inherit pkgsUnstable;
           };
         };
+
+      # Internal base for historical opt-in module tests and storage comparisons.
+      # The public hostname-selected target always adds the manual-LUKS policy.
+      dancerBase = mkHost {
+        name = "dancer";
+        hardwareModule = nixos-hardware.nixosModules.lenovo-thinkpad-x1;
+        homeModule = ./homes/roberto-at-dancer;
+      };
     in
     {
       checks.${system} = {
@@ -158,6 +166,13 @@
           pkgs = nixpkgs.legacyPackages.${system};
         };
         secure-uki-unit = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/secure-uki { };
+        dancer-manual-boot-eval = import ./tests/dancer-manual-boot-eval.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs.self.nixosConfigurations) dancer kellanved;
+          manualDancer = inputs.self.nixosConfigurations.dancer-manual-boot;
+          baseDancer = dancerBase;
+          hasManualTarget = true;
+        };
         secure-uki-pcr = import ./tests/secure-uki-pcr.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           inherit disko impermanence;
@@ -168,7 +183,8 @@
         };
         secure-uki-delivery-eval = import ./tests/secure-uki-delivery-eval.nix {
           pkgs = nixpkgs.legacyPackages.${system};
-          inherit (inputs.self.nixosConfigurations) dancer kellanved;
+          dancer = dancerBase;
+          inherit (inputs.self.nixosConfigurations) kellanved;
         };
         secure-uki-bootstrap = import ./tests/secure-uki.nix {
           pkgs = nixpkgs.legacyPackages.${system};
@@ -181,7 +197,7 @@
           fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
         };
         secure-uki-module-eval = import ./tests/secure-uki-module-eval.nix {
-          dancer = inputs.self.nixosConfigurations.dancer;
+          dancer = dancerBase;
           pkgs = nixpkgs.legacyPackages.${system};
           impermanenceModule = impermanence.nixosModules.impermanence;
           fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
@@ -213,11 +229,11 @@
           hardwareModule = nixos-hardware.nixosModules.framework-13-7040-amd;
           homeModule = ./homes/roberto-at-kellanved;
         };
-        dancer = mkHost {
-          name = "dancer";
-          hardwareModule = nixos-hardware.nixosModules.lenovo-thinkpad-x1;
-          homeModule = ./homes/roberto-at-dancer;
+        dancer = dancerBase.extendModules {
+          modules = [ ./systems/profiles/boot/manual-luks ];
         };
+        # Compatibility name for the original rollback target; no separate policy.
+        dancer-manual-boot = inputs.self.nixosConfigurations.dancer;
       };
 
     };

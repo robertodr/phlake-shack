@@ -8,9 +8,19 @@ This repository is home to the nix code that builds my systems.
 | Host | Profile | Hardware / role | Runbook |
 | --- | --- | --- | --- |
 | `kellanved` | `nixosConfigurations.kellanved`, `homes/roberto-at-kellanved` | Framework 13 AMD daily-driver laptop | Existing local workflow |
-| `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon Stage A headless/mobile host | [`docs/hosts/dancer-install.md`](docs/hosts/dancer-install.md) |
+| `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon with attended encrypted boot | [Current boot/update policy](docs/hosts/dancer-manual-boot-rollback.md), [historical installation](docs/hosts/dancer-install.md) |
 
-`dancer` installation is a human-only attended procedure. First boot still requires the local LUKS passphrase; Stage A does not configure initrd SSH or TPM auto-unlock. The reviewed transfer artifact is the Dancer-only `dancer-stage-a-install-only-v3.tar.zst` configuration bundle, not the full two-host repository and not an installer ISO.
+`dancer` permanently uses stock systemd-boot and an attended LUKS passphrase,
+without TPM auto-unlock or Secure UKI integration. `dancer-manual-boot` is a
+compatibility alias for exactly the same system. Firmware Secure Boot was
+reported disabled by the owner; Nix configuration does not toggle firmware.
+The complete source changes must reach the ordinary Dancer checkout before
+hostname-default rebuilds or `nh` updates use this policy.
+
+The original Stage A installation was a human-only attended procedure using the
+Dancer-only `dancer-stage-a-install-only-v3.tar.zst` bundle, not the full two-host
+repository or an installer ISO. That archive is historical, not current update
+source.
 
 Dancer's follow-up configuration excludes Docker and Emacs and uses a cyan/blue
 prompt without the Framework nickname. These follow-up changes are **not** in the

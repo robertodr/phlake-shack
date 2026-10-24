@@ -164,7 +164,7 @@ class PrepareTests(unittest.TestCase):
         self.assertEqual(self.run.sections[".initrd"], b"microcode-prefix\x00compressed-initrd")
         self.assertEqual(self.run.sections[".osrel"], b"ID=nixos\n")
         self.assertEqual(self.run.sections[".pcrpkey"], self.keys.pcr_public.read_bytes())
-        verify = [c for c in self.run.calls if c[0] == "openssl" and "-verify" in c]
+        verify = [c for c in self.run.calls if Path(c[0]).name == "openssl" and "-verify" in c]
         self.assertEqual(len(verify), 1)
         self.assert_no_boot_side_effects()
 

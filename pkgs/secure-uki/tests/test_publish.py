@@ -10,6 +10,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from secure_uki import migration_state as migration
 from secure_uki.publish import confirm_boot, install, installer_lock, load_manifest, validate_manifest, write_manifest
 from secure_uki.prepare import prepare_image
 import test_prepare as prepare_fixtures
@@ -131,6 +132,162 @@ class PublicationTests(unittest.TestCase):
     def install(self, candidate=None):
         return install(candidate or self.candidate, self.esp, self.state,
                        self.tools, self.keys, self.runner)
+
+    def test_pending_migration_blocks_publication_before_any_tool_or_state_write(self):
+        (self.state / "migrations").mkdir(mode=0o700)
+        (self.state / "migrations/issuer").mkdir(mode=0o700)
+        before = (self.state / "manifest.json").read_bytes()
+        with self.assertRaises(ValueError):
+            self.install()
+        self.assertEqual(self.events, [])
+        self.assertEqual((self.state / "manifest.json").read_bytes(), before)
+        self.assertFalse((self.state / "journal.json").exists())
+
+    def test_incomplete_migration_blocks_confirmation_before_manifest_write(self):
+        (self.state / "migrations").mkdir(mode=0o700)
+        (self.state / "migrations/issuer").mkdir(mode=0o700)
+        before = (self.state / "manifest.json").read_bytes()
+        def run(argv):
+            if argv[0] == "bootctl":
+                return str(self.images / self.good)
+            return "active" if "is-active" in argv else "running"
+        closure = Path(load_manifest(self.state)["images"][self.good]["closure"])
+        with self.assertRaises(ValueError):
+            confirm_boot(closure, self.esp, self.state, run)
+        self.assertEqual((self.state / "manifest.json").read_bytes(), before)
+
+    def published_migration(self):
+        record = load_manifest(self.state)["images"][self.candidate.entry_id]
+        evidence = {"entry_id": self.candidate.entry_id, **record}
+        with installer_lock(self.state):
+            operation = migration.begin_operation(self.state, "issuer", {"version": 1})
+            for phase in ("prepared", "exchanged", "published"):
+                migration.record_phase(operation, phase, evidence)
+        return operation
+
+    def confirm_candidate(self, entry=None, closure=None):
+        entry = entry or self.candidate.entry_id
+        def run(argv):
+            if argv[0] == "bootctl":
+                return str(self.images / entry)
+            return "active" if "is-active" in argv else "running"
+        return confirm_boot(closure or self.candidate.generation.closure,
+                            self.esp, self.state, run)
+
+    def test_published_migration_allows_exact_candidate_actual_confirmation(self):
+        self.install()
+        operation = self.published_migration()
+        self.assertEqual(self.confirm_candidate()["known_good"], self.candidate.entry_id)
+        self.assertEqual(migration.read_operation(operation)["phase"], "published")
+
+    def test_same_closure_old_image_cannot_confirm_migration(self):
+        manifest = self.install()
+        manifest["images"][self.good]["closure"] = str(self.candidate.generation.closure)
+        write_manifest(self.state, manifest)
+        self.published_migration()
+        before = (self.state / "manifest.json").read_bytes()
+        with self.assertRaises(ValueError):
+            self.confirm_candidate(self.good)
+        self.assertEqual((self.state / "manifest.json").read_bytes(), before)
+
+    def test_manifest_closure_or_policy_key_drift_cannot_confirm_published_migration(self):
+        manifest = self.install()
+        self.published_migration()
+        for field, value in (("closure", "/nix/store/" + "d" * 32 + "-other"),
+                             ("pcr_key_fingerprint", "e" * 64)):
+            changed = copy.deepcopy(manifest)
+            changed["images"][self.candidate.entry_id][field] = value
+            write_manifest(self.state, changed)
+            closure = Path(changed["images"][self.candidate.entry_id]["closure"])
+            before = (self.state / "manifest.json").read_bytes()
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                self.confirm_candidate(closure=closure)
+            self.assertEqual((self.state / "manifest.json").read_bytes(), before)
+
+    def enrollment_migration(self, phase="token-verified"):
+        evidence = {"entry_id": self.candidate.entry_id,
+                    **load_manifest(self.state)["images"][self.candidate.entry_id]}
+        with installer_lock(self.state):
+            operation = migration.begin_operation(self.state, "enrollment", {"version": 1})
+            if phase != "intent":
+                migration.record_phase(operation, "token-written", evidence)
+            if phase == "token-verified":
+                migration.record_phase(operation, "token-verified", evidence)
+        return operation, evidence
+
+    def test_verified_enrollment_allows_real_confirmation_not_operation_completion(self):
+        self.install()
+        operation, evidence = self.enrollment_migration()
+        before = {path.name: path.read_bytes() for path in operation.iterdir()}
+        try:
+            result = self.confirm_candidate()
+        except ValueError:
+            self.fail("verified enrollment deadlocked normal image/closure/readiness confirmation")
+        self.assertEqual(result["known_good"], self.candidate.entry_id)
+        self.assertEqual(result["default"], self.candidate.entry_id)
+        self.assertEqual(migration.read_operation(operation)["phase"], "token-verified")
+        self.assertEqual({path.name: path.read_bytes() for path in operation.iterdir()}, before)
+
+    def test_unverified_enrollment_refuses_confirmation_without_manifest_write(self):
+        self.install()
+        operation, evidence = self.enrollment_migration("intent")
+        for phase in ("intent", "token-written"):
+            if phase != "intent":
+                with installer_lock(self.state):
+                    migration.record_phase(operation, phase, evidence)
+            before = (self.state / "manifest.json").read_bytes()
+            with self.subTest(phase=phase), self.assertRaises(ValueError):
+                self.confirm_candidate()
+            self.assertEqual((self.state / "manifest.json").read_bytes(), before)
+
+    def test_verified_enrollment_refuses_foreign_image_and_manifest_identity_drift(self):
+        manifest = self.install()
+        self.enrollment_migration()
+        for field, value in (("closure", "/nix/store/" + "d" * 32 + "-other"),
+                             ("pcr_key_fingerprint", "e" * 64)):
+            changed = copy.deepcopy(manifest)
+            changed["images"][self.candidate.entry_id][field] = value
+            write_manifest(self.state, changed)
+            before = (self.state / "manifest.json").read_bytes()
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                self.confirm_candidate(closure=Path(changed["images"][self.candidate.entry_id]["closure"]))
+            self.assertEqual((self.state / "manifest.json").read_bytes(), before)
+        manifest["images"][self.good]["closure"] = str(self.candidate.generation.closure)
+        write_manifest(self.state, manifest)
+        before = (self.state / "manifest.json").read_bytes()
+        with self.assertRaises(ValueError):
+            self.confirm_candidate(entry=self.good)
+        self.assertEqual((self.state / "manifest.json").read_bytes(), before)
+
+    def completed_recovery_pin(self):
+        before = load_manifest(self.state)
+        self.install()
+        evidence = {"entry_id": self.candidate.entry_id, **load_manifest(self.state)["images"][self.candidate.entry_id]}
+        with installer_lock(self.state):
+            operation = migration.begin_operation(self.state, "issuer", {"version": 1, "publication": before})
+            for phase in migration.PHASES["issuer"]:
+                migration.record_phase(operation, phase, evidence)
+        self.confirm_candidate()
+        return operation
+
+    def test_recovery_image_and_root_survive_updates_after_completed_rotation(self):
+        self.completed_recovery_pin()
+        candidate = self.prepare_candidate("d")
+        result = self.install(candidate)
+        self.assertIn(self.good, result["images"], "completed migration lost protected manual recovery image")
+        self.assertTrue((self.images / self.good).exists())
+        self.assertTrue((self.state / "gc-roots" / self.good).is_symlink())
+        self.assertTrue((self.manager_backups / f"systemd-boot-{self.previous_manager_hash}.efi").exists())
+
+    def test_recovery_pin_record_or_bytes_drift_refuses_before_selection(self):
+        self.completed_recovery_pin()
+        manifest = load_manifest(self.state)
+        manifest["images"][self.good]["pcr_key_fingerprint"] = "f" * 64
+        write_manifest(self.state, manifest)
+        self.events.clear()
+        with self.assertRaises(ValueError):
+            self.install(self.prepare_candidate("d"))
+        self.assertNotIn("select-default", self.events)
 
     def test_publication_retains_candidate_and_last_confirmed_boot_not_old_activation(self):
         manifest = self.install()

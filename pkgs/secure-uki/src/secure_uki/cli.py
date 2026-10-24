@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import tempfile
 
+from .migration_state import require_writer_allowed
 from .metadata import Keys, Tools, read_generation
 from .prepare import prepare_image, _private_file, _regular
 from .publish import confirm_boot, installer_lock, _install_locked, _private_directory, _unique_object
@@ -101,6 +102,7 @@ def check_initrd_secrets(closure):
 def cleanup_staging(state):
     """Caller holds installer_lock; no other CLI can be preparing in this state."""
     _private_directory(state)
+    require_writer_allowed(state, "cleanup")
     for path in state.iterdir():
         if path.name.startswith((".prepare-call-", ".install-")):
             _private_directory(path)
@@ -115,11 +117,41 @@ def _runner(config):
         # prepare uses the package's immutable OpenSSL PATH; every other tool
         # is explicit. No shell, interactive passphrase or command interpolation.
         try:
-            return subprocess.run(argv, check=True, capture_output=True, text=True).stdout
+            env = {**os.environ, 'OPENSSL_CONF': '/dev/null', 'LC_ALL': 'C'}
+            env.pop('OPENSSL_MODULES', None)
+            env.pop('OPENSSL_ENGINES', None)
+            return subprocess.run(argv, check=True, capture_output=True, text=True, env=env, timeout=120).stdout
+        except subprocess.TimeoutExpired:
+            raise RuntimeError('pinned runtime tool timed out; no automatic retry') from None
         except subprocess.CalledProcessError as exc:
             # Do not echo raw tool output, key material or untrusted Bootspec text.
             raise RuntimeError(f"{Path(argv[0]).name} failed (exit {exc.returncode})") from exc
     return run
+
+
+def _parent_handle(value):
+    from .tpm_parent import validate_parent_handle
+    try:
+        return validate_parent_handle(int(value, 0))
+    except (ValueError, TypeError):
+        raise argparse.ArgumentTypeError('explicit nondefault OWNER parent selector required') from None
+
+
+def _confirmation_guard(state, config, run):
+    from .migration_state import read_operation
+    enrollment = state / 'migrations/enrollment'
+    if enrollment.exists() or enrollment.is_symlink():
+        current = read_operation(enrollment)
+        if current['phase'] != 'complete':
+            from .enrollment_maintenance import EnrollmentGuard
+            return EnrollmentGuard(state, config, run).check
+    issuer = state / 'migrations/issuer'
+    if issuer.exists() or issuer.is_symlink():
+        current = read_operation(issuer)
+        if current['phase'] != 'complete' and current['before'].get('maintenance') is not None:
+            from .maintenance import RuntimeGuard
+            return RuntimeGuard(state, config, run)
+    return None
 
 
 def main(argv=None):
@@ -129,14 +161,58 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("install").add_argument("closure", type=Path)
     commands.add_parser("confirm-boot")
+    arm=commands.add_parser('issuer-arm',help='one-shot HUMAN accepted maintenance runtime; opt-in only')
+    arm.add_argument('closure',type=Path)
+    arm.add_argument('--manual-unlock-attested',action='store_true',required=True)
+    arm.add_argument('--recovery-backup-attested',action='store_true',required=True)
+    arm.add_argument('--approve-rsa2048',action='store_true',required=True)
+    commands.add_parser('issuer-prepare')
+    commands.add_parser('issuer-commit')
+    commands.add_parser('issuer-accept').add_argument('--manual-unlock-attested',action='store_true',required=True)
+    parent = commands.add_parser('parent-arm', help='separate one-shot HUMAN explicit ECC parent approval; opt-in only')
+    parent.add_argument('closure', type=Path)
+    parent.add_argument('--handle', type=_parent_handle, required=True)
+    for name in ('manual-unlock-attested', 'recovery-backup-attested',
+                 'firmware-risk-accepted', 'trusted-enrollment-attested', 'hardware-primitives-attested'):
+        parent.add_argument('--' + name, action='store_true', required=True)
+    commands.add_parser('parent-provision', help='one explicit approved ECC parent attempt; no replay')
+    enrollment = commands.add_parser('enrollment-arm', help='separate one-shot HUMAN measured LUKS enrollment approval; opt-in only')
+    enrollment.add_argument('closure', type=Path)
+    for name in ('manual-unlock-attested', 'recovery-backup-attested', 'signing-backup-attested',
+                 'firmware-risk-accepted', 'trusted-enrollment-attested', 'hardware-primitives-attested', 'approve-rsa2048'):
+        enrollment.add_argument('--' + name, action='store_true', required=True)
+    commands.add_parser('enrollment-enroll', help='one native human-terminal enrollment attempt; no retry')
+    acceptance = commands.add_parser('enrollment-accept', help='separate HUMAN attended boot/recovery acceptance; no restart or replay')
+    for name in ('electrical-cold-attested', 'automatic-unlock-attested', 'manual-recovery-attested'):
+        acceptance.add_argument('--' + name, action='store_true', required=True)
     args = parser.parse_args(argv)
     try:
         os.umask(0o077)
         config = load_config()
         run = _runner(config)
+        if args.command.startswith('issuer-'):
+            from .maintenance import dispatch
+            dispatch(args,config,run)
+            print('secure-uki: issuer maintenance operation completed; protected evidence retained')
+            return
+        if args.command.startswith('parent-'):
+            from .parent_maintenance import dispatch
+            dispatch(args, config, run)
+            print('secure-uki: parent maintenance operation completed; protected evidence retained')
+            return
+        if args.command.startswith('enrollment-'):
+            from .enrollment_maintenance import dispatch
+            dispatch(args, config, run)
+            if args.command == 'enrollment-accept':
+                print('secure-uki: attended enrollment acceptance recorded; protected recovery retained')
+            else:
+                print('secure-uki: enrollment stage recorded; attended acceptance remains separate')
+            return
         check_mounts(config, run)
         esp, state = Path(config["esp"]), Path(config["state_dir"])
         _private_directory(state)
+        if args.command == "install":
+            require_writer_allowed(state, "install")
         _private_directory(Path("/var/lib/sbctl"))
         check_augmentations(esp)
         keys = Keys(**{name: Path(value) for name, value in config["keys"].items()})
@@ -148,14 +224,17 @@ def main(argv=None):
                 raise ValueError("public signing material must be root-controlled")
         if args.command == "confirm-boot":
             booted = Path("/run/booted-system").resolve(strict=True)
-            confirm_boot(booted, esp, state, run)
+            guard = _confirmation_guard(state, config, run)
+            confirm_boot(booted, esp, state, run, guard=guard)
         else:
-            generation = read_generation(args.closure)
-            check_initrd_secrets(generation.closure)
             tools = Tools(**{name: Path(config["tools"][name]) for name in Tools.__dataclass_fields__})
             # Serialize preparation, staging cleanup and publication as one
-            # operation. Kernel lock release after SIGKILL allows safe replay.
+            # operation. Ordinary publication retains its recovery protocol;
+            # interrupted maintenance intent instead blocks all replay.
             with installer_lock(state):
+                require_writer_allowed(state, "install")
+                generation = read_generation(args.closure)
+                check_initrd_secrets(generation.closure)
                 cleanup_staging(state)
                 with tempfile.TemporaryDirectory(prefix=".prepare-call-", dir=state) as directory:
                     candidate = prepare_image(generation, Path(directory), tools, keys, run)

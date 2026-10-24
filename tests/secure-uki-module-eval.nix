@@ -47,6 +47,18 @@ let
         bootstrapLabel = "dancer-uki-bootstrap";
       };
     }).config;
+  maintenance =
+    (evaluate true {
+      networking.hostName = "dancer";
+      boot.secureUki.enable = true;
+      boot.secureUki.issuerMaintenance = true;
+    }).config;
+  wrongMaintenanceHost =
+    (evaluate true {
+      networking.hostName = "kellanved";
+      boot.secureUki.enable = true;
+      boot.secureUki.issuerMaintenance = true;
+    }).config;
   setupUnits = [
     "systemd-tpm2-setup-early"
     "systemd-tpm2-setup"
@@ -70,6 +82,19 @@ let
   );
   dancerEnabled = (dancer.extendModules { modules = [ { boot.secureUki.enable = true; } ]; }).config;
   assertions = [
+    {
+      name = "maintenance-default-disabled-and-fixed-dancer-only";
+      pass =
+        !enabled.boot.secureUki.issuerMaintenance
+        && !(enabled.environment.etc ? "secure-uki-maintenance.json")
+        && lib.all (item: item.assertion) maintenance.assertions
+        && lib.any (item: !item.assertion) wrongMaintenanceHost.assertions
+        &&
+          (builtins.fromJSON (
+            builtins.unsafeDiscardStringContext maintenance.environment.etc."secure-uki-maintenance.json".text
+          )).luks_device == "/dev/nvme0n1p2"
+        && setupEnabled maintenance == setupEnabled enabled;
+    }
     {
       name = "dancer-remains-opted-out-and-keeps-one-runtime-rule";
       pass =
