@@ -15,11 +15,69 @@ let
     "systemd-tpm2-setup-early"
     "systemd-tpm2-setup"
   ];
-  retained = [
+  retiredStateDirectories = [
     "/var/lib/sbctl"
     "/var/lib/secure-uki"
   ];
   persistence = c.environment.persistence."/persist".directories or [ ];
+  # Compare evaluated settings, excluding assertion thunks and option internals.
+  directorySettings = directory: {
+    inherit (directory)
+      directory
+      dirPath
+      mode
+      user
+      group
+      hideMount
+      allowTrash
+      home
+      persistentStoragePath
+      enableDebugging
+      defaultPerms
+      ;
+  };
+  fileSettings = file: {
+    inherit (file)
+      file
+      filePath
+      method
+      home
+      persistentStoragePath
+      enableDebugging
+      ;
+    parentDirectory = directorySettings file.parentDirectory;
+  };
+  persistenceSettings =
+    config:
+    lib.mapAttrs (_: storage: {
+      inherit (storage)
+        enable
+        persistentStoragePath
+        hideMounts
+        allowTrash
+        enableDebugging
+        enableWarnings
+        ;
+      directories = map directorySettings storage.directories;
+      files = map fileSettings storage.files;
+      users = lib.mapAttrs (_: user: {
+        directories = map directorySettings user.directories;
+        files = map fileSettings user.files;
+      }) storage.users;
+    }) config.environment.persistence;
+  mountSettings =
+    mounts:
+    map (mount: {
+      inherit (mount)
+        where
+        what
+        type
+        options
+        before
+        wantedBy
+        unitConfig
+        ;
+    }) mounts;
   # `label` is an optional input alias without a default. Compare resolved
   # devices and every non-derived setting, not the whole lazy option submodule.
   swapSettings =
@@ -45,21 +103,15 @@ let
       && root.crypttabExtraOpts == [ ]
       && config.boot.initrd.secrets == { }
     );
-  optedOut =
-    config:
-    !config.boot.secureUki.enable
-    && !config.boot.secureUki.issuerMaintenance
-    && !config.boot.secureUki.parentMaintenance
-    && !config.boot.secureUki.enrollmentMaintenance;
+  customBootOptionsAbsent = host: !(host.options.boot ? secureUki);
   conflicted =
     (dancer.extendModules {
       modules = [
         {
-          boot.secureUki = {
-            enable = true;
-            issuerMaintenance = true;
-            parentMaintenance = true;
-            enrollmentMaintenance = true;
+          boot.loader = {
+            external.enable = true;
+            grub.enable = true;
+            systemd-boot.enable = false;
           };
           boot.initrd.luks.devices.encrypted = {
             keyFile = "/OWNED-nonexistent-fixture-not-a-key";
@@ -88,7 +140,7 @@ let
     (check "stock-systemd-boot-without-external-installer-or-grub" (
       c.boot.loader.systemd-boot.enable && !c.boot.loader.external.enable && !c.boot.loader.grub.enable
     ))
-    (check "secure-uki-and-all-maintenance-opt-ins-disabled" (optedOut c))
+    (check "secure-uki-module-and-maintenance-options-absent" (customBootOptionsAbsent dancer))
     (check "systemd-initrd-retained" c.boot.initrd.systemd.enable)
     (check "no-systemd-tpm-support-in-either-stage" (
       !c.boot.initrd.systemd.tpm2.enable && !c.systemd.tpm2.enable
@@ -139,21 +191,29 @@ let
         c.boot.initrd.luks.devices.encrypted.allowDiscards
         == ordinary.boot.initrd.luks.devices.encrypted.allowDiscards
     ))
-    (check "state-and-signing-keys-retained-root-only-on-persist" (
+    (check "retired-experiment-state-not-persisted" (
+      !lib.any (directory: lib.elem directory.directory retiredStateDirectories) persistence
+    ))
+    (check "retired-experiment-bind-mounts-absent" (
       lib.all (
         name:
-        builtins.length (
-          builtins.filter (
-            d: d.directory == name && d.mode == "0700" && d.user == "root" && d.group == "root"
-          ) persistence
-        ) == 1
-      ) retained
+        !(builtins.hasAttr name c.fileSystems)
+        && !lib.any (mount: mount.where == name) c.systemd.mounts
+        && !lib.any (mount: mount.where == "/sysroot${name}") c.boot.initrd.systemd.mounts
+      ) retiredStateDirectories
+    ))
+    (check "remaining-persistence-settings-preserved" (
+      persistenceSettings c == persistenceSettings ordinary
+    ))
+    (check "remaining-generated-bind-mounts-preserved" (
+      mountSettings c.systemd.mounts == mountSettings ordinary.systemd.mounts
+      && mountSettings c.boot.initrd.systemd.mounts == mountSettings ordinary.boot.initrd.systemd.mounts
     ))
     (check "persist-remains-boot-critical-btrfs" (
       c.fileSystems."/persist".neededForBoot && c.fileSystems."/persist".fsType == "btrfs"
     ))
     (check "existing-filesystems-and-swap-preserved" (
-      lib.filterAttrs (name: _: !(lib.elem name retained)) c.fileSystems == ordinary.fileSystems
+      c.fileSystems == ordinary.fileSystems
       && swapSettings c.swapDevices == swapSettings ordinary.swapDevices
     ))
     (check "existing-root-rollback-preserved" (
@@ -171,17 +231,17 @@ let
       !(lib.elem "secure-uki-fwupd-sign.service" (c.systemd.services.fwupd.requires or [ ]))
       && c.services.fwupd.package.outPath == ordinary.services.fwupd.package.outPath
     ))
-    (check "conflicting-legacy-opt-ins-cannot-restore-custom-boot" (
-      optedOut conflicted
-      && conflicted.boot.loader.systemd-boot.enable
+    (check "conflicting-boot-settings-cannot-restore-custom-installer-or-grub" (
+      conflicted.boot.loader.systemd-boot.enable
       && !conflicted.boot.loader.external.enable
+      && !conflicted.boot.loader.grub.enable
     ))
     (check "conflicting-automatic-unlock-settings-cannot-bypass-passphrase" (passwordOnly conflicted))
     (check "wrong-host-profile-rejected" (lib.any (a: !a.assertion) wrongHost.assertions))
-    (check "original-hosts-remain-opted-out" (
-      !ordinary.boot.secureUki.enable
+    (check "original-hosts-have-no-secure-uki-module" (
+      customBootOptionsAbsent baseDancer
       && ordinary.boot.loader.systemd-boot.enable
-      && !(kellanved.config.boot.secureUki.enable or false)
+      && customBootOptionsAbsent kellanved
     ))
     (check "dancer-policy-and-account-configuration-preserved" (
       c.users.users.roberto.hashedPasswordFile == ordinary.users.users.roberto.hashedPasswordFile

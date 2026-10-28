@@ -1,7 +1,6 @@
 { config, lib, ... }:
 {
   # Permanent Dancer policy; firmware Secure Boot is disabled separately by a human.
-  # Retain existing signing/recovery state and keys; do not erase or enroll anything.
   assertions = [
     {
       assertion = config.networking.hostName == "dancer";
@@ -21,13 +20,6 @@
   ];
 
   boot = {
-    secureUki = {
-      enable = lib.mkForce false;
-      issuerMaintenance = lib.mkForce false;
-      parentMaintenance = lib.mkForce false;
-      enrollmentMaintenance = lib.mkForce false;
-      bootstrapLabel = lib.mkForce null;
-    };
     loader = {
       external.enable = lib.mkForce false;
       grub.enable = lib.mkForce false;
@@ -74,17 +66,4 @@
       secure-uki-fwupd-sign.enable = lib.mkForce false;
     };
   };
-
-  # Impermanence must not drop these bindings when secureUki.enable becomes false.
-  # They are retained evidence/recovery, not inputs to the new boot path.
-  environment.persistence."/persist".directories = [
-    {
-      directory = "/var/lib/sbctl";
-      mode = "0700";
-    }
-    {
-      directory = "/var/lib/secure-uki";
-      mode = "0700";
-    }
-  ];
 }

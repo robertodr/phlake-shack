@@ -150,8 +150,8 @@
           };
         };
 
-      # Internal base for historical opt-in module tests and storage comparisons.
-      # The public hostname-selected target always adds the manual-LUKS policy.
+      # Internal base for storage comparisons; the public hostname-selected
+      # target always adds the manual-LUKS policy.
       dancerBase = mkHost {
         name = "dancer";
         hardwareModule = nixos-hardware.nixosModules.lenovo-thinkpad-x1;
@@ -165,48 +165,12 @@
           self = inputs.self or (throw "self input unavailable");
           pkgs = nixpkgs.legacyPackages.${system};
         };
-        secure-uki-unit = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/secure-uki { };
         dancer-manual-boot-eval = import ./tests/dancer-manual-boot-eval.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs.self.nixosConfigurations) dancer kellanved;
           manualDancer = inputs.self.nixosConfigurations.dancer-manual-boot;
           baseDancer = dancerBase;
           hasManualTarget = true;
-        };
-        secure-uki-pcr = import ./tests/secure-uki-pcr.nix {
-          pkgs = nixpkgs.legacyPackages.${system};
-          inherit disko impermanence;
-        };
-        secure-uki = import ./tests/secure-uki.nix {
-          pkgs = nixpkgs.legacyPackages.${system};
-          inherit disko impermanence;
-        };
-        secure-uki-delivery-eval = import ./tests/secure-uki-delivery-eval.nix {
-          pkgs = nixpkgs.legacyPackages.${system};
-          dancer = dancerBase;
-          inherit (inputs.self.nixosConfigurations) kellanved;
-        };
-        secure-uki-bootstrap = import ./tests/secure-uki.nix {
-          pkgs = nixpkgs.legacyPackages.${system};
-          inherit disko impermanence;
-          bootstrapBridge = true;
-        };
-        secure-uki-module = import ./tests/secure-uki-module.nix {
-          pkgs = nixpkgs.legacyPackages.${system};
-          impermanenceModule = impermanence.nixosModules.impermanence;
-          fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
-        };
-        secure-uki-module-eval = import ./tests/secure-uki-module-eval.nix {
-          dancer = dancerBase;
-          pkgs = nixpkgs.legacyPackages.${system};
-          impermanenceModule = impermanence.nixosModules.impermanence;
-          fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
-        };
-        secure-uki-publish = import ./tests/secure-uki-publish.nix {
-          pkgs = nixpkgs.legacyPackages.${system};
-        };
-        secure-uki-probe = import ./tests/secure-uki-probe.nix {
-          pkgs = nixpkgs.legacyPackages.${system};
         };
         fwupd-efi = import ./tests/fwupd-efi.nix {
           pkgs = nixpkgs.legacyPackages.${system};
