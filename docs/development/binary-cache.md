@@ -1,57 +1,36 @@
-# Avoiding custom GitButler and Inkscape builds
+# Package selections and binary caches
 
-## GitButler GUI and CLI
+## Why GitButler uses explicit package arguments
 
-Keep `llm-agents`' nixpkgs input pinned to the revision in its own upstream
-`flake.lock`. The shared overlay builds against the host package set, so its
-GitButler derivation does not match upstream CI even at the same application
-version. Following our separate unstable input also changes upstream package
-identities.
+`gitbutlerPackage` and `gitbutlerCli` in Home Manager's `extraSpecialArgs` select
+`llm-agents.packages.${system}.gitbutler` and `.but` directly. The desktop and
+development profiles consume those arguments rather than `pkgs.llm-agents`
+overlay packages.
 
-The desktop GitButler and shared `but` CLI now come directly from
-`llm-agents.packages.x86_64-linux`. Other shared-overlay selections remain in
-place. There is no nested nixpkgs override in the input declaration: upstream's
-own lock supplies its CI dependency, recorded in our `flake.lock`. Local host
-invariants check both the revision and inherited input declaration against
-upstream. During migration from the old `follows`, only the nested input's
-`original` metadata needed correction; its locked revision stayed unchanged.
-Existing host input revisions were not upgraded for this fix.
+This distinction is intentional: `llm-agents.overlays.shared-nixpkgs` rebuilds
+against the host package set, which changes derivation identities from upstream
+CI even when application versions match. Using `pkgs.llm-agents.gitbutler` or
+`pkgs.llm-agents.but` is therefore not a cache-equivalent simplification.
+The upstream package set uses its own locked nixpkgs dependency; do not make it
+follow the host's stable or unstable input merely to remove these arguments.
+Other shared-overlay package selections remain unchanged.
 
-Numtide's cache and published signature-verification key are configured in the
-shared Nix profile. NAR signature checking remains enabled. Reference:
-<https://github.com/numtide/llm-agents.nix#binary-cache>.
+The shared Nix profile includes Numtide's cache and published verification key,
+with NAR signature checking still enabled. See the
+[upstream cache documentation](https://github.com/numtide/llm-agents.nix#binary-cache).
+The pinned GitButler 0.22.3 and `but` 0.22.3 artifacts were previously realized
+with local and remote builds disabled. That established substitution for those
+artifacts, not a guarantee that every future version is cached.
 
 ## Inkscape and Stylix
 
-Inkscape uses ordinary `pkgs.inkscape`, with no special package argument or
-application patch. Stylix has no Inkscape-specific target; its global GtkSourceView
-overlay previously changed the dependency hash and caused a custom source build.
+Inkscape uses ordinary `pkgs.inkscape`. Stylix's NixOS GtkSourceView target is
+disabled so it does not override application dependencies and cause custom
+Inkscape builds. The Home Manager GtkSourceView target remains enabled to
+provide syntax XML and preserve styling without rebuilding application packages.
+The pinned Inkscape 1.4.4 artifact was also previously realized from caches.
 
-The NixOS GtkSourceView target is now disabled, preventing package overrides.
-The Home Manager GtkSourceView target is enabled instead: Stylix generates
-user-level syntax XML for GtkSourceView 2, 3, 4 and 5 without changing application
-packages. The GTK theme and syntax palette are retained. Theme changes regenerate
-small XML files rather than rebuilding GtkSourceView or Inkscape.
-
-## First build and verification
-
-The NixOS cache settings take effect only after human-operated activation. Before
-that, an unprivileged build can supply the cache/key temporarily:
-
-```sh
-nix build .#nixosConfigurations.kellanved.config.system.build.toplevel --no-link \
-  --option extra-substituters https://cache.numtide.com \
-  --option extra-trusted-public-keys \
-  'niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g='
-```
-
-The selected GitButler 0.22.3, `but` 0.22.3 and Inkscape 1.4.4 artifacts were
-successfully realized with local builds disabled (`--max-jobs 0`, no remote
-builders), using the official/Numtide caches and signature checking. This proves
-substitution for these pinned artifacts, not that all future versions will be
-cached. Native Nix cache queries succeeded even when direct HTTP narinfo probes
-returned 403; a direct 403 alone is not proof that an artifact is absent.
-
-No system activation is performed by the automated checks. The local
-`host-invariants` check still needs the private Framework baseline, intentionally
-excluded from public source and installation bundles.
+These choices apply to the shared configuration. Removing Dancer's abandoned
+Secure Boot/TPM experiment does not change them, update the lock file, or alter
+Framework's package selection. Cache/package changes and host activation require
+separate review; this document does not issue a build or activation command.

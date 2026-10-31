@@ -8,26 +8,23 @@ This repository is home to the nix code that builds my systems.
 | Host | Profile | Hardware / role | Runbook |
 | --- | --- | --- | --- |
 | `kellanved` | `nixosConfigurations.kellanved`, `homes/roberto-at-kellanved` | Framework 13 AMD daily-driver laptop | Existing local workflow |
-| `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon with attended encrypted boot | [Current boot/update policy](docs/hosts/dancer-manual-boot-rollback.md), [historical installation](docs/hosts/dancer-install.md) |
+| `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon with attended encrypted boot | [Boot/update policy](docs/hosts/dancer-manual-boot-rollback.md), [installation checklist](docs/hosts/dancer-install.md) |
 
 `dancer` permanently uses stock systemd-boot and an attended LUKS passphrase,
 without TPM auto-unlock or Secure UKI integration. `dancer-manual-boot` is a
-compatibility alias for exactly the same system. Firmware Secure Boot was
-reported disabled by the owner; Nix configuration does not toggle firmware.
-The complete source changes must reach the ordinary Dancer checkout before
-hostname-default rebuilds or `nh` updates use this policy.
+compatibility alias for the same system. The owner reported a generation-12
+boot with the disk-passphrase prompt and a normal desktop. Firmware Secure Boot
+was reported disabled; Nix configuration does not toggle firmware.
 
-The original Stage A installation was a human-only attended procedure using the
-Dancer-only `dancer-stage-a-install-only-v3.tar.zst` bundle, not the full two-host
-repository or an installer ISO. That archive is historical, not current update
-source.
+The abandoned experiment's package, module, tests and obsolete documentation
+have been removed. Its old installation bundles are not current update sources.
+Use the complete current source in Dancer's ordinary checkout for future
+human-operated updates; never repeat formatting or installation for an update.
 
-Dancer's follow-up configuration excludes Docker and Emacs and uses a cyan/blue
-prompt without the Framework nickname. These follow-up changes are **not** in the
-previously reviewed V3 installation archive; updating an installed host requires
-new reviewed Dancer-only source and human-operated activation, never reformatting.
-See [binary-cache packaging notes](docs/development/binary-cache.md) for GitButler
-and Inkscape.
+Dancer excludes Docker and Emacs and uses a cyan/blue prompt without the
+Framework nickname. Framework keeps its existing preferences. See the
+[package/cache notes](docs/development/binary-cache.md) for the intentional
+cached GitButler and Inkscape selections.
 
 ## imperative actions
 * Activate the SSH agent in 1password
