@@ -13,7 +13,10 @@ CI even when application versions match. Using `pkgs.llm-agents.gitbutler` or
 `pkgs.llm-agents.but` is therefore not a cache-equivalent simplification.
 The upstream package set uses its own locked nixpkgs dependency; do not make it
 follow the host's stable or unstable input merely to remove these arguments.
-Other shared-overlay package selections remain unchanged.
+Shared-overlay application selections remain unchanged. Herdr 0.9.5 and Qmd
+require the `installAgentSkills` build hook, which the stable host package set
+lacks. The host overlay supplies that hook from `llm-agents`' own locked Nixpkgs
+input; the applications still build against the shared host package set.
 
 The shared Nix profile includes Numtide's cache and published verification key,
 with NAR signature checking still enabled. See the

@@ -133,6 +133,8 @@
                 llm-agents.overlays.shared-nixpkgs
                 nix4vscode.overlays.default
                 (final: _prev: {
+                  # New llm-agents packages need this hook, absent from stable.
+                  inherit (llm-agents.inputs.nixpkgs.legacyPackages.${system}) installAgentSkills;
                   kenn-forge = final.callPackage ./pkgs/kenn-forge {
                     bun2nix = inputs.bun2nix.packages.${system}.default;
                   };
@@ -218,9 +220,17 @@
           pkgs = nixpkgs.legacyPackages.${system};
           self = inputs.self;
         };
+        pi-starship-activation = import ./tests/pi-starship-activation.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs) self;
+        };
         starship-battery-eval = import ./tests/starship-battery-eval.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs.self.nixosConfigurations) dancer kellanved;
+        };
+        agent-skills-eval = import ./tests/agent-skills-eval.nix {
+          self = inputs.self;
+          pkgs = nixpkgs.legacyPackages.${system};
         };
         host-invariants = import ./tests/host-invariants.nix {
           self = inputs.self or (throw "self input unavailable");

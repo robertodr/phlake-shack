@@ -57,9 +57,14 @@ in
         };
       };
 
-      "${config.programs.pi-coding-agent.configDir}/pi-starship.toml".source =
-        tomlFormat.generate "pi-starship.toml"
-          {
+    };
+
+    activation = {
+      # pi-starship rejects symlinks. Run after linkGeneration so Home Manager
+      # has removed the previously managed link before installing a regular file.
+      installPiStarship =
+        let
+          settings = tomlFormat.generate "pi-starship.toml" {
             format = "$brand$turn$activity$context$tokens$cost$time$provider$model$thinking$directory$git_branch$git_status";
 
             provider.format = "[ $provider ]($style)";
@@ -121,9 +126,12 @@ in
               };
             };
           };
-    };
+        in
+        lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+          run ${pkgs.coreutils}/bin/install -Dm600 ${settings} \
+            ${lib.escapeShellArg "${config.home.homeDirectory}/${config.programs.pi-coding-agent.configDir}/pi-starship.toml"}
+        '';
 
-    activation = {
       # RTK ships the Pi extension itself; keep rewrite rules in the installed RTK
       # version rather than maintaining a separate command-rewriting implementation.
       installPiRtk = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
