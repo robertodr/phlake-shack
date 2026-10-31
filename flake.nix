@@ -6,6 +6,12 @@
       url = "github:nix-community/bun2nix?ref=2.1.2";
     };
 
+    deploy-rs = {
+      # Match the cached deploy/activate binary in the existing nixpkgs pin.
+      url = "github:serokell/deploy-rs?rev=e760371d631165e7d8de5b0dcf148e21ec4c16f0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     disko = {
       url = "github:nix-community/disko?tag=v1.13.0";
     };
@@ -64,6 +70,7 @@
 
   outputs =
     {
+      deploy-rs,
       disko,
       home-manager,
       impermanence,
@@ -84,6 +91,20 @@
       pkgsUnstable = import unstable {
         inherit system;
         config.allowUnfree = true;
+      };
+
+      # Deployment tooling only: do not add this overlay to either host.
+      deployPkgs = import nixpkgs {
+        inherit system;
+        overlays = [
+          deploy-rs.overlays.default
+          (_final: prev: {
+            deploy-rs = {
+              deploy-rs = nixpkgs.legacyPackages.${system}.deploy-rs;
+              inherit (prev.deploy-rs) lib;
+            };
+          })
+        ];
       };
 
       preCommitCheck = inputs.git-hooks.lib.${system}.run {
@@ -159,8 +180,48 @@
       };
     in
     {
+      apps.${system}.deploy = {
+        type = "app";
+        program = "${deployPkgs.deploy-rs.deploy-rs}/bin/deploy";
+      };
+
+      deploy.nodes.dancer = {
+        hostname = "192.168.68.104";
+        sshUser = user;
+        user = "root";
+        # Custom sudo must consume the password deploy-rs sends over stdin.
+        sudo = "/run/wrappers/bin/sudo -S -p '' -u";
+        interactiveSudo = true;
+        sshOpts = [
+          "-o"
+          "ForwardAgent=no"
+        ];
+        remoteBuild = true;
+        autoRollback = true;
+        magicRollback = true;
+        profiles.system = {
+          profilePath = "/nix/var/nix/profiles/system";
+          path = deployPkgs.deploy-rs.lib.activate.nixos inputs.self.nixosConfigurations.dancer;
+        };
+      };
+
       checks.${system} = {
+        # Schema validation needs path strings, not a local build of Dancer.
+        deploy-schema =
+          (deployPkgs.deploy-rs.lib.deployChecks (
+            builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.toJSON inputs.self.deploy))
+          )).deploy-schema;
+        # Full-profile realization: deliberately not part of local prechecks.
+        deploy-activate = (deployPkgs.deploy-rs.lib.deployChecks inputs.self.deploy).deploy-activate;
         pre-commit = preCommitCheck;
+        deploy-rs-eval = import ./tests/deploy-rs-eval.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          self = inputs.self;
+        };
+        starship-battery-eval = import ./tests/starship-battery-eval.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs.self.nixosConfigurations) dancer kellanved;
+        };
         host-invariants = import ./tests/host-invariants.nix {
           self = inputs.self or (throw "self input unavailable");
           pkgs = nixpkgs.legacyPackages.${system};

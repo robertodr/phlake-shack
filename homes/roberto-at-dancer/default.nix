@@ -28,8 +28,25 @@
   programs.starship.settings = {
     format = lib.mkForce ''
       [┌─](bold blue) $username$hostname:$directory
-      [│](bold blue) $time \[$nix_shell$python$rust\]
+      [│](bold blue) $time $battery\[$nix_shell$python$rust\]
       [└─](bold blue) \($git_branch$git_state$git_status\) $character'';
+    battery = {
+      format = "[$symbol$percentage]($style) ";
+      display = [
+        {
+          threshold = 10;
+          style = "bold red";
+        }
+        {
+          threshold = 30;
+          style = "bold yellow";
+        }
+        {
+          threshold = 100;
+          style = "bold cyan";
+        }
+      ];
+    };
     username.style_user = lib.mkForce "bold cyan";
     hostname.format = lib.mkForce "[@](bold cyan)[$hostname](bold cyan)";
     directory.style = lib.mkForce "bold #5fafff";

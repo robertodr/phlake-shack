@@ -8,7 +8,7 @@ This repository is home to the nix code that builds my systems.
 | Host | Profile | Hardware / role | Runbook |
 | --- | --- | --- | --- |
 | `kellanved` | `nixosConfigurations.kellanved`, `homes/roberto-at-kellanved` | Framework 13 AMD daily-driver laptop | Existing local workflow |
-| `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon with attended encrypted boot | [Boot/update policy](docs/hosts/dancer-manual-boot-rollback.md), [installation checklist](docs/hosts/dancer-install.md) |
+| `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon with attended encrypted boot | [deploy-rs upgrades](docs/hosts/dancer-deploy-rs.md), [boot policy](docs/hosts/dancer-manual-boot-rollback.md), [installation checklist](docs/hosts/dancer-install.md) |
 
 `dancer` permanently uses stock systemd-boot and an attended LUKS passphrase,
 without TPM auto-unlock or Secure UKI integration. `dancer-manual-boot` is a
@@ -18,11 +18,14 @@ was reported disabled; Nix configuration does not toggle firmware.
 
 The abandoned experiment's package, module, tests and obsolete documentation
 have been removed. Its old installation bundles are not current update sources.
-Use the complete current source in Dancer's ordinary checkout for future
-human-operated updates; never repeat formatting or installation for an update.
+Use a reviewed current source revision for future human-operated updates; never
+repeat formatting or installation for an update. The [deploy-rs workflow](docs/hosts/dancer-deploy-rs.md)
+initiates upgrades from Framework while Dancer builds the system. Its first live
+use still needs separate approval; no automatic reboot is configured.
 
 Dancer excludes Docker and Emacs and uses a cyan/blue prompt without the
-Framework nickname. Framework keeps its existing preferences. See the
+Framework nickname, plus an always-visible battery indicator beside the time.
+Framework keeps its existing preferences. See the
 [package/cache notes](docs/development/binary-cache.md) for the intentional
 cached GitButler and Inkscape selections.
 

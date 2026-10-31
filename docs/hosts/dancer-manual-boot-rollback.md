@@ -44,16 +44,24 @@ There is no reason to recreate their directories or replay the old procedures.
 - No systemd-boot generation-count limit is set. This does **not** disable the
   stock installer's ESP cleanup.
 
-Framework's configuration and all input pins remain unchanged. The internal
+Framework's configuration and all pre-existing input pins remain unchanged. The internal
 Dancer base exists only for regression comparisons; the public hostname target
 always includes the manual-LUKS policy.
 
 ## Updates and remaining boundaries
 
-Use the complete current source in the ordinary Dancer checkout; publication of
-this PR does not itself update a checkout or activate a system. Historical
-installation archives are not current update sources. Input updates change the
-shared lock and require separate review, including their effect on Framework.
+For upgrades initiated from Framework with builds on Dancer, follow the
+[deploy-rs runbook](dancer-deploy-rs.md). It uses a reviewed published source
+revision, interactive sudo and activation/connectivity rollback. Its first live
+use requires separate approval. The upstream helper also updates bootloader
+state and removes explicit systemd-boot `default` lines; review next-boot selection
+before any separately approved reboot.
+
+The complete current source in Dancer's ordinary checkout remains available for
+human-operated local updates. Publication does not itself update a checkout or
+activate a system. Historical installation archives are not current update
+sources. Updating existing inputs changes the shared lock and requires separate
+review, including the effect on Framework.
 
 Rebuilds, activation, bootloader writes, firmware changes and reboots remain
 human-operated maintenance, not automatic consequences of a documentation or
@@ -71,7 +79,8 @@ copies have been discovered or physically securely erased.
 
 The flake keeps checks for manual boot and its six masks, fwupd's EFI helper,
 LAN SSH restrictions, impermanence/storage behavior and host invariants, alongside
-pre-commit formatting checks. These cover active functionality, not the retired
+pre-commit formatting checks. Deployment schema/settings and Dancer-only battery
+prompt checks are also available. These cover active functionality, not the retired
 experiment. `host-invariants` requires a private local Framework baseline; do not
 export that baseline or treat it as a portable public CI fixture. Pre-commit
 uses the whole source tree, so do not run it against a dirty/private worktree as
