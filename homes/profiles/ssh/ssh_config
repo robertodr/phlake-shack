@@ -64,19 +64,3 @@ Host gpp2 glogin2 glogin2.bsc.es
 Host acc acc1 alogin1 alogin1.bsc.es
   HostName alogin1.bsc.es
   User algo066442
-
-Host leonardo
-  User rdiremig
-  HostName login.leonardo.cineca.it
-  IdentityAgent "~/.1password/agent.sock"
-  IdentityFile ~/.ssh/leonardo_ed25519.pub
-  CertificateFile ~/.ssh/leonardo_ed25519-cert.pub
-  IdentitiesOnly yes
-
-Host deucalion
-  User roberto.eikaas
-  HostName login.deucalion.macc.fccn.pt
-  IdentityAgent "~/.1password/agent.sock"
-  IdentityFile ~/.ssh/id_EFP.pub
-  CertificateFile ~/.ssh/id_login.deucalion.macc.fccn.pt-cert.pub
-  IdentitiesOnly yes

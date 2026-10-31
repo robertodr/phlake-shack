@@ -39,10 +39,16 @@ in
       fallback = true;
       # trigger a garbage collection when the minimum free space drops below 1 GiB
       min-free = 1024 * 1024 * 1024;
-      substituters = [ "https://cache.nixos.org/" ];
+      substituters = [
+        "https://cache.nixos.org/"
+        "https://cache.numtide.com"
+      ];
 
       trusted-substituters = [ "https://cache.flox.dev" ];
-      trusted-public-keys = [ "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs=" ];
+      trusted-public-keys = [
+        "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
+        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      ];
     };
   };
 }

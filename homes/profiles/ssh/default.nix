@@ -10,7 +10,6 @@ in
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    includes = [ "~/.ssh/1Password/config" ];
     settings."*" = {
       forwardAgent = false;
       addKeysToAgent = "no";
@@ -24,16 +23,7 @@ in
       controlPersist = "600s";
     };
     # read the host configurations from file
-    extraConfig = ''
-      ${lib.fileContents ./ssh_config}
-    '';
-  };
-
-  sshAuthSock = {
-    initialization = {
-      bash = "export SSH_AUTH_SOCK=$HOME/.1password/agent.sock";
-      fish = "set -x SSH_AUTH_SOCK $HOME/.1password/agent.sock";
-    };
+    extraConfig = lib.fileContents ./ssh_config;
   };
 
   # create ~/.ssh/sockets if it doesn't already exist

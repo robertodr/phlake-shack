@@ -3,6 +3,32 @@ This repository is home to the nix code that builds my systems.
 
 [_The simpler, the better_](https://discourse.nixos.org/t/how-do-i-modularize-configuration-snippets-to-modules/37512/3)
 
+## Hosts and installation runbooks
+
+| Host | Profile | Hardware / role | Runbook |
+| --- | --- | --- | --- |
+| `kellanved` | `nixosConfigurations.kellanved`, `homes/roberto-at-kellanved` | Framework 13 AMD daily-driver laptop | Existing local workflow |
+| `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon with attended encrypted boot | [deploy-rs upgrades](docs/hosts/dancer-deploy-rs.md), [boot policy](docs/hosts/dancer-manual-boot-rollback.md), [installation checklist](docs/hosts/dancer-install.md) |
+
+`dancer` permanently uses stock systemd-boot and an attended LUKS passphrase,
+without TPM auto-unlock or Secure UKI integration. `dancer-manual-boot` is a
+compatibility alias for the same system. The owner reported a generation-12
+boot with the disk-passphrase prompt and a normal desktop. Firmware Secure Boot
+was reported disabled; Nix configuration does not toggle firmware.
+
+The abandoned experiment's package, module, tests and obsolete documentation
+have been removed. Its old installation bundles are not current update sources.
+Use a reviewed current source revision for future human-operated updates; never
+repeat formatting or installation for an update. The [deploy-rs workflow](docs/hosts/dancer-deploy-rs.md)
+initiates upgrades from Framework while Dancer builds the system. Its first live
+use still needs separate approval; no automatic reboot is configured.
+
+Dancer excludes Docker and Emacs and uses a cyan/blue prompt without the
+Framework nickname, plus an always-visible battery indicator beside the time.
+Framework keeps its existing preferences. See the
+[package/cache notes](docs/development/binary-cache.md) for the intentional
+cached GitButler and Inkscape selections.
+
 ## imperative actions
 * Activate the SSH agent in 1password
 * Enable system authentication in 1password

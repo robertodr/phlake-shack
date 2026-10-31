@@ -14,7 +14,6 @@ in
       user = {
         name = "Roberto Di Remigio Eikås";
         email = "roberto@totaltrash.xyz";
-        signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIODV5S21+jV0900ubPoYvdHol/xfbJjVhxayuMEFuPKo";
       };
 
       gpg = {
@@ -56,12 +55,7 @@ in
         whitespace = "fix,-indent-with-non-tab,trailing-space,cr-at-eol";
       };
 
-      diff = {
-        colorMoved = "default";
-        tool = "meld";
-      };
-
-      difftool.prompt = false;
+      diff.colorMoved = "default";
 
       github.user = "robertodr";
 
@@ -82,13 +76,6 @@ in
           includePullRequestsSection = false;
           includeIssuesSection = false;
         };
-      };
-
-      merge.tool = "meld";
-
-      mergetool = {
-        prompt = false;
-        keepBackup = false;
       };
 
       pull.rebase = false;
