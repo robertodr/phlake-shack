@@ -26,6 +26,7 @@
     llm-agents.qmd
     llm-agents.rtk
     llm-agents.skills
+    mupdf
     perf
     perf-tools
     pkgsUnstable.gitu
@@ -52,6 +53,7 @@
     python3Packages.euporie
     python3Packages.keyring
     python3Packages.pip
+    python3Packages.pymupdf
 
     asciinema
   ];
