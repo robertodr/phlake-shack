@@ -5,16 +5,13 @@ let
     name:
     let
       home = self.nixosConfigurations.${name}.config.home-manager.users.roberto;
-      target = "${home.programs.pi-coding-agent.configDir}/pi-starship.toml";
+      # Derive Pi's default location independently of the activation script.
+      target = ".pi/agent/pi-starship.toml";
       activation = home.home.activation.installPiStarship.data or "";
-      script =
-        lib.replaceStrings
-          [ (lib.escapeShellArg "${home.home.homeDirectory}/${target}") ]
-          [ "\"$HOME/${target}\"" ]
-          activation;
+      script = lib.replaceStrings [ home.home.homeDirectory ] [ "$HOME" ] activation;
     in
     assert lib.assertMsg (
-      !(home.home.file ? ${target})
+      !(home.home.file ? ${target}) && !(home.home.file ? "${home.home.homeDirectory}/${target}")
     ) "${name}: pi-starship settings must not be symlink-managed";
     assert lib.assertMsg (activation != "") "${name}: pi-starship needs a regular-file activation";
     pkgs.runCommand "pi-starship-activation-${name}" { } ''
@@ -50,13 +47,38 @@ let
       cmp "$target" "$TMPDIR/expected.toml"
       touch "$out"
     '';
+  testUpdates =
+    name:
+    let
+      home = self.nixosConfigurations.${name}.config.home-manager.users.roberto;
+      service = home.systemd.user.services.pi-update-extensions or { };
+      timer = home.systemd.user.timers.pi-update-extensions or { };
+    in
+    assert lib.assertMsg (
+      (home.home.activation.updatePiExtensions.data or "") == ""
+    ) "${name}: network updates must not block Home Manager activation";
+    assert lib.assertMsg (
+      (timer.Install.WantedBy or [ ]) == [ "timers.target" ]
+      && (timer.Timer.OnStartupSec or "") == "5m"
+      && (timer.Timer.OnUnitActiveSec or "") == "1d"
+      && (timer.Timer.Unit or "") == "pi-update-extensions.service"
+    ) "${name}: extension updates need a delayed, recurring user timer";
+    assert lib.assertMsg (
+      (service.Service.Type or "") == "oneshot"
+      && lib.any (lib.hasInfix "update --extensions") (lib.toList (service.Service.ExecStart or [ ]))
+      && (service.Service.TimeoutStartSec or "") == "5m"
+      && (service.Install.WantedBy or [ ]) == [ ]
+    ) "${name}: extension update service must be bounded and timer-only";
+    pkgs.runCommand "pi-extension-updates-${name}" { } "touch $out";
 in
 pkgs.runCommand "pi-starship-activation"
   {
     dancer = testHost "dancer";
     kellanved = testHost "kellanved";
+    kellanvedUpdates = testUpdates "kellanved";
   }
   ''
     test -f "$dancer" && test -f "$kellanved"
+    test -f "$kellanvedUpdates"
     touch "$out"
   ''

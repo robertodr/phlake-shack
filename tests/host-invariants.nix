@@ -44,8 +44,17 @@ let
       message = "Dancer boot activation must not run mutable Pi/npm package updates";
     }
     {
-      assertion = lib.hasInfix "update --extensions" frameworkHome.home.activation.updatePiExtensions.data;
-      message = "Framework must retain its existing automatic Pi extension update hook";
+      assertion =
+        (frameworkHome.home.activation.updatePiExtensions.data or "") == ""
+        && lib.elem "timers.target" frameworkHome.systemd.user.timers.pi-update-extensions.Install.WantedBy
+        && lib.any (lib.hasInfix "update --extensions") (
+          lib.toList frameworkHome.systemd.user.services.pi-update-extensions.Service.ExecStart
+        );
+      message = "Framework must update Pi extensions automatically without blocking boot activation";
+    }
+    {
+      assertion = h.systemd.user.timers.pi-update-extensions.Install.WantedBy == [ ];
+      message = "Dancer must retain explicit Pi extension updates";
     }
     {
       assertion = lib.elem "C+ /run/fwupd-efi - - - - ${c.services.fwupd.package.fwupd-efi}/libexec/fwupd/efi" c.systemd.tmpfiles.rules;
