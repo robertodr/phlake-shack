@@ -20,6 +20,9 @@
     activation.updatePiExtensions = lib.mkForce (lib.hm.dag.entryAfter [ "writeBoundary" ] "");
   };
 
+  # Keep Dancer's explicit-update policy; Framework uses the background timer.
+  systemd.user.timers.pi-update-extensions.Install.WantedBy = lib.mkForce [ ];
+
   services.ssh-agent.enable = true;
 
   programs.git.settings.user.signingkey = "${config.home.homeDirectory}/.ssh/git_signing_ed25519";

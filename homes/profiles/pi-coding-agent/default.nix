@@ -45,6 +45,31 @@ in
     };
   };
 
+  # Keep mutable npm updates off the boot/login critical path. A user timer
+  # retries daily, including after offline starts, without blocking activation.
+  systemd.user = {
+    services.pi-update-extensions = {
+      Unit.Description = "Update Pi extensions";
+      Service = {
+        Type = "oneshot";
+        Environment = "PATH=${
+          lib.makeBinPath (config.programs.pi-coding-agent.extraPackages ++ [ pkgs.coreutils ])
+        }:/run/current-system/sw/bin";
+        ExecStart = "${lib.getExe config.programs.pi-coding-agent.package} update --extensions";
+        TimeoutStartSec = "5m";
+      };
+    };
+    timers.pi-update-extensions = {
+      Unit.Description = "Update Pi extensions in the background";
+      Timer = {
+        OnStartupSec = "5m";
+        OnUnitActiveSec = "1d";
+        Unit = "pi-update-extensions.service";
+      };
+      Install.WantedBy = [ "timers.target" ];
+    };
+  };
+
   # Reuse the shared MCP servers with Pi's built-in MCP support. Omit unset
   # optional fields: Home Manager represents them as null, which Pi rejects.
   home = {
@@ -129,23 +154,13 @@ in
         in
         lib.hm.dag.entryAfter [ "linkGeneration" ] ''
           run ${pkgs.coreutils}/bin/install -Dm600 ${settings} \
-            ${lib.escapeShellArg "${config.home.homeDirectory}/${config.programs.pi-coding-agent.configDir}/pi-starship.toml"}
+            ${lib.escapeShellArg "${config.programs.pi-coding-agent.configDir}/pi-starship.toml"}
         '';
 
       # RTK ships the Pi extension itself; keep rewrite rules in the installed RTK
       # version rather than maintaining a separate command-rewriting implementation.
       installPiRtk = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         run ${lib.getExe pkgs.llm-agents.rtk} init --agent pi --global
-      '';
-
-      # Pi packages live in mutable npm state outside the Nix store. Refresh them
-      # after settings.json has been linked, but keep offline activations usable.
-      updatePiExtensions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        if ! run env PATH=${lib.makeBinPath config.programs.pi-coding-agent.extraPackages}:$PATH \
-          ${lib.getExe config.programs.pi-coding-agent.package} update --extensions
-        then
-          echo "warning: could not update Pi extensions; keeping installed versions" >&2
-        fi
       '';
     };
   };
