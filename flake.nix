@@ -264,6 +264,10 @@
           self = inputs.self;
           pkgs = nixpkgs.legacyPackages.${system};
         };
+        crokus-eval = import ./tests/crokus-eval.nix {
+          inherit (inputs) self;
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
         host-invariants = import ./tests/host-invariants.nix {
           self = inputs.self or (throw "self input unavailable");
           pkgs = nixpkgs.legacyPackages.${system};
