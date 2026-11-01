@@ -224,6 +224,10 @@
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs) self;
         };
+        obsidian = import ./tests/obsidian.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs.self.nixosConfigurations) kellanved;
+        };
         starship-battery-eval = import ./tests/starship-battery-eval.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs.self.nixosConfigurations) dancer kellanved;
