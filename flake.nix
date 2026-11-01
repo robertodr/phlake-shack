@@ -93,6 +93,22 @@
         config.allowUnfree = true;
       };
 
+      darwinSystem = "aarch64-darwin";
+      darwinPkgsUnstable = import unstable {
+        system = darwinSystem;
+        config.allowUnfree = true;
+      };
+      darwinPkgs = import nixpkgs {
+        system = darwinSystem;
+        config.allowUnfree = true;
+        overlays = [
+          llm-agents.overlays.shared-nixpkgs
+          (_final: _prev: {
+            inherit (llm-agents.inputs.nixpkgs.legacyPackages.${darwinSystem}) installAgentSkills;
+          })
+        ];
+      };
+
       # Deployment tooling only: do not add this overlay to either host.
       deployPkgs = import nixpkgs {
         inherit system;
@@ -182,6 +198,18 @@
       };
     in
     {
+      homeConfigurations."roberto@crokus" = home-manager.lib.homeManagerConfiguration {
+        pkgs = darwinPkgs;
+        extraSpecialArgs = {
+          pkgsUnstable = darwinPkgsUnstable;
+          gitbutlerCli = llm-agents.packages.${darwinSystem}.but;
+        };
+        modules = [
+          ./homes/modules
+          ./homes/roberto-at-crokus
+        ];
+      };
+
       apps.${system}.deploy = {
         type = "app";
         program = "${deployPkgs.deploy-rs.deploy-rs}/bin/deploy";

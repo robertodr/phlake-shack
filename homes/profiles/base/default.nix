@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   config,
   ...
 }:
@@ -35,7 +36,7 @@ in
 
   home = {
     username = "roberto";
-    homeDirectory = "/home/roberto";
+    homeDirectory = lib.mkDefault "/home/roberto";
 
     activation.createSopsAgeDir = config.lib.dag.entryAfter [ "writeBoundary" ] ''
       mkdir -p "${config.xdg.configHome}/sops/age"
@@ -56,7 +57,7 @@ in
     };
 
     shellAliases = {
-      xopen = "xdg-open";
+      xopen = if pkgs.stdenv.hostPlatform.isDarwin then "open" else "xdg-open";
       df = "duf";
       du = "ncdu";
       ps = "procs";
@@ -68,42 +69,46 @@ in
     #    mkOutOfStoreSymlink "${config.lib.phlake-shack.userConfigPath}/authinfo.gpg";
     #};
 
-    packages = with pkgs; [
-      procs
-      duf
-      ncdu
-      iputils
-      numbat
-      openconnect
-      openvpn
-      rclone
-      step-cli
-      tealdeer
+    packages =
+      with pkgs;
+      [
+        procs
+        duf
+        ncdu
+        numbat
+        openconnect
+        openvpn
+        rclone
+        step-cli
+        tealdeer
 
-      (aspellWithDicts (
-        ds: with ds; [
-          en
-          en-computers
-          en-science
-          it
-          nb
-          nn
-          sv
-        ]
-      ))
+        (aspellWithDicts (
+          ds: with ds; [
+            en
+            en-computers
+            en-science
+            it
+            nb
+            nn
+            sv
+          ]
+        ))
 
-      delta
-      enchant
-      ffmpeg
-      ghostscript
-      imagemagick
-      jless
-      pdf2svg
-      pdftk
-      playerctl
-      poppler
-      wordnet
-    ];
+        delta
+        enchant
+        ffmpeg
+        ghostscript
+        imagemagick
+        jless
+        pdf2svg
+        pdftk
+        poppler
+        wordnet
+      ]
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+        iputils
+        playerctl
+      ];
   };
 
   programs.home-manager.enable = true;
