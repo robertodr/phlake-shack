@@ -9,6 +9,14 @@ This repository is home to the nix code that builds my systems.
 | --- | --- | --- | --- |
 | `kellanved` | `nixosConfigurations.kellanved`, `homes/roberto-at-kellanved` | Framework 13 AMD daily-driver laptop | Existing local workflow |
 | `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon with attended encrypted boot | [deploy-rs upgrades](docs/hosts/dancer-deploy-rs.md), [boot policy](docs/hosts/dancer-manual-boot-rollback.md), [installation checklist](docs/hosts/dancer-install.md) |
+| `crokus` | `homeConfigurations."roberto@crokus"` | Apple Silicon Mac; standalone Home Manager terminal/development home | [Home Manager adoption and updates](docs/hosts/crokus-home-manager.md) |
+
+Crokus uses a pinned standalone Home Manager build-before-switch workflow, not
+NixOS/deploy-rs or macOS system management. Follow its runbook for backups,
+separate SSH signing-key provisioning, shell startup and manual maintenance.
+Native Mac build/activation remains human acceptance; Linux evaluation is not
+proof of native success. The NixOS installation/imperative notes below are not
+Crokus bootstrap instructions.
 
 `dancer` permanently uses stock systemd-boot and an attended LUKS passphrase,
 without TPM auto-unlock or Secure UKI integration. `dancer-manual-boot` is a
