@@ -2,13 +2,17 @@
 
 ## Scope and prerequisites
 
-`homeConfigurations."roberto@crokus"` manages Roberto's terminal/development
-home on Apple Silicon (`aarch64-darwin`), with username `roberto`, home
-`/Users/roberto`, and initial `home.stateVersion = "26.05"`. It reuses the shared
+`homeConfigurations."robertoeikas@crokus"` manages Roberto's terminal/development
+home on Apple Silicon (`aarch64-darwin`), with username `robertoeikas`, home
+`/Users/robertoeikas`, and initial `home.stateVersion = "26.05"`. It reuses the shared
 base and development profiles, not the Linux desktop profile.
 
-Use the existing Nix installation with flakes enabled, as Roberto, from a
-reviewed checkout of this repository. Keep an existing working terminal open.
+Use the existing Nix installation, as Roberto, from a reviewed checkout of this
+repository. Keep an existing working terminal open. The configuration is bound
+to the macOS account `robertoeikas` with home `/Users/robertoeikas`; Home Manager
+refuses to activate when `$USER`/`$HOME` differ, so check `echo "$USER $HOME"`
+first. The repository's `users/roberto` directory and the Linux hosts' `roberto`
+account are unaffected by this Mac-specific account name.
 This is **not** a NixOS rebuild or deploy-rs target: never activate it with sudo.
 There is no nix-darwin, Homebrew, GUI-application or macOS system-settings
 management. GitButler CLI is included; GitButler GUI and kenn-forge are not.
@@ -57,14 +61,35 @@ needed.
 ## First native build: pinned bootstrap
 
 The following blocks use **Bash or Zsh**, from the repository root on Crokus.
+
+A stock macOS Nix installation does not enable the `nix-command` and `flakes`
+experimental features, and the `home-manager` script does not enable them for
+its internal `nix` calls. Enable them persistently for your user (Home Manager
+does not manage `~/.config/nix/nix.conf` on Crokus, so this cannot collide):
+
+```bash
+mkdir -p ~/.config/nix
+echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+```
+
+Alternatively, enable them only for the current shell session with
+`export NIX_CONFIG="experimental-features = nix-command flakes"`; this must be
+repeated in every new terminal before any `nix`/`home-manager` command below.
+
 Resolve Home Manager from this checkout's `flake.lock`, not a floating release,
 channel or installer. The selected input currently tracks release 26.05, but the
 lockfile revision is authoritative.
 
 ```bash
-hm_source=$(nix eval --impure --raw --expr '(builtins.getFlake ("path:" + builtins.getEnv "PWD")).inputs.home-manager.outPath')
-nix run "$hm_source#home-manager" -- build --flake '.#roberto@crokus'
+hm_source=$(nix eval --impure --raw --expr '(builtins.getFlake ("git+file://" + builtins.getEnv "PWD")).inputs.home-manager.outPath')
+nix run "$hm_source#home-manager" -- build --flake '.#robertoeikas@crokus'
 ```
+
+Run these as two separate commands (or join them with `&&`). Do **not** write
+them as a single `hm_source=$(...) nix run "$hm_source#..."` command: the shell
+expands `$hm_source` before the assignment takes effect, so `nix run` would
+receive an empty source. `git+file://` resolves the checkout the same way as
+`--flake .`, without copying untracked or ignored files into the Nix store.
 
 This builds the native home generation and leaves `result` for inspection; it
 does not activate the home. A Linux evaluation is not a substitute. Inspect the
@@ -72,11 +97,11 @@ build, generated files, activation effects and all conflicts; ensure backups and
 signing-key provisioning are ready. Stop on build failure.
 
 **Human-operated activation only, after that review and a successful native
-build**, from the same checkout/revision (resolve `hm_source` again if starting a
-new session):
+build**, from the same checkout/revision (in a new session, resolve `hm_source`
+again and, if you chose the session-only option, re-export `NIX_CONFIG`):
 
 ```bash
-nix run "$hm_source#home-manager" -- switch --flake '.#roberto@crokus'
+nix run "$hm_source#home-manager" -- switch --flake '.#robertoeikas@crokus'
 ```
 
 Switch builds as needed and then activates; it is not an inspection-only command.
@@ -111,7 +136,7 @@ this workflow does not run `chsh` or alter `/etc/shells`.
 
 Git identity is `Roberto Di Remigio Eikås <roberto@totaltrash.xyz>`. Commit and tag
 signing remain enabled using **SSH**, not GPG. Separately provision the private
-signing key at `~/.ssh/git_signing_ed25519` (`/Users/roberto/.ssh/git_signing_ed25519`)
+signing key at `~/.ssh/git_signing_ed25519` (`/Users/robertoeikas/.ssh/git_signing_ed25519`)
 using your trusted credential workflow, with restrictive filesystem permissions.
 Register only its public key as a signing key with the relevant hosting provider;
 local signature verification additionally needs an appropriate trusted-signers
@@ -123,16 +148,17 @@ sops/age keys separately too; creating a directory does not install secrets.
 
 ## Steady-state rebuilds and maintenance
 
-From the reviewed repository root, with `home-manager` now on PATH:
+From the reviewed repository root, with `home-manager` now on PATH (installed by
+`programs.home-manager.enable`) and flakes enabled as described above:
 
 ```bash
-home-manager build --flake '.#roberto@crokus'
+home-manager build --flake '.#robertoeikas@crokus'
 ```
 
 Inspect the build and any new conflicts/effects, then explicitly choose:
 
 ```bash
-home-manager switch --flake '.#roberto@crokus'
+home-manager switch --flake '.#robertoeikas@crokus'
 home-manager generations
 ```
 

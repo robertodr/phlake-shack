@@ -5,8 +5,8 @@
     ../profiles/development
   ];
   home = {
-    username = "roberto";
-    homeDirectory = "/Users/roberto";
+    username = "robertoeikas";
+    homeDirectory = "/Users/robertoeikas";
     stateVersion = "26.05";
   };
   programs.git.settings.user.signingkey = "${config.home.homeDirectory}/.ssh/git_signing_ed25519";

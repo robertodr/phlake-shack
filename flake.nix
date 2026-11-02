@@ -198,7 +198,7 @@
       };
     in
     {
-      homeConfigurations."roberto@crokus" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations."robertoeikas@crokus" = home-manager.lib.homeManagerConfiguration {
         pkgs = darwinPkgs;
         extraSpecialArgs = {
           pkgsUnstable = darwinPkgsUnstable;
@@ -206,7 +206,7 @@
         };
         modules = [
           ./homes/modules
-          ./homes/roberto-at-crokus
+          ./homes/robertoeikas-at-crokus
         ];
       };
 

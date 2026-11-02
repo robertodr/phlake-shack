@@ -5,13 +5,13 @@
   ...
 }:
 let
-  inherit (config.home) username;
   inherit (config.xdg) stateHome;
 in
 {
   lib.phlake-shack = rec {
     fsPath = builtins.toString ../../..;
-    userConfigPath = "${fsPath}/users/${username}/config";
+    # Repository user directory; independent of the per-host OS account name.
+    userConfigPath = "${fsPath}/users/roberto/config";
 
     whoami = {
       firstName = "Roberto";
@@ -35,7 +35,7 @@ in
   };
 
   home = {
-    username = "roberto";
+    username = lib.mkDefault "roberto";
     homeDirectory = lib.mkDefault "/home/roberto";
 
     activation.createSopsAgeDir = config.lib.dag.entryAfter [ "writeBoundary" ] ''

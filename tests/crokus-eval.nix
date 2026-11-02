@@ -1,10 +1,10 @@
 { self, pkgs }:
 let
-  home = self.homeConfigurations."roberto@crokus";
+  home = self.homeConfigurations."robertoeikas@crokus";
   cfg = home.config;
   names = map pkgs.lib.getName cfg.home.packages;
   checks = {
-    identity = cfg.home.username == "roberto" && cfg.home.homeDirectory == "/Users/roberto";
+    identity = cfg.home.username == "robertoeikas" && cfg.home.homeDirectory == "/Users/robertoeikas";
     platform = home.pkgs.stdenv.hostPlatform.system == "aarch64-darwin";
     state-version = cfg.home.stateVersion == "26.05";
     shared-programs =
@@ -22,7 +22,7 @@ let
     mac-opener = cfg.home.shellAliases.xopen == "open";
     signing =
       cfg.programs.git.settings.commit.gpgSign
-      && cfg.programs.git.settings.user.signingkey == "/Users/roberto/.ssh/git_signing_ed25519";
+      && cfg.programs.git.settings.user.signingkey == "/Users/robertoeikas/.ssh/git_signing_ed25519";
     assertions = builtins.all (item: item.assertion) cfg.assertions;
     activation = builtins.isString home.activationPackage.drvPath;
     native-packages = builtins.all (package: package.system == "aarch64-darwin") cfg.home.packages;

@@ -9,7 +9,7 @@ This repository is home to the nix code that builds my systems.
 | --- | --- | --- | --- |
 | `kellanved` | `nixosConfigurations.kellanved`, `homes/roberto-at-kellanved` | Framework 13 AMD daily-driver laptop | Existing local workflow |
 | `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon with attended encrypted boot | [deploy-rs upgrades](docs/hosts/dancer-deploy-rs.md), [boot policy](docs/hosts/dancer-manual-boot-rollback.md), [installation checklist](docs/hosts/dancer-install.md) |
-| `crokus` | `homeConfigurations."roberto@crokus"` | Apple Silicon Mac; standalone Home Manager terminal/development home | [Home Manager adoption and updates](docs/hosts/crokus-home-manager.md) |
+| `crokus` | `homeConfigurations."robertoeikas@crokus"` | Apple Silicon Mac; standalone Home Manager terminal/development home | [Home Manager adoption and updates](docs/hosts/crokus-home-manager.md) |
 
 Crokus uses a pinned standalone Home Manager build-before-switch workflow, not
 NixOS/deploy-rs or macOS system management. Follow its runbook for backups,
