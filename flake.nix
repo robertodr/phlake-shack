@@ -13,7 +13,7 @@
     };
 
     disko = {
-      url = "github:nix-community/disko?tag=v1.13.0";
+      url = "github:nix-community/disko";
     };
 
     git-hooks = {
