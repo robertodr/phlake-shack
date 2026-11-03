@@ -88,6 +88,14 @@
     let
       system = "x86_64-linux";
       user = "roberto";
+
+      # Expose llm-agents' own flake packages as pkgs.llm-agents. They are built
+      # against llm-agents' pinned nixpkgs, so the store paths match its CI and
+      # are substituted from cache.numtide.com instead of compiled locally
+      # (unlike overlays.shared-nixpkgs, which rebuilds them against ours).
+      llmAgentsOverlay = final: _prev: {
+        llm-agents = llm-agents.packages.${final.stdenv.hostPlatform.system};
+      };
       pkgsUnstable = import unstable {
         inherit system;
         config.allowUnfree = true;
@@ -101,12 +109,7 @@
       darwinPkgs = import nixpkgs {
         system = darwinSystem;
         config.allowUnfree = true;
-        overlays = [
-          llm-agents.overlays.shared-nixpkgs
-          (_final: _prev: {
-            inherit (llm-agents.inputs.nixpkgs.legacyPackages.${darwinSystem}) installAgentSkills;
-          })
-        ];
+        overlays = [ llmAgentsOverlay ];
       };
 
       # Deployment tooling only: do not add this overlay to either host.
@@ -146,11 +149,9 @@
               # This enables unfree for the 'pkgs' (stable) set
               nixpkgs.config.allowUnfree = true;
               nixpkgs.overlays = [
-                llm-agents.overlays.shared-nixpkgs
+                llmAgentsOverlay
                 nix4vscode.overlays.default
                 (final: _prev: {
-                  # New llm-agents packages need this hook, absent from stable.
-                  inherit (llm-agents.inputs.nixpkgs.legacyPackages.${system}) installAgentSkills;
                   kenn-forge = final.callPackage ./pkgs/kenn-forge {
                     bun2nix = inputs.bun2nix.packages.${system}.default;
                   };
@@ -165,8 +166,6 @@
                 backupFileExtension = "bak";
                 extraSpecialArgs = {
                   inherit pkgsUnstable;
-                  gitbutlerPackage = llm-agents.packages.${system}.gitbutler;
-                  gitbutlerCli = llm-agents.packages.${system}.but;
                 };
                 sharedModules = [
                   ./homes/modules
@@ -202,7 +201,6 @@
         pkgs = darwinPkgs;
         extraSpecialArgs = {
           pkgsUnstable = darwinPkgsUnstable;
-          gitbutlerCli = llm-agents.packages.${darwinSystem}.but;
         };
         modules = [
           ./homes/modules

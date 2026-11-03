@@ -24,10 +24,19 @@ in
   # ~/.config/nix/nix.conf. nix.package is only used to validate the file.
   nix = {
     package = pkgs.nix;
-    settings.experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      # Prebuilt llm-agents packages (pkgs.llm-agents). The multi-user daemon
+      # only honours this if /etc/nix/nix.conf lists the cache in
+      # trusted-substituters and its key in trusted-public-keys.
+      extra-substituters = [ "https://cache.numtide.com" ];
+      extra-trusted-public-keys = [
+        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      ];
+    };
   };
 
   # The macOS login shell stays /bin/zsh; bootstrap fish from interactive zsh,

@@ -151,6 +151,28 @@ Never print/copy private key material into commands, reports, Nix expressions
 or the repository. Provision API tokens, authentication and any sops/age keys
 separately too; creating a directory does not install secrets.
 
+## Binary caches
+
+Crokus's managed `~/.config/nix/nix.conf` adds Numtide's cache
+(`https://cache.numtide.com`) and its key so the llm-agents tools (GitButler
+CLI, Claude Code, Pi, Herdr, RTK, …) are downloaded instead of compiled. With a
+multi-user Nix installation the daemon ignores user-supplied substituters unless
+it trusts them, and the user's `nix.conf` cannot grant that trust. Once, as an
+administrator, append to the root-owned `/etc/nix/nix.conf` (outside Home
+Manager) and restart the daemon:
+
+```bash
+sudo tee -a /etc/nix/nix.conf >/dev/null <<'EOF'
+extra-trusted-substituters = https://cache.numtide.com
+extra-trusted-public-keys = niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=
+EOF
+sudo launchctl kickstart -k system/org.nixos.nix-daemon
+```
+
+Without this step builds still work, but Nix warns that it is ignoring the
+untrusted substituter and compiles those packages locally. A macOS or Nix
+reinstall can reset `/etc/nix/nix.conf`; re-check it afterwards.
+
 ## Steady-state rebuilds and maintenance
 
 From the reviewed repository root, with `home-manager` now on PATH (installed by

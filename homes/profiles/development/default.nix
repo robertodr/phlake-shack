@@ -2,7 +2,6 @@
   pkgs,
   lib,
   pkgsUnstable,
-  gitbutlerCli,
   ...
 }:
 {
@@ -23,7 +22,7 @@
       global
       gnumake
       graphviz
-      gitbutlerCli
+      llm-agents.but
       llm-agents.codegraph
       llm-agents.coderabbit-cli
       llm-agents.qmd
