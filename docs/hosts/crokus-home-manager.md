@@ -158,12 +158,12 @@ separately too; creating a directory does not install secrets.
 ## Binary caches
 
 Crokus's managed `~/.config/nix/nix.conf` adds Numtide's cache
-(`https://cache.numtide.com`) and its key so the llm-agents tools (GitButler
-CLI, Claude Code, Pi, Herdr, RTK, …) are downloaded instead of compiled. With a
-multi-user Nix installation the daemon ignores user-supplied substituters unless
-it trusts them, and the user's `nix.conf` cannot grant that trust. Once, as an
-administrator, append to the root-owned `/etc/nix/nix.conf` (outside Home
-Manager) and restart the daemon:
+(`https://cache.numtide.com`) so the llm-agents tools (GitButler CLI, Claude
+Code, Pi, Herdr, RTK, …) are downloaded instead of compiled. With a multi-user
+Nix installation the daemon ignores user-supplied substituters unless it trusts
+them, and only reads signing keys from its own configuration; the user's
+`nix.conf` can grant neither. Once, as an administrator, append to the
+root-owned `/etc/nix/nix.conf` (outside Home Manager) and restart the daemon:
 
 ```bash
 sudo tee -a /etc/nix/nix.conf >/dev/null <<'EOF'
@@ -176,6 +176,13 @@ sudo launchctl kickstart -k system/org.nixos.nix-daemon
 Without this step builds still work, but Nix warns that it is ignoring the
 untrusted substituter and compiles those packages locally. A macOS or Nix
 reinstall can reset `/etc/nix/nix.conf`; re-check it afterwards.
+
+The managed `nix.conf` only takes effect after the switch that introduces it,
+so for that first switch pass the cache explicitly:
+
+```bash
+nh home switch --ask --option extra-substituters https://cache.numtide.com
+```
 
 ## Steady-state rebuilds and maintenance
 

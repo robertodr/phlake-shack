@@ -31,11 +31,9 @@ in
       ];
       # Prebuilt llm-agents packages (pkgs.llm-agents). The multi-user daemon
       # only honours this if /etc/nix/nix.conf lists the cache in
-      # trusted-substituters and its key in trusted-public-keys.
+      # trusted-substituters and its key in trusted-public-keys; keys set
+      # here would be ignored (restricted setting) and only cause warnings.
       extra-substituters = [ "https://cache.numtide.com" ];
-      extra-trusted-public-keys = [
-        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
-      ];
     };
   };
 
