@@ -170,6 +170,20 @@ home-manager generations
 
 `generations` lists retained home generations; it is not a mutable-state backup.
 
+nh is an equivalent front end. The shared nh profile sets `NH_FLAKE` to the
+checkout at `~/phlake-shack` (the same location on every host), and nh picks
+`robertoeikas@crokus` from `$USER@hostname`, so this works from any directory
+(`--ask` shows the package diff and asks before activating; never use sudo):
+
+```bash
+nh home build
+nh home switch --ask
+```
+
+The variable is part of the Home Manager session variables, so it is only
+visible in terminals opened after the switch that introduced it. Do not use
+nh's `-u`/`-U` input-update flags here; see the lockfile policy below.
+
 Rebuilding is separate from dependency updates: these commands use the existing
 lockfile. Intentionally update inputs only as a separate reviewed change;
 `flake.lock` is shared with the Linux hosts, so an update can change their

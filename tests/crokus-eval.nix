@@ -19,6 +19,7 @@ let
     no-pi-systemd-timer = !(cfg.systemd.user.timers ? pi-update-extensions);
     no-gpg-agent = !cfg.services.gpg-agent.enable;
     no-scheduled-clean = !cfg.programs.nh.clean.enable;
+    nh-flake = cfg.home.sessionVariables.NH_FLAKE == "/Users/robertoeikas/phlake-shack";
     mac-opener = cfg.home.shellAliases.xopen == "open";
     signing =
       cfg.programs.git.settings.commit.gpgSign
