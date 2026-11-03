@@ -64,17 +64,16 @@ The following blocks use **Bash or Zsh**, from the repository root on Crokus.
 
 A stock macOS Nix installation does not enable the `nix-command` and `flakes`
 experimental features, and the `home-manager` script does not enable them for
-its internal `nix` calls. Enable them persistently for your user (Home Manager
-does not manage `~/.config/nix/nix.conf` on Crokus, so this cannot collide):
+its internal `nix` calls. After the first activation Crokus manages
+`~/.config/nix/nix.conf` itself (`nix.settings.experimental-features`), so for
+the bootstrap only, enable them for the current shell session:
 
 ```bash
-mkdir -p ~/.config/nix
-echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+export NIX_CONFIG="experimental-features = nix-command flakes"
 ```
 
-Alternatively, enable them only for the current shell session with
-`export NIX_CONFIG="experimental-features = nix-command flakes"`; this must be
-repeated in every new terminal before any `nix`/`home-manager` command below.
+Repeat this in every new terminal until the first switch has succeeded. Do not
+create `~/.config/nix/nix.conf` by hand: it would collide with the managed file.
 
 Resolve Home Manager from this checkout's `flake.lock`, not a floating release,
 channel or installer. The selected input currently tracks release 26.05, but the
@@ -97,8 +96,8 @@ build, generated files, activation effects and all conflicts; ensure backups and
 signing-key provisioning are ready. Stop on build failure.
 
 **Human-operated activation only, after that review and a successful native
-build**, from the same checkout/revision (in a new session, resolve `hm_source`
-again and, if you chose the session-only option, re-export `NIX_CONFIG`):
+build**, from the same checkout/revision (in a new session, re-export
+`NIX_CONFIG` and resolve `hm_source` again):
 
 ```bash
 nix run "$hm_source#home-manager" -- switch --flake '.#robertoeikas@crokus'
@@ -110,29 +109,26 @@ Record any build, permissions or hook failure before retrying.
 
 ## Shell startup and signing
 
-Home Manager installs Fish but does **not** change the macOS login shell or
-terminal configuration. After activation, keep the existing shell working. When
-session variables are not loaded, manually add a guarded source line to the
-appropriate **existing Bash/Zsh startup file**, without replacing its contents:
+Home Manager installs Fish but does **not** change the macOS login shell
+(`/bin/zsh`) or terminal configuration. Instead, like the NixOS hosts bootstrap
+Fish from Bash, Crokus manages zsh (`programs.zsh`):
 
-```bash
-if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
-  . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
-fi
-```
+- `~/.zshenv` loads the Home Manager session variables (and `SSH_AUTH_SOCK`,
+  below) for every zsh, including non-interactive ones;
+- `~/.zshrc` `exec`s the managed Fish (with `--login` for login shells) unless
+  zsh was started from Fish or runs a command string (`zsh -c`, `zsh -ic`).
 
-Zsh does not read `.profile` automatically; the managed `.profile` alone is not
-sufficient for Zsh. The Nix installation's existing shell startup must also keep
-its profile binaries on PATH. Open a fresh terminal after editing startup files.
-To try the configured Fish without changing the login shell, run:
-
-```bash
-"$HOME/.nix-profile/bin/fish"
-```
-
-Fish has its own managed session-variable integration; do not source the POSIX
-`.sh` file inside Fish. Login-shell selection remains a separate manual choice;
-this workflow does not run `chsh` or alter `/etc/shells`.
+The zsh startup files stay in `$HOME` (`programs.zsh.dotDir`), so the existing,
+unmanaged `~/.zprofile` (Homebrew `shellenv`) is still read before `~/.zshrc`.
+Do not add `programs.zsh.profileExtra`: that would make `~/.zprofile` managed
+and collide with the existing file. The Nix installation's `/etc/zshrc` keeps
+the profile binaries on PATH. To get a plain zsh, run `zsh` from Fish. If Fish
+is ever broken, open a shell with an explicit command (for example, Terminal's
+*Shell ▸ New Command…* `/bin/zsh -f`) and run the `activate` script of a previous
+generation listed by `home-manager generations`.
+Login-shell selection remains a separate manual choice; this workflow does not
+run `chsh` or alter `/etc/shells`. Fish has its own managed session-variable
+integration; do not source the POSIX `.sh` file inside Fish.
 
 Git identity is `Roberto Di Remigio Eikås <roberto@totaltrash.xyz>`. Commit and
 tag signing remain enabled using **SSH** keys held by **1Password**, as on
@@ -158,7 +154,8 @@ separately too; creating a directory does not install secrets.
 ## Steady-state rebuilds and maintenance
 
 From the reviewed repository root, with `home-manager` now on PATH (installed by
-`programs.home-manager.enable`) and flakes enabled as described above:
+`programs.home-manager.enable`) and flakes enabled by the managed
+`~/.config/nix/nix.conf`:
 
 ```bash
 home-manager build --flake '.#robertoeikas@crokus'
@@ -245,9 +242,9 @@ Remaining human acceptance on Apple Silicon:
 1. Back up conflicts and mutable state; preserve working shell access.
 2. Run the pinned native build above, inspect `result`, and resolve conflicts
    deliberately before switching without sudo.
-3. Open a fresh terminal; explicitly start Fish if it is not the login shell.
-   Verify session variables/PATH, `SSH_AUTH_SOCK`, prompt, Git identity and a
-   signed test commit in a disposable repository through the 1Password agent, SSH host
+3. Open a fresh terminal and check that zsh hands over to Fish. Verify session
+   variables/PATH, `SSH_AUTH_SOCK`, prompt, Git identity and a signed test
+   commit in a disposable repository through the 1Password agent, SSH host
    configuration, Helix, direnv, Pi and available development tools.
 4. Check mutable integrations and existing launchd agents; handle any macOS
    permission prompts deliberately. Record native build/runtime failures and

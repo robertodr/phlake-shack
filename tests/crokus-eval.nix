@@ -27,6 +27,11 @@ let
     onepassword-agent =
       cfg.home.sessionVariables.SSH_AUTH_SOCK == "/Users/robertoeikas/.1password/agent.sock"
       && cfg.home.file ? ".1password/agent.sock";
+    flakes-enabled = builtins.elem "flakes" cfg.nix.settings.experimental-features;
+    zsh-bootstraps-fish =
+      cfg.programs.zsh.enable
+      && cfg.programs.zsh.dotDir == cfg.home.homeDirectory
+      && pkgs.lib.hasInfix "exec " cfg.programs.zsh.initContent;
     assertions = builtins.all (item: item.assertion) cfg.assertions;
     activation = builtins.isString home.activationPackage.drvPath;
     native-packages = builtins.all (package: package.system == "aarch64-darwin") cfg.home.packages;
