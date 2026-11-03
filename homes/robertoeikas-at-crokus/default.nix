@@ -39,6 +39,13 @@ in
     };
   };
 
+  # fish's macOS login setup (__fish_macos_set_env) rebuilds PATH from
+  # /etc/paths, pushing the Nix profiles behind /usr/bin; move them back in
+  # front so Nix-installed tools win over the system ones, as in zsh.
+  programs.fish.loginShellInit = ''
+    fish_add_path --global --move --path $HOME/.nix-profile/bin /nix/var/nix/profiles/default/bin
+  '';
+
   # The macOS login shell stays /bin/zsh; bootstrap fish from interactive zsh,
   # like the NixOS hosts do from bash. Managed ~/.zshenv loads the Home Manager
   # session variables. Startup files stay in $HOME so the existing, unmanaged

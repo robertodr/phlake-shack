@@ -30,6 +30,7 @@ let
       cfg.home.sessionVariables.SSH_AUTH_SOCK == "/Users/robertoeikas/.1password/agent.sock"
       && cfg.home.file ? ".1password/agent.sock";
     flakes-enabled = builtins.elem "flakes" cfg.nix.settings.experimental-features;
+    fish-nix-path-first = pkgs.lib.hasInfix "fish_add_path --global --move --path $HOME/.nix-profile/bin" cfg.programs.fish.loginShellInit;
     zsh-bootstraps-fish =
       cfg.programs.zsh.enable
       && cfg.programs.zsh.dotDir == cfg.home.homeDirectory

@@ -122,7 +122,10 @@ The zsh startup files stay in `$HOME` (`programs.zsh.dotDir`), so the existing,
 unmanaged `~/.zprofile` (Homebrew `shellenv`) is still read before `~/.zshrc`.
 Do not add `programs.zsh.profileExtra`: that would make `~/.zprofile` managed
 and collide with the existing file. The Nix installation's `/etc/zshrc` keeps
-the profile binaries on PATH. To get a plain zsh, run `zsh` from Fish. If Fish
+the profile binaries on PATH. fish's own macOS login setup rebuilds `PATH` from
+`/etc/paths` and pushes the Nix profiles behind `/usr/bin`, so Crokus moves
+`~/.nix-profile/bin` and the default profile back to the front in
+`programs.fish.loginShellInit`. To get a plain zsh, run `zsh` from Fish. If Fish
 is ever broken, open a shell with an explicit command (for example, Terminal's
 *Shell ▸ New Command…* `/bin/zsh -f`) and run the `activate` script of a previous
 generation listed by `home-manager generations`.
