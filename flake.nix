@@ -2,10 +2,6 @@
   description = "My NixOS systems and Home Manager configurations";
 
   inputs = {
-    bun2nix = {
-      url = "github:nix-community/bun2nix?ref=2.1.2";
-    };
-
     deploy-rs = {
       # Match the cached deploy/activate binary in the existing nixpkgs pin.
       url = "github:serokell/deploy-rs?rev=e760371d631165e7d8de5b0dcf148e21ec4c16f0";
@@ -152,9 +148,7 @@
                 llmAgentsOverlay
                 nix4vscode.overlays.default
                 (final: _prev: {
-                  kenn-forge = final.callPackage ./pkgs/kenn-forge {
-                    bun2nix = inputs.bun2nix.packages.${system}.default;
-                  };
+                  kenn-forge = final.callPackage ./pkgs/kenn-forge { };
                 })
               ];
             })
@@ -249,6 +243,10 @@
         pi-starship-activation = import ./tests/pi-starship-activation.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs) self;
+        };
+        kenn-forge = import ./tests/kenn-forge.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs.self.nixosConfigurations) kellanved;
         };
         obsidian = import ./tests/obsidian.nix {
           pkgs = nixpkgs.legacyPackages.${system};
