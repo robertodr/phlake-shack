@@ -1,13 +1,14 @@
-{ config, ... }:
+{ ... }:
 {
   imports = [
     ../profiles/base
     ../profiles/development
+    ../profiles/git/onepassword.nix
+    ../profiles/ssh/onepassword.nix
   ];
   home = {
     username = "robertoeikas";
     homeDirectory = "/Users/robertoeikas";
     stateVersion = "26.05";
   };
-  programs.git.settings.user.signingkey = "${config.home.homeDirectory}/.ssh/git_signing_ed25519";
 }

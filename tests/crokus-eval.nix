@@ -22,7 +22,11 @@ let
     mac-opener = cfg.home.shellAliases.xopen == "open";
     signing =
       cfg.programs.git.settings.commit.gpgSign
-      && cfg.programs.git.settings.user.signingkey == "/Users/robertoeikas/.ssh/git_signing_ed25519";
+      && cfg.programs.git.settings.gpg.format == "ssh"
+      && pkgs.lib.hasPrefix "ssh-ed25519 " cfg.programs.git.settings.user.signingkey;
+    onepassword-agent =
+      cfg.home.sessionVariables.SSH_AUTH_SOCK == "/Users/robertoeikas/.1password/agent.sock"
+      && cfg.home.file ? ".1password/agent.sock";
     assertions = builtins.all (item: item.assertion) cfg.assertions;
     activation = builtins.isString home.activationPackage.drvPath;
     native-packages = builtins.all (package: package.system == "aarch64-darwin") cfg.home.packages;

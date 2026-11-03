@@ -134,17 +134,26 @@ Fish has its own managed session-variable integration; do not source the POSIX
 `.sh` file inside Fish. Login-shell selection remains a separate manual choice;
 this workflow does not run `chsh` or alter `/etc/shells`.
 
-Git identity is `Roberto Di Remigio Eikås <roberto@totaltrash.xyz>`. Commit and tag
-signing remain enabled using **SSH**, not GPG. Separately provision the private
-signing key at `~/.ssh/git_signing_ed25519` (`/Users/robertoeikas/.ssh/git_signing_ed25519`)
-using your trusted credential workflow, with restrictive filesystem permissions.
-Register only its public key as a signing key with the relevant hosting provider;
-local signature verification additionally needs an appropriate trusted-signers
-setup. There is no assumed Linux 1Password agent path, and the SSH profile does
-not automatically add keys to an agent. Do not disable signing to work around a
-missing key. Never print/copy private key material into commands, reports, Nix
-expressions or the repository. Provision API tokens, authentication and any
-sops/age keys separately too; creating a directory does not install secrets.
+Git identity is `Roberto Di Remigio Eikås <roberto@totaltrash.xyz>`. Commit and
+tag signing remain enabled using **SSH** keys held by **1Password**, as on
+kellanved: Crokus imports the shared `ssh/onepassword.nix` and
+`git/onepassword.nix` profiles. Git signs with the 1Password-held public key,
+`SSH_AUTH_SOCK` points at `~/.1password/agent.sock`, and SSH reads
+`~/.ssh/1Password/config` plus the 1Password-specific hosts. On macOS the agent
+socket lives at
+`~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock`; Home Manager
+links it to `~/.1password/agent.sock` so the shared paths work unchanged.
+
+In the 1Password app, enable *Settings ▸ Developer ▸ Use the SSH agent* and make
+sure the signing key is in a vault the agent serves. 1Password asks for approval
+on first use per application. Register the public key as a **signing** key with
+the hosting provider; local signature verification additionally needs an
+appropriate allowed-signers setup. Signing goes through the agent, so it works
+from shells that loaded `SSH_AUTH_SOCK`; GUI applications launched outside a
+shell do not inherit it. Do not disable signing to work around a missing agent.
+Never print/copy private key material into commands, reports, Nix expressions
+or the repository. Provision API tokens, authentication and any sops/age keys
+separately too; creating a directory does not install secrets.
 
 ## Steady-state rebuilds and maintenance
 
@@ -163,6 +172,7 @@ home-manager generations
 ```
 
 `generations` lists retained home generations; it is not a mutable-state backup.
+
 Rebuilding is separate from dependency updates: these commands use the existing
 lockfile. Intentionally update inputs only as a separate reviewed change;
 `flake.lock` is shared with the Linux hosts, so an update can change their
@@ -199,8 +209,8 @@ rollback options can disappear. Do not run it as part of adoption or use sudo.
   `perf`, `perf-tools`. Other evaluated shared tools were retained; evaluation
   does not guarantee they build or work natively.
 - No managed GPG-agent, Pi systemd update service/timer, or nh cleanup scheduler.
-  No new launchd replacements were introduced for these omissions. Git uses the
-  separately provisioned SSH signing key; Pi updates and cleanup are manual as
+  No new launchd replacements were introduced for these omissions. Git signs through
+  the 1Password SSH agent; Pi updates and cleanup are manual as
   above. Linux service and weekly cleanup policies are unchanged.
 - Existing portable-profile behavior **does** include upstream Home Manager
   launchd agents `atuin-daemon` and `tldr-update`. These are not replacements for
@@ -236,8 +246,8 @@ Remaining human acceptance on Apple Silicon:
 2. Run the pinned native build above, inspect `result`, and resolve conflicts
    deliberately before switching without sudo.
 3. Open a fresh terminal; explicitly start Fish if it is not the login shell.
-   Verify session variables/PATH, prompt, Git identity and a signed test commit
-   in a disposable repository with the separately provisioned key, SSH host
+   Verify session variables/PATH, `SSH_AUTH_SOCK`, prompt, Git identity and a
+   signed test commit in a disposable repository through the 1Password agent, SSH host
    configuration, Helix, direnv, Pi and available development tools.
 4. Check mutable integrations and existing launchd agents; handle any macOS
    permission prompts deliberately. Record native build/runtime failures and
