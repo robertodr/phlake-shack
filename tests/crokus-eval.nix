@@ -24,7 +24,8 @@ let
     signing =
       cfg.programs.git.settings.commit.gpgSign
       && cfg.programs.git.settings.gpg.format == "ssh"
-      && pkgs.lib.hasPrefix "ssh-ed25519 " cfg.programs.git.settings.user.signingkey;
+      && pkgs.lib.hasPrefix "ssh-ed25519 " cfg.programs.git.settings.user.signingkey
+      && cfg.programs.git.settings.gpg.ssh ? allowedSignersFile;
     onepassword-agent =
       cfg.home.sessionVariables.SSH_AUTH_SOCK == "/Users/robertoeikas/.1password/agent.sock"
       && cfg.home.file ? ".1password/agent.sock";

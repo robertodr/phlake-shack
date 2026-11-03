@@ -143,8 +143,9 @@ links it to `~/.1password/agent.sock` so the shared paths work unchanged.
 In the 1Password app, enable *Settings ▸ Developer ▸ Use the SSH agent* and make
 sure the signing key is in a vault the agent serves. 1Password asks for approval
 on first use per application. Register the public key as a **signing** key with
-the hosting provider; local signature verification additionally needs an
-appropriate allowed-signers setup. Signing goes through the agent, so it works
+the hosting provider. Local verification (`git log --show-signature`) uses the
+allowed-signers file that `git/onepassword.nix` generates for that key and sets
+as `gpg.ssh.allowedSignersFile`. Signing goes through the agent, so it works
 from shells that loaded `SSH_AUTH_SOCK`; GUI applications launched outside a
 shell do not inherit it. Do not disable signing to work around a missing agent.
 Never print/copy private key material into commands, reports, Nix expressions
