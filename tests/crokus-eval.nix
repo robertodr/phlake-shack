@@ -25,6 +25,10 @@ let
         "openvpn"
         "rclone"
       ]);
+    # Apple's toolchain must stay the default cc/c++/ld.
+    no-gnu-toolchain =
+      !cfg.programs.gcc.enable
+      && !(builtins.any (p: pkgs.lib.hasPrefix "gcc-wrapper" p.name) cfg.home.packages);
     no-pi-systemd-timer = !(cfg.systemd.user.timers ? pi-update-extensions);
     no-gpg-agent = !cfg.services.gpg-agent.enable;
     no-scheduled-clean = !cfg.programs.nh.clean.enable;

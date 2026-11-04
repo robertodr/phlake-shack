@@ -251,9 +251,13 @@ rollback options can disappear. Do not run it as part of adoption or use sudo.
 
 - Exactly these shared Linux packages are omitted: `iputils`, `playerctl`,
   `perf`, `perf-tools`, the VPN clients `openconnect` and `openvpn`, `rclone`,
-  and the Emacs spell-checking set (`aspell` with dictionaries, `enchant`,
-  `wordnet`). Other evaluated shared tools were retained; evaluation does not
-  guarantee they build or work natively.
+  the Emacs spell-checking set (`aspell` with dictionaries, `enchant`,
+  `wordnet`) and GCC (`programs.gcc`). Other evaluated shared tools were
+  retained; evaluation does not guarantee they build or work natively.
+- GCC is omitted so the Nix profile, which precedes `/usr/bin` on `PATH`, does
+  not shadow Apple's `cc`, `c++` and `ld`; Homebrew, pip and Rust builds expect
+  the Apple toolchain. Use a `nix develop`/direnv shell when a project needs a
+  Nix compiler.
 - No managed GPG-agent, Pi systemd update service/timer, or nh cleanup scheduler.
   No new launchd replacements were introduced for these omissions. Git signs through
   the 1Password SSH agent; Pi updates and cleanup are manual as

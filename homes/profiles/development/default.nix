@@ -60,7 +60,9 @@
   programs = {
     asciinema.enable = true;
     awscli.enable = true;
-    gcc.enable = true;
+    # Linux only: on macOS the GCC wrapper would shadow Apple's cc/c++/ld,
+    # which Homebrew, pip and Rust builds expect outside Nix shells.
+    gcc.enable = pkgs.stdenv.hostPlatform.isLinux;
     uv = {
       enable = true;
       package = pkgsUnstable.uv;
