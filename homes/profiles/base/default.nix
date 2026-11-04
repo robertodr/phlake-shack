@@ -75,12 +75,9 @@ in
         procs
         duf
         ncdu
-        numbat
         openconnect
         openvpn
-        rclone
         step-cli
-        tealdeer
 
         (aspellWithDicts (
           ds: with ds; [
@@ -94,7 +91,6 @@ in
           ]
         ))
 
-        delta
         enchant
         ffmpeg
         ghostscript
@@ -111,7 +107,14 @@ in
       ];
   };
 
-  programs.home-manager.enable = true;
+  # Prefer program modules over bare packages where Home Manager has one.
+  # (delta and tealdeer come from programs.delta/programs.tealdeer in the git
+  # and tealdeer profiles.)
+  programs = {
+    home-manager.enable = true;
+    numbat.enable = true;
+    rclone.enable = true;
+  };
 
   imports = map (x: ./.. + ("/" + x)) [
     "atuin"

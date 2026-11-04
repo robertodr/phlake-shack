@@ -10,14 +10,12 @@
     [
       autoconf
       automake
-      awscli2
       bash-language-server
       cachix
       clang-tools
       cmake
       editorconfig-core-c
       flamegraph
-      gcc
       git-extras
       global
       gnumake
@@ -48,19 +46,26 @@
       pkgsUnstable.typst
       pkgsUnstable.typstyle
 
-      pkgsUnstable.uv
       python3
       python3Packages.euporie
       python3Packages.keyring
       python3Packages.pip
       python3Packages.pymupdf
-
-      asciinema
     ]
     ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
       perf
       perf-tools
     ];
+
+  programs = {
+    asciinema.enable = true;
+    awscli.enable = true;
+    gcc.enable = true;
+    uv = {
+      enable = true;
+      package = pkgsUnstable.uv;
+    };
+  };
 
   imports = map (x: ./.. + ("/" + x)) [
     "claude-code"
