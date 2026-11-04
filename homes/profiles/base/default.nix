@@ -75,10 +75,24 @@ in
         procs
         duf
         ncdu
-        openconnect
-        openvpn
         step-cli
 
+        ffmpeg
+        ghostscript
+        imagemagick
+        jless
+        pdf2svg
+        pdftk
+        poppler
+      ]
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+        iputils
+        playerctl
+
+        openconnect
+        openvpn
+
+        # Spell checking and dictionaries for the Linux Emacs setup.
         (aspellWithDicts (
           ds: with ds; [
             en
@@ -90,20 +104,8 @@ in
             sv
           ]
         ))
-
         enchant
-        ffmpeg
-        ghostscript
-        imagemagick
-        jless
-        pdf2svg
-        pdftk
-        poppler
         wordnet
-      ]
-      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-        iputils
-        playerctl
       ];
   };
 
@@ -113,7 +115,7 @@ in
   programs = {
     home-manager.enable = true;
     numbat.enable = true;
-    rclone.enable = true;
+    rclone.enable = pkgs.stdenv.hostPlatform.isLinux;
   };
 
   imports = map (x: ./.. + ("/" + x)) [

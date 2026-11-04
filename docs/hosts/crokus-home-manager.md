@@ -250,8 +250,10 @@ rollback options can disappear. Do not run it as part of adoption or use sudo.
 ## Platform differences
 
 - Exactly these shared Linux packages are omitted: `iputils`, `playerctl`,
-  `perf`, `perf-tools`. Other evaluated shared tools were retained; evaluation
-  does not guarantee they build or work natively.
+  `perf`, `perf-tools`, the VPN clients `openconnect` and `openvpn`, `rclone`,
+  and the Emacs spell-checking set (`aspell` with dictionaries, `enchant`,
+  `wordnet`). Other evaluated shared tools were retained; evaluation does not
+  guarantee they build or work natively.
 - No managed GPG-agent, Pi systemd update service/timer, or nh cleanup scheduler.
   No new launchd replacements were introduced for these omissions. Git signs through
   the 1Password SSH agent; Pi updates and cleanup are manual as

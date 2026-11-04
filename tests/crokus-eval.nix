@@ -16,6 +16,15 @@ let
       && cfg.programs.starship.enable
       && cfg.programs.pi-coding-agent.enable;
     no-linux-profiler = !(builtins.elem "perf" names) && !(builtins.elem "perf-tools" names);
+    no-linux-only-tools =
+      !(builtins.any (name: builtins.elem name names) [
+        "aspell-env"
+        "enchant"
+        "wordnet"
+        "openconnect"
+        "openvpn"
+        "rclone"
+      ]);
     no-pi-systemd-timer = !(cfg.systemd.user.timers ? pi-update-extensions);
     no-gpg-agent = !cfg.services.gpg-agent.enable;
     no-scheduled-clean = !cfg.programs.nh.clean.enable;
