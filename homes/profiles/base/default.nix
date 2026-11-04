@@ -113,6 +113,7 @@ in
   # (delta and tealdeer come from programs.delta/programs.tealdeer in the git
   # and tealdeer profiles.)
   programs = {
+    fd.enable = true;
     home-manager.enable = true;
     numbat.enable = true;
     rclone.enable = pkgs.stdenv.hostPlatform.isLinux;
