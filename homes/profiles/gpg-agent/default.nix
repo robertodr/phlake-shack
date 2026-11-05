@@ -1,6 +1,7 @@
+{ pkgs, ... }:
 {
   services.gpg-agent = {
-    enable = true;
+    enable = pkgs.stdenv.hostPlatform.isLinux;
     defaultCacheTtl = 1800;
   };
 }

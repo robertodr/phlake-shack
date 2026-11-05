@@ -52,7 +52,8 @@ in
   xdg.configFile."ccstatusline/settings.json" = {
     # force: ccstatusline writes a default settings.json on first run if the file
     # is absent, which would otherwise abort HM's checkLinkTargets forever after.
-    force = true;
+    # Darwin adopts existing dotfiles explicitly; preserve Linux's overwrite policy.
+    force = pkgs.stdenv.hostPlatform.isLinux;
     source = (pkgs.formats.json { }).generate "ccstatusline-settings.json" {
       version = 3;
       lines = [

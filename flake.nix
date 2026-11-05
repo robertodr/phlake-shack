@@ -2,10 +2,6 @@
   description = "My NixOS systems and Home Manager configurations";
 
   inputs = {
-    bun2nix = {
-      url = "github:nix-community/bun2nix?ref=2.1.2";
-    };
-
     deploy-rs = {
       # Match the cached deploy/activate binary in the existing nixpkgs pin.
       url = "github:serokell/deploy-rs?rev=e760371d631165e7d8de5b0dcf148e21ec4c16f0";
@@ -13,7 +9,7 @@
     };
 
     disko = {
-      url = "github:nix-community/disko?tag=v1.13.0";
+      url = "github:nix-community/disko";
     };
 
     git-hooks = {
@@ -88,9 +84,28 @@
     let
       system = "x86_64-linux";
       user = "roberto";
+
+      # Expose llm-agents' own flake packages as pkgs.llm-agents. They are built
+      # against llm-agents' pinned nixpkgs, so the store paths match its CI and
+      # are substituted from cache.numtide.com instead of compiled locally
+      # (unlike overlays.shared-nixpkgs, which rebuilds them against ours).
+      llmAgentsOverlay = final: _prev: {
+        llm-agents = llm-agents.packages.${final.stdenv.hostPlatform.system};
+      };
       pkgsUnstable = import unstable {
         inherit system;
         config.allowUnfree = true;
+      };
+
+      darwinSystem = "aarch64-darwin";
+      darwinPkgsUnstable = import unstable {
+        system = darwinSystem;
+        config.allowUnfree = true;
+      };
+      darwinPkgs = import nixpkgs {
+        system = darwinSystem;
+        config.allowUnfree = true;
+        overlays = [ llmAgentsOverlay ];
       };
 
       # Deployment tooling only: do not add this overlay to either host.
@@ -130,14 +145,10 @@
               # This enables unfree for the 'pkgs' (stable) set
               nixpkgs.config.allowUnfree = true;
               nixpkgs.overlays = [
-                llm-agents.overlays.shared-nixpkgs
+                llmAgentsOverlay
                 nix4vscode.overlays.default
                 (final: _prev: {
-                  # New llm-agents packages need this hook, absent from stable.
-                  inherit (llm-agents.inputs.nixpkgs.legacyPackages.${system}) installAgentSkills;
-                  kenn-forge = final.callPackage ./pkgs/kenn-forge {
-                    bun2nix = inputs.bun2nix.packages.${system}.default;
-                  };
+                  kenn-forge = final.callPackage ./pkgs/kenn-forge { };
                 })
               ];
             })
@@ -149,8 +160,6 @@
                 backupFileExtension = "bak";
                 extraSpecialArgs = {
                   inherit pkgsUnstable;
-                  gitbutlerPackage = llm-agents.packages.${system}.gitbutler;
-                  gitbutlerCli = llm-agents.packages.${system}.but;
                 };
                 sharedModules = [
                   ./homes/modules
@@ -182,6 +191,17 @@
       };
     in
     {
+      homeConfigurations."robertoeikas@crokus" = home-manager.lib.homeManagerConfiguration {
+        pkgs = darwinPkgs;
+        extraSpecialArgs = {
+          pkgsUnstable = darwinPkgsUnstable;
+        };
+        modules = [
+          ./homes/modules
+          ./homes/robertoeikas-at-crokus
+        ];
+      };
+
       apps.${system}.deploy = {
         type = "app";
         program = "${deployPkgs.deploy-rs.deploy-rs}/bin/deploy";
@@ -224,6 +244,10 @@
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs) self;
         };
+        kenn-forge = import ./tests/kenn-forge.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs.self.nixosConfigurations) kellanved;
+        };
         obsidian = import ./tests/obsidian.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs.self.nixosConfigurations) kellanved;
@@ -234,6 +258,10 @@
         };
         agent-skills-eval = import ./tests/agent-skills-eval.nix {
           self = inputs.self;
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
+        crokus-eval = import ./tests/crokus-eval.nix {
+          inherit (inputs) self;
           pkgs = nixpkgs.legacyPackages.${system};
         };
         host-invariants = import ./tests/host-invariants.nix {

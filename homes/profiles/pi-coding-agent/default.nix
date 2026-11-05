@@ -47,7 +47,7 @@ in
 
   # Keep mutable npm updates off the boot/login critical path. A user timer
   # retries daily, including after offline starts, without blocking activation.
-  systemd.user = {
+  systemd.user = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     services.pi-update-extensions = {
       Unit.Description = "Update Pi extensions";
       Service = {
