@@ -19,6 +19,11 @@ downloaded rather than built. The upstream package set uses its own locked
 nixpkgs dependency; do not make it follow the host's stable or unstable input,
 as that would again change every store path.
 
+The [shared agent skills profile](agent-skills.md) exposes Herdr, Qmd, and
+GitButler skills without overriding those CLI packages. Only the small,
+local GitButler skills derivation uses the existing unstable pin's
+`installAgentSkills` hook.
+
 The NixOS hosts' shared Nix profile includes Numtide's cache and published
 verification key, with NAR signature checking still enabled. Crokus enables it
 through Home Manager's `nix.settings`; see its runbook for the one-time daemon

@@ -70,6 +70,7 @@
   };
 
   imports = map (x: ./.. + ("/" + x)) [
+    "agent-skills"
     "claude-code"
     "direnv"
     "gh"
