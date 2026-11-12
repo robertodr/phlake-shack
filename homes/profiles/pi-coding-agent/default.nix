@@ -11,7 +11,9 @@ in
 {
   programs.pi-coding-agent = {
     enable = true;
-    package = pkgs.llm-agents.pi;
+    package = pkgs.llm-agents.pi.override {
+      useBun = false;
+    };
     context = ''
       If you make a commit, follow conventional commits and add a trailer:
       `Assisted-by: <harness>:<model>`, where `<harness>` is the current agent harness
