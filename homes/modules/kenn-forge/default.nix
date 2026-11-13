@@ -256,7 +256,7 @@ in
       };
       Service = {
         Type = "simple";
-        ExecStart = lib.getExe cfg.package;
+        ExecStart = "${lib.getExe cfg.package} serve";
         Restart = "on-failure";
         RestartSec = 5;
       }

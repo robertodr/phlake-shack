@@ -1,29 +1,36 @@
 # Package selections and binary caches
 
-## Why GitButler uses explicit package arguments
+## llm-agents packages come from upstream CI
 
-`gitbutlerPackage` and `gitbutlerCli` in Home Manager's `extraSpecialArgs` select
-`llm-agents.packages.${system}.gitbutler` and `.but` directly. The desktop and
-development profiles consume those arguments rather than `pkgs.llm-agents`
-overlay packages.
+`pkgs.llm-agents` is provided by a small overlay in `flake.nix`
+(`llmAgentsOverlay`) that exposes `llm-agents.packages.${system}` unchanged.
+Every agent tool (GitButler and `but`, Claude Code, ccstatusline, Copilot CLI,
+Codegraph, CodeRabbit CLI, Qmd, RTK, skills, Herdr, Pi) is therefore the exact
+derivation built by upstream CI against llm-agents' own locked nixpkgs, and is
+substituted from Numtide's cache instead of being compiled locally.
 
-This distinction is intentional: `llm-agents.overlays.shared-nixpkgs` rebuilds
-against the host package set, which changes derivation identities from upstream
-CI even when application versions match. Using `pkgs.llm-agents.gitbutler` or
-`pkgs.llm-agents.but` is therefore not a cache-equivalent simplification.
-The upstream package set uses its own locked nixpkgs dependency; do not make it
-follow the host's stable or unstable input merely to remove these arguments.
-Shared-overlay application selections remain unchanged. Herdr 0.9.5 and Qmd
-require the `installAgentSkills` build hook, which the stable host package set
-lacks. The host overlay supplies that hook from `llm-agents`' own locked Nixpkgs
-input; the applications still build against the shared host package set.
+This replaces `llm-agents.overlays.shared-nixpkgs`, which rebuilt the packages
+against the host package set: their derivation identities differed from
+upstream CI, so nothing was ever cached and the Rust/Bun tools compiled on every
+host. It also needed the `installAgentSkills` hook injected from llm-agents'
+nixpkgs; packages built by llm-agents' own package set already have it. The
+cost is a second nixpkgs closure for these tools' runtime dependencies, which is
+downloaded rather than built. The upstream package set uses its own locked
+nixpkgs dependency; do not make it follow the host's stable or unstable input,
+as that would again change every store path.
 
-The shared Nix profile includes Numtide's cache and published verification key,
-with NAR signature checking still enabled. See the
+The [shared agent skills profile](agent-skills.md) exposes Herdr, Qmd, and
+GitButler skills without overriding those CLI packages. Only the small,
+local GitButler skills derivation uses the existing unstable pin's
+`installAgentSkills` hook.
+
+The NixOS hosts' shared Nix profile includes Numtide's cache and published
+verification key, with NAR signature checking still enabled. Crokus enables it
+through Home Manager's `nix.settings`; see its runbook for the one-time daemon
+trust step. See the
 [upstream cache documentation](https://github.com/numtide/llm-agents.nix#binary-cache).
-The pinned GitButler 0.22.3 and `but` 0.22.3 artifacts were previously realized
-with local and remote builds disabled. That established substitution for those
-artifacts, not a guarantee that every future version is cached.
+Cache hits depend on upstream CI having built the locked revision; check with
+`nix path-info --store https://cache.numtide.com <out-path>` before a switch.
 
 ## Inkscape and Stylix
 
