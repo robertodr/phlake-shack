@@ -44,6 +44,10 @@ in
       defaultModel = "gpt-6.1-sol";
       defaultProvider = "openai-codex";
       defaultThinkingLevel = "medium";
+      compaction = {
+        keepRecentTokens = 8000;
+        reserveTokens = 32768;
+      };
     };
   };
 
@@ -76,6 +80,9 @@ in
   # optional fields: Home Manager represents them as null, which Pi rejects.
   home = {
     file = {
+      "${config.programs.pi-coding-agent.configDir}/extensions/bounded-compaction".source =
+        ./bounded-compaction;
+
       "${config.programs.pi-coding-agent.configDir}/mcp.json" = lib.mkIf config.programs.mcp.enable {
         source = jsonFormat.generate "pi-mcp.json" {
           mcpServers = lib.mapAttrs (

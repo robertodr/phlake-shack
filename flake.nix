@@ -240,6 +240,10 @@
           pkgs = nixpkgs.legacyPackages.${system};
           self = inputs.self;
         };
+        pi-bounded-compaction = import ./tests/pi-bounded-compaction.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs) self;
+        };
         pi-starship-activation = import ./tests/pi-starship-activation.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs) self;
