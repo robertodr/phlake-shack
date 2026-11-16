@@ -2,6 +2,16 @@
 let
   inherit (pkgs) lib;
   hook = self.inputs.llm-agents.inputs.nixpkgs.legacyPackages.x86_64-linux.installAgentSkills;
+  communitySkills = pkgs.callPackage ../pkgs/community-skills {
+    installAgentSkills = hook;
+  };
+  communityPlan = pkgs.writeText "community-skills-test-plan.json" (
+    builtins.toJSON {
+      sources = communitySkills.skillSources;
+      autoInvoke = communitySkills.autoInvokeSkills;
+    }
+  );
+  python = pkgs.python3.withPackages (packages: [ packages.pyyaml ]);
   linuxHomes = lib.genAttrs [ "kellanved" "dancer" ] (
     host: self.nixosConfigurations.${host}.config.home-manager.users.roberto
   );
@@ -94,7 +104,40 @@ let
       }
     ]
   ) (builtins.attrNames homes);
-  checks = hookChecks ++ linkChecks;
+  communityLinkChecks = lib.concatMap (
+    host:
+    let
+      home = homes.${host};
+      files = home.home.file;
+      claudeDir = home.programs.claude-code.configDir;
+      piDir = home.programs.pi-coding-agent.configDir;
+    in
+    map (
+      name:
+      let
+        shared = files.".agents/skills/${name}" or null;
+        claude = files."${claudeDir}/skills/${name}" or null;
+        forClaude = builtins.elem name communitySkills.claudeSkillNames;
+      in
+      {
+        name = "${host}-${name}-community-skill";
+        pass =
+          shared != null
+          && !shared.recursive
+          && !shared.force
+          && lib.hasSuffix "/share/skills/${name}/${name}" (toString shared.source)
+          && lib.hasInfix "-community-skills-" (toString shared.source)
+          && !(files ? "${piDir}/skills/${name}")
+          && (
+            if forClaude then
+              claude != null && claude.source == shared.source && !claude.recursive && !claude.force
+            else
+              claude == null
+          );
+      }
+    ) communitySkills.skillNames
+  ) (builtins.attrNames homes);
+  checks = hookChecks ++ linkChecks ++ communityLinkChecks;
   failed = map (check: check.name) (builtins.filter (check: !check.pass) checks);
   names = map (check: check.name) checks;
   # Only realize native packages. Darwin link evaluation above is not a native
@@ -110,7 +153,7 @@ let
         test -f ${lib.escapeShellArg "${source}/SKILL.md"}
         grep -Fx ${lib.escapeShellArg "name: ${name}"} ${lib.escapeShellArg "${source}/SKILL.md"}
       ''
-    ) skillNames
+    ) (skillNames ++ communitySkills.skillNames)
   ) (builtins.attrNames linuxHomes);
 in
 assert lib.assertMsg (
@@ -125,6 +168,22 @@ pkgs.runCommand "agent-skills"
   }
   ''
     ${fileChecks}
+    # Verify all copied resources and bodies against the pinned upstream trees,
+    # independently parse YAML metadata, and exercise visibility edge cases.
+    ${lib.concatMapStringsSep "\n" (
+      host:
+      let
+        skillsRoot = builtins.dirOf (
+          builtins.dirOf (
+            toString linuxHomes.${host}.home.file.".agents/skills/dispatching-parallel-agents".source
+          )
+        );
+      in
+      ''
+        PYTHONDONTWRITEBYTECODE=1 ${lib.getExe python} ${./community-skills.test.py} \
+          ${communityPlan} ${skillsRoot} ${../pkgs/community-skills/visibility.py}
+      ''
+    ) (builtins.attrNames linuxHomes)}
     # Exercise each Linux home's selected CLI on a local file, without network.
     cat > defuddle.html <<'HTML'
     <!doctype html>
