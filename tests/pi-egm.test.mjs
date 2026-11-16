@@ -228,6 +228,22 @@ test("digest mismatch, mutable permission overrides and refinement memory fail c
   assert.equal(f.requests.length, 1);
 });
 
+test("successful reviewers require distinct runtime run identities, not just distinct request IDs", async t => {
+  const f = await fixture(t);
+  await f.engine.start("egm-review", "Step=5", f.cwd);
+  await f.engine.plan({ document: f.document }, f.context);
+  f.responses.push({ runId: "reused-runtime-id" }, { runId: "reused-runtime-id" });
+  const result = await f.engine.review({ phase: "initial" }, f.context);
+  assert.equal(result.status, "partial");
+  assert.ok(result.results.some(row => row.error?.includes("reused run identity")));
+  assert.equal(f.engine.active.poisoned, true);
+  const missing = await fixture(t);
+  await missing.engine.start("smoke", "", missing.cwd);
+  missing.responses.push({ runId: undefined });
+  assert.equal((await missing.engine.review({ phase: "smoke", document: missing.document }, missing.context)).status, "partial");
+  assert.equal(missing.engine.active.poisoned, true);
+});
+
 test("saveDocument cannot edit code, instructions, outside files or symlink targets", async t => {
   const f = await fixture(t);
   await f.engine.start("egm-draft", "", f.cwd);

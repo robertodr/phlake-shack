@@ -24,7 +24,7 @@ export class EgmEngine {
       catch (error) { if (error.code !== "ENOENT") throw error; }
     }
     await mkdir(directory, { recursive: true, mode: 0o700 });
-    this.active = { id, skill, args, cwd: base, directory: await realpath(directory), launches: 0, rounds: {}, sequence: undefined, completed: 0 };
+    this.active = { id, skill, args, cwd: base, directory: await realpath(directory), launches: 0, rounds: {}, runIds: new Set(), sequence: undefined, completed: 0 };
     return this.active;
   }
   requireActive() {
@@ -248,7 +248,11 @@ export class EgmEngine {
             await validateContract(resolved.contract, { agent, reader, profile: join(this.root, "reviewers", `${reviewer}.md`), runtimeExtensions: api.runtimeExtensions });
             active.launches++;
             response = await delegate(this.pi, api, request, controller.signal, update => onUpdate?.({ reviewer, ...update }));
-            if (response.status === "completed" && response.launchContractDigest !== resolved.contract.launchContractDigest) throw new Error("Reviewer launch digest differs from approved preflight");
+            if (response.status === "completed") {
+              if (typeof response.runId !== "string" || !response.runId || active.runIds.has(response.runId)) throw new Error("Reviewer returned a missing or reused run identity");
+              active.runIds.add(response.runId);
+              if (response.launchContractDigest !== resolved.contract.launchContractDigest) throw new Error("Reviewer launch digest differs from approved preflight");
+            }
             const text = response.result?.kind === "text" ? response.result.text : "";
             const completed = response.status === "completed" && text.trim().length > 0;
             const report = await this.save(`${token}.md`, completed ? text : `# Reviewer not run\n\nStatus: ${response.status}\n${response.error ?? "No complete report"}\n\n${text}`);
