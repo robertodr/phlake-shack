@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  piEgmPackage ? pkgs.llm-agents.pi,
   ...
 }:
 let
@@ -12,7 +13,9 @@ in
 {
   programs.pi-coding-agent = {
     enable = true;
-    package = pkgs.llm-agents.pi;
+    package = piEgmPackage.override {
+      useBun = false;
+    };
     context = ''
       If you make a commit, follow conventional commits and add a trailer:
       `Assisted-by: <harness>:<model>`, where `<harness>` is the current agent harness

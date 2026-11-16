@@ -32,6 +32,11 @@
       url = "github:numtide/llm-agents.nix";
     };
 
+    # Select only the audited Pi runtime; leave the other agent tools unchanged.
+    pi-egm-runtime = {
+      url = "github:numtide/llm-agents.nix/860075d959fc68c31fd405989daf85c1b1f0db38";
+    };
+
     nix4vscode = {
       url = "github:nix-community/nix4vscode";
       inputs.nixpkgs.follows = "unstable";
@@ -151,6 +156,7 @@
                   inherit pkgsUnstable;
                   gitbutlerPackage = llm-agents.packages.${system}.gitbutler;
                   gitbutlerCli = llm-agents.packages.${system}.but;
+                  piEgmPackage = inputs.pi-egm-runtime.packages.${system}.pi;
                 };
                 sharedModules = [
                   ./homes/modules

@@ -20,6 +20,14 @@ The exact source hash in `pkgs/pi-egm/default.nix` is:
 sha256-IIMahNXavG94jdYHRM8TifjEvpE0EQpAvkpTIvqOKuY=
 ```
 
+This branch is independent of the Crokus, Oleafly and skill-installation PRs
+and is based directly on `main`. The separate `pi-egm-runtime` flake input pins
+`numtide/llm-agents.nix` at `860075d959fc68c31fd405989daf85c1b1f0db38`
+and selects only its audited Pi package for the Linux homes. Existing agent-tool
+and system input pins are unchanged. The profile accepts `piEgmPackage` and uses
+the Node layout; additional home targets must also provide a compatible Pi.
+No Crokus target or bounded-compaction extension is added by this PR.
+
 The source is fixed; the existing daily Pi extension updater still makes
 `pi-subagents` mutable. A different Pi/subagent version fails closed until its
 public APIs and effective contracts are audited and the compatibility check is
@@ -179,17 +187,23 @@ identities, ordering, approval denial, document-only inputs, Stage 8 context,
 refinement/override rejection, digest mismatch, reused/missing runtime run IDs
 and cancellation correlation.
 **Delegation responses in this hermetic check are stubs, not live children.**
-All three Home Manager targets (Kellanved, Dancer and Crokus) are evaluated by
-the check; Darwin executables are not realized on Linux. The package/EGM check,
-`pi-bounded-compaction`, `agent-skills-eval` and `crokus-eval` builds passed.
-The installed-runtime offline suite passed all 19 tests; the hermetic check
-skips only that mutable-runtime test.
+On the independent branch the check evaluates Kellanved and Dancer, including
+the audited Pi version and Pi-only links. If the separately proposed Crokus target
+is present, it is also evaluated without realizing Darwin executables on Linux.
+The package, EGM check and baseline `agent-skills-eval` build passed directly on
+`main` plus EGM. The installed-runtime offline suite passed all 19 tests; the
+hermetic check skips only that mutable-runtime test.
+
+Historical evidence from the original stacked branch additionally included
+`pi-bounded-compaction`, the expanded shared-skill check and `crokus-eval`. Those
+features and checks are not dependencies of this independent branch.
 
 Targeted nixfmt/deadnix checks and statix checks for the new package/module/test
-passed. The repository-wide `pre-commit` check still fails on pre-existing
-untracked `dancer-hardware.nix` formatting/deadnix and existing statix warnings
-in MCP, manual-boot tests, Oleafly and flake code. Those unrelated files were
-not changed as a lint workaround.
+passed. On the original stacked branch, repository-wide `pre-commit` failed on
+unrelated untracked `dancer-hardware.nix` formatting/deadnix and existing statix
+warnings in MCP, manual-boot tests, Oleafly and flake code. That historical
+failure is not a fresh full-tree lint result for the independent branch; unrelated
+files have not been changed as a lint workaround.
 
 An additional opt-in **offline** test checks the operator's installed runtime:
 

@@ -2,11 +2,12 @@
 
 ## Implementation update
 
-An experimental local adapter now exists on the `feat/pi-egm` stack above
-`feat/obsidian-skills`. See [the implementation runbook](pi-egm.md) for its exact
-pin, API/security mapping, deterministic checks, activation and unfinished gates.
-The operator subsequently authorized implementation and commits on a new stacked
-branch, but not pushes, activation or paid-model probes.
+An experimental adapter now exists on `feat/pi-egm`, independently based on
+`main` (PR #21). It was originally stacked above `feat/obsidian-skills`; the
+operator subsequently authorized publishing it and separating it from that stack.
+See [the implementation runbook](pi-egm.md) for its exact pins, API/security
+mapping, deterministic checks, activation and unfinished gates. Host activation
+and paid-model probes remain unauthorized.
 
 Implemented: intact pinned runtime packaging; all seven Pi-only skill entry
 points; generated upstream leaf profiles; fresh foreground delegation with
@@ -47,7 +48,9 @@ Repository: `/home/roberto/phlake-shack`.
 At the original handoff the active branch was `feat/obsidian-skills`, with commit `f17fe1d`,
 stacked above `feat/oleafly` (PR #18), itself above `feat/crokus-home-manager`
 (PR #17). Reinspect the actual stack before any version-control operation.
-Do not silently add EGM work to an existing PR or push any branch.
+The current EGM branch is independently based on `main`; the community-skills
+branch remains above `feat/obsidian-skills`, not EGM. Do not silently add EGM
+work to those other PRs or treat prior publication as blanket push permission.
 
 Preserve unrelated untracked files:
 
@@ -55,7 +58,9 @@ Preserve unrelated untracked files:
 - `dancer-hardware.nix`
 - `docs/research/`
 
-Relevant existing integration points:
+Relevant integration points from the original stacked implementation are listed
+below. The shared-skill packages/module/docs and Darwin home target belong to
+separate PRs and need not exist on the independent EGM branch:
 
 | File | Purpose |
 | --- | --- |
@@ -69,8 +74,10 @@ Relevant existing integration points:
 
 Pi already loads `npm:pi-subagents`; do not install another delegation framework.
 The Home Manager module sets `useBun = false`. Preserve that choice: prior work
-fixed host SDK/TypeBox resolution using the Node layout. Pi packages currently
-update imperatively through the configured extension update mechanism, so a
+fixed host SDK/TypeBox resolution using the Node layout. A separate
+`pi-egm-runtime` flake input now explicitly selects the audited Pi 1.5.2 without
+upgrading the other agent tools; main's pre-existing Pi was 1.4.0. Pi npm packages
+currently update imperatively through the configured extension update mechanism, so a
 pinned EGM source does **not** by itself pin the subagent runtime.
 
 Research observed Pi 1.5.2 and `pi-subagents` 0.88.1. Recheck installed versions

@@ -4,16 +4,21 @@ let
   linuxHomes = lib.genAttrs [ "kellanved" "dancer" ] (
     host: self.nixosConfigurations.${host}.config.home-manager.users.roberto
   );
-  homes = linuxHomes // {
-    crokus = self.homeConfigurations."robertoeikas@crokus".config;
-  };
+  # Crokus is introduced by a separate PR; validate it when present without
+  # making the standalone EGM branch depend on that Home Manager target.
+  homes =
+    linuxHomes
+    // lib.optionalAttrs (self ? homeConfigurations."robertoeikas@crokus") {
+      crokus = self.homeConfigurations."robertoeikas@crokus".config;
+    };
   validHome =
     home:
     let
       cfg = home.programs.pi-coding-agent;
       link = home.home.file."${cfg.configDir}/egm";
     in
-    lib.elem (toString link.source) cfg.settings.packages
+    cfg.package.version == "1.5.2"
+    && lib.elem (toString link.source) cfg.settings.packages
     && lib.hasSuffix "/share/pi-egm" (toString link.source)
     && !link.recursive
     && !link.force
@@ -25,9 +30,10 @@ let
 in
 assert lib.assertMsg (lib.all validHome (
   builtins.attrValues homes
-)) "EGM must remain a Pi-only intact package on Linux and Crokus";
+)) "EGM must remain a Pi-only intact package with the audited Pi on every configured host";
 pkgs.runCommand "pi-egm-check"
   {
+    passthru.checkedHosts = builtins.attrNames homes;
     nativeBuildInputs = [ pkgs.nodejs ];
     EGM_PACKAGE = toString bundle;
     PI_PACKAGE_DIR = "${pi}/lib/node_modules/@earendil-works/pi-coding-agent";
