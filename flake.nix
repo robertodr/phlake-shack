@@ -182,6 +182,10 @@
       };
     in
     {
+      packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ] (packageSystem: {
+        pi-egm = nixpkgs.legacyPackages.${packageSystem}.callPackage ./pkgs/pi-egm { };
+      });
+
       apps.${system}.deploy = {
         type = "app";
         program = "${deployPkgs.deploy-rs.deploy-rs}/bin/deploy";
@@ -221,6 +225,10 @@
           self = inputs.self;
         };
         pi-starship-activation = import ./tests/pi-starship-activation.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs) self;
+        };
+        pi-egm = import ./tests/pi-egm.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs) self;
         };

@@ -7,6 +7,7 @@
 let
   jsonFormat = pkgs.formats.json { };
   tomlFormat = pkgs.formats.toml { };
+  egm = pkgs.callPackage ../../../pkgs/pi-egm { };
 in
 {
   programs.pi-coding-agent = {
@@ -38,6 +39,7 @@ in
         "npm:pi-subagents"
         "npm:pi-toggle-skills"
         "npm:pi-web-access"
+        "${egm}/share/pi-egm"
       ];
       defaultModel = "gpt-6.1-sol";
       defaultProvider = "openai-codex";
@@ -74,6 +76,9 @@ in
   # optional fields: Home Manager represents them as null, which Pi rejects.
   home = {
     file = {
+      # Keep Pi-only workflows out of the shared Pi/Claude skill allowlist.
+      "${config.programs.pi-coding-agent.configDir}/egm".source = "${egm}/share/pi-egm";
+
       "${config.programs.pi-coding-agent.configDir}/mcp.json" = lib.mkIf config.programs.mcp.enable {
         source = jsonFormat.generate "pi-mcp.json" {
           mcpServers = lib.mapAttrs (
