@@ -7,8 +7,8 @@ third-party WASM modules still come precompiled through pinned npm packages;
 [wasm-sources.md](wasm-sources.md) documents their origins and limitations, and
 `meta.sourceProvenance` explicitly includes `binaryBytecode`.
 
-`appimage.nix` preserves the original, working AppImage fallback separately.
-Nothing here installs Oleafly into any host configuration automatically.
+Only the source package is exposed; there is no AppImage fallback. Nothing here
+installs Oleafly into any host configuration automatically.
 
 ## Usage
 
@@ -17,15 +17,14 @@ nix build .#oleafly
 nix run .#oleafly
 nix run .#oleafly -- --version
 nix build .#checks.x86_64-linux.oleafly
-nix run .#oleafly-appimage
 # Faster focused checks:
 nix build .#oleafly.tests.toolchain
 nix build .#oleafly.tests.templates
 ```
 
 Use `path:.#…` instead while adding files that Git does not yet track. The NixOS
-overlay also exposes `pkgs.oleafly`. Source and AppImage outputs are exposed for
-x86-64 and ARM64 Linux; ARM64 has only evaluated, not been built or runtime-tested.
+overlay also exposes `pkgs.oleafly`. Source outputs are exposed for x86-64 and
+ARM64 Linux; ARM64 has only evaluated, not been built or runtime-tested.
 
 ## Packaging
 
@@ -113,7 +112,7 @@ scripts inside the sandbox build.
   [the submission patch](../../docs/development/oleafly-template-fix.patch).
   No Oleafly implementation PR or CLA acceptance has been submitted.
 - For nixpkgs, copy the source recipe as `pkgs/by-name/ol/oleafly/package.nix` with
-  its referenced helper files; omit the personal flake and AppImage fallback.
+  its referenced helper files; omit the personal flake wiring.
   Initially restrict `meta.platforms` to x86-64 unless native ARM64 is validated.
 - Human review of code/descriptions, GUI confirmation against the actual master
   build, updater behavior and the bytecode/notice policy remain before publication.

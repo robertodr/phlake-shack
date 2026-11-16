@@ -205,9 +205,6 @@
 
       packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ] (packageSystem: {
         oleafly = nixpkgs.legacyPackages.${packageSystem}.callPackage ./pkgs/oleafly { };
-        oleafly-appimage =
-          nixpkgs.legacyPackages.${packageSystem}.callPackage ./pkgs/oleafly/appimage.nix
-            { };
       });
 
       apps.${system}.deploy = {
