@@ -12,6 +12,13 @@ let
     "but"
     "herdr"
     "qmd"
+    "defuddle"
+    "json-canvas"
+    "knap"
+    "obsidian-bases"
+    "obsidian-cli"
+    "obsidian-headless"
+    "obsidian-markdown"
   ];
   hookChecks = lib.concatMap (
     host:
@@ -107,5 +114,18 @@ pkgs.runCommand "agent-skills"
     test -n "$(find ${
       linuxHomes.kellanved.home.file.".agents/skills/but".source
     }/references -type f -print -quit)"
+    # Obsidian skills link to these relative reference files; keep the complete
+    # directories rather than only SKILL.md.
+    ${lib.concatMapStringsSep "\n" (host: ''
+      test -s ${linuxHomes.${host}.home.file.".agents/skills/json-canvas".source}/references/EXAMPLES.md
+      test -s ${
+        linuxHomes.${host}.home.file.".agents/skills/obsidian-bases".source
+      }/references/FUNCTIONS_REFERENCE.md
+      for reference in CALLOUTS EMBEDS PROPERTIES; do
+        test -s ${
+          linuxHomes.${host}.home.file.".agents/skills/obsidian-markdown".source
+        }/references/$reference.md
+      done
+    '') (builtins.attrNames linuxHomes)}
     printf '%s\n' '${builtins.toJSON names}' > "$out"
   ''

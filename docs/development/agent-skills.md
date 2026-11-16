@@ -1,7 +1,9 @@
 # Shared agent skills
 
 `homes/profiles/agent-skills/default.nix` defines the shared allowlist:
-`but`, `herdr`, and `qmd`. Home Manager links the same immutable directories
+`but`, `herdr`, `qmd`, and the seven official Obsidian skills: `defuddle`,
+`json-canvas`, `knap`, `obsidian-bases`, `obsidian-cli`, `obsidian-headless`, and
+`obsidian-markdown`. Home Manager links the same immutable directories
 into `~/.agents/skills/` (discovered by Pi) and Claude Code's configured
 `skills/` directory. No duplicate links are created in `~/.pi/agent/skills/`.
 Other, unmanaged skills may coexist.
@@ -13,6 +15,24 @@ install that output. `pkgs/but-skills/default.nix` runs the cached CLI's
 package the whole directory. Its version follows the selected CLI. The hook
 comes from the existing unstable pin because the host's stable nixpkgs lacks
 it; none of the upstream cached CLI derivations are overridden.
+
+## Official Obsidian skills
+
+`pkgs/obsidian-skills/default.nix` pins
+[obsidianmd/obsidian-skills](https://github.com/obsidianmd/obsidian-skills) by
+revision and content hash, and uses the same `installAgentSkills` hook to package
+an explicit allowlist from `plugins/obsidian/skills/`. Whole-directory links keep
+Canvas/Bases/Markdown reference files available. This is shared by Kellanved,
+Dancer and Crokus; evaluating Crokus does not build a Darwin package on Linux.
+
+Update the revision/date/hash and review the allowlist together. New upstream
+skills do not become enabled automatically. No imperative marketplace or npm
+skill installer is run at activation.
+
+These are instruction files, not extra tool installations: Defuddle, Knap and
+Obsidian Headless executables, desktop CLI enablement, account credentials,
+subscriptions, and vault/sync configuration remain separate. Installing these
+skills does not start sync/publish services or modify any vault.
 
 ## First activation: adopt existing copies
 
@@ -34,7 +54,7 @@ For example, in Fish, back these up without deleting them:
 set backup (mktemp -d "$HOME/agent-skills-backup.XXXXXX")
 for agent in .agents .claude .pi/agent
     set label (string replace -a / - $agent)
-    for skill in gitbutler but herdr qmd
+    for skill in gitbutler but herdr qmd defuddle json-canvas knap obsidian-bases obsidian-cli obsidian-headless obsidian-markdown
         set source "$HOME/$agent/skills/$skill"
         if test -e "$source"; or test -L "$source"
             mv -- "$source" "$backup/$label-$skill"
@@ -52,6 +72,7 @@ Before a Git-backed flake rebuild, register the new files with Git:
 
 ```sh
 git add homes/profiles/agent-skills/default.nix pkgs/but-skills/default.nix \
+  pkgs/obsidian-skills/default.nix tests/agent-skills-eval.nix \
   docs/development/agent-skills.md
 ```
 
@@ -73,5 +94,6 @@ nix build path:.#checks.x86_64-linux.agent-skills-eval --no-link
 
 The check evaluates links for Kellanved, Dancer, and Crokus, verifies identical
 sources and no managed Pi-private duplicates, and checks native Linux skill
-files, declared names, and GitButler reference files. Cross-evaluation is not
+files, declared names, GitButler reference files, and Obsidian's bundled Canvas,
+Bases and Markdown references. Cross-evaluation is not
 proof of native Darwin builds, activation, or agent discovery.

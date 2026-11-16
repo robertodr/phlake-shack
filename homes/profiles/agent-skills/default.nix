@@ -12,11 +12,15 @@ let
     # only for this small skills derivation, not for rebuilding cached CLIs.
     inherit (pkgsUnstable) installAgentSkills;
   };
+  obsidianSkills = pkgs.callPackage ../../../pkgs/obsidian-skills {
+    inherit (pkgsUnstable) installAgentSkills;
+  };
   skills = {
     but = "${butSkills}/share/skills/but/but";
     herdr = "${config.programs.herdr.package}/share/skills/herdr/herdr";
     qmd = "${pkgs.llm-agents.qmd}/share/skills/qmd/qmd";
-  };
+  }
+  // lib.genAttrs obsidianSkills.skillNames (name: "${obsidianSkills}/share/skills/${name}/${name}");
   destinations = [
     ".agents/skills"
     "${config.programs.claude-code.configDir}/skills"
