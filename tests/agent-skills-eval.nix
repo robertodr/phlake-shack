@@ -12,6 +12,11 @@ let
     "but"
     "herdr"
     "qmd"
+    "defuddle"
+    "json-canvas"
+    "obsidian-bases"
+    "obsidian-cli"
+    "obsidian-markdown"
   ];
   hookChecks = lib.concatMap (
     host:
@@ -62,7 +67,24 @@ let
           && !(files ? "${piDir}/skills/${name}");
       }
     ) skillNames
+    ++
+      map
+        (name: {
+          name = "${host}-excluded-${name}-skill";
+          pass =
+            !(files ? ".agents/skills/${name}")
+            && !(files ? "${claudeDir}/skills/${name}")
+            && !(files ? "${piDir}/skills/${name}");
+        })
+        [
+          "knap"
+          "obsidian-headless"
+        ]
     ++ [
+      {
+        name = "${host}-defuddle-cli-installed";
+        pass = lib.any (package: lib.getName package == "defuddle") home.home.packages;
+      }
       {
         name = "${host}-no-legacy-gitbutler-skill";
         pass =
@@ -103,9 +125,58 @@ pkgs.runCommand "agent-skills"
   }
   ''
     ${fileChecks}
+    # Exercise each Linux home's selected CLI on a local file, without network.
+    cat > defuddle.html <<'HTML'
+    <!doctype html>
+    <html><head><title>Offline Defuddle fixture</title></head><body><main><article>
+    <h1>Offline Defuddle fixture</h1>
+    <p>This article is a local fixture for testing clean Markdown extraction.
+    The input contains ordinary HTML paragraphs and needs no network access.
+    Defuddle should preserve this article while removing unrelated page clutter.
+    The managed executable must support the same parse and Markdown flags that
+    the installed agent skill instructs Pi and Claude Code to use.</p>
+    <p>This second paragraph provides additional article content for extraction.
+    It is deliberately self-contained and contains no remote images, scripts,
+    or stylesheets. A successful run demonstrates that the actual CLI and its
+    JavaScript runtime dependencies work, rather than merely that a package is
+    listed in the Home Manager configuration.</p>
+    </article></main></body></html>
+    HTML
+    ${lib.concatMapStringsSep "\n" (
+      host:
+      let
+        defuddle = lib.findFirst (
+          package: lib.getName package == "defuddle"
+        ) null linuxHomes.${host}.home.packages;
+        skillsRoot = builtins.dirOf (
+          builtins.dirOf (toString linuxHomes.${host}.home.file.".agents/skills/defuddle".source)
+        );
+      in
+      ''
+        ${lib.getExe defuddle} --help > /dev/null
+        ${lib.getExe defuddle} parse "$PWD/defuddle.html" --md > ${host}-article.md
+        grep -F 'This article is a local fixture' ${host}-article.md
+        ${lib.getExe defuddle} parse "$PWD/defuddle.html" -p title | grep -F 'Offline Defuddle fixture'
+        test ! -e ${skillsRoot}/knap
+        test ! -e ${skillsRoot}/obsidian-headless
+      ''
+    ) (builtins.attrNames linuxHomes)}
     # GitButler's supporting reference documents must survive packaging too.
     test -n "$(find ${
       linuxHomes.kellanved.home.file.".agents/skills/but".source
     }/references -type f -print -quit)"
+    # Obsidian skills link to these relative reference files; keep the complete
+    # directories rather than only SKILL.md.
+    ${lib.concatMapStringsSep "\n" (host: ''
+      test -s ${linuxHomes.${host}.home.file.".agents/skills/json-canvas".source}/references/EXAMPLES.md
+      test -s ${
+        linuxHomes.${host}.home.file.".agents/skills/obsidian-bases".source
+      }/references/FUNCTIONS_REFERENCE.md
+      for reference in CALLOUTS EMBEDS PROPERTIES; do
+        test -s ${
+          linuxHomes.${host}.home.file.".agents/skills/obsidian-markdown".source
+        }/references/$reference.md
+      done
+    '') (builtins.attrNames linuxHomes)}
     printf '%s\n' '${builtins.toJSON names}' > "$out"
   ''
