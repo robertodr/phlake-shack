@@ -1,0 +1,5 @@
+7b0d5db9e148d1eba9ab7494a468a79fd92aca93fd3a89cad5876e68097170af  @terrastruct/d2/dist/node-esm/d2.wasm
+d20b944d75acf59cd0e75ffff57663628f0aa06294b05cc0bbc719f91f9270d7  harper.js/dist/harper_wasm_bg.wasm
+e6bee67724a7b5436fe8162638e3708cfc8d52b6342db69a49715e30ff27cfdc  pdfjs-dist/wasm/jbig2.wasm
+004a0e62db930ba9ff2a22212f4554d0bb57a0635a8287caf70f98117cee14ba  pdfjs-dist/wasm/openjpeg.wasm
+663d86126d5f5fcb1c61490f94353e2a8375660b8c5498ab3ebab5a34b08800e  pdfjs-dist/wasm/qcms_bg.wasm

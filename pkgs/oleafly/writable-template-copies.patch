@@ -1,0 +1,23 @@
+diff --git a/crates/oleafly-core/src/templates.rs b/crates/oleafly-core/src/templates.rs
+--- a/crates/oleafly-core/src/templates.rs
++++ b/crates/oleafly-core/src/templates.rs
+@@ -268,6 +268,19 @@ pub fn copy_tree_with(
+                 std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+             }
+             std::fs::copy(&from, &to).map_err(|e| e.to_string())?;
++            // Installed templates can be read-only (e.g. in the Nix store).
++            // Copies belong to an editable project, not the resource bundle.
++            let mut permissions = std::fs::metadata(&to)
++                .map_err(|e| e.to_string())?
++                .permissions();
++            #[cfg(unix)]
++            {
++                use std::os::unix::fs::PermissionsExt;
++                permissions.set_mode(permissions.mode() | 0o200);
++            }
++            #[cfg(not(unix))]
++            permissions.set_readonly(false);
++            std::fs::set_permissions(&to, permissions).map_err(|e| e.to_string())?;
+         }
+     }
+     Ok(())
