@@ -149,6 +149,7 @@
                 nix4vscode.overlays.default
                 (final: _prev: {
                   kenn-forge = final.callPackage ./pkgs/kenn-forge { };
+                  oleafly = final.callPackage ./pkgs/oleafly { };
                 })
               ];
             })
@@ -202,6 +203,10 @@
         ];
       };
 
+      packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ] (packageSystem: {
+        oleafly = nixpkgs.legacyPackages.${packageSystem}.callPackage ./pkgs/oleafly { };
+      });
+
       apps.${system}.deploy = {
         type = "app";
         program = "${deployPkgs.deploy-rs.deploy-rs}/bin/deploy";
@@ -248,6 +253,7 @@
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs) self;
         };
+        oleafly = inputs.self.packages.${system}.oleafly.tests.install;
         kenn-forge = import ./tests/kenn-forge.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs.self.nixosConfigurations) kellanved;

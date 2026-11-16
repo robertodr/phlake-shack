@@ -1,0 +1,431 @@
+Support explicitly configured, externally managed language servers.
+
+Keep vendor download verification unchanged when no external server is set.
+Distribution builds can align frontend versions using VITE_OLEAFLY_*_VERSION.
+
+--- a/src/lib/language-service/runtime-profile.test.ts
++++ b/src/lib/language-service/runtime-profile.test.ts
+@@ -1,8 +1,23 @@
+-import { describe, expect, it } from "vitest";
++import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+ import {
+   getLanguageServiceRuntimeProfile,
+   parseLanguageServiceRuntimeProfile,
+ } from "./runtime-profile";
++
++beforeEach(() => {
++  vi.stubEnv("VITE_OLEAFLY_TEXLAB_VERSION", undefined);
++  vi.stubEnv("VITE_OLEAFLY_TINYMIST_VERSION", undefined);
++});
++afterEach(() => vi.unstubAllEnvs());
++
++it("uses distribution server versions without changing vendor download metadata", () => {
++  vi.stubEnv("VITE_OLEAFLY_TEXLAB_VERSION", "5.25.1");
++  vi.stubEnv("VITE_OLEAFLY_TINYMIST_VERSION", "0.14.18");
++  expect(getLanguageServiceRuntimeProfile("texlab").version).toBe("5.25.1");
++  expect(getLanguageServiceRuntimeProfile("tinymist").version).toBe("0.14.18");
++  vi.stubEnv("VITE_OLEAFLY_TEXLAB_VERSION", undefined);
++  expect(getLanguageServiceRuntimeProfile("texlab").version).toBe("5.26.0");
++});
+ 
+ function manifestWithLsp(lsp: Record<string, unknown>) {
+   return {
+--- a/src/lib/language-service/runtime-profile.ts
++++ b/src/lib/language-service/runtime-profile.ts
+@@ -126,8 +126,12 @@
+ export function getLanguageServiceRuntimeProfile(
+   kind: LanguageServiceKind,
+ ): LanguageServiceRuntimeProfile {
+-  return parseLanguageServiceRuntimeProfile(
+-    languageServerManifest,
+-    kind,
+-  );
++  const profile = parseLanguageServiceRuntimeProfile(languageServerManifest, kind);
++  // Distribution builds may supply externally managed servers. Keep the
++  // frontend's version check aligned with the backend's external configuration
++  // without changing the pinned vendor-download manifest or its hashes.
++  const externalVersion = kind === "texlab"
++    ? import.meta.env.VITE_OLEAFLY_TEXLAB_VERSION
++    : import.meta.env.VITE_OLEAFLY_TINYMIST_VERSION;
++  return externalVersion ? { ...profile, version: externalVersion } : profile;
+ }
+--- /dev/null
++++ b/src-tauri/src/language_service/external.rs
+@@ -0,0 +1,269 @@
++//! Explicitly configured, externally managed language servers.
++//!
++//! An absolute executable path and its version must be supplied together. These
++//! are trusted operator settings, never project metadata or a PATH search. A bad
++//! configuration fails closed rather than falling back to a vendor download.
++use super::{LanguageServiceError, LanguageServiceErrorCode, LanguageServiceKind};
++use std::ffi::OsString;
++use std::path::PathBuf;
++
++#[derive(Debug)]
++pub(super) struct ExternalServer {
++    pub(super) executable: PathBuf,
++    pub(super) version: String,
++    typst_minor: Option<String>,
++}
++
++impl ExternalServer {
++    pub(super) fn check_typst_version(&self, version: &str) -> Result<(), LanguageServiceError> {
++        if let Some(minor) = &self.typst_minor {
++            let requested = version.split('.').take(2).collect::<Vec<_>>().join(".");
++            if !numeric_version(version, 3) || &requested != minor {
++                return Err(configuration_error(format!(
++                    "The externally managed Tinymist {} supports Typst {minor}.x, not Typst {version}. Use a compatible project toolchain or change the externally managed server.",
++                    self.version
++                )));
++            }
++        }
++        Ok(())
++    }
++}
++
++fn configuration_error(message: impl Into<String>) -> LanguageServiceError {
++    LanguageServiceError::new(LanguageServiceErrorCode::SidecarUnavailable, message)
++}
++
++pub(super) fn configured(
++    kind: LanguageServiceKind,
++) -> Result<Option<ExternalServer>, LanguageServiceError> {
++    from_environment(kind, |key| std::env::var_os(key))
++}
++
++fn numeric_version(text: &str, parts: usize) -> bool {
++    let numbers: Vec<_> = text.split('.').collect();
++    numbers.len() == parts
++        && numbers.iter().all(|number| {
++            !number.is_empty()
++                && number.bytes().all(|byte| byte.is_ascii_digit())
++                && number.parse::<u32>().is_ok()
++        })
++}
++
++fn from_environment(
++    kind: LanguageServiceKind,
++    read: impl Fn(&str) -> Option<OsString>,
++) -> Result<Option<ExternalServer>, LanguageServiceError> {
++    let (path_key, version_key) = match kind {
++        LanguageServiceKind::TexLab => ("OLEAFLY_TEXLAB", "OLEAFLY_TEXLAB_VERSION"),
++        LanguageServiceKind::Tinymist => ("OLEAFLY_TINYMIST", "OLEAFLY_TINYMIST_VERSION"),
++    };
++    let path = read(path_key);
++    let version = read(version_key);
++    let minor = if kind == LanguageServiceKind::Tinymist {
++        read("OLEAFLY_TINYMIST_TYPST_MINOR")
++    } else {
++        None
++    };
++    if path.is_none() && version.is_none() && minor.is_none() {
++        return Ok(None);
++    }
++    let executable = path.map(PathBuf::from).ok_or_else(|| {
++        configuration_error(format!(
++            "{path_key} is required for the external language server"
++        ))
++    })?;
++    let version = version
++        .and_then(|value| value.into_string().ok())
++        .ok_or_else(|| {
++            configuration_error(format!(
++                "{version_key} must specify the external server's version"
++            ))
++        })?;
++    if !numeric_version(&version, 3) {
++        return Err(configuration_error(format!(
++            "{version_key} must be a numeric major.minor.patch version"
++        )));
++    }
++    if !executable.is_absolute() {
++        return Err(configuration_error(format!(
++            "{path_key} must be an absolute executable path"
++        )));
++    }
++    let metadata = executable
++        .metadata()
++        .map_err(|error| configuration_error(format!("{path_key} cannot be accessed: {error}")))?;
++    if !metadata.is_file() {
++        return Err(configuration_error(format!(
++            "{path_key} must name a regular executable file"
++        )));
++    }
++    #[cfg(unix)]
++    {
++        use std::os::unix::fs::PermissionsExt;
++        if metadata.permissions().mode() & 0o111 == 0 {
++            return Err(configuration_error(format!("{path_key} is not executable")));
++        }
++    }
++    let typst_minor = if kind == LanguageServiceKind::Tinymist {
++        let minor = minor
++            .and_then(|value| value.into_string().ok())
++            .ok_or_else(|| {
++                configuration_error(
++                    "OLEAFLY_TINYMIST_TYPST_MINOR must specify the supported Typst major.minor",
++                )
++            })?;
++        if !numeric_version(&minor, 2) {
++            return Err(configuration_error(
++                "OLEAFLY_TINYMIST_TYPST_MINOR must be a numeric major.minor version",
++            ));
++        }
++        Some(minor)
++    } else {
++        None
++    };
++    Ok(Some(ExternalServer {
++        executable,
++        version,
++        typst_minor,
++    }))
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use std::collections::HashMap;
++    use std::sync::atomic::{AtomicUsize, Ordering};
++
++    struct Fixture {
++        directory: PathBuf,
++        environment: HashMap<String, OsString>,
++    }
++
++    impl Fixture {
++        fn new(kind: LanguageServiceKind) -> Self {
++            static NEXT: AtomicUsize = AtomicUsize::new(0);
++            let directory = std::env::temp_dir().join(format!(
++                "oleafly-external-server-{}-{}",
++                std::process::id(),
++                NEXT.fetch_add(1, Ordering::Relaxed)
++            ));
++            std::fs::create_dir(&directory).unwrap();
++            let executable = directory.join("server");
++            std::fs::write(&executable, b"#!/bin/sh\nexit 0\n").unwrap();
++            #[cfg(unix)]
++            {
++                use std::os::unix::fs::PermissionsExt;
++                std::fs::set_permissions(&executable, std::fs::Permissions::from_mode(0o755))
++                    .unwrap();
++            }
++            let mut environment = HashMap::new();
++            let (path, version, value) = match kind {
++                LanguageServiceKind::TexLab => {
++                    ("OLEAFLY_TEXLAB", "OLEAFLY_TEXLAB_VERSION", "5.25.1")
++                }
++                LanguageServiceKind::Tinymist => {
++                    ("OLEAFLY_TINYMIST", "OLEAFLY_TINYMIST_VERSION", "0.14.18")
++                }
++            };
++            environment.insert(path.into(), executable.into_os_string());
++            environment.insert(version.into(), value.into());
++            if kind == LanguageServiceKind::Tinymist {
++                environment.insert("OLEAFLY_TINYMIST_TYPST_MINOR".into(), "0.14".into());
++            }
++            Self {
++                directory,
++                environment,
++            }
++        }
++
++        fn load(
++            &self,
++            kind: LanguageServiceKind,
++        ) -> Result<Option<ExternalServer>, LanguageServiceError> {
++            from_environment(kind, |key| self.environment.get(key).cloned())
++        }
++    }
++
++    impl Drop for Fixture {
++        fn drop(&mut self) {
++            std::fs::remove_dir_all(&self.directory).unwrap();
++        }
++    }
++
++    #[test]
++    fn absent_configuration_preserves_the_upstream_path() {
++        for kind in [LanguageServiceKind::TexLab, LanguageServiceKind::Tinymist] {
++            assert!(from_environment(kind, |_| None).unwrap().is_none());
++        }
++    }
++
++    #[test]
++    fn valid_configuration_preserves_path_and_actual_version() {
++        let fixture = Fixture::new(LanguageServiceKind::TexLab);
++        let server = fixture.load(LanguageServiceKind::TexLab).unwrap().unwrap();
++        assert_eq!(server.executable, fixture.directory.join("server"));
++        assert_eq!(server.version, "5.25.1");
++    }
++
++    #[test]
++    fn partial_configuration_never_falls_back_to_downloads() {
++        let mut fixture = Fixture::new(LanguageServiceKind::TexLab);
++        fixture.environment.remove("OLEAFLY_TEXLAB_VERSION");
++        assert!(fixture.load(LanguageServiceKind::TexLab).is_err());
++        fixture.environment.remove("OLEAFLY_TEXLAB");
++        fixture
++            .environment
++            .insert("OLEAFLY_TEXLAB_VERSION".into(), "5.25.1".into());
++        assert!(fixture.load(LanguageServiceKind::TexLab).is_err());
++    }
++
++    #[test]
++    fn unsafe_paths_and_versions_are_rejected() {
++        let mut fixture = Fixture::new(LanguageServiceKind::TexLab);
++        for path in [
++            OsString::from("server"),
++            fixture.directory.clone().into_os_string(),
++            fixture.directory.join("missing").into_os_string(),
++        ] {
++            fixture.environment.insert("OLEAFLY_TEXLAB".into(), path);
++            assert!(fixture.load(LanguageServiceKind::TexLab).is_err());
++        }
++        fixture.environment.insert(
++            "OLEAFLY_TEXLAB".into(),
++            fixture.directory.join("server").into_os_string(),
++        );
++        for version in ["", "5.25", "5.25.1\n", "5.25.1;evil"] {
++            fixture
++                .environment
++                .insert("OLEAFLY_TEXLAB_VERSION".into(), version.into());
++            assert!(fixture.load(LanguageServiceKind::TexLab).is_err());
++        }
++    }
++
++    #[test]
++    fn tinymist_requires_explicit_compatibility_and_rejects_other_minor_lines() {
++        let mut fixture = Fixture::new(LanguageServiceKind::Tinymist);
++        let server = fixture
++            .load(LanguageServiceKind::Tinymist)
++            .unwrap()
++            .unwrap();
++        assert!(server.check_typst_version("0.14.2").is_ok());
++        assert!(server.check_typst_version("0.15.1").is_err());
++        assert!(server.check_typst_version("0.14.bad").is_err());
++        fixture.environment.remove("OLEAFLY_TINYMIST_TYPST_MINOR");
++        assert!(fixture.load(LanguageServiceKind::Tinymist).is_err());
++    }
++
++    #[cfg(unix)]
++    #[test]
++    fn non_executable_files_are_rejected() {
++        use std::os::unix::fs::PermissionsExt;
++        let fixture = Fixture::new(LanguageServiceKind::TexLab);
++        std::fs::set_permissions(
++            fixture.directory.join("server"),
++            std::fs::Permissions::from_mode(0o644),
++        )
++        .unwrap();
++        assert!(fixture.load(LanguageServiceKind::TexLab).is_err());
++    }
++}
+--- a/src-tauri/src/language_service/server_runtime.rs
++++ b/src-tauri/src/language_service/server_runtime.rs
+@@ -162,6 +162,14 @@
+     resource: Option<&BundledResourcePaths>,
+ ) -> Result<ServerLaunch, LanguageServiceError> {
+     let inherited = inherited_search_path(std::env::var_os("PATH"), bundled_runtime_directory());
++    if let Some(server) = super::external::configured(kind)? {
++        return Ok(ServerLaunch {
++            executable: server.executable,
++            args: profile(kind)?.args,
++            search_path: launch_search_path(app_local_data, kind, inherited.as_deref())?,
++            working_directory: ensure_tool_shims(app_local_data)?,
++        });
++    }
+     resolve_profile_for_launch(
+         app_local_data,
+         state,
+--- a/src-tauri/src/language_service.rs
++++ b/src-tauri/src/language_service.rs
+@@ -1,3 +1,4 @@
++mod external;
+ mod server_runtime;
+ 
+ use rand::{rngs::OsRng, RngCore};
+@@ -922,6 +923,13 @@
+     state: State<'_, LanguageServiceState>,
+     request: InstallLanguageServiceRequest,
+ ) -> Result<InstallLanguageServiceResponse, LanguageServiceError> {
++    if let Some(server) = configured_server(request.kind, request.project_id.as_deref())? {
++        return Ok(InstallLanguageServiceResponse {
++            kind: request.kind,
++            version: server.version,
++            state: InstallLanguageServiceState::AlreadyInstalled,
++        });
++    }
+     if let Some(choice) = catalog_tinymist_off_thread(&request).await? {
+         let ensured = crate::typst_toolchain::tinymist::ensure_downloaded(&choice)
+             .await
+@@ -979,6 +987,14 @@
+     state: State<'_, LanguageServiceState>,
+     request: InstallLanguageServiceRequest,
+ ) -> Result<LanguageServiceInstallStatusResponse, LanguageServiceError> {
++    if let Some(server) = configured_server(request.kind, request.project_id.as_deref())? {
++        return Ok(LanguageServiceInstallStatusResponse {
++            kind: request.kind,
++            version: server.version,
++            state: LanguageServiceInstallState::Installed,
++            message: None,
++        });
++    }
+     if let Some(choice) = catalog_tinymist_off_thread(&request).await? {
+         return tauri::async_runtime::spawn_blocking(move || catalog_install_status(&choice))
+             .await
+@@ -1012,10 +1028,44 @@
+     })
+ }
+ 
++fn configured_server(
++    kind: LanguageServiceKind,
++    project_id: Option<&str>,
++) -> Result<Option<external::ExternalServer>, LanguageServiceError> {
++    let Some(server) = external::configured(kind)? else {
++        return Ok(None);
++    };
++    if kind == LanguageServiceKind::Tinymist {
++        let version = match project_id {
++            Some(id) => {
++                if id.len() > 128 || paths::validate_project_id(id).is_err() {
++                    return Err(LanguageServiceError::new(
++                        LanguageServiceErrorCode::InvalidWorkspace,
++                        "invalid project id",
++                    ));
++                }
++                let meta = crate::project::read_meta(id).map_err(|_| {
++                    LanguageServiceError::new(
++                        LanguageServiceErrorCode::InvalidWorkspace,
++                        "project metadata is invalid or unreadable",
++                    )
++                })?;
++                crate::typst_toolchain::tinymist::project_typst_version(&meta).to_string()
++            }
++            None => crate::typst_toolchain::default_version(),
++        };
++        server.check_typst_version(&version)?;
++    }
++    Ok(Some(server))
++}
++
+ fn catalog_tinymist(
+     kind: LanguageServiceKind,
+     project_id: Option<&str>,
+ ) -> Result<Option<CatalogTinymist>, LanguageServiceError> {
++    if configured_server(kind, project_id)?.is_some() {
++        return Ok(None);
++    }
+     let (LanguageServiceKind::Tinymist, Some(project_id)) = (kind, project_id) else {
+         return Ok(None);
+     };
+@@ -1135,6 +1185,9 @@
+     app: &AppHandle,
+     kind: LanguageServiceKind,
+ ) -> Result<Option<server_runtime::BundledResourcePaths>, LanguageServiceError> {
++    if external::configured(kind)?.is_some() {
++        return Ok(None);
++    }
+     let Some(relative) = server_runtime::bundled_resource_relative_path(kind)? else {
+         return Ok(None);
+     };

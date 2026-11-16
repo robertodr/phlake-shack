@@ -1,0 +1,99 @@
+diff --git a/crates/oleafly-core/src/templates.rs b/crates/oleafly-core/src/templates.rs
+index 5b400c499..6297df015 100644
+--- a/crates/oleafly-core/src/templates.rs
++++ b/crates/oleafly-core/src/templates.rs
+@@ -268,6 +268,19 @@ pub fn copy_tree_with(
+                 std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+             }
+             std::fs::copy(&from, &to).map_err(|e| e.to_string())?;
++            // Installed templates can be read-only (e.g. in the Nix store).
++            // Copies belong to an editable project, not the resource bundle.
++            let mut permissions = std::fs::metadata(&to)
++                .map_err(|e| e.to_string())?
++                .permissions();
++            #[cfg(unix)]
++            {
++                use std::os::unix::fs::PermissionsExt;
++                permissions.set_mode(permissions.mode() | 0o200);
++            }
++            #[cfg(not(unix))]
++            permissions.set_readonly(false);
++            std::fs::set_permissions(&to, permissions).map_err(|e| e.to_string())?;
+         }
+     }
+     Ok(())
+@@ -472,6 +485,74 @@ mod tests {
+         }
+     }
+ 
++    #[cfg(unix)]
++    #[test]
++    fn readonly_templates_create_editable_projects() {
++        use std::os::unix::fs::PermissionsExt;
++
++        let base = tempfile::tempdir().unwrap();
++        let src = base.path().join("readonly");
++        let dest = base.path().join("project");
++        std::fs::create_dir_all(&src).unwrap();
++        std::fs::create_dir_all(&dest).unwrap();
++        std::fs::write(
++            src.join("template.json"),
++            serde_json::json!({
++                "id": "readonly", "name": "Read-only template",
++                "main_doc": "main.typ", "engine": "typst"
++            })
++            .to_string(),
++        )
++        .unwrap();
++        let main = src.join("main.typ");
++        std::fs::write(&main, "= Original\n").unwrap();
++        std::fs::set_permissions(&main, std::fs::Permissions::from_mode(0o444)).unwrap();
++
++        instantiate_from(&src, &dest).unwrap();
++        // Research-project creation replaces the copied main with its preview.
++        std::fs::write(dest.join("main.typ"), "= Research project\n").unwrap();
++        assert_eq!(std::fs::read_to_string(&main).unwrap(), "= Original\n");
++        assert_eq!(
++            std::fs::metadata(&main).unwrap().permissions().mode() & 0o777,
++            0o444
++        );
++    }
++
++    #[cfg(unix)]
++    #[test]
++    fn readonly_nested_files_gain_only_owner_write_permission() {
++        use std::os::unix::fs::PermissionsExt;
++
++        let base = tempfile::tempdir().unwrap();
++        let src = base.path().join("src");
++        let dest = base.path().join("project");
++        std::fs::create_dir_all(src.join("nested")).unwrap();
++        std::fs::create_dir_all(&dest).unwrap();
++        for (name, mode) in [("chapter.typ", 0o444), ("script.sh", 0o555)] {
++            let path = src.join("nested").join(name);
++            std::fs::write(&path, "original").unwrap();
++            std::fs::set_permissions(&path, std::fs::Permissions::from_mode(mode)).unwrap();
++        }
++
++        copy_tree(&src, &dest, 0).unwrap();
++        for (name, mode) in [("chapter.typ", 0o444), ("script.sh", 0o555)] {
++            let copied = dest.join("nested").join(name);
++            assert_eq!(
++                std::fs::metadata(&copied).unwrap().permissions().mode() & 0o777,
++                mode | 0o200
++            );
++            assert_eq!(
++                std::fs::metadata(src.join("nested").join(name))
++                    .unwrap()
++                    .permissions()
++                    .mode()
++                    & 0o777,
++                mode
++            );
++            std::fs::write(copied, "edited").unwrap();
++        }
++    }
++
+     #[cfg(unix)]
+     #[test]
+     fn copy_tree_rejects_symlinks() {
