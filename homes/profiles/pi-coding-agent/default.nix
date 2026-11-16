@@ -11,7 +11,9 @@ in
 {
   programs.pi-coding-agent = {
     enable = true;
-    package = pkgs.llm-agents.pi;
+    package = pkgs.llm-agents.pi.override {
+      useBun = false;
+    };
     context = ''
       If you make a commit, follow conventional commits and add a trailer:
       `Assisted-by: <harness>:<model>`, where `<harness>` is the current agent harness
@@ -42,12 +44,16 @@ in
       defaultModel = "gpt-6.1-sol";
       defaultProvider = "openai-codex";
       defaultThinkingLevel = "medium";
+      compaction = {
+        keepRecentTokens = 8000;
+        reserveTokens = 32768;
+      };
     };
   };
 
   # Keep mutable npm updates off the boot/login critical path. A user timer
   # retries daily, including after offline starts, without blocking activation.
-  systemd.user = {
+  systemd.user = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     services.pi-update-extensions = {
       Unit.Description = "Update Pi extensions";
       Service = {
@@ -74,6 +80,9 @@ in
   # optional fields: Home Manager represents them as null, which Pi rejects.
   home = {
     file = {
+      "${config.programs.pi-coding-agent.configDir}/extensions/bounded-compaction".source =
+        ./bounded-compaction;
+
       "${config.programs.pi-coding-agent.configDir}/mcp.json" = lib.mkIf config.programs.mcp.enable {
         source = jsonFormat.generate "pi-mcp.json" {
           mcpServers = lib.mapAttrs (

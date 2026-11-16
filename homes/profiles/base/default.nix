@@ -1,16 +1,17 @@
 {
   pkgs,
+  lib,
   config,
   ...
 }:
 let
-  inherit (config.home) username;
   inherit (config.xdg) stateHome;
 in
 {
   lib.phlake-shack = rec {
     fsPath = builtins.toString ../../..;
-    userConfigPath = "${fsPath}/users/${username}/config";
+    # Repository user directory; independent of the per-host OS account name.
+    userConfigPath = "${fsPath}/users/roberto/config";
 
     whoami = {
       firstName = "Roberto";
@@ -34,8 +35,8 @@ in
   };
 
   home = {
-    username = "roberto";
-    homeDirectory = "/home/roberto";
+    username = lib.mkDefault "roberto";
+    homeDirectory = lib.mkDefault "/home/roberto";
 
     activation.createSopsAgeDir = config.lib.dag.entryAfter [ "writeBoundary" ] ''
       mkdir -p "${config.xdg.configHome}/sops/age"
@@ -56,7 +57,7 @@ in
     };
 
     shellAliases = {
-      xopen = "xdg-open";
+      xopen = if pkgs.stdenv.hostPlatform.isDarwin then "open" else "xdg-open";
       df = "duf";
       du = "ncdu";
       ps = "procs";
@@ -68,45 +69,55 @@ in
     #    mkOutOfStoreSymlink "${config.lib.phlake-shack.userConfigPath}/authinfo.gpg";
     #};
 
-    packages = with pkgs; [
-      procs
-      duf
-      ncdu
-      iputils
-      numbat
-      openconnect
-      openvpn
-      rclone
-      step-cli
-      tealdeer
+    packages =
+      with pkgs;
+      [
+        procs
+        duf
+        ncdu
+        step-cli
 
-      (aspellWithDicts (
-        ds: with ds; [
-          en
-          en-computers
-          en-science
-          it
-          nb
-          nn
-          sv
-        ]
-      ))
+        ffmpeg
+        ghostscript
+        imagemagick
+        jless
+        pdf2svg
+        pdftk
+        poppler
+      ]
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+        iputils
+        playerctl
 
-      delta
-      enchant
-      ffmpeg
-      ghostscript
-      imagemagick
-      jless
-      pdf2svg
-      pdftk
-      playerctl
-      poppler
-      wordnet
-    ];
+        openconnect
+        openvpn
+
+        # Spell checking and dictionaries for the Linux Emacs setup.
+        (aspellWithDicts (
+          ds: with ds; [
+            en
+            en-computers
+            en-science
+            it
+            nb
+            nn
+            sv
+          ]
+        ))
+        enchant
+        wordnet
+      ];
   };
 
-  programs.home-manager.enable = true;
+  # Prefer program modules over bare packages where Home Manager has one.
+  # (delta and tealdeer come from programs.delta/programs.tealdeer in the git
+  # and tealdeer profiles.)
+  programs = {
+    fd.enable = true;
+    home-manager.enable = true;
+    numbat.enable = true;
+    rclone.enable = pkgs.stdenv.hostPlatform.isLinux;
+  };
 
   imports = map (x: ./.. + ("/" + x)) [
     "atuin"

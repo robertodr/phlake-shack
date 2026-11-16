@@ -1,7 +1,6 @@
 {
   pkgs,
   config,
-  gitbutlerPackage,
   ...
 }:
 {
@@ -18,7 +17,7 @@
       brightnessctl
       freerdp
       hotspot
-      gitbutlerPackage
+      llm-agents.gitbutler
       meld
       ferdium
       inkscape

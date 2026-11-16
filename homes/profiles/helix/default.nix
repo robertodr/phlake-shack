@@ -23,7 +23,11 @@
 
       # CMake
       pkgsUnstable.neocmakelsp
-      pkgsUnstable.gersemi
+      # Gersemi's Rust backend links SQLite, missing from this nixpkgs recipe.
+      (pkgsUnstable.gersemi.overridePythonAttrs (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgsUnstable.pkg-config ];
+        buildInputs = (old.buildInputs or [ ]) ++ [ pkgsUnstable.sqlite ];
+      }))
 
       # Python
       ty
