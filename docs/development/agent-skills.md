@@ -4,10 +4,11 @@
 `but`, `herdr`, `qmd`, and five selected official Obsidian skills: `defuddle`,
 `json-canvas`, `obsidian-bases`, `obsidian-cli`, and `obsidian-markdown`.
 `knap` and `obsidian-headless` are deliberately excluded from both the package
-and managed skill links. Home Manager links the same immutable directories
+and managed skill links. Home Manager links these common immutable directories
 into `~/.agents/skills/` (discovered by Pi) and Claude Code's configured
-`skills/` directory. No duplicate links are created in `~/.pi/agent/skills/`.
-Other, unmanaged skills may coexist.
+`skills/` directory. The profile also adopts 38 previously imperative community
+skills, preserving their narrower Claude selection (see below). No duplicate
+links are created in `~/.pi/agent/skills/`. Other, unmanaged skills may coexist.
 
 Herdr and Qmd already ship `share/skills/<package>/<skill>` through
 `installAgentSkills`. The pinned GitButler CLI embeds its skill but does not
@@ -41,6 +42,55 @@ are not installed by this profile. No sync/publish service is started and no
 vault is modified. Previously managed excluded skill links disappear on the
 next Home Manager activation; unrelated unmanaged installations are not deleted.
 
+## Previously imperative community skills
+
+`pkgs/community-skills/sources.nix` pins three upstream repositories by commit
+and content hash, with explicit per-skill paths:
+
+| Source | Commit | Skills | Claude links |
+| --- | --- | ---: | ---: |
+| `obra/superpowers` | `b36e0829c6d0140e93cfef2ca599b1b07d4a7797` | 14 | 0 |
+| `mattpocock/skills` | `c55ee46073ed923f86ce59a5eb3b6d895095d1b7` | 23 | 23 |
+| `vercel-labs/skills` | `d667282815248da03a08a18272b5d2eef9caf77c` | 1 (`find-skills`) | 0 |
+
+All 38 skill-directory tree hashes matched the existing
+`~/.agents/.skill-lock.json` registry when adopting these pins. All installed
+instruction bodies also matched these upstream versions. This migration does
+not upgrade the skills or enable additional automatic workflows.
+
+The package preserves entire skill directories, including scripts, references
+and executable permissions, plus each repository's license and source metadata.
+It does not execute upstream scripts, install their external tool dependencies,
+register plugins/hooks, or adapt Claude-oriented instructions to Pi's tool API.
+Runtime permissions and explicit delegation authorization remain separate.
+
+All 38 are linked into `~/.agents/skills/`; only the 23 Matt Pocock skills are
+additionally linked into Claude's configured directory, matching the previous
+explicit links. No duplicate Pi-private links are needed. This applies to
+Kellanved, Dancer and Crokus.
+
+### Declarative visibility
+
+The `autoInvokeSkills` argument in `pkgs/community-skills/default.nix` preserves
+the existing Pi visibility policy: only `dispatching-parallel-agents` and
+`subagent-driven-development` are automatically advertised. The other 36 have
+`disable-model-invocation: true` and remain explicitly invocable with
+`/skill:<name>`. Only that metadata field is configured; upstream descriptions,
+instruction bodies and other files are retained.
+
+Change `autoInvokeSkills` in Nix (or pass it from the profile), rebuild, and
+reload Pi to change visibility. `/toggle-skills` edits files in place and cannot
+persist changes to these immutable store-backed skills. It also cannot maintain
+independent visibility for two clients sharing the same file.
+
+Updates require reviewing the source commit, hash and allowlist together.
+New upstream skills are not adopted automatically. Do not run `skills update`
+or other imperative installers against these managed paths. The old installer
+registry is not managed or automatically pruned; retain it as migration evidence,
+not as the source of truth for the adopted skills. Package-provided skills from
+`pi-subagents` and `pi-starship` remain part of their existing Pi npm packages;
+this migration does not change their mutable runtime installation.
+
 ## First activation: adopt existing copies
 
 Existing imperative installations are not overwritten automatically. Before
@@ -49,22 +99,38 @@ agent discovery directories. In particular, the old GitButler directory is
 named `gitbutler`, but its declared skill name is `but`. Leaving it installed
 alongside the new `but` directory causes duplicate-name warnings.
 
-On the current machine, old GitButler copies exist at:
+Check for legacy GitButler copies at:
 
 - `~/.agents/skills/gitbutler`
 - `~/.claude/skills/gitbutler`
 - `~/.pi/agent/skills/gitbutler`
 
-For example, in Fish, back these up without deleting them:
+For example, from the repository root in Fish, first obtain the exact community
+allowlist without fetching or installing anything:
+
+```fish
+set community_skills (nix eval --raw --file ./pkgs/community-skills/sources.nix --apply 'sources: builtins.concatStringsSep "\\n" (builtins.concatMap (source: builtins.attrNames source.skills) (builtins.attrValues sources))')
+count $community_skills # Must print 38; stop if evaluation failed.
+```
+
+Inspect the existing copies before running the following **one-time** backup.
+Do not use this after Home Manager already owns these links. The existing 38
+shared directories and Pi-private duplicate links must be moved aside; backing
+up only Claude's links would leave Home Manager collisions and Pi duplicates.
+The backup retains the directory hierarchy so relative symlinks remain useful:
 
 ```fish
 set backup (mktemp -d "$HOME/agent-skills-backup.XXXXXX")
+if test -f "$HOME/.agents/.skill-lock.json"
+    mkdir -p "$backup/.agents"
+    cp -- "$HOME/.agents/.skill-lock.json" "$backup/.agents/"
+end
 for agent in .agents .claude .pi/agent
-    set label (string replace -a / - $agent)
-    for skill in gitbutler but herdr qmd defuddle json-canvas obsidian-bases obsidian-cli obsidian-markdown
+    mkdir -p "$backup/$agent/skills"
+    for skill in gitbutler but herdr qmd defuddle json-canvas obsidian-bases obsidian-cli obsidian-markdown $community_skills
         set source "$HOME/$agent/skills/$skill"
         if test -e "$source"; or test -L "$source"
-            mv -- "$source" "$backup/$label-$skill"
+            mv -- "$source" "$backup/$agent/skills/$skill"
         end
     end
 end
@@ -79,7 +145,8 @@ Before a Git-backed flake rebuild, register the new files with Git:
 
 ```sh
 git add homes/profiles/agent-skills/default.nix pkgs/but-skills/default.nix \
-  pkgs/obsidian-skills/default.nix tests/agent-skills-eval.nix \
+  pkgs/obsidian-skills/default.nix pkgs/community-skills/ \
+  tests/agent-skills-eval.nix tests/community-skills.test.py \
   docs/development/agent-skills.md
 ```
 
@@ -99,10 +166,16 @@ Pi extension are separate from these skill files.
 nix build path:.#checks.x86_64-linux.agent-skills-eval --no-link
 ```
 
-The check evaluates links for Kellanved, Dancer, and Crokus, verifies identical
-sources and no managed Pi-private duplicates, and checks native Linux skill
-files, declared names, GitButler reference files, and Obsidian's bundled Canvas,
-Bases and Markdown references. It also verifies the excluded skills stay absent,
-checks Defuddle is selected on all three hosts, and runs both Linux homes' CLIs
-on local HTML to check Markdown extraction and title metadata. Cross-evaluation
-is not proof of native Darwin execution, activation, or agent discovery.
+The check evaluates links for Kellanved, Dancer, and Crokus, verifies common
+sources, the preserved community Claude selection and no managed Pi-private
+duplicates, and checks native Linux skill files and declared names. For both
+Linux homes it checks all 38 community directories against their pinned source
+files, executable permissions, instruction bodies and parsed YAML metadata,
+including the two-visible/36-hidden policy, licenses and provenance. It exercises
+visibility rewriting on fixture metadata without running any upstream scripts.
+
+It also verifies GitButler and Obsidian reference files, checks that excluded
+Obsidian skills stay absent, checks Defuddle is selected on all three hosts, and
+runs both Linux homes' CLIs on local HTML to check Markdown extraction and title
+metadata. Cross-evaluation and file checks are not proof of native Darwin
+execution, activation, live skill compatibility, or actual agent discovery.

@@ -15,34 +15,43 @@ let
   obsidianSkills = pkgs.callPackage ../../../pkgs/obsidian-skills {
     inherit (pkgsUnstable) installAgentSkills;
   };
-  skills = {
+  communitySkills = pkgs.callPackage ../../../pkgs/community-skills {
+    inherit (pkgsUnstable) installAgentSkills;
+  };
+  communitySources = lib.genAttrs communitySkills.skillNames (
+    name: "${communitySkills}/share/skills/${name}/${name}"
+  );
+  commonSkills = {
     but = "${butSkills}/share/skills/but/but";
     herdr = "${config.programs.herdr.package}/share/skills/herdr/herdr";
     qmd = "${pkgs.llm-agents.qmd}/share/skills/qmd/qmd";
   }
   // lib.genAttrs obsidianSkills.skillNames (name: "${obsidianSkills}/share/skills/${name}/${name}");
-  destinations = [
-    ".agents/skills"
-    "${config.programs.claude-code.configDir}/skills"
-  ];
+  destinations = {
+    ".agents/skills" = commonSkills // communitySources;
+    "${config.programs.claude-code.configDir}/skills" =
+      commonSkills // lib.getAttrs communitySkills.claudeSkillNames communitySources;
+  };
 in
 {
   # The Defuddle skill invokes this CLI; keep it declarative rather than using npm.
   home.packages = [ pkgs.defuddle ];
 
-  # Pi discovers ~/.agents/skills itself. Link the exact same allowlist for
-  # Claude, without duplicating it in Pi's private directory. Whole-directory
-  # links preserve references/assets and need no evaluation-time traversal
+  # Pi discovers ~/.agents/skills itself, without Pi-private duplicate links.
+  # Keep the common skills shared and preserve the migrated Claude selection.
+  # Whole-directory links retain resources without evaluation-time traversal
   # of package outputs (important when evaluating Darwin from Linux).
   home.file = lib.listToAttrs (
-    lib.concatMap (
-      directory:
+    lib.concatLists (
       lib.mapAttrsToList (
-        name: source:
-        lib.nameValuePair "${directory}/${name}" {
-          inherit source;
-        }
-      ) skills
-    ) destinations
+        directory: skills:
+        lib.mapAttrsToList (
+          name: source:
+          lib.nameValuePair "${directory}/${name}" {
+            inherit source;
+          }
+        ) skills
+      ) destinations
+    )
   );
 }
