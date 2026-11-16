@@ -1,9 +1,10 @@
 # Shared agent skills
 
 `homes/profiles/agent-skills/default.nix` defines the shared allowlist:
-`but`, `herdr`, `qmd`, and the seven official Obsidian skills: `defuddle`,
-`json-canvas`, `knap`, `obsidian-bases`, `obsidian-cli`, `obsidian-headless`, and
-`obsidian-markdown`. Home Manager links the same immutable directories
+`but`, `herdr`, `qmd`, and five selected official Obsidian skills: `defuddle`,
+`json-canvas`, `obsidian-bases`, `obsidian-cli`, and `obsidian-markdown`.
+`knap` and `obsidian-headless` are deliberately excluded from both the package
+and managed skill links. Home Manager links the same immutable directories
 into `~/.agents/skills/` (discovered by Pi) and Claude Code's configured
 `skills/` directory. No duplicate links are created in `~/.pi/agent/skills/`.
 Other, unmanaged skills may coexist.
@@ -29,10 +30,16 @@ Update the revision/date/hash and review the allowlist together. New upstream
 skills do not become enabled automatically. No imperative marketplace or npm
 skill installer is run at activation.
 
-These are instruction files, not extra tool installations: Defuddle, Knap and
-Obsidian Headless executables, desktop CLI enablement, account credentials,
-subscriptions, and vault/sync configuration remain separate. Installing these
-skills does not start sync/publish services or modify any vault.
+The profile also installs `pkgs.defuddle`, providing the `defuddle` executable
+used by the Defuddle skill (`defuddle parse <url> --md`). No global npm install
+or `npx` download is needed. The pinned stable package supports those flags;
+the check exercises local HTML extraction without network access.
+
+Other runtime setup remains separate: Obsidian desktop CLI enablement, account
+credentials and vault configuration are not changed. Knap and Obsidian Headless
+are not installed by this profile. No sync/publish service is started and no
+vault is modified. Previously managed excluded skill links disappear on the
+next Home Manager activation; unrelated unmanaged installations are not deleted.
 
 ## First activation: adopt existing copies
 
@@ -54,7 +61,7 @@ For example, in Fish, back these up without deleting them:
 set backup (mktemp -d "$HOME/agent-skills-backup.XXXXXX")
 for agent in .agents .claude .pi/agent
     set label (string replace -a / - $agent)
-    for skill in gitbutler but herdr qmd defuddle json-canvas knap obsidian-bases obsidian-cli obsidian-headless obsidian-markdown
+    for skill in gitbutler but herdr qmd defuddle json-canvas obsidian-bases obsidian-cli obsidian-markdown
         set source "$HOME/$agent/skills/$skill"
         if test -e "$source"; or test -L "$source"
             mv -- "$source" "$backup/$label-$skill"
@@ -95,5 +102,7 @@ nix build path:.#checks.x86_64-linux.agent-skills-eval --no-link
 The check evaluates links for Kellanved, Dancer, and Crokus, verifies identical
 sources and no managed Pi-private duplicates, and checks native Linux skill
 files, declared names, GitButler reference files, and Obsidian's bundled Canvas,
-Bases and Markdown references. Cross-evaluation is not
-proof of native Darwin builds, activation, or agent discovery.
+Bases and Markdown references. It also verifies the excluded skills stay absent,
+checks Defuddle is selected on all three hosts, and runs both Linux homes' CLIs
+on local HTML to check Markdown extraction and title metadata. Cross-evaluation
+is not proof of native Darwin execution, activation, or agent discovery.

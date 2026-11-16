@@ -27,6 +27,9 @@ let
   ];
 in
 {
+  # The Defuddle skill invokes this CLI; keep it declarative rather than using npm.
+  home.packages = [ pkgs.defuddle ];
+
   # Pi discovers ~/.agents/skills itself. Link the exact same allowlist for
   # Claude, without duplicating it in Pi's private directory. Whole-directory
   # links preserve references/assets and need no evaluation-time traversal

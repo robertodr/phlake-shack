@@ -9,10 +9,8 @@ let
   skillNames = [
     "defuddle"
     "json-canvas"
-    "knap"
     "obsidian-bases"
     "obsidian-cli"
-    "obsidian-headless"
     "obsidian-markdown"
   ];
 in
