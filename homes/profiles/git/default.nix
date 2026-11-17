@@ -10,6 +10,14 @@ in
 
     lfs.enable = true;
 
+    includes = [
+      {
+        # A trailing slash also matches repositories in nested directories.
+        condition = "gitdir:~/Workspace/Algorithmiq/";
+        contents.user.email = "roberto@algorithmiq.fi";
+      }
+    ];
+
     settings = {
       user = {
         name = "Roberto Di Remigio Eikås";

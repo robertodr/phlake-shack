@@ -3,7 +3,7 @@ let
   signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIODV5S21+jV0900ubPoYvdHol/xfbJjVhxayuMEFuPKo";
   # Trust our own key for local verification (git log --show-signature, %G?).
   allowedSigners = pkgs.writeText "git-allowed-signers" ''
-    ${config.programs.git.settings.user.email} namespaces="git" ${signingKey}
+    ${config.programs.git.settings.user.email},roberto@algorithmiq.fi namespaces="git" ${signingKey}
   '';
 in
 {
