@@ -23,6 +23,7 @@
       llm-agents.but
       llm-agents.codegraph
       llm-agents.coderabbit-cli
+      llm-agents.pi-acp
       llm-agents.qmd
       llm-agents.rtk
       llm-agents.skills
