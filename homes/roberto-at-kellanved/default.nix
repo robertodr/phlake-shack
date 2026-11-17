@@ -1,6 +1,7 @@
-{ ... }:
+{ pkgs, ... }:
 {
   home.stateVersion = "24.11";
+  home.packages = [ pkgs.oleafly ];
 
   imports = [
     ../profiles/base
