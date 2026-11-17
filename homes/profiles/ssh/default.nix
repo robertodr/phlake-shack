@@ -10,6 +10,11 @@ in
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
+    settings."dancer" = {
+      hostname = "192.168.68.104";
+      user = "roberto";
+      forwardAgent = false;
+    };
     settings."*" = {
       forwardAgent = false;
       addKeysToAgent = "no";
