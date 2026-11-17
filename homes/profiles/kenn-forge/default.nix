@@ -13,16 +13,6 @@ in
       sync_budget_per_hour = 0;
       sync_interval = "15m";
 
-      repos = map algorithmiq [
-        "aurora-utils"
-        "aurora-measurement"
-        "aurora-state"
-        "yaqs"
-        "tinite"
-        "tem-qiskit-function"
-        "aurora-qiskit-function"
-      ];
-
       terminal = {
         font_family = "'JuliaMono', 'Fira Code Retina', Consolas, 'Courier New', monospace";
         renderer = "ghostty-web";

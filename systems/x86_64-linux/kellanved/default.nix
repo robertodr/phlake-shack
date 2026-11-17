@@ -113,6 +113,25 @@
   };
 
   networking.hostName = "kellanved";
+  networking.hosts."127.0.0.1" = [ "kenn.localhost" ];
+
+  # A memorable, local-only URL for the user-session Kenn Forge service.
+  services.nginx = {
+    enable = true;
+    recommendedProxySettings = true;
+    virtualHosts."kenn.localhost" = {
+      listen = [
+        {
+          addr = "127.0.0.1";
+          port = 80;
+        }
+      ];
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:${toString config.home-manager.users.roberto.services.kenn-forge.settings.port}";
+        proxyWebsockets = true;
+      };
+    };
+  };
 
   programs.ssh.knownHosts = {
     "sshca.my-eurohpc.eu".publicKey =
