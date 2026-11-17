@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   pkgsUnstable,
   ...
 }:
@@ -25,6 +26,11 @@
   };
 
   networking.hostName = "dancer";
+
+  # Secret Service for GitButler's GitHub credentials. This also enables
+  # PAM unlocking for console password logins; SSH key logins need manual unlock.
+  services.gnome.gnome-keyring.enable = true;
+  environment.systemPackages = [ pkgs.libsecret ];
 
   services = {
     # 2.1.6 fixes the JCat entry limit for Lenovo's KEK 2011 -> 2023 update.
