@@ -78,8 +78,9 @@ copies have been discovered or physically securely erased.
 ## Retained regression coverage
 
 The flake keeps checks for manual boot and its six masks, fwupd's EFI helper,
-LAN SSH restrictions, impermanence/storage behavior and host invariants, alongside
-pre-commit formatting checks. Deployment schema/settings and Dancer-only battery
+LAN-only and LAN-plus-Tailscale SSH restrictions, impermanence/storage behavior
+and host invariants, alongside pre-commit formatting checks. Deployment
+schema/settings and Dancer-only battery
 prompt checks are also available. These cover active functionality, not the retired
 experiment. `host-invariants` requires a private local Framework baseline; do not
 export that baseline or treat it as a portable public CI fixture. Pre-commit

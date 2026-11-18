@@ -41,6 +41,7 @@ diskoLib.testLib.makeDiskoTest {
     imports = [
       impermanence.nixosModules.impermanence
       ../systems/profiles/impermanence
+      ../systems/profiles/services/tailscale/dancer-ssh.nix
     ];
 
     boot.initrd = {
@@ -50,6 +51,9 @@ diskoLib.testLib.makeDiskoTest {
       };
       luks.devices.encrypted.keyFile = "/tmp/secret.key";
     };
+    # Test the production state bind mount with a synthetic marker only. No
+    # daemon, real node identity, credentials, or enrollment in this VM.
+    services.tailscale.enable = lib.mkForce false;
     fileSystems."/persist".neededForBoot = true;
     environment.systemPackages = [
       pkgs.sqlite
@@ -74,6 +78,10 @@ diskoLib.testLib.makeDiskoTest {
     machine.succeed("umask 077; printf task8-vm-efi-seed > /boot/task8-efi-seed")
     machine.succeed("test \"$(stat -c %u /boot/task8-efi-seed)\" = 0")
     machine.succeed("stat -c %a /boot/task8-efi-seed | grep -E '^[0-7]00$'")
+    machine.succeed("findmnt -n -o SOURCE /var/lib/tailscale | grep -F /persist/var/lib/tailscale")
+    machine.succeed("test \"$(stat -c %u:%g:%a /var/lib/tailscale)\" = 0:0:700")
+    machine.succeed("test \"$(stat -c %u:%g:%a /persist/var/lib/tailscale)\" = 0:0:700")
+    machine.succeed("umask 077; printf synthetic-not-node-state > /var/lib/tailscale/persistence-marker")
     machine.succeed("touch /root-reset-probe /home/home-probe /persist/persist-probe /nix/nix-probe /var/lib/nixos/nixos-probe")
     machine.succeed("mkdir -p /etc/NetworkManager/system-connections")
     machine.succeed("install -m 0600 /dev/stdin /etc/NetworkManager/system-connections/synthetic.nmconnection <<'EOF'\n[connection]\nid=synthetic\ntype=ethernet\ninterface-name=eth-test\n\n[ipv4]\nmethod=disabled\n\n[ipv6]\nmethod=ignore\nEOF")
@@ -121,6 +129,11 @@ diskoLib.testLib.makeDiskoTest {
     log.info("TASK7: post-reset mount /persist: " + machine.succeed("findmnt -n -o TARGET,SOURCE,FSTYPE,OPTIONS /persist"))
     log.info("TASK7: post-reset mount /var/lib/nixos: " + machine.succeed("findmnt -n -o TARGET,SOURCE,FSTYPE,OPTIONS /var/lib/nixos"))
     log.info("TASK7: post-reset path status: " + machine.succeed("for p in /root-reset-probe /home/home-probe /persist/persist-probe /nix/nix-probe /var/lib/nixos/nixos-probe /nix/var/nix/profiles/task7-package-profile; do if test -e \"$p\"; then echo \"$p present\"; else echo \"$p missing\"; fi; done"))
+    machine.succeed("findmnt -n -o SOURCE /var/lib/tailscale | grep -F /persist/var/lib/tailscale")
+    machine.succeed("test \"$(stat -c %u:%g:%a /var/lib/tailscale)\" = 0:0:700")
+    machine.succeed("test \"$(stat -c %u:%g:%a /persist/var/lib/tailscale)\" = 0:0:700")
+    machine.succeed("grep -Fx synthetic-not-node-state /var/lib/tailscale/persistence-marker")
+    machine.succeed("test \"$(stat -c %u:%g:%a /var/lib/tailscale/persistence-marker)\" = 0:0:600")
     machine.fail("test -e /root-reset-probe")
     machine.succeed("test -e /home/home-probe")
     machine.succeed("test -e /persist/persist-probe")

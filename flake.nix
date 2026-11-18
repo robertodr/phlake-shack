@@ -290,6 +290,13 @@
           fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;
           fwupdTmpfilesRules = inputs.self.nixosConfigurations.dancer.config.systemd.tmpfiles.rules;
         };
+        tailscale-ssh-eval = import ./tests/tailscale-ssh-eval.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs) self;
+        };
+        ssh-lan-tailscale = import ./tests/ssh-lan-tailscale.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
         ssh-lan = import ./tests/ssh-lan.nix {
           inherit pkgsUnstable;
           pkgs = nixpkgs.legacyPackages.${system};

@@ -45,10 +45,13 @@ swap. Confirm the intended root-rollback behavior without deleting persistent
 data. Verify public SSH host-key fingerprints locally before accepting them
 from another machine.
 
-Production SSH accepts keys for `roberto` only from IPv4 `192.168.68.0/22`;
-root, password, keyboard-interactive and inbound IPv6 SSH access are disabled.
-There is no direct off-LAN access. Lid close and idle actions are ignored;
-suspend and hibernation are disabled.
+The repository SSH policy accepts approved keys for `roberto` from home IPv4
+`192.168.68.0/22` and TCP 22 on `tailscale0` (IPv4 and IPv6). Other physical
+IPv4/IPv6 SSH, root, password and keyboard-interactive login remain disabled.
+Tailscale access requires separately approved activation and enrollment; source
+configuration alone does not establish live off-LAN access. See the
+[Tailscale handoff](dancer-tailscale-handoff.md). Lid close and idle actions are
+ignored; suspend and hibernation are disabled.
 
 ## Host-specific choices
 

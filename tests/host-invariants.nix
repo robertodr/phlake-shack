@@ -294,7 +294,7 @@ let
     }
     {
       assertion = c.services.openssh.enable;
-      message = "dancer must enable the LAN-only OpenSSH policy";
+      message = "dancer must enable the LAN-plus-Tailscale OpenSSH policy";
     }
     {
       assertion = c.services.openssh.openFirewall == false;

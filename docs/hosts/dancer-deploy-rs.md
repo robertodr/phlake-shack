@@ -106,9 +106,12 @@ steps or prune generations.
 
 There is no automatic reboot. Any subsequent reboot is separately approved and
 attended: Dancer still needs its usual LUKS passphrase. The six masks, encrypted
-storage/persistence, fwupd support and LAN SSH policy remain in effect. The
-historical reported generation-12 boot is not evidence that deploy-rs itself has
-been exercised.
+storage/persistence, fwupd support and LAN SSH fallback remain in effect.
+The repository also configures restrictive OpenSSH over Tailscale; follow the
+[Tailscale handoff](dancer-tailscale-handoff.md) before any first activation or
+enrollment. This runbook does not authorize that live work. The historical
+reported generation-12 boot is not evidence that deploy-rs itself has been
+exercised.
 
 ## Tooling pin
 
