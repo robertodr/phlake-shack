@@ -185,10 +185,23 @@ let
     (check "unapproved-Crokus-LAN-alias-unchanged" (
       self.homeConfigurations."robertoeikas@crokus".config.programs.ssh.settings.dancer.data.hostname
       == "192.168.68.104"
+      && !(self.homeConfigurations."robertoeikas@crokus".config.programs.ssh.settings ? dancer-lan)
     ))
-    (check "shared-LAN-alias-unchanged" (
+    (check "Dancer-LAN-alias-unchanged" (
       c.home-manager.users.roberto.programs.ssh.settings.dancer.data.hostname == "192.168.68.104"
-      && k.home-manager.users.roberto.programs.ssh.settings.dancer.data.hostname == "192.168.68.104"
+      && !(c.home-manager.users.roberto.programs.ssh.settings ? dancer-lan)
+    ))
+    (check "Kellanved-verified-Tailscale-DNS-alias" (
+      k.home-manager.users.roberto.programs.ssh.settings.dancer.data.hostname
+      == "dancer.tail99ea27.ts.net"
+      && k.home-manager.users.roberto.programs.ssh.settings.dancer.data.user == "roberto"
+      && !k.home-manager.users.roberto.programs.ssh.settings.dancer.data.forwardAgent
+    ))
+    (check "Kellanved-independent-LAN-recovery-alias" (
+      k.home-manager.users.roberto.programs.ssh.settings ? dancer-lan
+      && k.home-manager.users.roberto.programs.ssh.settings.dancer-lan.data.hostname == "192.168.68.104"
+      && k.home-manager.users.roberto.programs.ssh.settings.dancer-lan.data.user == "roberto"
+      && !k.home-manager.users.roberto.programs.ssh.settings.dancer-lan.data.forwardAgent
     ))
     (check "deploy-remains-LAN-with-rollback-and-no-agent-forwarding" (
       node.hostname == "192.168.68.104"
@@ -228,7 +241,11 @@ pkgs.runCommand "tailscale-ssh-evaluation"
       ]
     );
     tailscaleSet = scriptPath c.systemd.services.tailscaled-set.serviceConfig.ExecStart;
-    nativeBuildInputs = [ pkgs.bash ];
+    clientSshConfig = k.home-manager.users.roberto.home.file.".ssh/config".source;
+    nativeBuildInputs = [
+      pkgs.bash
+      pkgs.openssh
+    ];
   }
   ''
     for script in $firewallScripts; do
@@ -236,5 +253,15 @@ pkgs.runCommand "tailscale-ssh-evaluation"
     done
     bash -n "$tailscaleSet"
     grep -F -- ${lib.escapeShellArg "${lib.getExe ts.package} set ${lib.escapeShellArgs flags}"} "$tailscaleSet"
+    # Parse the generated config without reading runtime 1Password includes.
+    grep -iv '^[[:space:]]*include[[:space:]]' "$clientSshConfig" > ssh_config
+    ssh -G -T -F ssh_config dancer > dancer.settings
+    ssh -G -T -F ssh_config dancer-lan > dancer-lan.settings
+    grep -Fx 'hostname dancer.tail99ea27.ts.net' dancer.settings
+    grep -Fx 'hostname 192.168.68.104' dancer-lan.settings
+    for settings in dancer.settings dancer-lan.settings; do
+      grep -Fx 'user roberto' "$settings"
+      grep -Fx 'forwardagent no' "$settings"
+    done
     printf '%s\n' '${builtins.toJSON names}' > "$out"
   ''

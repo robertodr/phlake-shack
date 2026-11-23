@@ -11,7 +11,8 @@ in
     enable = true;
     enableDefaultConfig = false;
     settings."dancer" = {
-      hostname = "192.168.68.104";
+      # Keep LAN as the shared default; travelling clients can override it.
+      hostname = lib.mkDefault "192.168.68.104";
       user = "roberto";
       forwardAgent = false;
     };
