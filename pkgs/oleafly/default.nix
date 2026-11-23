@@ -253,6 +253,8 @@ rustPlatform.buildRustPackage (finalAttrs: {
       --prefix PATH : ${
         lib.makeBinPath [
           git
+          # ACP agent discovery and npm-based bridges need Node at runtime.
+          nodejs_24
           xdg-utils
         ]
       }
