@@ -8,34 +8,18 @@ This repository is home to the nix code that builds my systems.
 | Host | Profile | Hardware / role | Runbook |
 | --- | --- | --- | --- |
 | `kellanved` | `nixosConfigurations.kellanved`, `homes/roberto-at-kellanved` | Framework 13 AMD daily-driver laptop | Existing local workflow |
-| `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon with attended encrypted boot | [deploy-rs upgrades](docs/hosts/dancer-deploy-rs.md), [boot policy](docs/hosts/dancer-manual-boot-rollback.md), [installation checklist](docs/hosts/dancer-install.md) |
+| `dancer` | `nixosConfigurations.dancer`, `homes/roberto-at-dancer` | ThinkPad X1 Carbon with attended encrypted boot | [Operation and recovery](docs/hosts/dancer.md) |
 | `crokus` | `homeConfigurations."robertoeikas@crokus"` | Apple Silicon Mac; standalone Home Manager terminal/development home | [Home Manager adoption and updates](docs/hosts/crokus-home-manager.md) |
 
-Crokus uses a pinned standalone Home Manager build-before-switch workflow, not
-NixOS/deploy-rs or macOS system management. Follow its runbook for backups,
-separate SSH signing-key provisioning, shell startup and manual maintenance.
-Native Mac build/activation remains human acceptance; Linux evaluation is not
-proof of native success. The NixOS installation/imperative notes below are not
-Crokus bootstrap instructions.
+Crokus uses standalone Home Manager without sudo, not NixOS/deploy-rs or macOS
+system management. Its runbook covers adoption, shell/signing recovery and updates.
+The NixOS installation/imperative notes below are not Crokus bootstrap instructions.
 
-`dancer` permanently uses stock systemd-boot and an attended LUKS passphrase,
-without TPM auto-unlock or Secure UKI integration. `dancer-manual-boot` is a
-compatibility alias for the same system. The owner reported a generation-12
-boot with the disk-passphrase prompt and a normal desktop. Firmware Secure Boot
-was reported disabled; Nix configuration does not toggle firmware.
-
-The abandoned experiment's package, module, tests and obsolete documentation
-have been removed. Its old installation bundles are not current update sources.
-Use a reviewed current source revision for future human-operated updates; never
-repeat formatting or installation for an update. The [deploy-rs workflow](docs/hosts/dancer-deploy-rs.md)
-initiates upgrades from Framework while Dancer builds the system. Its first live
-use still needs separate approval; no automatic reboot is configured.
-
-Dancer excludes Docker and Emacs and uses a cyan/blue prompt without the
-Framework nickname, plus an always-visible battery indicator beside the time.
-Framework keeps its existing preferences. See the
-[package/cache notes](docs/development/binary-cache.md) for the intentional
-cached GitButler and Inkscape selections.
+Dancer builds deploy-rs upgrades remotely over the LAN. It uses ordinary OpenSSH
+over LAN/Tailscale but still needs local disk-passphrase entry after every reboot.
+Routine updates never require reinstallation or formatting. See its runbook for
+maintenance checks and recovery, and the
+[package/cache notes](docs/development/binary-cache.md) for cache selections.
 
 ## imperative actions
 * Activate the SSH agent in 1password
