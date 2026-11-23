@@ -1,19 +1,19 @@
 {
+  lib,
   runCommand,
-  stdenv,
-  rustc,
   python3,
   jq,
   patchedSource,
   toolchainCatalog,
   languageServerEnvironment,
+  typst,
+  tinymist,
+  texlab,
 }:
 
 runCommand "oleafly-external-toolchain-check"
   {
     nativeBuildInputs = [
-      stdenv.cc
-      rustc
       python3
       jq
     ];
@@ -25,14 +25,14 @@ runCommand "oleafly-external-toolchain-check"
     export XDG_CONFIG_HOME="$HOME/config"
     mkdir -p "$HOME"
 
-    # Compile the actual patched module, not a reimplementation of its logic.
-    cp ${patchedSource}/src-tauri/src/language_service/external.rs external.rs
-    cp ${./external-server-tests.rs} tests.rs
-    rustc --edition 2021 --test tests.rs -o external-server-tests
-    ./external-server-tests
+    # The real Rust resolver and upstream fake-server tests run in the package's
+    # check phase, with their actual process-containment and path-validation code.
+    "$OLEAFLY_TEXLAB" --version | grep -Fx "texlab ${texlab.version}"
+    "$OLEAFLY_TINYMIST" -V | grep -Fx "tinymist ${tinymist.version}"
+    "$OLEAFLY_TINYMIST" --version | grep -E '^Typst Version:[[:space:]]+${lib.escapeRegex typst.version}$'
 
-    jq -e --arg typstMinor "$OLEAFLY_TINYMIST_TYPST_MINOR" \
-      --arg tinymistVersion "$OLEAFLY_TINYMIST_VERSION" '
+    jq -e --arg typstMinor ${lib.escapeShellArg (lib.versions.majorMinor typst.version)} \
+      --arg tinymistVersion ${tinymist.version} '
       (.typst.versions | length) == 1 and
       (.tinymist.versions | length) == 1 and
       .typst.versions[0].version == .typst.bundled and

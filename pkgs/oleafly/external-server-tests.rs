@@ -1,59 +1,32 @@
-//! A lightweight harness for the actual patched external-server module.
-//! Avoids linking the entire GUI and unrelated desktop integration tests.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum LanguageServiceKind {
-    TexLab,
-    Tinymist,
-}
-
-#[derive(Debug)]
-enum LanguageServiceErrorCode {
-    SidecarUnavailable,
-}
-
-#[derive(Debug)]
-struct LanguageServiceError {
-    #[allow(dead_code)]
-    code: LanguageServiceErrorCode,
-    #[allow(dead_code)]
-    message: String,
-}
-
-impl LanguageServiceError {
-    fn new(code: LanguageServiceErrorCode, message: impl Into<String>) -> Self {
-        Self {
-            code,
-            message: message.into(),
-        }
-    }
-}
-
-#[path = "external.rs"]
-mod external;
+//! Additional checks run alongside upstream's external-server unit tests.
+use super::*;
 
 #[test]
-fn packaged_servers_match_their_declared_versions() {
-    for kind in [LanguageServiceKind::TexLab, LanguageServiceKind::Tinymist] {
-        let server = external::configured(kind).unwrap().unwrap();
-        let output = std::process::Command::new(&server.executable)
-            .arg("--version")
-            .output()
+fn packaged_servers_report_their_versions_and_typst_line() {
+    for (kind, variable, expected) in [
+        (LanguageServiceKind::TexLab, "OLEAFLY_TEXLAB", "NIX_CHECK_TEXLAB_VERSION"),
+        (LanguageServiceKind::Tinymist, "OLEAFLY_TINYMIST", "NIX_CHECK_TINYMIST_VERSION"),
+    ] {
+        let path = PathBuf::from(std::env::var_os(variable).unwrap());
+        // Probe the actual immutable dependency, without bypassing the resolver's
+        // security policy. Nix user namespaces can map its owner to nobody.
+        let probed = probe(kind, &path, PROBE_TIMEOUT)
+            .map_err(|failure| failure.message)
             .unwrap();
-        assert!(output.status.success());
-        let version = String::from_utf8_lossy(&output.stdout);
-        match kind {
-            LanguageServiceKind::TexLab => assert!(version.contains(&server.version)),
-            LanguageServiceKind::Tinymist => {
-                // nixpkgs' reproducible Tinymist build omits its own version
-                // from --version, but does report the embedded Typst version.
-                assert!(version.starts_with("tinymist "));
-                let compiler = version
-                    .lines()
-                    .find_map(|line| line.strip_prefix("Typst Version:"))
-                    .expect("Tinymist must report its embedded compiler")
-                    .trim();
-                server.check_typst_version(compiler).unwrap();
-            }
+        assert_eq!(probed.version.to_string(), std::env::var(expected).unwrap());
+
+        // A builder-owned copy lets the real resolver run with its ownership
+        // checks intact. fs::copy preserves executable mode and embedded RPATHs.
+        let directory = tempfile::tempdir().unwrap();
+        let executable = directory.path().join(program_name(kind));
+        std::fs::copy(&path, &executable).unwrap();
+        let server = resolve(kind, executable.as_os_str(), PROBE_TIMEOUT).unwrap();
+        assert_eq!(server.version, probed.version);
+        if kind == LanguageServiceKind::Tinymist {
+            let typst = ToolchainVersion::parse(&std::env::var("NIX_CHECK_TYPST_VERSION").unwrap())
+                .unwrap();
+            server.check_typst(&typst).unwrap();
+            assert!(server.check_typst(&ToolchainVersion::parse("999.0.0").unwrap()).is_err());
         }
     }
 }
