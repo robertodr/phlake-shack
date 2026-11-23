@@ -7,6 +7,7 @@
   runCommand,
   fetchFromGitHub,
   fetchurl,
+  fetchpatch,
   fetchPnpmDeps,
   pnpm_11,
   pnpmConfigHook,
@@ -43,29 +44,37 @@ assert lib.assertMsg (
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "oleafly";
-  version = "0.4.12";
+  version = "0.4.13";
 
   src = fetchFromGitHub {
     owner = "Oleafly";
     repo = "Oleafly";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-q2irGF2aWaqjpljWnPRpsf+UWyuymUq2XGeHdf6Rmi0=";
+    hash = "sha256-cI10egK+vCa/EikHnZfoyBp4NQILl9qV3x1gm+im8H4=";
   };
 
   patches = [
-    # Optional external-server support; interface under upstream discussion:
-    # https://github.com/Oleafly/Oleafly/issues/470
-    ./external-language-servers.patch
+    # Upstream #519 landed after v0.4.13. Drop this backport at the next release.
+    (fetchpatch {
+      name = "oleafly-external-language-servers-519.patch";
+      url = "https://api.github.com/repos/Oleafly/Oleafly/commits/2b0070cae77ed85402ad5fccfae8e632adc5e996";
+      curlOptsList = [
+        "-H"
+        "Accept: application/vnd.github.diff"
+      ];
+      excludes = [ "CHANGELOG.md" ];
+      hash = "sha256-BLqoykWcMXe8HQ3Jdktrmx1YpejoggZH4uXymHKcDQQ=";
+    })
     ./writable-template-copies.patch
   ];
 
-  cargoHash = "sha256-05kgRLgRQT8aLJmWpUzPPBiHnxCyuvtM477JeSWfT1k=";
+  cargoHash = "sha256-FiCR7O2stRdJTiyvqQ/eply0M2FYhQFOt10elek6P5Q=";
 
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
     pnpm = pnpm_11;
     fetcherVersion = 5;
-    hash = "sha256-To5pBdPlKTicJGwIFnIQkYvktn/xDLjkg+vDvD1/zOs=";
+    hash = "sha256-gfZb+zp0A7oZA9m7Xb0uRpDb0del7LtJ62wDowVuG98=";
   };
 
   nativeBuildInputs = [
@@ -125,10 +134,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   passthru.languageServerEnvironment = {
     OLEAFLY_TEXLAB = lib.getExe texlab;
-    OLEAFLY_TEXLAB_VERSION = texlab.version;
     OLEAFLY_TINYMIST = lib.getExe tinymist;
-    OLEAFLY_TINYMIST_VERSION = tinymist.version;
-    OLEAFLY_TINYMIST_TYPST_MINOR = lib.versions.majorMinor typst.version;
   };
 
   passthru.toolchainCatalog =
@@ -143,6 +149,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   passthru.tests.toolchain = callPackage ./toolchain-tests.nix {
     inherit (finalAttrs.passthru) patchedSource toolchainCatalog languageServerEnvironment;
+    inherit typst tinymist texlab;
   };
 
   passthru.tests.templates = callPackage ./template-tests.nix {
@@ -156,12 +163,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
     src = applyPatches {
       name = "oleafly-patched-source-${finalAttrs.version}";
       inherit (finalAttrs) src;
-      patches = [ ./external-language-servers.patch ];
+      patches = [ (builtins.head finalAttrs.patches) ];
     };
     env = {
       NODE_OPTIONS = "--max-old-space-size=8192";
-      VITE_OLEAFLY_TEXLAB_VERSION = texlab.version;
-      VITE_OLEAFLY_TINYMIST_VERSION = tinymist.version;
     };
     nativeBuildInputs = [
       nodejs_24
@@ -179,7 +184,25 @@ rustPlatform.buildRustPackage (finalAttrs: {
       pnpm exec vitest run --maxWorkers=2 \
         src/lib/language-service/runtime-profile.test.ts \
         src/lib/language-service/json-rpc.test.ts \
-        src/lib/analysis/tinymist-matching.test.ts
+        src/lib/analysis/tinymist-matching.test.ts \
+        src/lib/analysis/language-service-controller.test.ts \
+        src/lib/language-service/tauri-transport.validation.test.ts \
+        src/lib/skills.test.ts
+      # Agent Skills names must match their immutable resource directories.
+      node --input-type=module <<'JS'
+      import assert from 'node:assert/strict';
+      import { readdirSync, readFileSync } from 'node:fs';
+      const root = 'src-tauri/resources/skills';
+      const skills = readdirSync(root, { withFileTypes: true }).filter(e => e.isDirectory());
+      assert(skills.length > 0);
+      for (const { name } of skills) {
+        const content = readFileSync(root + '/' + name + '/SKILL.md', 'utf8');
+        const declared = content.match(/^name: (.+)$/m)?.[1];
+        assert.equal(declared, name);
+        assert(name.length <= 64 && /^[a-z0-9]+(-[a-z0-9]+)*$/.test(name), name);
+      }
+      console.log('Validated ' + skills.length + ' bundled Agent Skills names');
+      JS
       (cd node_modules && sha256sum --check ${./wasm.sha256})
       runHook postCheck
     '';
@@ -204,8 +227,26 @@ rustPlatform.buildRustPackage (finalAttrs: {
     package = finalAttrs.finalPackage;
   };
 
-  # The full desktop suite includes GUI/network integration tests.
-  doCheck = false;
+  # Run upstream's fake-server tests and a real Nix-store-path resolver check.
+  # The rest of the desktop suite includes GUI/network integration tests.
+  doCheck = true;
+  nativeCheckInputs = [ nodejs_24 ];
+  preCheck = ''
+    cp ${./external-server-tests.rs} src-tauri/src/language_service/external/nix_tests.rs
+    printf '\n#[cfg(test)]\nmod nix_tests;\n' >> src-tauri/src/language_service/external.rs
+    export NIX_CHECK_TEXLAB_VERSION=${lib.escapeShellArg texlab.version}
+    export NIX_CHECK_TINYMIST_VERSION=${lib.escapeShellArg tinymist.version}
+    export NIX_CHECK_TYPST_VERSION=${lib.escapeShellArg typst.version}
+    ${lib.concatStringsSep "\n" (
+      lib.mapAttrsToList (
+        key: value: "export ${key}=${lib.escapeShellArg value}"
+      ) finalAttrs.passthru.languageServerEnvironment
+    )}
+  '';
+  cargoTestFlags = [
+    "--lib"
+    "language_service::external::"
+  ];
 
   preFixup = ''
     gappsWrapperArgs+=(

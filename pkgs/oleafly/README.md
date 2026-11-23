@@ -1,7 +1,8 @@
 # Oleafly
 
-Oleafly v0.4.12 for Linux. `default.nix` builds the Rust/Tauri application and
-TypeScript/Vite frontend from pinned sources, with Nix-managed document tools and
+Oleafly v0.4.13 for Linux, with upstream external-server support backported from
+[#519](https://github.com/Oleafly/Oleafly/pull/519). `default.nix` builds the
+Rust/Tauri application and TypeScript/Vite frontend from pinned sources, with Nix-managed document tools and
 language servers. It does not repackage an upstream desktop binary. Five
 third-party WASM modules still come precompiled through pinned npm packages;
 [wasm-sources.md](wasm-sources.md) documents their origins and limitations, and
@@ -36,9 +37,13 @@ ARM64 Linux; ARM64 has only evaluated, not been built or runtime-tested.
   no upstream deb/AppImage is consumed by `default.nix`.
 - Tectonic, compatible Biber, Pandoc and Typst come from nixpkgs. Staged compiler
   copies are replaced with store-path links at installation.
-- TexLab/Tinymist use fixed Nix executable paths and declared versions, with
-  matching frontend metadata. Invalid/partial external configuration fails closed;
-  unconfigured upstream builds retain vendor verification. See [UPSTREAM.md](UPSTREAM.md).
+- TexLab/Tinymist use fixed Nix executable paths and upstream's runtime version
+  probes and external-server IPC metadata. There are no Vite version overrides
+  or declared-version environment variables. Invalid external configuration
+  fails closed; unconfigured upstream builds retain vendor verification.
+  See [UPSTREAM.md](UPSTREAM.md) for the pinned #519 backport and removal condition.
+- Bundled skills use upstream's corrected Agent Skills names. Build checks verify
+  each frontmatter name matches its directory and the lowercase naming rules.
 - The compiler catalog retains the packaged Typst's capabilities and compatible
   Tinymist profile, advertises no vendor compiler downloads, and rejects unknown
   capabilities or incompatible toolchain minors. Arbitrary version pins are not
@@ -55,13 +60,13 @@ ARM64 Linux; ARM64 has only evaluated, not been built or runtime-tested.
 ## Validation and dependency sets
 
 The flake's pinned nixpkgs currently provides Typst 0.14.2 and Tinymist 0.14.18.
-The human operator confirmed new Typst projects, PDF preview/compilation and
+For v0.4.12, the human operator confirmed new Typst projects, PDF preview/compilation and
 completion; a LaTeX/BibLaTeX/Biber workflow; Markdown compilation; lifecycle
 behavior; and rejection of an unavailable Typst pin. A globally installed Typst
 can satisfy a matching compiler pin, so `999.0.0` was used for the unavailable-pin
 check. These observations are not a claim of exhaustive editor/IPC testing.
 
-The corresponding nixpkgs submission recipe was independently built and reviewed
+The previous v0.4.12 nixpkgs submission recipe was independently built and reviewed
 against master snapshot `d4a0d6baf1115a52a76ea263d1a5796487ff2f1f`, with Typst 0.15.1,
 Tinymist 0.15.12 and TexLab 5.26.0. `nixpkgs-review --tests` passed on x86_64-linux:
 one package and all three passthru tests. That is not GUI acceptance of the newer
@@ -69,17 +74,24 @@ dependency set. The portable SQLite/provenance/notice improvements from that
 validated recipe are included here; full pinned-flake rebuild results must be
 kept distinct from that master-based validation.
 
+The v0.4.13 + #519 source build and all three passthru checks pass on
+x86_64-linux. This is automated/headless validation, not renewed GUI acceptance.
+
 Automated coverage:
 
-- Seven Rust external-server configuration tests and two read-only template-copy
-  regressions, compiling the actual patched routines.
+- All 12 selected Rust tests (11 upstream fake-server tests plus the packaged-binary
+  regression) pass, covering version probes and resolution
+  of builder-owned copies in the package check phase (see the sandbox ownership
+  note in [UPSTREAM.md](UPSTREAM.md)); two read-only template-copy regressions
+  compile the actual patched copy routine.
 - Real offline TexLab/Tinymist initialization, document symbols, shutdown and exit.
-- 28 selected frontend tests plus five WASM byte-hash checks.
+- 210 selected frontend tests including external IPC/controller handling and
+  skills; validation of all 39 bundled skill names; five WASM byte-hash checks.
 - Actual CLI creation of a bundled Typst template, editing and offline compilation;
   metadata agreement; matching pins; unavailable pins/vendor-install rejection.
 - Desktop-file validation, tool execution, Markdown conversion and installed notices.
 
-The full desktop Rust suite is disabled; headless server tests are not a substitute
+Only selected desktop Rust tests run; headless server tests are not a substitute
 for Tauri editor/IPC acceptance. Native ARM64 testing, explicit export/file-open
 coverage and separate Wayland/X11 coverage remain outstanding.
 
@@ -107,7 +119,9 @@ capabilities, keep Typst/Tinymist minors compatible, and repeat the WASM source/
 license inventory when npm dependencies change. Never run upstream compiler-fetch
 scripts inside the sandbox build.
 
-- External-server design discussion: [Oleafly #470](https://github.com/Oleafly/Oleafly/issues/470).
+- External-server support: [upstream #519](https://github.com/Oleafly/Oleafly/pull/519),
+  following [#470](https://github.com/Oleafly/Oleafly/issues/470). Remove its backport
+  when the next release contains the pinned commit.
 - The separate upstream template fix and native core regressions are preserved in
   [the submission patch](../../docs/development/oleafly-template-fix.patch).
   No Oleafly implementation PR or CLA acceptance has been submitted.
