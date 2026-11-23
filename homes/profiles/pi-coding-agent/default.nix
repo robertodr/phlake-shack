@@ -41,7 +41,7 @@ in
         "npm:pi-toggle-skills"
         "npm:pi-web-access"
       ];
-      defaultModel = "gpt-6.1-sol";
+      defaultModel = "gpt-6.2-sol";
       defaultProvider = "openai-codex";
       defaultThinkingLevel = "medium";
       compaction = {
