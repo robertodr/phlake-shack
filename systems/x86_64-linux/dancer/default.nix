@@ -13,7 +13,8 @@
     ../../profiles/base
     ../../profiles/development
     ../../profiles/impermanence
-    ../../profiles/services/openssh/lan-only.nix
+    ../../profiles/services/openssh/lan-and-tailscale.nix
+    ../../profiles/services/tailscale/dancer-ssh.nix
   ];
 
   boot = {
