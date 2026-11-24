@@ -16,7 +16,6 @@
     ../../profiles/impermanence
     ../../profiles/powerManagement
     ../../profiles/powerManagement/tuning
-    ../../profiles/services/openssh
     ../../profiles/services/tailscale/travelling-client.nix
     ../../profiles/services/tuned
   ];

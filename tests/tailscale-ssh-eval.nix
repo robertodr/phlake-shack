@@ -170,7 +170,8 @@ let
       && k.services.tailscale.useRoutingFeatures == "none"
       && !has "dancer-ts-input" k.networking.firewall.extraCommands
       && !has "192.168.68.0/22" k.networking.firewall.extraCommands
-      && k.services.openssh.openFirewall
+      && !k.services.openssh.enable
+      && !lib.elem 22 k.networking.firewall.allowedTCPPorts
     ))
     (check "client-addition-preserves-existing-firewall-auth-and-forwarding" (
       clientFirewall k == clientFirewall originalClient

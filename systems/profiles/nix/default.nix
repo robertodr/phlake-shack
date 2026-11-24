@@ -30,10 +30,7 @@ in
       # prevents impurities in builds
       sandbox = true;
       allowed-users = [ "@users" ];
-      trusted-users = [
-        "root"
-        "@wheel"
-      ];
+      trusted-users = [ "root" ];
       keep-outputs = true;
       keep-derivations = true;
       fallback = true;
