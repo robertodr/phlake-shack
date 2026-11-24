@@ -285,6 +285,10 @@
           baseDancer = dancerBase;
           hasManualTarget = true;
         };
+        dancer-unlock-keyring = import ./tests/dancer-unlock-keyring.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit (inputs.self.nixosConfigurations) dancer;
+        };
         fwupd-efi = import ./tests/fwupd-efi.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           fwupdPackage = inputs.self.nixosConfigurations.dancer.config.services.fwupd.package;

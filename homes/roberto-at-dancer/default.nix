@@ -4,6 +4,15 @@
   pkgs,
   ...
 }:
+let
+  unlockKeyring = pkgs.writeShellApplication {
+    name = "unlock-keyring";
+    runtimeInputs = [ pkgs.systemd ];
+    text = ''
+      exec ${pkgs.python3}/bin/python3 -I ${./unlock-keyring.py} "$@"
+    '';
+  };
+in
 {
   imports = [
     ../profiles/base
@@ -14,7 +23,10 @@
     username = "roberto";
     homeDirectory = "/home/roberto";
     stateVersion = "26.05";
-    packages = [ pkgs.tmux ];
+    packages = [
+      pkgs.tmux
+      unlockKeyring
+    ];
     # Activation gates console login; do not fetch mutable npm updates at boot.
     # Update explicitly after login with: pi update --extensions
     activation.updatePiExtensions = lib.mkForce (lib.hm.dag.entryAfter [ "writeBoundary" ] "");

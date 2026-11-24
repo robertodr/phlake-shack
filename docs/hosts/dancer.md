@@ -30,6 +30,26 @@ disabled and the LAN address unreachable. Check the client's actual device-key
 expiry. Someone must be available locally to unlock Dancer after a reboot or
 power loss.
 
+## GitButler forge authentication over SSH
+
+After deploying the update and starting a fresh user session (for example,
+after the next planned reboot), run `unlock-keyring` from a Dancer SSH
+terminal. An already running daemon may still be the old version.
+If no login keyring exists, choose and confirm a non-empty passphrase (not a
+forge token). Otherwise use the existing keyring’s passphrase, which may be
+your console login password. Run first-time setup from one session, without
+another keyring manager changing the default at the same time.
+
+The helper creates an encrypted login keyring in your persistent home and
+sets it as the default if none exists. It leaves an existing default alone;
+if you brought your own default, verify that it is password-protected before
+running `but config forge auth` from your repo.
+
+SSH key login does not unlock the keyring, and disconnecting SSH does not by
+itself relock it. Run `unlock-keyring` again after a reboot or daemon restart.
+You do not need to repeat forge authentication unless the saved token expires
+or is revoked.
+
 ## Updates from Kellanved
 
 Use one reviewed, published commit for prechecks and deployment. Replace the
@@ -43,6 +63,7 @@ nix build --no-link \
   "$FLAKE#checks.x86_64-linux.deploy-schema" \
   "$FLAKE#checks.x86_64-linux.deploy-rs-eval" \
   "$FLAKE#checks.x86_64-linux.dancer-manual-boot-eval" \
+  "$FLAKE#checks.x86_64-linux.dancer-unlock-keyring" \
   "$FLAKE#checks.x86_64-linux.starship-battery-eval" \
   "$FLAKE#checks.x86_64-linux.tailscale-ssh-eval"
 ```
