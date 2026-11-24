@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   ...
@@ -18,23 +19,31 @@ let
   # Written as a script so the jq redirection is not split from `run`, which
   # would otherwise clobber settings.json with the echoed command under
   # `nixos-rebuild dry-activate`.
+  # Rolling back does not undo writable settings: back them up, then remove
+  # only this generation's RTK command (never restore stale settings wholesale).
   mergeStatusLine = pkgs.writeShellScript "claude-code-merge-statusline" ''
     set -euo pipefail
+    umask 077
     settings="$HOME/.claude/settings.json"
     mkdir -p "$(dirname "$settings")"
-    [ -s "$settings" ] || echo '{}' > "$settings"
+    input="$settings"
+    [ -s "$input" ] || input=${pkgs.writeText "empty-settings.json" "{}"}
+    tmp=$(mktemp "$settings.hm-XXXXXXXX")
+    trap 'rm -f "$tmp"' EXIT
     ${lib.getExe pkgs.jq} \
       --argjson statusLine '${builtins.toJSON statusLine}' \
-      '.statusLine = $statusLine' \
-      "$settings" > "$settings.hm-new"
-    mv "$settings.hm-new" "$settings"
+      ${
+        if config.profiles.agent-clis.rtkHooks.enable then
+          "--arg rtkCommand '${lib.getExe pkgs.llm-agents.rtk} hook claude' -f ${./rtk-hooks.jq}"
+        else
+          "'.statusLine = $statusLine'"
+      } \
+      "$input" > "$tmp"
+    mv "$tmp" "$settings"
   '';
 in
-{
-  programs.claude-code = {
-    enable = true;
-    package = pkgs.llm-agents.claude-code;
-  };
+lib.mkIf config.programs.claude-code.enable {
+  programs.claude-code.package = pkgs.llm-agents.claude-code;
 
   home.activation.claudeCodeStatusLine = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     run ${mergeStatusLine}

@@ -6,6 +6,8 @@ configuration, not macOS system settings, Homebrew or the Linux desktop.
 **Run as that user, never with sudo.** A Linux evaluation is not a native Mac
 build or an activation test.
 
+Crokus manages Pi and Claude Code, not Codex or Antigravity CLI.
+
 ## Routine updates
 
 From a reviewed checkout, build first and inspect changes/conflicts before

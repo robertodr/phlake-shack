@@ -14,6 +14,7 @@ let
   };
 in
 {
+
   imports = [
     ../profiles/base
     ../profiles/development
@@ -37,34 +38,40 @@ in
 
   services.ssh-agent.enable = true;
 
-  programs.git.settings.user.signingkey = "${config.home.homeDirectory}/.ssh/git_signing_ed25519";
+  programs = {
+    codex.enable = true;
+    antigravity-cli.enable = true;
 
-  # Distinguish the headless host in both local and SSH terminals.
-  programs.starship.settings = {
-    format = lib.mkForce ''
-      [┌─](bold blue) $username$hostname:$directory
-      [│](bold blue) $time $battery\[$nix_shell$python$rust\]
-      [└─](bold blue) \($git_branch$git_state$git_status\) $character'';
-    battery = {
-      format = "[$symbol$percentage]($style) ";
-      display = [
-        {
-          threshold = 10;
-          style = "bold red";
-        }
-        {
-          threshold = 30;
-          style = "bold yellow";
-        }
-        {
-          threshold = 100;
-          style = "bold cyan";
-        }
-      ];
+    git.settings.user.signingkey = "${config.home.homeDirectory}/.ssh/git_signing_ed25519";
+
+    # Distinguish the headless host in both local and SSH terminals.
+    starship.settings = {
+      format = lib.mkForce ''
+        [┌─](bold blue) $username$hostname:$directory
+        [│](bold blue) $time $battery\[$nix_shell$python$rust\]
+        [└─](bold blue) \($git_branch$git_state$git_status\) $character'';
+      battery = {
+        format = "[$symbol$percentage]($style) ";
+        display = [
+          {
+            threshold = 10;
+            style = "bold red";
+          }
+          {
+            threshold = 30;
+            style = "bold yellow";
+          }
+          {
+            threshold = 100;
+            style = "bold cyan";
+          }
+        ];
+      };
+      username.style_user = lib.mkForce "bold cyan";
+      hostname.format = lib.mkForce "[@](bold cyan)[$hostname](bold cyan)";
+      directory.style = lib.mkForce "bold #5fafff";
+      character.success_symbol = lib.mkForce "[>](bold cyan) ";
     };
-    username.style_user = lib.mkForce "bold cyan";
-    hostname.format = lib.mkForce "[@](bold cyan)[$hostname](bold cyan)";
-    directory.style = lib.mkForce "bold #5fafff";
-    character.success_symbol = lib.mkForce "[>](bold cyan) ";
   };
+
 }

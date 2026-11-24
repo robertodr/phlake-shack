@@ -29,9 +29,13 @@ let
   // lib.genAttrs obsidianSkills.skillNames (name: "${obsidianSkills}/share/skills/${name}/${name}");
   destinations = {
     ".agents/skills" = commonSkills // communitySources;
+  }
+  // lib.optionalAttrs config.programs.antigravity-cli.enable {
     # Start with skills backed by the shared CLI packages; community skill
     # dependencies have not yet been verified on Antigravity.
     ".gemini/config/skills" = commonSkills;
+  }
+  // lib.optionalAttrs config.programs.claude-code.enable {
     "${config.programs.claude-code.configDir}/skills" =
       commonSkills // lib.getAttrs communitySkills.claudeSkillNames communitySources;
   };

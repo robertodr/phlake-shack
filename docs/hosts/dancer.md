@@ -5,6 +5,8 @@ Dancer uses stock systemd-boot and **local, attended LUKS unlock**. Tailscale
 cannot provide access before the disk is unlocked. `dancer-manual-boot` is a
 compatibility alias for the same configuration, not a separate boot policy.
 
+Dancer manages Pi, Codex and Antigravity CLI, not Claude Code.
+
 ## SSH access
 
 - LAN: `roberto@192.168.68.104`, allowed from `192.168.68.0/22`.

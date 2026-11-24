@@ -272,6 +272,10 @@
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs.self.nixosConfigurations) dancer kellanved;
         };
+        agent-rtk-hooks = import ./tests/agent-rtk-hooks.nix {
+          inherit (inputs.self.nixosConfigurations) kellanved dancer;
+          crokus = inputs.self.homeConfigurations."robertoeikas@crokus";
+        };
         agent-clis = import ./tests/agent-clis.nix {
           inherit (inputs) self;
           pkgs = nixpkgs.legacyPackages.${system};
