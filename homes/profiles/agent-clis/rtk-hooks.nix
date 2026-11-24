@@ -21,7 +21,7 @@ let
 in
 {
   options.profiles.agent-clis.rtkHooks.enable =
-    lib.mkEnableOption "RTK hooks for Codex, Claude and Antigravity (requires permission and collision preflights)";
+    lib.mkEnableOption "RTK hooks for Codex, Claude and Antigravity (check existing hook files before activation)";
 
   config = lib.mkIf config.profiles.agent-clis.rtkHooks.enable {
     assertions = lib.optional config.programs.codex.enable {

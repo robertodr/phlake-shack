@@ -7,17 +7,16 @@ let
   inherit (kellanved) pkgs;
   inherit (pkgs) lib;
   home = host: host.config.home-manager.users.roberto;
-  enableLinux =
-    host:
-    home (
-      host.extendModules {
-        modules = [ { home-manager.users.roberto.profiles.agent-clis.rtkHooks.enable = true; } ];
-      }
-    );
-  enabled = enableLinux kellanved;
-  dancerEnabled = enableLinux dancer;
-  crokusEnabled =
-    (crokus.extendModules { modules = [ { profiles.agent-clis.rtkHooks.enable = true; } ]; }).config;
+  enabled = home kellanved;
+  dancerEnabled = home dancer;
+  crokusEnabled = crokus.config;
+  disabled = home (
+    kellanved.extendModules {
+      modules = [
+        { home-manager.users.roberto.profiles.agent-clis.rtkHooks.enable = lib.mkForce false; }
+      ];
+    }
+  );
   files =
     cfg:
     lib.mapAttrs' (_: f: lib.nameValuePair f.target f) (lib.filterAttrs (_: f: f.enable) cfg.home.file);
@@ -30,13 +29,12 @@ let
   ];
   agents = pkgs.llm-agents;
 in
-assert lib.all
-  (cfg: !cfg.profiles.agent-clis.rtkHooks.enable && lib.all (p: !(files cfg ? ${p})) targets)
-  [
-    (home kellanved)
-    (home dancer)
-    crokus.config
-  ];
+assert lib.all (cfg: cfg.profiles.agent-clis.rtkHooks.enable) [
+  enabled
+  dancerEnabled
+  crokusEnabled
+];
+assert lib.all (p: !(files disabled ? ${p})) targets;
 assert lib.all (p: !(files enabled).${p}.force) targets;
 assert lib.all (p: !(files crokusEnabled ? ${p}) && files dancerEnabled ? ${p}) targets;
 assert !(dancerEnabled.home.activation ? claudeCodeStatusLine);
@@ -72,7 +70,7 @@ pkgs.runCommand "agent-rtk-hooks" { nativeBuildInputs = [ pkgs.jq ]; } ''
   activate
   cmp before "$settings"
   run() { "$@"; }
-  activate_off() { ${(home kellanved).home.activation.claudeCodeStatusLine.data} }
+  activate_off() { ${disabled.home.activation.claudeCodeStatusLine.data} }
   activate_off
   jq -S 'del(.statusLine)' "$settings" > off
   jq -S . before | cmp - off

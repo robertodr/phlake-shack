@@ -3,6 +3,8 @@
   home.stateVersion = "24.11";
   home.packages = [ pkgs.oleafly ];
 
+  profiles.agent-clis.rtkHooks.enable = true;
+
   programs = {
     claude-code.enable = true;
     codex.enable = true;

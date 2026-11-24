@@ -38,6 +38,8 @@ in
 
   services.ssh-agent.enable = true;
 
+  profiles.agent-clis.rtkHooks.enable = true;
+
   programs = {
     codex.enable = true;
     antigravity-cli.enable = true;

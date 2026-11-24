@@ -38,6 +38,8 @@ in
     };
   };
 
+  profiles.agent-clis.rtkHooks.enable = true;
+
   programs = {
     claude-code.enable = true;
 
