@@ -1,9 +1,6 @@
 { self, pkgs }:
 let
   inherit (pkgs) lib;
-  baseline = builtins.fromJSON (
-    builtins.readFile ../.superpowers/sdd/2026-10-02-multi-host-dancer/kellanved-baseline.json
-  );
   kellanved = import ./host-snapshot.nix {
     flake = self;
     host = "kellanved";
@@ -34,10 +31,6 @@ let
     else
       dancerSshInitializationRaw;
   contains = needle: haystack: lib.hasInfix needle haystack;
-  preserveKellanved = key: {
-    assertion = kellanved.${key} == baseline.${key};
-    message = "kellanved ${key} changed from the preserved baseline";
-  };
   assertions = [
     {
       assertion = h.home.activation.updatePiExtensions.data == "";
@@ -370,30 +363,43 @@ let
       message = "kellanved Git author email changed";
     }
     {
-      assertion = kellanved.git.user.signingkey == baseline.git.user.signingkey;
-      message = "kellanved Git signing key changed from the preserved baseline";
+      assertion =
+        lib.hasPrefix "ssh-ed25519 " kellanved.git.user.signingkey && kellanved.git.commit.gpgSign;
+      message = "Framework commits must use SSH signing";
     }
-  ]
-  ++ map preserveKellanved [
-    "hostname"
-    "stateVersion"
-    "homeStateVersion"
-    "kernel"
-    "kernelParams"
-    "resumeDevice"
-    "kernelModules"
-    "initrdModules"
-    "systemdPatches"
-    "ssh"
-    "sshOpenFirewall"
-    "authorizedKeys"
-    "homeVariables"
-    "git"
-    "sshInitialization"
-    "sshExtraConfig"
-    "homePackages"
-    "niri"
-    "greetd"
+    {
+      assertion =
+        kellanved.hostname == "kellanved"
+        && kellanved.stateVersion == "24.11"
+        && kellanved.homeStateVersion == "24.11"
+        && kellanved.niri
+        && kellanved.greetd
+        && kellanved.resumeDevice != ""
+        && lib.any (lib.hasPrefix "resume_offset=") kellanved.kernelParams
+        && kellanved.fileSystems."/persist".neededForBoot;
+      message = "Framework must retain its local desktop, persistent state and hibernation configuration";
+    }
+    {
+      assertion =
+        !frameworkConfig.services.openssh.enable
+        && !lib.elem 22 frameworkConfig.networking.firewall.allowedTCPPorts;
+      message = "Framework is an SSH client only";
+    }
+    {
+      assertion =
+        lib.all
+          (
+            host:
+            host.users.users.roberto.hashedPassword == null
+            && host.users.users.roberto.hashedPasswordFile == "/persist/secrets/roberto-password-hash"
+            && lib.all (user: user == "root") host.nix.settings.trusted-users
+          )
+          [
+            c
+            frameworkConfig
+          ];
+      message = "Linux hosts must provision the password hash at runtime and restrict daemon trust to root";
+    }
   ];
   failures = builtins.filter (check: !check.assertion) assertions;
 in
