@@ -1,11 +1,8 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
   setChargeThreshold = pkgs.writeShellApplication {
     name = "set-charge-threshold";
-    runtimeInputs = [
-      pkgs.sudo
-      pkgs.systemd
-    ];
+    runtimeInputs = [ pkgs.systemd ];
     text = ''
       if [[ $# -ne 1 || ! $1 =~ ^([1-9]|[1-9][0-9]|100)$ ]]; then
         echo "Usage: set-charge-threshold <1-100>" >&2
@@ -13,7 +10,7 @@ let
       fi
 
       if [[ $EUID -ne 0 ]]; then
-        exec sudo "$0" "$@"
+        exec "${config.security.wrapperDir}/sudo" "$0" "$@"
       fi
 
       shopt -s nullglob

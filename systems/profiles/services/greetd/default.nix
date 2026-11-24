@@ -15,7 +15,7 @@ let
     version = "0.1.0";
 
     src = pkgs.fetchzip {
-      url = "https://git.sr.ht/~kennylevinsen/pam_fde_boot_pw/archive/master.tar.gz";
+      url = "https://git.sr.ht/~kennylevinsen/pam_fde_boot_pw/archive/49bf498fd8d13f73e4a24221818a8a5d2af20088.tar.gz";
       sha256 = "sha256-dS9ufryg3xfxgUzJKDgrvMZP2qaYH+WJQFw1ogl1isc=";
     };
 

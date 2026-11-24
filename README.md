@@ -38,20 +38,28 @@ For sops-nix:
 * find corresponding age public key `age-keygen -y ~/.config/sops/age/keys.txt`
 * host public key `nix-shell -p ssh-to-age --run 'cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age'`
 
-## Why Nix?
-Nix allows for easy to manage, collaborative, reproducible deployments. This means that once something is setup and configured once, it works forever. If someone else shares their configuration, anyone can make use of it.
+## Development and testing
 
+From the repository root on `x86_64-linux`, run `nix develop` for `prek`,
+`deadnix`, `nixfmt` and `statix` from the flake's pre-commit check. With
+nix-direnv, `direnv allow` loads the same shell. Neither installs Git hooks.
 
-This flake is configured with the use of [digga][digga].
+Choose a check based on what changed. None of these commands activates or
+switches a host:
 
-[digga]: https://github.com/divnix/digga
+```sh
+# Evaluate the default shell without building it.
+nix eval --raw .#devShells.x86_64-linux.default.drvPath
 
-Clone this into `~/.config`, then:
+# Run the configured format and lint checks.
+nix build --no-link .#checks.x86_64-linux.pre-commit
 
-* `direnv allow`
-* `sudo cachix use nrdxp`
-* `sudo cachix use nix-community`
-* `sudo cachix use robertodr`
+# Build a host system closure without installing it.
+nix build --no-link .#nixosConfigurations.kellanved.config.system.build.toplevel
+
+# Run the fwupd EFI integration test in a NixOS VM (requires a KVM-capable builder).
+nix build --no-link -L .#checks.x86_64-linux.fwupd-efi
+```
 
 ## How to use
 

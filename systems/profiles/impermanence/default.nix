@@ -1,10 +1,15 @@
-{ config, lib, ... }:
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  # Referencing an executable in a service script does not install it into stage 1.
+  boot.initrd.systemd.extraBin.findmnt = "${pkgs.util-linux}/bin/findmnt";
   boot.initrd.systemd.services.root-roolback = {
     description = "Rollback BTRFS root subvolume to a pristine state";
-    wantedBy = [
-      "initrd.target"
-    ];
+    requiredBy = [ "sysroot.mount" ];
     after = [
       # LUKS/TPM process
       "systemd-cryptsetup@encrypted.service"
@@ -21,40 +26,37 @@
       "sysroot.mount"
     ];
     unitConfig.DefaultDependencies = "no";
-    serviceConfig.Type = "oneshot";
+    serviceConfig = {
+      Type = "oneshot";
+      # Stage 1 requests initrd-fs.target again after parsing /sysroot/etc/fstab.
+      # Satisfy subsequent mount dependencies without repeating the rollback.
+      RemainAfterExit = true;
+    };
     script = ''
+      set -eu
+      die() { echo "root rollback: $*" >&2; exit 1; }
+
+      if findmnt -n -M /sysroot >/dev/null; then die "/sysroot already mounted"; fi
       mkdir -p /mnt
-      # We first mount the btrfs root to /mnt
-      # so we can manipulate btrfs subvolumes.
-      mount -o subvol=/ /dev/mapper/encrypted /mnt
-      # While we're tempted to just delete /root and create
-      # a new snapshot from /root-blank, /root is already
-      # populated at this point with a number of subvolumes,
-      # which makes `btrfs subvolume delete` fail.
-      # So, we remove them first.
-      #
-      # /root contains subvolumes:
-      # - /root/var/lib/portables
-      # - /root/var/lib/machines
-      #
-      # I suspect these are related to systemd-nspawn, but
-      # since I don't use it I'm not 100% sure.
-      # Anyhow, deleting these subvolumes hasn't resulted
-      # in any issues so far, except for fairly
-      # benign-looking errors from systemd-tmpfiles.
-      btrfs subvolume list -o /mnt/root |
-        cut -f9 -d' ' |
-        while read subvolume; do
-          echo "deleting /$subvolume subvolume..."
-          btrfs subvolume delete "/mnt/$subvolume"
-        done &&
-        echo "deleting /root subvolume..." &&
-        btrfs subvolume delete /mnt/root
+      mount -t btrfs -o subvolid=5 /dev/mapper/encrypted /mnt
+      trap 'umount /mnt' EXIT
+      # Match the mountpoint itself (not a containing filesystem), its
+      # backing device, filesystem type and top-level filesystem root.
+      test "$(findmnt -n -o FSROOT -M /mnt -S /dev/mapper/encrypted -t btrfs)" = / ||
+        die "unexpected rollback mount"
+      for subvol in /mnt/root-blank /mnt/root; do
+        test ! -L "$subvol" && btrfs subvolume show "$subvol" >/dev/null ||
+          die "$subvol is not a subvolume"
+      done
+      test "$(btrfs property get -ts /mnt/root-blank ro)" = ro=true ||
+        die "root-blank is not read-only"
+
+      # Let btrfs traverse child subvolumes without parsing pathnames.
+      btrfs subvolume delete --recursive /mnt/root
       echo "restoring blank /root subvolume..."
       btrfs subvolume snapshot /mnt/root-blank /mnt/root
-      # Once we're done rolling back to a blank snapshot,
-      # we can unmount /mnt and continue on the boot process.
       umount /mnt
+      trap - EXIT
     '';
   };
 

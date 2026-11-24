@@ -207,6 +207,10 @@
         oleafly = nixpkgs.legacyPackages.${packageSystem}.callPackage ./pkgs/oleafly { };
       });
 
+      devShells.${system}.default = nixpkgs.legacyPackages.${system}.mkShell {
+        packages = [ preCommitCheck.config.package ] ++ preCommitCheck.enabledPackages;
+      };
+
       apps.${system}.deploy = {
         type = "app";
         program = "${deployPkgs.deploy-rs.deploy-rs}/bin/deploy";
