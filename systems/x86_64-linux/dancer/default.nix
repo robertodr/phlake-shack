@@ -84,10 +84,5 @@
     };
   };
 
-  users.users.roberto = {
-    hashedPassword = lib.mkForce null;
-    hashedPasswordFile = "/persist/secrets/roberto-password-hash";
-  };
-
   system.stateVersion = "26.05";
 }

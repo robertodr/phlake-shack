@@ -52,7 +52,7 @@
         # * https://fzakaria.com/2024/07/17/fish-the-bash-way.html
         # * https://wiki.nixos.org/wiki/Fish#Setting_fish_as_your_shell
         shell = pkgs.bash;
-        hashedPassword = lib.mkDefault "$y$j9T$6AnZ6Q546y3GhlVbYSBWP0$StEws34Od01nqa8HqFUEFWO3F6nzntztW0Tn/zB4l5D";
+        hashedPasswordFile = "/persist/secrets/roberto-password-hash";
       };
     };
   };
