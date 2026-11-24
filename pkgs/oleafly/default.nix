@@ -127,104 +127,107 @@ rustPlatform.buildRustPackage (finalAttrs: {
     CARGO_PROFILE_RELEASE_LTO = "thin";
   };
 
-  passthru.patchedSource = applyPatches {
-    name = "oleafly-patched-source-${finalAttrs.version}";
-    inherit (finalAttrs) src patches;
-  };
-
-  passthru.languageServerEnvironment = {
-    OLEAFLY_TEXLAB = lib.getExe texlab;
-    OLEAFLY_TINYMIST = lib.getExe tinymist;
-  };
-
-  passthru.toolchainCatalog =
-    runCommand "oleafly-toolchain-catalog.json" { nativeBuildInputs = [ jq ]; }
-      ''
-        jq -e --arg typstVersion ${lib.escapeShellArg typst.version} \
-          --arg tinymistVersion ${lib.escapeShellArg tinymist.version} \
-          --arg typstMinor ${lib.escapeShellArg (lib.versions.majorMinor typst.version)} \
-          -f ${./toolchain-catalog.jq} \
-          ${finalAttrs.src}/src-tauri/resources/typst-toolchain.json > "$out"
-      '';
-
-  passthru.tests.toolchain = callPackage ./toolchain-tests.nix {
-    inherit (finalAttrs.passthru) patchedSource toolchainCatalog languageServerEnvironment;
-    inherit typst tinymist texlab;
-  };
-
-  passthru.tests.templates = callPackage ./template-tests.nix {
-    inherit (finalAttrs.passthru) patchedSource;
-  };
-
-  passthru.frontend = stdenvNoCC.mkDerivation {
-    pname = "oleafly-frontend";
-    inherit (finalAttrs) version pnpmDeps;
-    # Keep Rust-only fixes out of the frontend's cache key.
-    src = applyPatches {
+  passthru = {
+    patchedSource = applyPatches {
       name = "oleafly-patched-source-${finalAttrs.version}";
-      inherit (finalAttrs) src;
-      patches = [ (builtins.head finalAttrs.patches) ];
+      inherit (finalAttrs) src patches;
     };
-    env = {
-      NODE_OPTIONS = "--max-old-space-size=8192";
+
+    languageServerEnvironment = {
+      OLEAFLY_TEXLAB = lib.getExe texlab;
+      OLEAFLY_TINYMIST = lib.getExe tinymist;
     };
-    nativeBuildInputs = [
-      nodejs_24
-      pnpm_11
-      pnpmConfigHook
-    ];
-    buildPhase = ''
-      runHook preBuild
-      pnpm build
-      runHook postBuild
-    '';
-    doCheck = true;
-    checkPhase = ''
-      runHook preCheck
-      pnpm exec vitest run --maxWorkers=2 \
-        src/lib/language-service/runtime-profile.test.ts \
-        src/lib/language-service/json-rpc.test.ts \
-        src/lib/analysis/tinymist-matching.test.ts \
-        src/lib/analysis/language-service-controller.test.ts \
-        src/lib/language-service/tauri-transport.validation.test.ts \
-        src/lib/skills.test.ts
-      # Agent Skills names must match their immutable resource directories.
-      node --input-type=module <<'JS'
-      import assert from 'node:assert/strict';
-      import { readdirSync, readFileSync } from 'node:fs';
-      const root = 'src-tauri/resources/skills';
-      const skills = readdirSync(root, { withFileTypes: true }).filter(e => e.isDirectory());
-      assert(skills.length > 0);
-      for (const { name } of skills) {
-        const content = readFileSync(root + '/' + name + '/SKILL.md', 'utf8');
-        const declared = content.match(/^name: (.+)$/m)?.[1];
-        assert.equal(declared, name);
-        assert(name.length <= 64 && /^[a-z0-9]+(-[a-z0-9]+)*$/.test(name), name);
-      }
-      console.log('Validated ' + skills.length + ' bundled Agent Skills names');
-      JS
-      (cd node_modules && sha256sum --check ${./wasm.sha256})
-      runHook postCheck
-    '';
-    installPhase = ''
-      runHook preInstall
-      cp -r dist "$out"
 
-      # Preserve notices for the npm-distributed WebAssembly components.
-      for component in harper.js pdfjs-dist; do
-        install -Dm644 "node_modules/$component/LICENSE" "$out/third-party/$component/LICENSE"
-      done
-      for folder in wasm cmaps iccs standard_fonts; do
-        mkdir -p "$out/third-party/pdfjs-dist/$folder"
-        install -m644 node_modules/pdfjs-dist/$folder/LICENSE* \
-          "$out/third-party/pdfjs-dist/$folder/"
-      done
-      runHook postInstall
+    toolchainCatalog = runCommand "oleafly-toolchain-catalog.json" { nativeBuildInputs = [ jq ]; } ''
+      jq -e --arg typstVersion ${lib.escapeShellArg typst.version} \
+        --arg tinymistVersion ${lib.escapeShellArg tinymist.version} \
+        --arg typstMinor ${lib.escapeShellArg (lib.versions.majorMinor typst.version)} \
+        -f ${./toolchain-catalog.jq} \
+        ${finalAttrs.src}/src-tauri/resources/typst-toolchain.json > "$out"
     '';
-  };
 
-  passthru.tests.install = callPackage ./tests.nix {
-    package = finalAttrs.finalPackage;
+    tests = {
+      toolchain = callPackage ./toolchain-tests.nix {
+        inherit (finalAttrs.passthru) patchedSource toolchainCatalog languageServerEnvironment;
+        inherit typst tinymist texlab;
+      };
+
+      templates = callPackage ./template-tests.nix {
+        inherit (finalAttrs.passthru) patchedSource;
+      };
+
+      install = callPackage ./tests.nix {
+        package = finalAttrs.finalPackage;
+      };
+    };
+
+    frontend = stdenvNoCC.mkDerivation {
+      pname = "oleafly-frontend";
+      inherit (finalAttrs) version pnpmDeps;
+      # Keep Rust-only fixes out of the frontend's cache key.
+      src = applyPatches {
+        name = "oleafly-patched-source-${finalAttrs.version}";
+        inherit (finalAttrs) src;
+        patches = [ (builtins.head finalAttrs.patches) ];
+      };
+      env = {
+        NODE_OPTIONS = "--max-old-space-size=8192";
+      };
+      nativeBuildInputs = [
+        nodejs_24
+        pnpm_11
+        pnpmConfigHook
+      ];
+      buildPhase = ''
+        runHook preBuild
+        pnpm build
+        runHook postBuild
+      '';
+      doCheck = true;
+      checkPhase = ''
+        runHook preCheck
+        pnpm exec vitest run --maxWorkers=2 \
+          src/lib/language-service/runtime-profile.test.ts \
+          src/lib/language-service/json-rpc.test.ts \
+          src/lib/analysis/tinymist-matching.test.ts \
+          src/lib/analysis/language-service-controller.test.ts \
+          src/lib/language-service/tauri-transport.validation.test.ts \
+          src/lib/skills.test.ts
+        # Agent Skills names must match their immutable resource directories.
+        node --input-type=module <<'JS'
+        import assert from 'node:assert/strict';
+        import { readdirSync, readFileSync } from 'node:fs';
+        const root = 'src-tauri/resources/skills';
+        const skills = readdirSync(root, { withFileTypes: true }).filter(e => e.isDirectory());
+        assert(skills.length > 0);
+        for (const { name } of skills) {
+          const content = readFileSync(root + '/' + name + '/SKILL.md', 'utf8');
+          const declared = content.match(/^name: (.+)$/m)?.[1];
+          assert.equal(declared, name);
+          assert(name.length <= 64 && /^[a-z0-9]+(-[a-z0-9]+)*$/.test(name), name);
+        }
+        console.log('Validated ' + skills.length + ' bundled Agent Skills names');
+        JS
+        (cd node_modules && sha256sum --check ${./wasm.sha256})
+        runHook postCheck
+      '';
+      installPhase = ''
+        runHook preInstall
+        cp -r dist "$out"
+
+        # Preserve notices for the npm-distributed WebAssembly components.
+        for component in harper.js pdfjs-dist; do
+          install -Dm644 "node_modules/$component/LICENSE" "$out/third-party/$component/LICENSE"
+        done
+        for folder in wasm cmaps iccs standard_fonts; do
+          mkdir -p "$out/third-party/pdfjs-dist/$folder"
+          install -m644 node_modules/pdfjs-dist/$folder/LICENSE* \
+            "$out/third-party/pdfjs-dist/$folder/"
+        done
+        runHook postInstall
+      '';
+    };
+
   };
 
   # Run upstream's fake-server tests and a real Nix-store-path resolver check.

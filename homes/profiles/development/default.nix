@@ -71,6 +71,7 @@
   };
 
   imports = map (x: ./.. + ("/" + x)) [
+    "agent-clis"
     "agent-skills"
     "claude-code"
     "direnv"

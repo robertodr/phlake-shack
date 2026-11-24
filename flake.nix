@@ -238,16 +238,18 @@
 
       checks.${system} = {
         # Schema validation needs path strings, not a local build of Dancer.
-        deploy-schema =
+        inherit
           (deployPkgs.deploy-rs.lib.deployChecks (
             builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.toJSON inputs.self.deploy))
-          )).deploy-schema;
+          ))
+          deploy-schema
+          ;
         # Full-profile realization: deliberately not part of local prechecks.
-        deploy-activate = (deployPkgs.deploy-rs.lib.deployChecks inputs.self.deploy).deploy-activate;
+        inherit (deployPkgs.deploy-rs.lib.deployChecks inputs.self.deploy) deploy-activate;
         pre-commit = preCommitCheck;
         deploy-rs-eval = import ./tests/deploy-rs-eval.nix {
           pkgs = nixpkgs.legacyPackages.${system};
-          self = inputs.self;
+          inherit (inputs) self;
         };
         pi-bounded-compaction = import ./tests/pi-bounded-compaction.nix {
           pkgs = nixpkgs.legacyPackages.${system};
@@ -270,8 +272,12 @@
           pkgs = nixpkgs.legacyPackages.${system};
           inherit (inputs.self.nixosConfigurations) dancer kellanved;
         };
+        agent-clis = import ./tests/agent-clis.nix {
+          inherit (inputs) self;
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
         agent-skills-eval = import ./tests/agent-skills-eval.nix {
-          self = inputs.self;
+          inherit (inputs) self;
           pkgs = nixpkgs.legacyPackages.${system};
         };
         crokus-eval = import ./tests/crokus-eval.nix {

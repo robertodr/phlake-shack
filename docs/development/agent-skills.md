@@ -5,8 +5,9 @@
 `json-canvas`, `obsidian-bases`, `obsidian-cli`, and `obsidian-markdown`.
 `knap` and `obsidian-headless` are deliberately excluded from both the package
 and managed skill links. Home Manager links these common immutable directories
-into `~/.agents/skills/` (discovered by Pi) and Claude Code's configured
-`skills/` directory. The profile also adopts 38 previously imperative community
+into `~/.agents/skills/` (discovered by Pi and Codex), Claude Code's configured
+`skills/` directory, and Antigravity CLI's `~/.gemini/config/skills/`.
+Antigravity gets only these eight common skills, not the community collection. The profile also adopts 38 previously imperative community
 skills, preserving their narrower Claude selection (see below). No duplicate
 links are created in `~/.pi/agent/skills/`. Other, unmanaged skills may coexist.
 
