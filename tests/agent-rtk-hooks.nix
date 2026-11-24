@@ -55,6 +55,27 @@ pkgs.runCommand "agent-rtk-hooks" { nativeBuildInputs = [ pkgs.jq ]; } ''
     any(.[]; .name == "neighbor" and .enabled) and
     any(.[]; .name == "rtk" and .enabled and .rules == ["AGENTS.md"] and .hooks == ["rtk-rewrite"])'
 
+  # Exercise the real Linux activation against fixtures, including a previous
+  # managed rule and an overlapping rule that already belongs to the user.
+  settings="$HOME/.gemini/antigravity-cli/settings.json"
+  mkdir -p "$(dirname "$settings")"
+  activate_agy() { ${
+    lib.replaceStrings [ enabled.xdg.stateHome ] [ "$HOME/state" ]
+      enabled.home.activation.agySandboxRuntime.data
+  } }
+  state="$HOME/state/agy-sandbox/managed-rules.json"
+  mkdir -p "$(dirname "$state")"
+  old='read_file(/nix/store/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-old)'
+  inherited='read_file(${agents.rtk})'
+  jq -n --arg old "$old" '[$old]' > "$state"
+  jq -n --arg old "$old" --arg inherited "$inherited" '{theme:"test",permissions:{deny:["other"],allow:[$old,$inherited,"local"]}}' > "$settings"
+  cp "$settings" before-agy
+  run() { :; }; activate_agy; cmp before-agy "$settings"
+  run() { "$@"; }; activate_agy
+  jq -e --arg old "$old" --arg inherited "$inherited" '.theme == "test" and .permissions.deny == ["other"] and (.permissions.allow | index($old) == null and index("local") != null and index($inherited) != null)' "$settings"
+  jq -e --arg inherited "$inherited" 'length > 0 and index($inherited) == null and all(.[]; startswith("read_file(/nix/store/"))' "$state"
+  cp "$settings" after-agy; activate_agy; cmp after-agy "$settings"
+
   mkdir -p "$HOME/.claude"
   settings="$HOME/.claude/settings.json"
   cat > "$settings" <<'JSON'
@@ -89,5 +110,13 @@ pkgs.runCommand "agent-rtk-hooks" { nativeBuildInputs = [ pkgs.jq ]; } ''
   # not remove mutable hooks. A rollback therefore needs the manual cleanup.
   activate_off
   cmp first "$settings"
+  # ccstatusline migrates old schemas in place; the real managed file is read-only.
+  mkdir -p "$HOME/.config/ccstatusline"
+  ln -s ${
+    enabled.xdg.configFile."ccstatusline/settings.json".source
+  } "$HOME/.config/ccstatusline/settings.json"
+  echo '{"model":{"display_name":"renderer-test"}}' | ${lib.getExe agents.ccstatusline} > rendered
+  grep -q 'renderer-test' rendered
+  ! grep -qi 'invalid config' rendered || exit 1
   touch "$out"
 ''

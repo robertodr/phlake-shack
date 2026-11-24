@@ -35,8 +35,9 @@ let
           && (!codex || programs.codex.package == agents.codex)
           && installed agents.codex == codex
           && programs.antigravity-cli.enable == antigravity
-          && (!antigravity || programs.antigravity-cli.package == agents.antigravity-cli)
-          && installed agents.antigravity-cli == antigravity
+          && !installed agents.antigravity-cli
+          && (!antigravity || installed programs.antigravity-cli.package)
+          && (home.config.home.activation ? agySandboxRuntime) == antigravity
           && programs.claude-code.enable == claude
           && (
             if claude then

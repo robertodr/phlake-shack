@@ -55,7 +55,8 @@ lib.mkIf config.programs.claude-code.enable {
     # Darwin adopts existing dotfiles explicitly; preserve Linux's overwrite policy.
     force = pkgs.stdenv.hostPlatform.isLinux;
     source = (pkgs.formats.json { }).generate "ccstatusline-settings.json" {
-      version = 3;
+      # Match the pinned renderer: it cannot migrate a read-only store file.
+      version = 4;
       lines = [
         [
           {

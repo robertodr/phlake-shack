@@ -11,7 +11,10 @@ let
   python = pkgs.python3.withPackages (ps: [ ps.tomlkit ]);
 in
 {
-  imports = [ ./rtk-hooks.nix ];
+  imports = [
+    ./rtk-hooks.nix
+    ./agy-sandbox.nix
+  ];
 
   # Retain the pinned module's generated MCP payload, not its read-only link:
   # Codex persists per-user project trust and other choices in config.toml.
@@ -41,7 +44,7 @@ in
       enableMcpIntegration = true;
     };
     antigravity-cli = lib.mkIf config.programs.antigravity-cli.enable {
-      package = pkgs.llm-agents.antigravity-cli;
+      package = lib.mkDefault pkgs.llm-agents.antigravity-cli;
       context.AGENTS = context;
       # The pinned integration drops remote URLs. Remove this adapter only
       # after verifying that a newer pin generates correct remote entries.
