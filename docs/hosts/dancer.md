@@ -71,8 +71,15 @@ nix build --no-link \
 For firewall, SSH or persistence changes, also run the relevant isolated VM
 checks: `ssh-lan-tailscale`, `ssh-lan` and `impermanence`. Their implementation is
 in `tests/`; do not replace them with a copied results report. Avoid unrestricted
-`nix flake check` as a deployment precheck: it includes full-profile builds/VMs,
-and `host-invariants` requires an unavailable private historical baseline.
+`nix flake check` as a deployment precheck: it includes full-profile builds and VMs. Run `host-invariants` alongside the scoped checks.
+
+If boot stops at the rollback unit, use the local console or rescue media.
+Check `journalctl -b -u root-roolback.service` and inspect the unlocked Btrfs
+top level read-only (`subvolid=5`). Verify the device, `root`, `root-blank`
+and its `ro` property before attempting repair. Preserve any remaining root
+or nested subvolumes; do not rerun disko or delete them as a recovery step.
+If the blank is missing or untrusted, restore it from a known-good backup
+before retrying. An older boot generation may run the older destructive hook.
 
 After review and explicit approval for live maintenance, run interactively:
 

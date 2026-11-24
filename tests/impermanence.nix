@@ -47,7 +47,26 @@ diskoLib.testLib.makeDiskoTest {
     boot.initrd = {
       systemd = {
         enable = true;
-        services.root-roolback.wantedBy = lib.mkIf disableRollback (lib.mkForce [ ]);
+        services = {
+          root-roolback.requiredBy = lib.mkIf disableRollback (lib.mkForce [ ]);
+          # The final boot deliberately enters initrd emergency mode. Let the
+          # probe inspect it instead of letting test-instrumentation panic.
+          panic-on-fail.wantedBy = lib.mkIf (!disableRollback) (lib.mkForce [ ]);
+          verify-failed-rollback = lib.mkIf (!disableRollback) {
+            wantedBy = [ "emergency.target" ];
+            unitConfig.DefaultDependencies = false;
+            serviceConfig.Type = "oneshot";
+            script = ''
+              systemctl is-failed --quiet root-roolback.service
+              command -v findmnt >/dev/null
+              if findmnt -M /sysroot; then exit 1; fi
+              mount -t btrfs -o ro,subvolid=5 /dev/mapper/encrypted /mnt
+              trap 'umount /mnt' EXIT
+              test -f '/mnt/root/nested parent/nested child/keep-on-failure'
+              echo "rollback failure preserved root and blocked sysroot" >/dev/ttyS0
+            '';
+          };
+        };
       };
       luks.devices.encrypted.keyFile = "/tmp/secret.key";
     };
@@ -112,6 +131,7 @@ diskoLib.testLib.makeDiskoTest {
     machine.succeed("test -e /persist/persist-probe")
     machine.succeed("test -e /nix/nix-probe")
     machine.succeed("test -e /var/lib/nixos/nixos-probe")
+    machine.succeed("btrfs subvolume create '/nested parent' && btrfs subvolume create '/nested parent/nested child'")
     machine.succeed("sync")
     log.info("TASK7: resetting VM for reset/persistence assertions")
     machine.send_monitor_command("system_reset")
@@ -134,6 +154,7 @@ diskoLib.testLib.makeDiskoTest {
     machine.succeed("test \"$(stat -c %u:%g:%a /persist/var/lib/tailscale)\" = 0:0:700")
     machine.succeed("grep -Fx synthetic-not-node-state /var/lib/tailscale/persistence-marker")
     machine.succeed("test \"$(stat -c %u:%g:%a /var/lib/tailscale/persistence-marker)\" = 0:0:600")
+    machine.fail("test -e '/nested parent'")
     machine.fail("test -e /root-reset-probe")
     machine.succeed("test -e /home/home-probe")
     machine.succeed("test -e /persist/persist-probe")
@@ -159,5 +180,21 @@ diskoLib.testLib.makeDiskoTest {
     machine.succeed("stat -c %a /boot/task8-efi-seed | grep -E '^[0-7]00$'")
     machine.succeed("test -e /.swapvol/swapfile")
     machine.succeed("swapon --show=NAME --noheadings | grep -Fx /.swapvol/swapfile")
+    ${lib.optionalString (!disableRollback) ''
+      with subtest("writable blank blocks boot before deleting any subvolumes"):
+          machine.succeed("btrfs subvolume create '/nested parent' && btrfs subvolume create '/nested parent/nested child' && touch '/nested parent/nested child/keep-on-failure'")
+          machine.succeed("mkdir -p /mnt/btrfs-root && mount -o subvolid=5 /dev/mapper/encrypted /mnt/btrfs-root")
+          machine.succeed("btrfs property set -ts /mnt/btrfs-root/root-blank ro false && umount /mnt/btrfs-root && sync")
+          machine.send_monitor_command("system_reset")
+          machine.wait_for_shutdown()
+          machine.start()
+          # The pinned wait_for_console_text drains only one queued line per
+          # retry. Inspect the accumulated log so boot chatter cannot hide a pass.
+          import time
+          deadline = time.monotonic() + 120
+          while "rollback failure preserved root and blocked sysroot" not in machine.get_console_log():
+              assert time.monotonic() < deadline, "initrd did not confirm safe rollback failure"
+              time.sleep(0.25)
+    ''}
   '';
 }
