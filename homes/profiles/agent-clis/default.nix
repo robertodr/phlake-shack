@@ -12,6 +12,7 @@ let
 in
 {
   imports = [
+    ./egm.nix
     ./rtk-hooks.nix
     ./agy-sandbox.nix
   ];

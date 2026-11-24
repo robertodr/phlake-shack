@@ -15,7 +15,19 @@ def merge(template, target):
     original = target.read_text() if target.exists() else ""
     config = tomlkit.parse(original)
     servers = config.setdefault("mcp_servers", tomlkit.table())
-    for name, fields in tomlkit.parse(template.read_text())["mcp_servers"].items():
+    managed = tomlkit.parse(template.read_text())
+    # Add only our EGM entries. Do not silently replace a native install,
+    # redirect a marketplace, or re-enable a plugin disabled by the owner.
+    for section, name in (("marketplaces", "egm"), ("plugins", "egm@egm")):
+        entry = managed.get(section, {}).get(name)
+        if entry is None:
+            continue
+        table = config.setdefault(section, tomlkit.table())
+        if name not in table:
+            table[name] = entry
+        elif section == "marketplaces" and any(table[name].get(k) != v for k, v in entry.items()):
+            sys.exit("Existing Codex egm marketplace differs; reconcile before activation")
+    for name, fields in managed["mcp_servers"].items():
         server = servers.setdefault(name, tomlkit.table())
         for key, value in fields.items():
             if server.get(key) != value:

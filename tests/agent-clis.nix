@@ -45,6 +45,14 @@ let
             else
               !lib.any (p: lib.getName p == "claude-code") home.config.home.packages
           );
+        egm-canary =
+          let
+            canary = host == "kellanved";
+          in
+          (files ? ".gemini/config/plugins/egm") == canary
+          && (files ? ".codex/plugins/cache/egm") == canary
+          && (files ? ".codex/marketplaces/egm") == canary
+          && (!canary || programs.claude-code.plugins == [ files.".gemini/config/plugins/egm".source ]);
         disabled-files =
           (codex || noTree ".codex")
           && (antigravity || noTree ".gemini")
@@ -114,6 +122,20 @@ pkgs.runCommand "agent-clis" { } ''
         cp "$CODEX_HOME/config.toml" before
         merge
         cmp before "$CODEX_HOME/config.toml"
+        ${lib.optionalString (host == "kellanved") ''
+          mkdir -p "$CODEX_HOME/marketplaces" "$CODEX_HOME/plugins/cache" "$HOME/.gemini/config/plugins"
+          bundle=${files.".codex/marketplaces/egm".source}
+          ln -s "$bundle" "$CODEX_HOME/marketplaces/egm"
+          ln -s ${files.".codex/plugins/cache/egm".source} "$CODEX_HOME/plugins/cache/egm"
+          ln -s ${files.".gemini/config/plugins/egm".source} "$HOME/.gemini/config/plugins/egm"
+          # Relocate the absolute marketplace path from the real home to this fixture.
+          sed -i "s|${home.config.home.homeDirectory}/.codex/marketplaces/egm|$CODEX_HOME/marketplaces/egm|g" "$CODEX_HOME/config.toml"
+          ${lib.getExe home.pkgs.llm-agents.codex} plugin list --json --marketplace egm | ${lib.getExe pkgs.jq} -e '
+            .installed | length == 1 and .[0].pluginId == "egm@egm" and .[0].enabled and .[0].marketplaceSource.sourceType == "local"'
+          test "$(realpath "$CODEX_HOME/plugins/cache/egm/egm/0.1.1/agents/codebase_details.md")" = "$bundle/agents/codebase_details.md"
+          ${home.config.programs.antigravity-cli.package}/bin/agy plugin list --json | ${lib.getExe pkgs.jq} -e '
+            map(select(.name == "egm" and .enabled)) | length == 1 and (.[0].agents | index("egm-codebase-details") != null)'
+        ''}
         ${lib.getExe pkgs.python3} ${./agent-clis-mcp.test.py} \
           ${lib.getExe home.pkgs.llm-agents.codegraph} \
           ${home.config.home.file.".codex/config.toml".source} \

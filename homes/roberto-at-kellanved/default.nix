@@ -3,6 +3,7 @@
   home.stateVersion = "24.11";
   home.packages = [ pkgs.oleafly ];
 
+  profiles.agent-clis.egm.enable = true;
   profiles.agent-clis.rtkHooks.enable = true;
 
   programs = {
