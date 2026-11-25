@@ -38,8 +38,11 @@ in
     };
   };
 
-  profiles.agent-clis.egm.enable = true;
-  profiles.agent-clis.rtkHooks.enable = true;
+  profiles.agent-clis = {
+    codeMode.enable = true;
+    egm.enable = true;
+    rtkHooks.enable = true;
+  };
 
   programs = {
     claude-code.enable = true;

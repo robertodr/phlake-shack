@@ -47,7 +47,7 @@ let
           );
         code-mode =
           !(home.config.home.sessionVariables ? CLAUDE_CODE_EXPERIMENTAL_CODE_MODE)
-          && home.config.profiles.agent-clis.codeMode.enable == (host == "kellanved")
+          && home.config.profiles.agent-clis.codeMode.enable == (host != "dancer")
           && (programs.codex.settings.features.code_mode or false) == (host == "kellanved");
         egm =
           let
