@@ -45,14 +45,19 @@ let
             else
               !lib.any (p: lib.getName p == "claude-code") home.config.home.packages
           );
-        egm-canary =
+        egm =
           let
-            canary = host == "kellanved";
+            enabled = host != "dancer";
+            pin = "elephant-goldfish-model-63e239d8d4c3ddc6774faf533b4997405f78c549";
           in
-          (files ? ".gemini/config/plugins/egm") == canary
-          && (files ? ".codex/plugins/cache/egm") == canary
-          && (files ? ".codex/marketplaces/egm") == canary
-          && (!canary || programs.claude-code.plugins == [ files.".gemini/config/plugins/egm".source ]);
+          home.config.profiles.agent-clis.egm.enable == enabled
+          && (files ? ".gemini/config/plugins/egm") == (enabled && antigravity)
+          && (files ? ".codex/plugins/cache/egm") == (enabled && codex)
+          && (files ? ".codex/marketplaces/egm") == (enabled && codex)
+          && map (p: p.name) programs.claude-code.plugins == lib.optional (enabled && claude) pin
+          && (
+            host != "kellanved" || programs.claude-code.plugins == [ files.".gemini/config/plugins/egm".source ]
+          );
         disabled-files =
           (codex || noTree ".codex")
           && (antigravity || noTree ".gemini")
