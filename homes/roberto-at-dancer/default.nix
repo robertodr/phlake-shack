@@ -54,10 +54,25 @@ in
     starship.settings = {
       format = lib.mkForce ''
         [┌─](bold blue) $username$hostname:$directory
-        [│](bold blue) $time $battery\[$nix_shell$python$rust\]
-        [└─](bold blue) \($git_branch$git_state$git_status\) $character'';
+        [│](bold blue) $time $battery$nix_shell$python$rust
+        [└─](bold blue) $git_branch$git_state$git_status$character'';
+      # SSH renders with the connecting terminal's font. Use text rather than
+      # private-use glyphs; absent modules should leave no empty delimiters.
+      nix_shell.symbol = lib.mkForce "nix ";
+      python.symbol = lib.mkForce "py";
+      rust.symbol = lib.mkForce "rs";
+      git_branch.symbol = lib.mkForce "git:";
+      git_branch.format = lib.mkForce "[$symbol$branch]($style) ";
+      git_status = {
+        format = lib.mkForce "($ahead_behind$staged$modified$untracked$deleted )";
+        staged = lib.mkForce "[S$count](yellow)";
+        modified = lib.mkForce "[M$count](green)";
+        untracked = lib.mkForce "[?$count](blue)";
+        deleted = lib.mkForce "[D$count](red)";
+      };
+      directory.read_only = " ro";
       battery = {
-        format = "[$symbol$percentage]($style) ";
+        format = "[bat $percentage]($style) ";
         display = [
           {
             threshold = 10;
