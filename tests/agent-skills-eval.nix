@@ -60,18 +60,37 @@ let
       name:
       let
         shared = files.".agents/skills/${name}" or null;
+        gemini = files.".gemini/config/skills/${name}" or null;
         claude = files."${claudeDir}/skills/${name}" or null;
       in
       {
         name = "${host}-${name}-shared-skill";
         pass =
           shared != null
-          && claude != null
-          && shared.source == claude.source
+          && shared.enable
           && !shared.recursive
-          && !claude.recursive
           && !shared.force
-          && !claude.force
+          && (
+            if host == "crokus" then
+              gemini == null
+            else
+              gemini != null
+              && gemini.enable
+              && gemini.source == shared.source
+              && !gemini.recursive
+              && !gemini.force
+              && gemini.target == ".gemini/config/skills/${name}"
+          )
+          && (
+            if host == "dancer" then
+              claude == null
+            else
+              claude != null
+              && claude.enable
+              && shared.source == claude.source
+              && !claude.recursive
+              && !claude.force
+          )
           && lib.hasSuffix "/share/skills/${name}/${name}" (toString shared.source)
           && !(files ? ".pi/agent/skills/${name}")
           && !(files ? "${piDir}/skills/${name}");
@@ -91,6 +110,19 @@ let
           "obsidian-headless"
         ]
     ++ [
+      {
+        name = "${host}-exact-gemini-skill-targets";
+        pass =
+          let
+            targets = map (file: file.target) (builtins.attrValues files);
+            under = root: target: target == root || lib.hasPrefix "${root}/" target;
+          in
+          lib.sort builtins.lessThan (builtins.filter (under ".gemini/config/skills") targets)
+          == lib.sort builtins.lessThan (
+            lib.optionals (host != "crokus") (map (name: ".gemini/config/skills/${name}") skillNames)
+          )
+          && !(lib.any (under ".codex/skills") targets);
+      }
       {
         name = "${host}-defuddle-cli-installed";
         pass = lib.any (package: lib.getName package == "defuddle") home.home.packages;
@@ -117,7 +149,7 @@ let
       let
         shared = files.".agents/skills/${name}" or null;
         claude = files."${claudeDir}/skills/${name}" or null;
-        forClaude = builtins.elem name communitySkills.claudeSkillNames;
+        forClaude = host != "dancer" && builtins.elem name communitySkills.claudeSkillNames;
       in
       {
         name = "${host}-${name}-community-skill";

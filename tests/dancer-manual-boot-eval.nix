@@ -108,20 +108,22 @@ let
     (dancer.extendModules {
       modules = [
         {
-          boot.loader = {
-            external.enable = true;
-            grub.enable = true;
-            systemd-boot.enable = false;
+          boot = {
+            loader = {
+              external.enable = true;
+              grub.enable = true;
+              systemd-boot.enable = false;
+            };
+            initrd.luks.devices.encrypted = {
+              keyFile = "/OWNED-nonexistent-fixture-not-a-key";
+              tryEmptyPassphrase = true;
+              crypttabExtraOpts = [
+                "tpm2-device=auto"
+                "headless"
+              ];
+            };
+            initrd.secrets."/OWNED-never-read" = "/OWNED-nonexistent-fixture";
           };
-          boot.initrd.luks.devices.encrypted = {
-            keyFile = "/OWNED-nonexistent-fixture-not-a-key";
-            tryEmptyPassphrase = true;
-            crypttabExtraOpts = [
-              "tpm2-device=auto"
-              "headless"
-            ];
-          };
-          boot.initrd.secrets."/OWNED-never-read" = "/OWNED-nonexistent-fixture";
         }
       ];
     }).config;

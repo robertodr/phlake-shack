@@ -1,10 +1,3 @@
-_:
-let
-  algorithmiq = name: {
-    owner = "algorithmiq";
-    inherit name;
-  };
-in
 {
   services.kenn-forge = {
     enable = true;

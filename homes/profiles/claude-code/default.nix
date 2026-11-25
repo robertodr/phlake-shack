@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   ...
@@ -15,35 +16,42 @@ let
     refreshInterval = 10;
   };
 
+  settingsFilter = pkgs.writeText "claude-settings.jq" (
+    (
+      if config.profiles.agent-clis.rtkHooks.enable then
+        builtins.readFile ./rtk-hooks.jq
+      else
+        ".statusLine = $statusLine"
+    )
+    + lib.optionalString config.profiles.agent-clis.codeMode.enable ''
+      | if ((.env // {}) | has("CLAUDE_CODE_EXPERIMENTAL_CODE_MODE"))
+        then . else .env.CLAUDE_CODE_EXPERIMENTAL_CODE_MODE = "1" end
+    ''
+  );
+
   # Written as a script so the jq redirection is not split from `run`, which
   # would otherwise clobber settings.json with the echoed command under
   # `nixos-rebuild dry-activate`.
+  # Rolling back does not undo writable settings: back them up, then remove
+  # only this generation's RTK command (never restore stale settings wholesale).
   mergeStatusLine = pkgs.writeShellScript "claude-code-merge-statusline" ''
     set -euo pipefail
+    umask 077
     settings="$HOME/.claude/settings.json"
     mkdir -p "$(dirname "$settings")"
-    [ -s "$settings" ] || echo '{}' > "$settings"
+    input="$settings"
+    [ -s "$input" ] || input=${pkgs.writeText "empty-settings.json" "{}"}
+    tmp=$(mktemp "$settings.hm-XXXXXXXX")
+    trap 'rm -f "$tmp"' EXIT
     ${lib.getExe pkgs.jq} \
       --argjson statusLine '${builtins.toJSON statusLine}' \
-      '.statusLine = $statusLine' \
-      "$settings" > "$settings.hm-new"
-    mv "$settings.hm-new" "$settings"
+      --arg rtkCommand '${lib.getExe pkgs.llm-agents.rtk} hook claude' \
+      -f ${settingsFilter} "$input" > "$tmp"
+    mv "$tmp" "$settings"
   '';
 in
-{
-  programs.claude-code = {
-    enable = true;
-    package = pkgs.llm-agents.claude-code;
-    context = ''
-      If you make a commit, follow conventional commits and add a trailer:
-      `Assisted-by: <harness>:<model>`, where `<harness>` is the current agent harness
-      (like ClaudeCode), and `<model>` is the AI model (Like claude-opus-4.8). You
-      don't need to add a coauthored-by Claude when you have this.
-
-      Prefix PR descriptions and comments on PRs with the line ":robot: _AI text
-      below_ :robot:" to indicate you are an agent speaking on a user's behalf.
-    '';
-  };
+lib.mkIf config.programs.claude-code.enable {
+  programs.claude-code.package = pkgs.llm-agents.claude-code;
 
   home.activation.claudeCodeStatusLine = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     run ${mergeStatusLine}
@@ -55,7 +63,8 @@ in
     # Darwin adopts existing dotfiles explicitly; preserve Linux's overwrite policy.
     force = pkgs.stdenv.hostPlatform.isLinux;
     source = (pkgs.formats.json { }).generate "ccstatusline-settings.json" {
-      version = 3;
+      # Match the pinned renderer: it cannot migrate a read-only store file.
+      version = 4;
       lines = [
         [
           {

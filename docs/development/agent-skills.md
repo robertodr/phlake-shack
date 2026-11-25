@@ -5,8 +5,11 @@
 `json-canvas`, `obsidian-bases`, `obsidian-cli`, and `obsidian-markdown`.
 `knap` and `obsidian-headless` are deliberately excluded from both the package
 and managed skill links. Home Manager links these common immutable directories
-into `~/.agents/skills/` (discovered by Pi) and Claude Code's configured
-`skills/` directory. The profile also adopts 38 previously imperative community
+into `~/.agents/skills/` on all three hosts (discovered by Pi and, where enabled,
+Codex). It also links them into Claude Code's configured `skills/` directory on
+Kellanved and Crokus, and Antigravity CLI's `~/.gemini/config/skills/` on
+Kellanved and Dancer.
+Antigravity gets only these eight common skills, not the community collection. The profile also adopts 38 previously imperative community
 skills, preserving their narrower Claude selection (see below). No duplicate
 links are created in `~/.pi/agent/skills/`. Other, unmanaged skills may coexist.
 
@@ -66,8 +69,8 @@ Runtime permissions and explicit delegation authorization remain separate.
 
 All 38 are linked into `~/.agents/skills/`; only the 23 Matt Pocock skills are
 additionally linked into Claude's configured directory, matching the previous
-explicit links. No duplicate Pi-private links are needed. This applies to
-Kellanved, Dancer and Crokus.
+explicit links, on hosts with Claude Code enabled. No duplicate Pi-private links
+are needed on any host.
 
 ### Declarative visibility
 
@@ -92,6 +95,9 @@ not as the source of truth for the adopted skills. Package-provided skills from
 this migration does not change their mutable runtime installation.
 
 ## First activation: adopt existing copies
+
+The example below covers the original Pi/Claude skills migration. Inspect only
+clients enabled on the host; on Dancer omit `.claude` from the loop.
 
 Existing imperative installations are not overwritten automatically. Before
 switching, inspect and move any existing copies of these skills outside all
