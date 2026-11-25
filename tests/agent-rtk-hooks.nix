@@ -13,7 +13,12 @@ let
   disabled = home (
     kellanved.extendModules {
       modules = [
-        { home-manager.users.roberto.profiles.agent-clis.rtkHooks.enable = lib.mkForce false; }
+        {
+          home-manager.users.roberto.profiles.agent-clis = {
+            rtkHooks.enable = lib.mkForce false;
+            codeMode.enable = lib.mkForce false;
+          };
+        }
       ];
     }
   );
@@ -79,7 +84,7 @@ pkgs.runCommand "agent-rtk-hooks" { nativeBuildInputs = [ pkgs.jq ]; } ''
   mkdir -p "$HOME/.claude"
   settings="$HOME/.claude/settings.json"
   cat > "$settings" <<'JSON'
-  {"theme":"dark","hooks":{"Stop":[],"PreToolUse":[
+  {"theme":"dark","env":{"OTHER":"keep"},"hooks":{"Stop":[],"PreToolUse":[
     {"matcher":"Bash","hooks":[{"type":"command","command":"~/.claude/hooks/rtk-rewrite.sh"},{"type":"command","command":"echo rtk hook claude"}]},
     {"matcher":"Read","hooks":[{"type":"prompt","prompt":"check"}]},
     {"matcher":"Bash","hooks":[{"type":"command","command":"rtk hook claude"},{"type":"command","command":"/old/bin/rtk hook claude"}]}
@@ -98,7 +103,7 @@ pkgs.runCommand "agent-rtk-hooks" { nativeBuildInputs = [ pkgs.jq ]; } ''
   for pass in 1 2; do
     activate
     jq -e --arg cmd "$rtk hook claude" --arg status '${lib.getExe agents.ccstatusline}' '. == {
-      theme:"dark",statusLine:{type:"command",command:$status,padding:0,refreshInterval:10},
+      theme:"dark",env:{OTHER:"keep",CLAUDE_CODE_EXPERIMENTAL_CODE_MODE:"1"},statusLine:{type:"command",command:$status,padding:0,refreshInterval:10},
       hooks:{Stop:[],PreToolUse:[
         {matcher:"Bash",hooks:[{type:"command",command:"echo rtk hook claude"}]},
         {matcher:"Read",hooks:[{type:"prompt",prompt:"check"}]},
@@ -110,6 +115,9 @@ pkgs.runCommand "agent-rtk-hooks" { nativeBuildInputs = [ pkgs.jq ]; } ''
   # not remove mutable hooks. A rollback therefore needs the manual cleanup.
   activate_off
   cmp first "$settings"
+  jq '.env.CLAUDE_CODE_EXPERIMENTAL_CODE_MODE = "0"' first > "$settings"
+  activate
+  jq -e '.env == {OTHER:"keep",CLAUDE_CODE_EXPERIMENTAL_CODE_MODE:"0"}' "$settings"
   # ccstatusline migrates old schemas in place; the real managed file is read-only.
   mkdir -p "$HOME/.config/ccstatusline"
   ln -s ${

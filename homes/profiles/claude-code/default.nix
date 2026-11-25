@@ -16,6 +16,19 @@ let
     refreshInterval = 10;
   };
 
+  settingsFilter = pkgs.writeText "claude-settings.jq" (
+    (
+      if config.profiles.agent-clis.rtkHooks.enable then
+        builtins.readFile ./rtk-hooks.jq
+      else
+        ".statusLine = $statusLine"
+    )
+    + lib.optionalString config.profiles.agent-clis.codeMode.enable ''
+      | if ((.env // {}) | has("CLAUDE_CODE_EXPERIMENTAL_CODE_MODE"))
+        then . else .env.CLAUDE_CODE_EXPERIMENTAL_CODE_MODE = "1" end
+    ''
+  );
+
   # Written as a script so the jq redirection is not split from `run`, which
   # would otherwise clobber settings.json with the echoed command under
   # `nixos-rebuild dry-activate`.
@@ -32,13 +45,8 @@ let
     trap 'rm -f "$tmp"' EXIT
     ${lib.getExe pkgs.jq} \
       --argjson statusLine '${builtins.toJSON statusLine}' \
-      ${
-        if config.profiles.agent-clis.rtkHooks.enable then
-          "--arg rtkCommand '${lib.getExe pkgs.llm-agents.rtk} hook claude' -f ${./rtk-hooks.jq}"
-        else
-          "'.statusLine = $statusLine'"
-      } \
-      "$input" > "$tmp"
+      --arg rtkCommand '${lib.getExe pkgs.llm-agents.rtk} hook claude' \
+      -f ${settingsFilter} "$input" > "$tmp"
     mv "$tmp" "$settings"
   '';
 in

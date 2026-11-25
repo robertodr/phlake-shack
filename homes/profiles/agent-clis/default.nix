@@ -22,12 +22,6 @@ in
 
   config = {
     home = {
-      sessionVariables =
-        lib.mkIf (config.profiles.agent-clis.codeMode.enable && config.programs.claude-code.enable)
-          {
-            CLAUDE_CODE_EXPERIMENTAL_CODE_MODE = "1";
-          };
-
       # Retain the pinned module's generated MCP payload, not its read-only link:
       # Codex persists per-user project trust and other choices in config.toml.
       file = lib.mkIf config.programs.codex.enable { ${codexFile}.enable = false; };
