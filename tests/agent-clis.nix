@@ -45,6 +45,10 @@ let
             else
               !lib.any (p: lib.getName p == "claude-code") home.config.home.packages
           );
+        code-mode =
+          (home.config.home.sessionVariables.CLAUDE_CODE_EXPERIMENTAL_CODE_MODE or null)
+          == (if host == "kellanved" then "1" else null)
+          && (programs.codex.settings.features.code_mode or false) == (host == "kellanved");
         egm =
           let
             pin = "elephant-goldfish-model-63e239d8d4c3ddc6774faf533b4997405f78c549";
@@ -119,6 +123,9 @@ pkgs.runCommand "agent-clis" { } ''
         test ! -e "$CODEX_HOME/config.toml"
         run() { "$@"; }
         merge
+        ${lib.optionalString (host == "kellanved") ''
+          ${lib.getExe home.pkgs.llm-agents.codex} features list | grep -Eq '^code_mode +under development +true$'
+        ''}
         test ! -L "$CODEX_HOME/config.toml"
         test "$(stat -c %a "$CODEX_HOME/config.toml")" = 600
         ${lib.getExe home.pkgs.llm-agents.codex} mcp add local-test -- true

@@ -16,6 +16,9 @@ def merge(template, target):
     config = tomlkit.parse(original)
     servers = config.setdefault("mcp_servers", tomlkit.table())
     managed = tomlkit.parse(template.read_text())
+    if "code_mode" in managed.get("features", {}):
+        # Preserve explicit user choices and unrelated feature flags.
+        config.setdefault("features", tomlkit.table()).setdefault("code_mode", managed["features"]["code_mode"])
     # Add only our EGM entries. Do not silently replace a native install,
     # redirect a marketplace, or re-enable a plugin disabled by the owner.
     for section, name in (("marketplaces", "egm"), ("plugins", "egm@egm")):
