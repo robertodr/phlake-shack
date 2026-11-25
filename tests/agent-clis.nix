@@ -47,14 +47,13 @@ let
           );
         egm =
           let
-            enabled = host != "dancer";
             pin = "elephant-goldfish-model-63e239d8d4c3ddc6774faf533b4997405f78c549";
           in
-          home.config.profiles.agent-clis.egm.enable == enabled
-          && (files ? ".gemini/config/plugins/egm") == (enabled && antigravity)
-          && (files ? ".codex/plugins/cache/egm") == (enabled && codex)
-          && (files ? ".codex/marketplaces/egm") == (enabled && codex)
-          && map (p: p.name) programs.claude-code.plugins == lib.optional (enabled && claude) pin
+          home.config.profiles.agent-clis.egm.enable
+          && (files ? ".gemini/config/plugins/egm") == antigravity
+          && (files ? ".codex/plugins/cache/egm") == codex
+          && (files ? ".codex/marketplaces/egm") == codex
+          && map (p: p.name) programs.claude-code.plugins == lib.optional claude pin
           && (
             host != "kellanved" || programs.claude-code.plugins == [ files.".gemini/config/plugins/egm".source ]
           );
@@ -127,7 +126,7 @@ pkgs.runCommand "agent-clis" { } ''
         cp "$CODEX_HOME/config.toml" before
         merge
         cmp before "$CODEX_HOME/config.toml"
-        ${lib.optionalString (host == "kellanved") ''
+        ${lib.optionalString home.config.profiles.agent-clis.egm.enable ''
           mkdir -p "$CODEX_HOME/marketplaces" "$CODEX_HOME/plugins/cache" "$HOME/.gemini/config/plugins"
           bundle=${files.".codex/marketplaces/egm".source}
           ln -s "$bundle" "$CODEX_HOME/marketplaces/egm"
